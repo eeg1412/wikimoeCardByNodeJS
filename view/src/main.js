@@ -3,12 +3,12 @@ import Vue from 'vue'
 import vuexStore from '@/store'
 import router from '@/router'
 import httpPlugin from '@/service/httpPlugin'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 import App from '@/App'
-
-import 'src/assets/icons/iconfont.js'
-import 'src/assets/styles/reset.styl'
-import 'src/assets/styles/functional.styl'
-
+import './assets/styles/index.css';
+import './assets/styles/card.css';
+Vue.use(ElementUI);
 Vue.use(httpPlugin)
 
 const app = new Vue({
