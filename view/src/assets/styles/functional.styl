@@ -1,0 +1,50 @@
+.select-disable
+  -webkit-user-select none
+  -moz-user-select none
+  -ms-user-select none
+  user-select none
+.abs-center
+  position absolute
+  top 0
+  bottom 0
+  left 0
+  right 0
+
+  margin auto
+flex()
+  display flex
+.flex-center
+  flex()
+  justify-content center
+.flex-middle
+  flex()
+  align-items center
+@media screen
+  @media (max-width: 600px)
+    .mobile-hide
+      display none !important
+  @media (min-width: 601px) and (max-width: 992px)
+    .tablet-hide
+      display none !important
+  @media (min-width: 601px)
+    .tablet-and-up-hide
+      display none !important
+  @media (max-width: 992px)
+    .tablet-and-down-hide
+      display none !important
+  @media (min-width: 993px)
+    .desktop-hide
+      display none !important
+.app-wrap
+  margin 0 auto
+  width 100%
+  max-width 1180px
+.clearfix
+  &::after
+    content ''
+    display block
+    clear both
+.text-ellipsis
+  white-space nowrap
+  overflow hidden
+  text-overflow ellipsis
