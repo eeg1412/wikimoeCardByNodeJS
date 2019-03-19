@@ -3,5 +3,8 @@ export default function (api) {
     login(data) {
       return api.post('login',data)
     },
+    dailycard(data){
+      return api.post('dailycard',data)
+    }
   }
 }

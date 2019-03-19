@@ -156,9 +156,20 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     margin: 4px 0 10px 0;
 }
 .card_list {
+    opacity: 1;
+	transition: all 0.3s linear 0.4s;
+	-webkit-transition: all 0.3s linear 0.4s;
+	-moz-transition: all 0.3s linear 0.4s;
     margin: 10px;
     display: inline-block;
     perspective: 800px;
+    cursor: pointer;
+}
+.card_list.selectedcard{
+    cursor: default;
+}
+.no-selectedcard{
+	opacity: 0.5;
 }
 .wm_card_chiose_title {
     font-size: 22px;
@@ -173,4 +184,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     width: 200px;
     text-align: center;
     font-size: 12px;
+}
+.wm_card_email .el-input__inner{
+    text-align: center;
 }
