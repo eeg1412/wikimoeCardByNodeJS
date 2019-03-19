@@ -31,6 +31,7 @@
 
 <script>
 import {authApi} from "../api";
+import {mailCheck} from "../../utils/utils";
 import rotate3DCard from '../components/rotateCard.vue';
 export default {
   data() {
@@ -56,6 +57,9 @@ export default {
     getDailyCard(Num){
       if(this.seled){
         return false;
+      }
+      if(mailCheck(!this.email)){
+        this.$message.error('邮箱格式正确！');
       }
       console.log(Num);
       authApi.dailycard({email: this.email,sel:Num}).then(res => {

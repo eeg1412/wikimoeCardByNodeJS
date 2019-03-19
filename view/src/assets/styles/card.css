@@ -138,6 +138,12 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 /*边框*/
 .bdTopCCC{border-top:1px solid #CCCCCC;}
 .bdBottomC9{border-bottom:1px solid #C9C9C9;}
+.common_title{
+    font-size: 22px;
+    padding: 50px 0;
+    line-height: 32px;
+    text-align: center;
+}
 /* 卡牌 */
 .wm_card_big_body * {
     -webkit-tap-highlight-color: transparent;
@@ -187,4 +193,9 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 }
 .wm_card_email .el-input__inner{
     text-align: center;
+}
+/* 注册 */
+.reg_body{
+    max-width: 1000px;
+    margin: 0 auto 0 auto;
 }

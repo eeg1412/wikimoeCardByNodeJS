@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 
 // first screen in app.js
 import HomeView from '@/views/home-view.vue'
+import regView from '@/views/reg-view.vue'
 // lazy load
 const NotfoundView = () => import(/* webpackChunkName: "rest" */ '@/views/notfound-view.vue')
 
@@ -21,6 +22,7 @@ const router = new VueRouter({
   },
   routes: [
     { name: 'home', path: '/', component: HomeView },
+    { name: 'reg', path: '/reg', component: regView },
     { name: '404', path: '/404', component: NotfoundView },
     { path: '*', redirect: '/404' },
   ],
