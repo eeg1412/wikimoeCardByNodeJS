@@ -4,7 +4,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var history = require('connect-history-api-fallback');
 
-var indexRouter = require('./routes/index');
+var db = require('./mongodb/db');
+
 var apiRouter = require('./routes/api');
 var app = express();
 
