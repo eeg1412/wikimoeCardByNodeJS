@@ -3,7 +3,7 @@
   <h5 class="common_title">注册账号</h5>
   <el-form ref="form" :model="form" label-width="80px">
     <el-form-item label="邮箱地址">
-      <el-input v-model="form.email"></el-input>
+      <el-input v-model="form.email" @input="emailToLowerCase"></el-input>
     </el-form-item>
     <el-form-item label="密码">
       <el-input v-model="form.password" show-password></el-input>
@@ -35,6 +35,9 @@ export default {
   methods: {
     onSubmit() {
       console.log('submit!');
+    },
+    emailToLowerCase(){
+      this.form.email = this.form.email.toLowerCase();
     }
   }
 }

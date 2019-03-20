@@ -89,10 +89,7 @@ export default {
               cancelButtonText: '取消',
               type: 'warning'
             }).then(() => {
-              this.$message({
-                type: 'success',
-                message: '去注册!'
-              });
+              this.$router.push({ path:'/reg'});
             }).catch(() => {         
             });
           }
