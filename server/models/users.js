@@ -10,6 +10,12 @@ var users = new Schema({
   dailyCard:{type: Number, default: 0},
   dailyCardTime:{type: Number, default: 0},
   star:{type: Number, default: 0},
+  score:{type: Number, default: 0},
+  level:{type: Number, default: 0},
+  exp:{type: Number, default: 0},
+  battleStamp:{type: Number, default: 0},
+  deminingStamp:{type: Number, default: 0},
+  deminingStarCount:{type: Number, default: 0},
   card: {},
   ip:String
 });

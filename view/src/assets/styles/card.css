@@ -145,6 +145,10 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     text-align: center;
 }
 /* 卡牌 */
+.wm_card_remember_body {
+    text-align: center;
+    margin-top: 8px;
+}
 .wm_card_big_body * {
     -webkit-tap-highlight-color: transparent;
 }
