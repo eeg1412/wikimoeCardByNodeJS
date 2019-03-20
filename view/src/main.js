@@ -10,6 +10,9 @@ import 'element-ui/lib/theme-chalk/index.css';
 import App from '@/App'
 import './assets/styles/index.css';
 import './assets/styles/card.css';
+import SequentialEntrance from 'vue-sequential-entrance'
+import 'vue-sequential-entrance/vue-sequential-entrance.css'
+Vue.use(SequentialEntrance);
 Vue.use(ElementUI);
 Vue.use(httpPlugin)
 

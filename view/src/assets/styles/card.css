@@ -144,6 +144,11 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     line-height: 32px;
     text-align: center;
 }
+.common_body{
+    max-width: 980px;
+    padding:50px 10px;
+    margin: 0 auto 0 auto;
+}
 /* 卡牌 */
 .wm_card_remember_body {
     text-align: center;
@@ -208,8 +213,27 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 .wm_card_email .el-input__inner{
     text-align: center;
 }
-/* 注册 */
-.reg_body{
-    max-width: 1000px;
-    margin: 0 auto 0 auto;
+.wm_mycard_list {
+    text-align: center;
+    margin-top: 10px;
 }
+.my_card_page{
+    margin-top: 20px;
+}
+.wm_getcard_box {
+    padding: 5px;
+    display: inline-block;
+    text-align: center;
+    width: 18%;
+}
+.wm_getcard_img {
+    width: 100%;
+    border-radius: 5px;
+}
+.wm_card_nums {
+    font-size: 21px;
+    padding: 5px;
+    line-height: 36px;
+    color: #254d6d!important;
+}
+/* 注册 */

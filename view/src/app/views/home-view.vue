@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="common_body">
   <h5 class="wm_card_chiose_title">欢迎来到维基萌抽卡</h5>
   <div class="wm_card_email_body">
     <transition name="el-fade-in-linear">
@@ -40,13 +40,35 @@
       </div>
     </div>
   </div>
+  <div class="wm_user_info_body">
+    <transition name="el-fade-in-linear">
+      <div class="wm_mycard_list" v-if="userCard">
+        <sequential-entrance delay="100" tag="div">
+          <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box">
+            <img class="wm_getcard_img" :src="'https://wikimoesh.cn-sh2.ufileos.com/wmcard/'+PrefixInteger_(item[0],4)+'.jpg'">
+            <br>
+            <span class="wm_card_nums">×{{item[1]}}</span>
+          </div>
+        </sequential-entrance>
+        <el-pagination
+          layout="prev, pager, next"
+          :total="cardTotle"
+          @current-change="cardPageChange"
+          :current-page.sync="cardPage"
+          :page-size="20"
+          class="my_card_page">
+        </el-pagination>
+      </div>
+    </transition>
+  </div>
 </div>
 </template>
 
 <script>
 import {authApi} from "../api";
-import {mailCheck} from "../../utils/utils";
+import {mailCheck,PrefixInteger} from "../../utils/utils";
 import rotate3DCard from '../components/rotateCard.vue';
+import md5 from 'js-md5';
 export default {
   data() {
     return {
@@ -55,7 +77,11 @@ export default {
       getCardList:['','',''],//卡牌图片地址
       cardIsRotate:[false,false,false],//卡牌翻牌
       seled:false,//已经翻过了
-      restartDisabled:true//重启按钮是否可用
+      restartDisabled:true,//重启按钮是否可用
+      userCard:null,//用户当前页卡牌
+      userCardCache:null,//用户卡牌
+      cardPage:1,//当前卡牌页码
+      cardTotle:0//一共多少
     }
   },
   components: {
@@ -65,6 +91,49 @@ export default {
     this.getRememberEmail();
   },
   methods: {
+    scrollToTop(scrollDuration,to) {
+        if(window.scrollY<=to){
+          return false;
+        }
+        var scrollStep = Math.round((window.scrollY-to) / (scrollDuration / 15)),
+            scrollInterval = setInterval(function(){
+            console.log(window.scrollY);
+            if ( window.scrollY > to ) {
+                window.scrollBy( 0, -scrollStep );
+            }
+            else {
+              clearInterval(scrollInterval);
+            } 
+        },15);
+    },
+    cardPageChange(val){
+      this.userCard=null;
+      setTimeout(()=>{
+        this.userCard = this.userCardCache.slice((val-1)*20,val*20);
+        this.scrollToTop(200,420);
+      },0);
+    },
+    PrefixInteger_(num,length){
+      return PrefixInteger(num,length);
+    },
+    getUserCard(md5){
+      authApi.searchcard({md5: md5}).then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            let resData = res.data;
+            if(res.data.card){
+              this.userCardCache = Object.entries(res.data.card);
+              this.cardPage = 1;
+              this.cardTotle = this.userCardCache.length;
+              this.userCard = this.userCardCache.slice(0,20);
+              console.log(this.userCardCache);
+              //this.userCard = res.data.card;
+            }
+          }
+      });
+    },
     getRememberEmail(){
       var storage=window.localStorage;
       if(storage.getItem("wikimoeEmail")){
@@ -86,6 +155,10 @@ export default {
       this.$refs.cardListBody.children[1].classList.remove("no-selectedcard");
       this.$refs.cardListBody.children[2].classList.remove("no-selectedcard");
       this.cardIsRotate = [false,false,false];
+      this.userCard = null;//用户当前页卡牌
+      this.userCardCache = null;//用户卡牌
+      this.cardPage = 1;//当前卡牌页码
+      this.cardTotle = 0;//一共多少
       setTimeout(()=>{
         this.getCardList = ['','',''];
         this.seled = false;
@@ -106,11 +179,13 @@ export default {
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
             this.rememberEmail();
+            let emailMD5 = md5(this.email);
+            this.getUserCard(emailMD5);
             this.seled = true;
             let resData = res.data;
-            this.$set(this.getCardList, 0, '/static/img/'+resData.cardChoiseList[0]+'.jpg');
-            this.$set(this.getCardList, 1, '/static/img/'+resData.cardChoiseList[1]+'.jpg');
-            this.$set(this.getCardList, 2, '/static/img/'+resData.cardChoiseList[2]+'.jpg');
+            this.$set(this.getCardList, 0, '/static/img/'+PrefixInteger(resData.cardChoiseList[0],4)+'.jpg');
+            this.$set(this.getCardList, 1, '/static/img/'+PrefixInteger(resData.cardChoiseList[1],4)+'.jpg');
+            this.$set(this.getCardList, 2, '/static/img/'+PrefixInteger(resData.cardChoiseList[2],4)+'.jpg');
             this.$set(this.cardIsRotate, resData.choiseIndex, true);
             for(let i=0;i<3;i++){
               if(i!==resData.choiseIndex){

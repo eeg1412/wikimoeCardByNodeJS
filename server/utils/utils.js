@@ -20,6 +20,10 @@ exports.passwordCheck = function (password) {
 exports.nickNameCheck = function (nickName) {
     return /^[\u4E00-\u9FA5\u0800-\u4e00A-Za-z0-9_]{2,8}$/.test(nickName)//2-8位中文、日文、英文、数字包括下划线
 }
+//检查MD5
+exports.md5Check = function (MD5) {
+    return /^[A-Za-z0-9]{32}$/.test(MD5)//32位MD5
+}
 //区间内随机整数
 exports.randomNum = function (n,m) {
     var random = Math.floor(Math.random()*(m-n+1)+n);
@@ -48,7 +52,7 @@ exports.wmCreatCardId = function($randomCardRate){
     if($randomCardRate>=1&&$randomCardRate<=64){
         //N
         $randomCardN_ = this.randomNum(1, 97);
-        $randomCardID = '0'+this.PrefixInteger($randomCardN_,3);
+        $randomCardID = $randomCardN_+'';
     }else if($randomCardRate>=65&&$randomCardRate<=86){
         //R
         $randomCardR_ = this.randomNum(1, 81);
