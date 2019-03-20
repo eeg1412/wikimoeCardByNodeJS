@@ -9,6 +9,7 @@ module.exports = function(req, res, next){
         let email = req.body.email;
         let nickName = req.body.nickName;
         let password = req.body.password;
+        let IP = utils.getUserIp(req);
         if(!utils.emailCheck(email)){
             res.send({
                 code:0,
@@ -46,12 +47,14 @@ module.exports = function(req, res, next){
                     }); 
                     return false;
                 }else{
+                    
                     // document作成
                     var user = new usersModel({
                         email:email,
                         nickName:nickName,
                         password:md5(password),
-                        md5:md5(email)
+                        md5:md5(email),
+                        ip:IP
                     });
 
                     // document保存
