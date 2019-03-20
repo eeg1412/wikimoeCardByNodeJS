@@ -12,7 +12,6 @@ module.exports = function(req, res, next){
                 code:0,
                 msg:'参数有误！'
             });
-            console.log('参数有误！');
             return false;
         }
         //验证邮箱格式
@@ -20,9 +19,12 @@ module.exports = function(req, res, next){
             // document查询
             usersModel.findOne({ email: userEmail }, function(err, result) {
                 if (err) {
+                    res.send({
+                        code:0,
+                        msg:'内部错误请联系管理员！'
+                    });
                     throw err;
                 }else{
-                    console.log(result);
                     //判断是否有该用户
                     if(result){
                         let IP = utils.getUserIp(req);
@@ -35,13 +37,11 @@ module.exports = function(req, res, next){
                         }
 
                         let cardId = cardIdArr[sel];
-                        console.log(cardIdArr);
                         if(cardId===undefined||cardId===null){
                             res.send({
                                 code:0,
                                 msg:'数据错误！'
                             });
-                            console.log('数据错误！');
                             return false;
                         }
                         let cardDataBase = {};
@@ -61,14 +61,14 @@ module.exports = function(req, res, next){
                             if(err) {
                                 throw err;
                             }else{
-                                console.log('更改成功!');
+                                console.log('邮箱：'+userEmail+'，抽到卡牌：'+cardId);
                             }
                         })
                         res.send({
                             code:1,
                             cardChoiseList:cardIdArr,
                             choiseIndex:sel,
-                            emailmd5:md5(userEmail),
+                            emailmd5:result.md5,
                             card:cardId,
                             msg:'ok'
                         });

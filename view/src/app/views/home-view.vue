@@ -36,7 +36,7 @@ import rotate3DCard from '../components/rotateCard.vue';
 export default {
   data() {
     return {
-      email:'abc@abc.com',//邮箱地址
+      email:'',//邮箱地址
       getCardList:['','',''],//卡牌图片地址
       cardIsRotate:[false,false,false],//卡牌翻牌
       seled:false//已经翻过了
@@ -59,7 +59,8 @@ export default {
         return false;
       }
       if(mailCheck(!this.email)){
-        this.$message.error('邮箱格式正确！');
+        this.$message.error('邮箱格式不正确！');
+        return false;
       }
       console.log(Num);
       authApi.dailycard({email: this.email,sel:Num}).then(res => {

@@ -4,8 +4,12 @@ var Schema = mongoose.Schema;
 // Schema
 var users = new Schema({
   email:String,
+  md5:String,
+  nickName:String,
   password:String,
-  verify:{code:Number,time:Number},
+  dailyCard:{type: Number, default: 0},
+  dailyCardTime:{type: Number, default: 0},
+  star:{type: Number, default: 0},
   card: {},
   ip:String
 });

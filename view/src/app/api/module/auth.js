@@ -5,6 +5,9 @@ export default function (api) {
     },
     dailycard(data){
       return api.post('dailycard',data)
-    }
+    },
+    reg(data){
+      return api.post('reg',data)
+    },
   }
 }
