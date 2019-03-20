@@ -33,7 +33,7 @@ module.exports = function(req, res, next){
                         while (cardIdArr.length<3){
                             let rareNum = utils.randomNum(1,100);
                             cardIdArr.push(utils.wmCreatCardId(rareNum));
-                            utils.unique(cardIdArr);
+                            cardIdArr = utils.unique(cardIdArr);
                         }
 
                         let cardId = cardIdArr[sel];

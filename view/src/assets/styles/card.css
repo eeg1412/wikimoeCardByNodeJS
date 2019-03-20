@@ -185,6 +185,16 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 }
 .wm_card_email_body {
     text-align: center;
+    position: relative;
+    height: 40px;
+    z-index: 1;
+}
+.wm_card_email_input_body,.wm_card_restart_body{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
 .wm_card_email {
     width: 200px;

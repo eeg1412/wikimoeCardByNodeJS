@@ -1,3 +1,5 @@
+// fade/zoom 等
+import 'element-ui/lib/theme-chalk/base.css';
 import Vue from 'vue'
 
 import vuexStore from '@/store'

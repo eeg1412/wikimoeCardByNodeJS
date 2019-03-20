@@ -1,9 +1,18 @@
 <template>
 <div>
   <h5 class="wm_card_chiose_title">每天一次神抽</h5>
-  <div class="wm_card_email_body">
-    <el-input v-model="email" placeholder="请先输入邮箱地址再点击卡片" class="wm_card_email"></el-input>
-  </div>
+    <div class="wm_card_email_body">
+      <transition name="el-fade-in-linear">
+        <div class="wm_card_email_input_body" v-show="!seled">
+          <el-input v-model="email" placeholder="请先输入邮箱地址再点击卡片" class="wm_card_email"></el-input>
+        </div>
+      </transition>
+      <transition name="el-fade-in-linear">
+        <div class="wm_card_restart_body" v-show="seled">
+          <el-button type="primary" @click="restart" :disabled="restartDisabled">重新抽卡</el-button>
+        </div>
+      </transition>
+    </div>
   <div class="cardList">
     <div class="cardList_body" ref="cardListBody">
       <div class="card_list" :class="seled?'selectedcard':''" @click="getDailyCard(0)">
@@ -39,7 +48,8 @@ export default {
       email:'',//邮箱地址
       getCardList:['','',''],//卡牌图片地址
       cardIsRotate:[false,false,false],//卡牌翻牌
-      seled:false//已经翻过了
+      seled:false,//已经翻过了
+      restartDisabled:true//重启按钮是否可用
     }
   },
   components: {
@@ -49,6 +59,17 @@ export default {
     console.log(this.$refs.cardListBody.children);
   },
   methods: {
+    restart(){
+      this.restartDisabled = true;
+      this.$refs.cardListBody.children[0].classList.remove("no-selectedcard");
+      this.$refs.cardListBody.children[1].classList.remove("no-selectedcard");
+      this.$refs.cardListBody.children[2].classList.remove("no-selectedcard");
+      this.cardIsRotate = [false,false,false];
+      setTimeout(()=>{
+        this.getCardList = ['','',''];
+        this.seled = false;
+      },800)
+    },
     tryGetCard(){
       authApi.dailycard({email: this.email}).then(res => {
           console.log(res);
@@ -78,6 +99,7 @@ export default {
               if(i!==resData.choiseIndex){
                 setTimeout(()=>{
                   this.$refs.cardListBody.children[i].classList.add("no-selectedcard");
+                  this.restartDisabled = false;
                 },950);
                 setTimeout(()=>{
                   this.$set(this.cardIsRotate, i, true);
