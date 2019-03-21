@@ -42,10 +42,33 @@
   </div>
   <div class="wm_user_info_body">
     <transition name="el-fade-in-linear">
+      <h5 class="wm_card_chiose_title" v-if="nowUserInfo.tx!==''">
+        <img class="wm_title_info_avatar_pic" :src="nowUserInfo.tx" width="45" height="45">
+        <br>
+        <span>{{nowUserInfo.nickName}}的当前信息</span>
+      </h5>
+      </transition>
+      <transition name="el-fade-in-linear">
       <div class="wm_mycard_list" v-if="userCard">
+        <table class="wm_user_info_table">
+          <thead>
+            <tr>
+              <th>等级</th>
+              <th>竞技点</th>
+              <th>收集率</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="wm_user_level">{{nowUserInfo.level}}</td>
+            <td class="wm_user_score">{{nowUserInfo.score}}</td>
+              <td class="wm_user_getcard_count">{{nowUserInfo.cardCol}}</td>
+            </tr>
+          </tbody>
+        </table>
         <sequential-entrance delay="100" tag="div">
           <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box">
-            <img class="wm_getcard_img" :src="'https://wikimoesh.cn-sh2.ufileos.com/wmcard/'+PrefixInteger_(item[0],4)+'.jpg'">
+            <img class="wm_getcard_img" :src="'https://wikimoesh.cn-sh2.ufileos.com/wmcard/'+PrefixInteger_(item[0],4)+'.jpg'" @click="openImg('https://wikimoesh.cn-sh2.ufileos.com/wmcard/'+PrefixInteger_(item[0],4)+'.jpg')">
             <br>
             <span class="wm_card_nums">×{{item[1]}}</span>
           </div>
@@ -81,7 +104,14 @@ export default {
       userCard:null,//用户当前页卡牌
       userCardCache:null,//用户卡牌
       cardPage:1,//当前卡牌页码
-      cardTotle:0//一共多少
+      cardTotle:0,//一共多少
+      nowUserInfo:{
+        tx:'',//头像地址
+        score:0,//竞技点
+        level:0,//等级
+        cardCol:0,//收集卡牌
+        nickName:''
+      }//当前用户信息
     }
   },
   components: {
@@ -91,26 +121,34 @@ export default {
     this.getRememberEmail();
   },
   methods: {
-    scrollToTop(scrollDuration,to) {
-        if(window.scrollY<=to){
-          return false;
+    openImg(imgsrc){
+      this.$alert('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
+        dangerouslyUseHTMLString: true
+      });
+    },
+    scrollToTop(number = 0, time){
+        if (!time) {
+            document.body.scrollTop = document.documentElement.scrollTop = number;
+            return number;
         }
-        var scrollStep = Math.round((window.scrollY-to) / (scrollDuration / 15)),
-            scrollInterval = setInterval(function(){
-            console.log(window.scrollY);
-            if ( window.scrollY > to ) {
-                window.scrollBy( 0, -scrollStep );
+        const spacingTime = 20; // 设置循环的间隔时间  值越小消耗性能越高
+        let spacingInex = time / spacingTime; // 计算循环的次数
+        let nowTop = document.body.scrollTop + document.documentElement.scrollTop; // 获取当前滚动条位置
+        let everTop = (number - nowTop) / spacingInex; // 计算每次滑动的距离
+        let scrollTimer = setInterval(() => {
+            if (spacingInex > 0) {
+                spacingInex--;
+                this.scrollToTop(nowTop += everTop);
+            } else {
+                clearInterval(scrollTimer); // 清除计时器
             }
-            else {
-              clearInterval(scrollInterval);
-            } 
-        },15);
+        }, spacingTime);
     },
     cardPageChange(val){
+      this.scrollToTop(420,200);
       this.userCard=null;
       setTimeout(()=>{
         this.userCard = this.userCardCache.slice((val-1)*20,val*20);
-        this.scrollToTop(200,420);
       },0);
     },
     PrefixInteger_(num,length){
@@ -125,9 +163,17 @@ export default {
             let resData = res.data;
             if(res.data.card){
               this.userCardCache = Object.entries(res.data.card);
+              this.userCardCache.reverse();
               this.cardPage = 1;
               this.cardTotle = this.userCardCache.length;
               this.userCard = this.userCardCache.slice(0,20);
+              this.nowUserInfo = {
+                tx:'https://cdn.v2ex.com/gravatar/'+resData.md5+'?s=100&d=mm&r=g&d=robohash',//头像地址
+                score:resData.score,//竞技点
+                level:resData.level,//等级
+                cardCol:this.cardTotle,//收集卡牌
+                nickName:resData.nickName
+              };//当前用户信息
               console.log(this.userCardCache);
               //this.userCard = res.data.card;
             }
@@ -159,6 +205,13 @@ export default {
       this.userCardCache = null;//用户卡牌
       this.cardPage = 1;//当前卡牌页码
       this.cardTotle = 0;//一共多少
+      this.nowUserInfo = {
+        tx:'',//头像地址
+        score:0,//竞技点
+        level:0,//等级
+        cardCol:0,//收集卡牌
+        nickName:''
+      };//当前用户信息
       setTimeout(()=>{
         this.getCardList = ['','',''];
         this.seled = false;

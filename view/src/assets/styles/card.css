@@ -149,6 +149,11 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     padding:50px 10px;
     margin: 0 auto 0 auto;
 }
+@media screen and (max-width:480px) { 
+    .el-message-box{
+        width:300px!important;
+    }
+}
 /* 卡牌 */
 .wm_card_remember_body {
     text-align: center;
@@ -229,11 +234,33 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 .wm_getcard_img {
     width: 100%;
     border-radius: 5px;
+    cursor: pointer;
 }
 .wm_card_nums {
     font-size: 21px;
     padding: 5px;
     line-height: 36px;
     color: #254d6d!important;
+}
+.wm_title_info_avatar_pic {
+    background-color: #f8f8f8;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    width: 45px!important;
+    height: 45px!important;
+}
+.wm_user_info_table {
+    width: 100%;
+    margin-bottom: 20px;
+}
+.wm_user_info_table th, .wm_user_info_table td {
+    border: 1px solid #333;
+    text-align: center;
+    font-size: 14px;
+    padding: 5px;
+    width: 33.33333%;
+}
+.watch_img img{
+    max-width: 100%;
 }
 /* 注册 */

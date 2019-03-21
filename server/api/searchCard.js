@@ -25,7 +25,7 @@ module.exports = function(req, res, next){
                     card:result.card,
                     md5:result.md5,
                     nickName:result.nickName,
-                    score:result.result,
+                    score:result.score,
                     level:result.level
                 });
             }else{
