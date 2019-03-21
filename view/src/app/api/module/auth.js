@@ -12,5 +12,8 @@ export default function (api) {
     searchcard(data){
       return api.post('searchcard',data)
     },
+    sendmail(data){
+      return api.post('sendmail',data)
+    },
   }
 }

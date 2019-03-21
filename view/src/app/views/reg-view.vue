@@ -12,8 +12,8 @@
       <el-input v-model="form.nickName" placeholder="昵称格式为2-8位中英日数字下划线"></el-input>
     </el-form-item>
     <el-form-item label="邮箱验证">
-      <el-input v-model="form.code" placeholder="邮箱验证码功能未完成，留空">
-        <el-button slot="append">发送验证码</el-button>
+      <el-input v-model="form.code" placeholder="请输入邮箱验证码">
+        <el-button slot="append" @click="openEmailDialog">发送验证码</el-button>
       </el-input>
     </el-form-item>
     <el-form-item>
@@ -21,6 +21,19 @@
       <el-button @click="backIndex">返回首页</el-button>
     </el-form-item>
   </el-form>
+  <el-dialog
+    title="请输入验证码"
+    :visible.sync="codeShow"
+    class="reg_code_dialog"
+    width="100%">
+    <el-input placeholder="请输入验证码" v-model="form.captcha">
+      <template slot="append"><img class="reg_code_img" :src="captchaSrc" @click="captchaUpdata"></template>
+    </el-input>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="codeShow = false">取消</el-button>
+      <el-button type="primary" @click="sendEmailCode" :disabled="sending">发送</el-button>
+    </span>
+  </el-dialog>
 </div>
 </template>
 
@@ -30,15 +43,58 @@ import {mailCheck,passwordCheck,nickNameCheck} from "../../utils/utils";
 export default {
   data() {
     return {
+      captchaSrc:'/api/captcha',
+      sending:false,
+      codeShow:false,
       form: {
           email: '',
           password: '',
           code: '',
-          nickName:''
+          nickName:'',
+          captcha:''
         }
     }
   },
   methods: {
+    captchaUpdata(){
+      this.captchaSrc = '/api/captcha?time='+new Date().getTime();
+    },
+    openEmailDialog(){
+      //检查格式
+      if(!mailCheck(this.form.email)){
+          this.$message.error('邮箱格式有误！');
+          return false;
+      }
+      this.captchaSrc = '/api/captcha?time='+new Date().getTime();
+      this.codeShow = true;
+    },
+    sendEmailCode(){
+      if(this.form.captcha==''){
+          this.$message.error('请输入图形验证码！');
+          return false;
+      }
+      this.sending = true;
+      let params = {
+        email: this.form.email,
+        captcha:this.form.captcha,
+        type:'reg'
+      };
+      authApi.sendmail(params).then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            this.$message({
+              message: res.data.msg,
+              type: 'success'
+            });
+            this.codeShow = false;
+          }
+          setTimeout(()=>{
+            this.sending = false;
+          },500);
+      });
+    },
     onSubmit() {
       //检查格式
       if(!mailCheck(this.form.email)){
@@ -53,7 +109,17 @@ export default {
           this.$message.error('昵称只能允许为2-8位中英日数字与下划线！');
           return false;
       }
-      authApi.reg({email: this.form.email,password:this.form.password,nickName:this.form.nickName}).then(res => {
+      if(this.form.code==''){
+          this.$message.error('请输入邮箱验证码！');
+          return false;
+      }
+      let params = {
+        email: this.form.email,
+        password:this.form.password,
+        nickName:this.form.nickName,
+        emailCode:this.form.code
+      };
+      authApi.reg(params).then(res => {
           console.log(res);
           if(res.data.code==0){
             this.$message.error(res.data.msg);

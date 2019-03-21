@@ -264,3 +264,9 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     max-width: 100%;
 }
 /* 注册 */
+.reg_code_dialog .el-dialog{
+    max-width: 400px;
+}
+.reg_code_img{
+    height: 32px;
+}

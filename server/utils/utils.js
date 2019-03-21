@@ -1,3 +1,6 @@
+var nodemailer = require('nodemailer');
+var emailCodeModel = require('../models/emailCode');
+var config = require('config-lite')(__dirname);
 //获取用户IP
 exports.getUserIp = function (req) {
     let ip =  req.headers['x-forwarded-for'] ||
@@ -67,4 +70,67 @@ exports.wmCreatCardId = function($randomCardRate){
         $randomCardID = '3'+this.PrefixInteger( $randomCardSSR_,3);
     }
     return $randomCardID;
+}
+//发送邮箱
+exports.sendMail = function(email, IP) {
+    return new Promise((resolve, reject) => {
+        var code = this.randomNum(100001, 999999);
+        var time = Math.round(new Date().getTime()/1000);
+        var mailTransport = nodemailer.createTransport({
+            host: config.smtpHost,
+            port: config.smtpPort,
+            auth: {
+                user: config.smtpAuth.user,
+                pass: config.smtpAuth.pass
+            }
+        });
+        
+        mailTransport.sendMail({
+            from: config.smtpAuth.user, //你的邮箱
+            to: email, //发给谁
+            subject: '抽卡邮箱验证码',
+            text: '您本次的邮箱验证码为：'+code+'。半小时内可重复使用！'
+        }, function (err) {
+            if (err) {
+                reject('Unable to send email: ' + err);
+            }else{
+                console.log('给邮箱：'+email+'发送了验证码！');
+                emailCodeModel.findOne({ email: email }, function(err, result) {
+                    if (err) {
+                        reject(err);
+                        throw err;
+                    }else{
+                        //判断是否有该邮箱
+                        if(result){
+                            emailCodeModel.updateOne({email: email}, {code: code,time:time,ip:IP}, function(err, docs){
+                                if(err) {
+                                    throw err;
+                                }else{
+                                    resolve('ok');
+                                }
+                            })
+                        }else{
+                            // document作成
+                            var emailCode = new emailCodeModel({
+                                email:email,
+                                code:code,
+                                time:time,
+                                ip:IP
+                            });
+        
+                            // document保存
+                            emailCode.save(function(err) {
+                                if (err) {
+                                    reject(err);
+                                    throw err;
+                                }else{
+                                    resolve('ok');
+                                };
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    })
 }

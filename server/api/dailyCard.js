@@ -57,21 +57,22 @@ module.exports = function(req, res, next){
                         }else{
                             cardDataBase[cardId] = 1;
                         }
+                        let emailmd5 = result.md5;
                         usersModel.updateOne({email: userEmail}, {card: cardDataBase,ip:IP}, function(err, docs){
                             if(err) {
                                 throw err;
                             }else{
                                 console.log('邮箱：'+userEmail+'，抽到卡牌：'+cardId);
+                                res.send({
+                                    code:1,
+                                    cardChoiseList:cardIdArr,
+                                    choiseIndex:sel,
+                                    emailmd5:emailmd5,
+                                    card:cardId,
+                                    msg:'ok'
+                                });
                             }
                         })
-                        res.send({
-                            code:1,
-                            cardChoiseList:cardIdArr,
-                            choiseIndex:sel,
-                            emailmd5:result.md5,
-                            card:cardId,
-                            msg:'ok'
-                        });
                     }else{
                         res.send({
                             code:2,
