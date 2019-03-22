@@ -2,7 +2,7 @@ var usersModel = require('../models/users');
 var md5 = require('md5-node');
 var utils = require('../utils/utils');
 module.exports = function(req, res, next){
-    console.log(req.body);
+    console.log('查询'+req.body.md5+'的卡牌。');
     let userMD5 = req.body.md5;
     if(!utils.md5Check(userMD5)){
         res.send({

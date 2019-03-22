@@ -3,7 +3,7 @@ var emailCodeModel = require('../models/emailCode');
 var md5 = require('md5-node');
 var utils = require('../utils/utils');
 module.exports = async function(req, res, next){
-    console.log(req.body);
+    console.log(req.body.email+'提交了一次注册！');
     // 数据验证
     if(req.body.email&&req.body.nickName&&req.body.password&&req.body.emailCode){//判断是否有数据
         //验证邮箱
@@ -103,6 +103,16 @@ module.exports = async function(req, res, next){
                             });
                             throw err
                         }else{
+                            let logObject = {
+                                email:email,
+                                md5:md5(email),
+                                nickName:nickName,
+                                type:'register',
+                                time:Math.round(new Date().getTime()/1000),
+                                data:{},
+                                ip:IP
+                            }
+                            utils.writeLog(logObject);
                             res.send({
                                 code:1,
                                 msg:'注册成功！'

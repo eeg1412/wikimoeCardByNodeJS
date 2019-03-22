@@ -15,5 +15,8 @@ export default function (api) {
     sendmail(data){
       return api.post('sendmail',data)
     },
+    searchlog(data){
+      return api.post('searchlog',data)
+    },
   }
 }

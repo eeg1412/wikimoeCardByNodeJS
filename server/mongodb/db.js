@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var chalk = require('chalk');
 
 mongoose.connect(config.url,{useNewUrlParser:true});
-//mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
 

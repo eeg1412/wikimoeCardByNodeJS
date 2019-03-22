@@ -1,8 +1,9 @@
 var usersModel = require('../models/users');
 var utils = require('../utils/utils');
 var md5 = require('md5-node');
+var fs = require('fs');
 module.exports = function(req, res, next){
-    console.log(req.body.email);
+    console.log(req.body.email+'开始日常抽卡。');
     if(req.body.email){
         var userEmail = req.body.email.toLowerCase();
         var sel = Math.floor(req.body.sel);
@@ -63,6 +64,24 @@ module.exports = function(req, res, next){
                                 throw err;
                             }else{
                                 console.log('邮箱：'+userEmail+'，抽到卡牌：'+cardId);
+                                let cardData = fs.readFileSync('./data/cardData.json', 'utf8');
+                                cardData = JSON.parse(cardData)['cardData'];
+                                let cardID_ = utils.PrefixInteger(cardId,4);
+                                let logObject = {
+                                    email:userEmail,
+                                    md5:md5(userEmail),
+                                    nickName:result.nickName,
+                                    type:'dailyCard',
+                                    time:Math.round(new Date().getTime()/1000),
+                                    data:{
+                                        cardId:cardID_,
+                                        title:cardData[cardID_].title,
+                                        name:cardData[cardID_].name,
+                                        star:cardData[cardID_].star
+                                    },
+                                    ip:IP
+                                }
+                                utils.writeLog(logObject);
                                 res.send({
                                     code:1,
                                     cardChoiseList:cardIdArr,

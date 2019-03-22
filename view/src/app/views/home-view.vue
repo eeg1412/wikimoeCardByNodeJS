@@ -41,15 +41,13 @@
     </div>
   </div>
   <div class="wm_user_info_body">
-    <transition name="el-fade-in-linear">
-      <h5 class="wm_card_chiose_title" v-if="nowUserInfo.tx!==''">
-        <img class="wm_title_info_avatar_pic" :src="nowUserInfo.tx" width="45" height="45">
-        <br>
-        <span>{{nowUserInfo.nickName}}的当前信息</span>
-      </h5>
-      </transition>
-      <transition name="el-fade-in-linear">
+    <el-collapse-transition>
       <div class="wm_mycard_list" v-if="userCard">
+        <h5 class="wm_card_chiose_title">
+          <img class="wm_title_info_avatar_pic" :src="nowUserInfo.tx" width="45" height="45">
+          <br>
+          <span>{{nowUserInfo.nickName}}的当前信息</span>
+        </h5>
         <table class="wm_user_info_table">
           <thead>
             <tr>
@@ -82,7 +80,46 @@
           class="my_card_page">
         </el-pagination>
       </div>
-    </transition>
+    </el-collapse-transition>
+  </div>
+  <div class="wm_card_get_list_body" v-if="logList.length>0">
+    <h5 class="wm_card_chiose_title">最新动态</h5>
+    <div class="wm_card_get_list_item_body">
+      <transition-group name="el-fade-in-linear">
+        <div class="wm_card_get_list_item" v-for="(item,index) in logList" v-bind:key="index+1">
+          <div class="wm_card_get_list_avatar" @click="watchUserCard(item.md5)">
+            <el-tooltip class="item" effect="dark" :content="'查看'+item.nickName+'的卡牌'" placement="top">
+              <img class="wm_card_get_list_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'" width="45" height="45" data-md5="5e6892e999ca8c85a358d21164167f38">
+            </el-tooltip>
+          </div>
+          <div class="wm_card_get_list_comment">
+            <p>
+              <span class="wm_log_name">{{item.nickName}}</span>
+              <span class="wm_log_time">{{item.time|capitalize}}</span>
+            </p>
+            <p>
+              <span v-if="item.type=='register'">
+                大家好，我是萌新{{item.nickName}}。初来乍到对什么都还很陌生，还恳请大家能够多多指导我怎么抽出六星卡！
+              </span>
+              <span v-if="item.type=='dailyCard'">
+                我抽中了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" :class="item.data.star>=6?'wm_six_star_card_shake':''" @click="openImg('https://wikimoesh.cn-sh2.ufileos.com/wmcard/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
+                {{item.data.star|cardStarText}}
+              </span>
+              </p>
+          </div>
+        </div>
+      </transition-group>
+      <div class="log_page">
+        <el-pagination
+          layout="prev, pager, next"
+          :total="logListTotal"
+          @current-change="logPageChange"
+          :current-page.sync="logPage"
+          :page-size="5"
+          class="my_log_page">
+        </el-pagination>
+      </div>
+    </div>
   </div>
 </div>
 </template>
@@ -95,6 +132,9 @@ import md5 from 'js-md5';
 export default {
   data() {
     return {
+      logListTotal:0,
+      logPage:1,
+      logList:[],
       remEmail:false,//是否记住邮箱
       email:'',//邮箱地址
       getCardList:['','',''],//卡牌图片地址
@@ -117,10 +157,43 @@ export default {
   components: {
     rotate3DCard
   },
+  filters: {
+    cardStarText(value){
+      if(value<=3){
+        return '虽然卡牌星级不高，但是我也很喜欢！';
+      }else if(value==4){
+        return '不好不差，证明我既不是非洲人也不是欧洲人。';
+      }else if(value==5){
+        return '运气不错，距离欧皇就差一点点。';
+      }else if(value==6){
+        return '欧气满满，欧耶~';
+      }else{
+        return '';
+      }
+    },
+    capitalize(value) {
+        var date = new Date(parseInt(value*1000));
+        var tt = [date.getFullYear(), ((date.getMonth()+1)<10?'0'+(date.getMonth()+1):date.getMonth()+1), (date.getDate()<10?'0'+date.getDate():date.getDate())].join('-') + '  ' +[(date.getHours()<10?'0'+date.getHours():date.getHours()), (date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes()), (date.getSeconds()<10?'0'+date.getSeconds():date.getSeconds())].join(':');
+        return tt;
+      }
+  },
   mounted() {
     this.getRememberEmail();
+    this.getLog(1);
   },
   methods: {
+    getLog(page){
+      authApi.searchlog({page: page}).then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            this.logList = res.data.data;
+            this.logListTotal = res.data.total;
+            this.logPage = page;
+          }
+      });
+    },
     openImg(imgsrc){
       this.$alert('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
         dangerouslyUseHTMLString: true
@@ -144,6 +217,9 @@ export default {
             }
         }, spacingTime);
     },
+    logPageChange(val){
+      this.getLog(val);
+    },
     cardPageChange(val){
       this.scrollToTop(420,200);
       this.userCard=null;
@@ -154,7 +230,13 @@ export default {
     PrefixInteger_(num,length){
       return PrefixInteger(num,length);
     },
-    getUserCard(md5){
+    watchUserCard(md5){
+      this.userCard=null;
+      setTimeout(()=>{
+        this.getUserCard(md5,true);
+      },0)
+    },
+    getUserCard(md5,goTop){
       authApi.searchcard({md5: md5}).then(res => {
           console.log(res);
           if(res.data.code==0){
@@ -167,6 +249,7 @@ export default {
               this.cardPage = 1;
               this.cardTotle = this.userCardCache.length;
               this.userCard = this.userCardCache.slice(0,20);
+              console.log(this.nowUserInfo);
               this.nowUserInfo = {
                 tx:'https://cdn.v2ex.com/gravatar/'+resData.md5+'?s=100&d=mm&r=g&d=robohash',//头像地址
                 score:resData.score,//竞技点
@@ -175,7 +258,15 @@ export default {
                 nickName:resData.nickName
               };//当前用户信息
               console.log(this.userCardCache);
+              if(goTop){
+                this.scrollToTop(420,200);
+              }
               //this.userCard = res.data.card;
+            }else{
+              this.$message({
+                message: resData.nickName+'还没有获得过卡牌呢！',
+                type: 'warning'
+              });
             }
           }
       });
@@ -240,6 +331,7 @@ export default {
             this.$set(this.getCardList, 1, '/static/img/'+PrefixInteger(resData.cardChoiseList[1],4)+'.jpg');
             this.$set(this.getCardList, 2, '/static/img/'+PrefixInteger(resData.cardChoiseList[2],4)+'.jpg');
             this.$set(this.cardIsRotate, resData.choiseIndex, true);
+            this.getLog(1);
             for(let i=0;i<3;i++){
               if(i!==resData.choiseIndex){
                 setTimeout(()=>{

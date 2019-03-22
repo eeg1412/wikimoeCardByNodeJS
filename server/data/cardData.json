@@ -1,0 +1,2222 @@
+{
+	"cardData": {
+		"0001": {
+			"star": 1,
+			"leftType": 1,
+			"rightType": 7,
+			"cry": 4,
+			"title":"摇曳百合",
+			"name":"赤座灯里"
+		},
+		"0002": {
+			"star": 1,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 5,
+			"title":"原书·原书使",
+			"name":"键村叶月（崩）"
+		},
+		"0003": {
+			"star": 1,
+			"leftType": 1,
+			"rightType": 5,
+			"cry": 5,
+			"title":"迷家",
+			"name":"真咲"
+		},
+		"0004": {
+			"star": 2,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"吊带袜天使",
+			"name":"史朵巾&潘迪"
+		},
+		"0005": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 5,
+			"title":"学园孤岛",
+			"name":"太郎丸&佐仓慈"
+		},
+		"0006": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 4,
+			"cry": 3,
+			"title":"白明与御子地",
+			"name":"白明&御子地"
+		},
+		"0007": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 4,
+			"cry": 2,
+			"title":"天体的秩序",
+			"name":"诺艾尔"
+		},
+		"0008": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"一周的朋友",
+			"name":"藤宫香织"
+		},
+		"0009": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"MAGI",
+			"name":"摩尔加纳"
+		},
+		"0010": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 1,
+			"title":"境界的彼方",
+			"name":"栗山未来"
+		},
+		"0011": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 3,
+			"cry": 2,
+			"title":"舰娘",
+			"name":"金刚"
+		},
+		"0012": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 4,
+			"cry": 3,
+			"title":"Urara迷路帖",
+			"name":"千矢"
+		},
+		"0013": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 5,
+			"title":"咕噜咕噜魔法阵",
+			"name":"柯柯丽"
+		},
+		"0014": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 5,
+			"title":"调教咖啡厅",
+			"name":"樱之宫莓香"
+		},
+		"0015": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 4,
+			"cry": 3,
+			"title":"月色真美",
+			"name":"水野茜"
+		},
+		"0016": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"此花绮谭",
+			"name":"柚"
+		},
+		"0017": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"向山进发",
+			"name":"雪村葵"
+		},
+		"0018": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"雏子的笔记",
+			"name":"柊真雪&樱木雏子"
+		},
+		"0019": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 3,
+			"title":"Rewrite",
+			"name":"神户小鸟"
+		},
+		"0020": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 2,
+			"title":"春与夏推理事件簿",
+			"name":"穗村千夏"
+		},
+		"0021": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 4,
+			"title":"A.I.Channel",
+			"name":"绊爱"
+		},
+		"0022": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"刀剑神域 -序列之争-",
+			"name":"YUNA"
+		},
+		"0023": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 2,
+			"cry": 2,
+			"title":"魔法飞球",
+			"name":"艾琳"
+		},
+		"0024": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 4,
+			"title":"轻音少女",
+			"name":"琴吹䌷"
+		},
+		"0025": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 5,
+			"cry": 3,
+			"title":"擅长捉弄人的高木同学",
+			"name":"高木"
+		},
+		"0026": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 7,
+			"cry": 5,
+			"title":"无彩限的怪灵世界",
+			"name":"和泉玲奈"
+		},
+		"0027": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 5,
+			"title":"Code Geass 反叛的鲁路修",
+			"name":"娜娜莉·V·布里塔尼亚"
+		},
+		"0028": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 3,
+			"title":"碧之轨迹",
+			"name":"诺艾尔·希卡"
+		},
+		"0029": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 2,
+			"title":"调教咖啡厅",
+			"name":"日向夏帆"
+		},
+		"0030": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"调教咖啡厅",
+			"name":"星川麻冬"
+		},
+		"0031": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 5,
+			"cry": 4,
+			"title":"秋之回忆6～T-wave～",
+			"name":"远峰莉莉丝&箱崎智纱"
+		},
+		"0032": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 5,
+			"cry": 3,
+			"title":"Working!!迷糊餐厅",
+			"name":"山田葵"
+		},
+		"0033": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 3,
+			"title":"Comic Girls",
+			"name":"胜木翼"
+		},
+		"0034": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 7,
+			"cry": 4,
+			"title":"爱吃拉面的小泉同学",
+			"name":"小泉"
+		},
+		"0035": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 5,
+			"cry": 3,
+			"title":"笨女孩",
+			"name":"花畑佳子"
+		},
+		"0036": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 7,
+			"cry": 5,
+			"title":"死神的歌谣",
+			"name":"百百"
+		},
+		"0037": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"神隐之狼",
+			"name":"栉名田眠"
+		},
+		"0038": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 5,
+			"cry": 2,
+			"title":"侵略！乌贼娘",
+			"name":"乌贼娘"
+		},
+		"0039": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 2,
+			"cry": 5,
+			"title":"萌单",
+			"name":"黑威澄"
+		},
+		"0040": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 4,
+			"title":"萌单",
+			"name":"虹原茵可"
+		},
+		"0041": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 4,
+			"cry": 4,
+			"title":"茂伸奇谈",
+			"name":"有岛爱丽丝"
+		},
+		"0042": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 5,
+			"cry": 2,
+			"title":"东方Project",
+			"name":"琪露诺"
+		},
+		"0043": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 4,
+			"title":"Kanon",
+			"name":"仓田佐佑理"
+		},
+		"0044": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 2,
+			"title":"Kanon",
+			"name":"美坂栞"
+		},
+		"0045": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 2,
+			"cry": 2,
+			"title":"零之使魔",
+			"name":"安丽埃塔"
+		},
+		"0046": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 4,
+			"title":"CLANNAD",
+			"name":"伊吹风子"
+		},
+		"0047": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 1,
+			"cry": 3,
+			"title":"童话枪手小红帽",
+			"name":"睡美人"
+		},
+		"0048": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 2,
+			"title":"童话枪手小红帽",
+			"name":"白雪公主"
+		},
+		"0049": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 1,
+			"cry": 1,
+			"title":"祝福的钟声",
+			"name":"阿妮艾斯"
+		},
+		"0050": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 3,
+			"title":"悠久之翼",
+			"name":"羽山瑞希"
+		},
+		"0051": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"空·之·音",
+			"name":"空深彼方"
+		},
+		"0052": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 5,
+			"cry": 5,
+			"title":"魔法的禁书目录",
+			"name":"白井黑子"
+		},
+		"0053": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 5,
+			"title":"人类衰退之后",
+			"name":"人类小姐"
+		},
+		"0054": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 6,
+			"cry": 3,
+			"title":"少女与战车",
+			"name":"安斋千代美"
+		},
+		"0055": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"黑白小姐",
+			"name":"黑白小姐"
+		},
+		"0056": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 5,
+			"title":"樱子小姐的脚下埋着秘密",
+			"name":"九条樱子"
+		},
+		"0057": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 1,
+			"cry": 2,
+			"title":"ANNE HAPPY",
+			"name":"江古田莲"
+		},
+		"0058": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"绯弹的亚里亚",
+			"name":"岛麒麟"
+		},
+		"0059": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"吹响吧！上低音号",
+			"name":"小笠原晴香"
+		},
+		"0060": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"吹响吧！上低音号",
+			"name":"川岛绿辉"
+		},
+		"0061": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 2,
+			"title":"花开伊吕波",
+			"name":"鹤来民子"
+		},
+		"0062": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"学生会的一己之见",
+			"name":"樱野栗梦"
+		},
+		"0063": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 5,
+			"title":"少女编号",
+			"name":"久我山八重"
+		},
+		"0064": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 1,
+			"title":"吹响吧！上低音号",
+			"name":"中川夏纪"
+		},
+		"0065": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 3,
+			"cry": 3,
+			"title":"天才麻将少女",
+			"name":"池田华菜"
+		},
+		"0066": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 5,
+			"title":"偶像大师 灰姑娘女孩",
+			"name":"双叶杏"
+		},
+		"0067": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"FGO幼儿园",
+			"name":"冲田总司"
+		},
+		"0068": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 5,
+			"title":"原书·原书使",
+			"name":"键村叶月"
+		},
+		"0069": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 3,
+			"title":"向山进发",
+			"name":"黑崎穗香"
+		},
+		"0070": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 6,
+			"cry": 3,
+			"title":"零之使魔",
+			"name":"依露库库"
+		},
+		"0071": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 3,
+			"cry": 4,
+			"title":"天才麻将少女",
+			"name":"爱丝琳·威夏尔特"
+		},
+		"0072": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"那就是声优！",
+			"name":"一之濑双叶&小花铃&萌咲莓"
+		},
+		"0073": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 3,
+			"title":"神圣十月",
+			"name":"叶山小十乃&白藤莱月"
+		},
+		"0074": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 2,
+			"title":"死后文",
+			"name":"文伽"
+		},
+		"0075": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 6,
+			"cry": 4,
+			"title":"魔法飞球",
+			"name":"小爱"
+		},
+		"0076": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"咕噜小天使",
+			"name":"帕琳"
+		},
+		"0077": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"魔法飞球",
+			"name":"斯皮卡"
+		},
+		"0078": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"少女与战车",
+			"name":"武部沙织"
+		},
+		"0079": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"少女与战车",
+			"name":"五十铃华"
+		},
+		"0080": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 7,
+			"cry": 4,
+			"title":"少女与战车",
+			"name":"秋山优花里"
+		},
+		"0081": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 6,
+			"cry": 2,
+			"title":"少女与战车",
+			"name":"冷泉麻子"
+		},
+		"0082": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 4,
+			"title":"魔法飞球",
+			"name":"露西亚"
+		},
+		"0083": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 1,
+			"cry": 3,
+			"title":"超次元大战海王星VS世嘉少女梦之合体特别版",
+			"name":"艾伊爱弗"
+		},
+		"0084": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"超次元游戏：海王星",
+			"name":"尤妮"
+		},
+		"0085": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 2,
+			"cry": 5,
+			"title":"变态王子与不笑猫",
+			"name":"艾玛努爱拉·珀尔拉萝拉"
+		},
+		"0086": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 2,
+			"title":"变态王子与不笑猫",
+			"name":"舞牧麻衣"
+		},
+		"0087": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"四女神Online CYBER DIMENSION NEPTUNE",
+			"name":"布凯"
+		},
+		"0088": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 1,
+			"cry": 4,
+			"title":"四女神Online CYBER DIMENSION NEPTUNE",
+			"name":"黑猫公主"
+		},
+		"0089": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 3,
+			"title":"四女神Online CYBER DIMENSION NEPTUNE",
+			"name":"桐雅"
+		},
+		"0090": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"天使的3P!",
+			"name":"贯井胡桃"
+		},
+		"0091": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"天使的3P!",
+			"name":"尾城小梅&相江柚叶"
+		},
+		"0092": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"闪之轨迹",
+			"name":"艾奈丝"
+		},
+		"0093": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 2,
+			"title":"闪之轨迹",
+			"name":"安妮雅"
+		},
+		"0094": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 4,
+			"title":"来自多彩世界的明天",
+			"name":"风野浅葱"
+		},
+		"0095": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 4,
+			"title":"终将成为你",
+			"name":"七海灯子&小糸侑"
+		},
+		"0096": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 5,
+			"title":"原书·原书使",
+			"name":"土御门静"
+		},
+		"0097": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 2,
+			"title":"刀剑神域：虚空具现",
+			"name":"普蕾米亚"
+		},
+		"1001": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"星之梦",
+			"name":"星野梦美"
+		},
+		"1002": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"甲铁城的卡巴内瑞",
+			"name":"无名"
+		},
+		"1003": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 2,
+			"title":"Re:从零开始的异世界生活",
+			"name":"艾米利亚"
+		},
+		"1004": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 2,
+			"title":"VOCALOID",
+			"name":"初音未来"
+		},
+		"1005": {
+			"star": 4,
+			"leftType": 4,
+			"rightType": 4,
+			"cry": 2,
+			"title":"悠哉日常大王",
+			"name":"宫内莲华"
+		},
+		"1006": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 2,
+			"title":"吹响吧！上低音号",
+			"name":"高板丽奈"
+		},
+		"1007": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"DOG DAYS",
+			"name":"米尔希欧蕾·菲里安诺·比斯科迪"
+		},
+		"1008": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 1,
+			"cry": 3,
+			"title":"少女与战车",
+			"name":"岛田爱里寿"
+		},
+		"1009": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 1,
+			"title":"蔷薇少女",
+			"name":"真红"
+		},
+		"1010": {
+			"star": 4,
+			"leftType": 4,
+			"rightType": 2,
+			"cry": 4,
+			"title":"中二病也要谈恋爱",
+			"name":"小鸟游六花"
+		},
+		"1011": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 3,
+			"title":"苍之彼方的四重奏",
+			"name":"鸢泽美咲&仓科明日香"
+		},
+		"1012": {
+			"star": 4,
+			"leftType": 4,
+			"rightType": 2,
+			"cry": 4,
+			"title":"苍之彼方的四重奏",
+			"name":"市之濑莉佳&有坂真白"
+		},
+		"1013": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"工作细胞",
+			"name":"血小板"
+		},
+		"1014": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 2,
+			"cry": 3,
+			"title":"Code Geass 反叛的鲁路修",
+			"name":"C.C."
+		},
+		"1015": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 5,
+			"title":"Comic Girls",
+			"name":"色川琉姬"
+		},
+		"1016": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"Comic Girls",
+			"name":"恋冢小梦"
+		},
+		"1017": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"刀剑神域外传 Gun Gale Online",
+			"name":"莲"
+		},
+		"1018": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"弹丸论破",
+			"name":"腐川冬子"
+		},
+		"1019": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 3,
+			"title":"狼与香辛料",
+			"name":"赫萝"
+		},
+		"1020": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 1,
+			"cry": 4,
+			"title":"Angel Beats!",
+			"name":"立华奏"
+		},
+		"1021": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 5,
+			"title":"水仙",
+			"name":"佐仓濑津美"
+		},
+		"1022": {
+			"star": 4,
+			"leftType": 4,
+			"rightType": 5,
+			"cry": 3,
+			"title":"文学少女",
+			"name":"朝仓美羽"
+		},
+		"1023": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 4,
+			"title":"茂伸奇谈",
+			"name":"泽井夏叶"
+		},
+		"1024": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 1,
+			"title":"茂伸奇谈",
+			"name":"栖美"
+		},
+		"1025": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 2,
+			"title":"sola",
+			"name":"森宫苍乃"
+		},
+		"1026": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 5,
+			"title":"sola",
+			"name":"四方茉莉"
+		},
+		"1027": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 4,
+			"title":"七色星露",
+			"name":"秋姬素桃"
+		},
+		"1028": {
+			"star": 4,
+			"leftType": 4,
+			"rightType": 1,
+			"cry": 1,
+			"title":"童话枪手小红帽",
+			"name":"小红帽"
+		},
+		"1029": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 5,
+			"cry": 5,
+			"title":"只有神知道的世界",
+			"name":"艾利由西亚·D·露德·伊玛"
+		},
+		"1030": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"祝福的钟声",
+			"name":"米内特"
+		},
+		"1031": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"异国迷宫的十字路口",
+			"name":"汤音"
+		},
+		"1032": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"我们仍未知道那天所看见的花的名字",
+			"name":"本间芽衣子"
+		},
+		"1033": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 3,
+			"cry": 2,
+			"title":"神的记事本",
+			"name":"紫苑寺有子"
+		},
+		"1034": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 2,
+			"title":"纯白交响曲",
+			"name":"瓜生樱乃"
+		},
+		"1035": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 2,
+			"title":"ANNE HAPPY",
+			"name":"云雀丘琉璃"
+		},
+		"1036": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"吹响吧！上低音号",
+			"name":"黄前久美子"
+		},
+		"1037": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 5,
+			"title":"吹响吧！上低音号",
+			"name":"田中明日香"
+		},
+		"1038": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"绯弹的亚里亚",
+			"name":"神崎·H·亚里亚"
+		},
+		"1039": {
+			"star": 4,
+			"leftType": 4,
+			"rightType": 5,
+			"cry": 3,
+			"title":"请问您今天要来点兔子吗？",
+			"name":"青山蓝山"
+		},
+		"1040": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"少女编号",
+			"name":"苑生百花"
+		},
+		"1041": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 5,
+			"title":"闪之轨迹",
+			"name":"薇塔·克洛缇德"
+		},
+		"1042": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 3,
+			"cry": 4,
+			"title":"闪之轨迹",
+			"name":"艾尔芬·莱泽·亚诺尔"
+		},
+		"1043": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"来自风平浪静的明天",
+			"name":"向井户爱花&比良平千咲"
+		},
+		"1044": {
+			"star": 4,
+			"leftType": 4,
+			"rightType": 3,
+			"cry": 3,
+			"title":"天才麻将少女",
+			"name":"竹井久"
+		},
+		"1045": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 1,
+			"title":"光明之心～幸福的面包～",
+			"name":"妮莉丝"
+		},
+		"1046": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 2,
+			"title":"光明之心～幸福的面包～",
+			"name":"梅露蒂"
+		},
+		"1047": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 4,
+			"title":"双星物语",
+			"name":"皮皮洛"
+		},
+		"1048": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"魔法飞球",
+			"name":"酷儿"
+		},
+		"1049": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 5,
+			"title":"魔法飞球",
+			"name":"奈尔"
+		},
+		"1050": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 3,
+			"cry": 2,
+			"title":"NEW GAME!!",
+			"name":"望月红叶"
+		},
+		"1051": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 5,
+			"title":"Re:从零开始的异世界生活",
+			"name":"碧翠丝"
+		},
+		"1052": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 2,
+			"title":"闪之轨迹",
+			"name":"劳拉·S·亚尔赛德"
+		},
+		"1053": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 3,
+			"cry": 3,
+			"title":"守望先锋",
+			"name":"宋哈娜"
+		},
+		"1054": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"守望先锋",
+			"name":"安吉拉·齐格勒"
+		},
+		"1055": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"紫罗兰永恒花园",
+			"name":"薇尔莉特·伊芙加登"
+		},
+		"1056": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 3,
+			"title":"NEW GAME!",
+			"name":"篠田初"
+		},
+		"1057": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"神次元游戏：海王星V",
+			"name":"普兰"
+		},
+		"1058": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 5,
+			"title":"神次元游戏：海王星V",
+			"name":"普露露特"
+		},
+		"1059": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 3,
+			"title":"神次元游戏：海王星V",
+			"name":"贝露"
+		},
+		"1060": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"A Channel",
+			"name":"一井透&百木伦"
+		},
+		"1061": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 2,
+			"title":"梅露可物语",
+			"name":"梅露可"
+		},
+		"1062": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"四女神Online CYBER DIMENSION NEPTUNE",
+			"name":"康帕"
+		},
+		"1063": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"超次元游戏：海王星",
+			"name":"伊斯特瓦尔"
+		},
+		"1064": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 2,
+			"title":"闪之轨迹",
+			"name":"缪洁·伊格雷特"
+		},
+		"1065": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 1,
+			"cry": 4,
+			"title":"闪之轨迹",
+			"name":"尤娜·克罗弗德"
+		},
+		"1066": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 4,
+			"title":"变态王子与不笑猫",
+			"name":"小豆梓"
+		},
+		"1067": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"变态王子与不笑猫",
+			"name":"筒隐月子"
+		},
+		"1068": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"天使的3P!",
+			"name":"五岛润"
+		},
+		"1069": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"天使的3P!",
+			"name":"红叶谷希美"
+		},
+		"1070": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"天使的3P!",
+			"name":"金城空"
+		},
+		"1071": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 2,
+			"title":"你的名字。",
+			"name":"宫水三叶"
+		},
+		"1072": {
+			"star": 4,
+			"leftType": 4,
+			"rightType": 6,
+			"cry": 2,
+			"title":"萝球社！",
+			"name":"永冢纱季"
+		},
+		"1073": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 1,
+			"title":"萝球社！",
+			"name":"香椎爱莉"
+		},
+		"1074": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"萝球社！",
+			"name":"三泽真帆"
+		},
+		"1075": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 3,
+			"cry": 2,
+			"title":"SSSS.Gridman",
+			"name":"宝多六花"
+		},
+		"1076": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"SSSS.Gridman",
+			"name":"新条茜"
+		},
+		"1077": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 4,
+			"title":"魔法禁书目录",
+			"name":"茵蒂克丝"
+		},
+		"1078": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"少女与战车",
+			"name":"西住美穗"
+		},
+		"1079": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"摇曳露营△",
+			"name":"犬山葵"
+		},
+		"1080": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 3,
+			"cry": 3,
+			"title":"摇曳露营△",
+			"name":"大垣千明"
+		},
+		"1081": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 2,
+			"title":"摇曳露营△",
+			"name":"齐藤惠那&竹轮"
+		},
+		"2001": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 4,
+			"title":"埃罗芒阿老师",
+			"name":"和泉纱雾"
+		},
+		"2002": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 3,
+			"cry": 4,
+			"title":"游戏人生",
+			"name":"休比"
+		},
+		"2003": {
+			"star": 5,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"请问您今天要来点兔子吗？",
+			"name":"桐间纱路"
+		},
+		"2004": {
+			"star": 5,
+			"leftType": 4,
+			"rightType": 1,
+			"cry": 3,
+			"title":"少女终末旅行",
+			"name":"尤利&千户"
+		},
+		"2005": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 1,
+			"title":"灼眼的夏娜",
+			"name":"夏娜"
+		},
+		"2006": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 3,
+			"title":"埃罗芒阿老师",
+			"name":"艾蜜莉·格兰杰"
+		},
+		"2007": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"小林家的龙女仆",
+			"name":"康纳"
+		},
+		"2008": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"潜行吧！奈亚子",
+			"name":"奈亚子"
+		},
+		"2009": {
+			"star": 5,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 3,
+			"title":"New Game!",
+			"name":"凉风青叶"
+		},
+		"2010": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 5,
+			"title":"少女编号",
+			"name":"乌丸千岁"
+		},
+		"2011": {
+			"star": 5,
+			"leftType": 1,
+			"rightType": 5,
+			"cry": 4,
+			"title":"摇曳露营△",
+			"name":"各务原抚子"
+		},
+		"2012": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 7,
+			"cry": 5,
+			"title":"摇曳露营△",
+			"name":"志摩凛"
+		},
+		"2013": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 3,
+			"cry": 4,
+			"title":"Comic Girls",
+			"name":"萌田薰子"
+		},
+		"2014": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 5,
+			"title":"Slow Start",
+			"name":"千石冠"
+		},
+		"2015": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"龙王的工作！",
+			"name":"夏绿蒂·伊索亚尔&雏鹤爱"
+		},
+		"2016": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 3,
+			"cry": 2,
+			"title":"文学少女",
+			"name":"琴吹七濑"
+		},
+		"2017": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 3,
+			"cry": 4,
+			"title":"我女友与青梅竹马的惨烈修罗场",
+			"name":"春咲千和"
+		},
+		"2018": {
+			"star": 5,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 4,
+			"title":"Working!!迷糊餐厅",
+			"name":"种岛白杨"
+		},
+		"2019": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"科学超电磁炮",
+			"name":"御坂美琴"
+		},
+		"2020": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"只有神知道的世界",
+			"name":"汐宫栞"
+		},
+		"2021": {
+			"star": 5,
+			"leftType": 4,
+			"rightType": 2,
+			"cry": 5,
+			"title":"东方Project",
+			"name":"西行寺幽幽子"
+		},
+		"2022": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 1,
+			"cry": 1,
+			"title":"旋风管家",
+			"name":"桂雏菊"
+		},
+		"2023": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 3,
+			"cry": 5,
+			"title":"GOSICK",
+			"name":"维多利加·德·布洛瓦"
+		},
+		"2024": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 3,
+			"cry": 4,
+			"title":"罗罗娜的工作室～阿兰德的炼金术士～",
+			"name":"库迪利亚·冯·费尔巴哈"
+		},
+		"2025": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"梅露露的工作室～阿兰德的炼金术士3～",
+			"name":"咪咪·霍利尔·冯·修沃兹兰格"
+		},
+		"2026": {
+			"star": 5,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 2,
+			"title":"梅露露的工作室～阿兰德的炼金术士3～",
+			"name":"凯娜·斯维娅"
+		},
+		"2027": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 1,
+			"cry": 3,
+			"title":"蔷薇少女",
+			"name":"翠星石"
+		},
+		"2028": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"请问您今天要来点兔子吗？",
+			"name":"条河麻耶"
+		},
+		"2029": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"请问您今天要来点兔子吗？",
+			"name":"奈津惠"
+		},
+		"2030": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"请问您今天要来点兔子吗？",
+			"name":"保登摩卡&保登心爱"
+		},
+		"2031": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"Fate/stay night",
+			"name":"阿尔托莉雅·潘德拉贡"
+		},
+		"2032": {
+			"star": 5,
+			"leftType": 1,
+			"rightType": 7,
+			"cry": 4,
+			"title":"碧之轨迹",
+			"name":"阿瑞安赫德"
+		},
+		"2033": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"空之轨迹",
+			"name":"玲·海瓦斯"
+		},
+		"2034": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"零之轨迹",
+			"name":"琪雅"
+		},
+		"2035": {
+			"star": 5,
+			"leftType": 4,
+			"rightType": 1,
+			"cry": 5,
+			"title":"闪之轨迹",
+			"name":"菲·克劳塞尔"
+		},
+		"2036": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 5,
+			"title":"回转企鹅罐",
+			"name":"高仓阳毬"
+		},
+		"2037": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"出包王女",
+			"name":"金色暗影"
+		},
+		"2038": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 6,
+			"cry": 4,
+			"title":"魔法少女☆亚丽莎",
+			"name":"亚丽莎"
+		},
+		"2039": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 2,
+			"title":"伊苏Ⅷ：达娜的安魂曲",
+			"name":"达娜"
+		},
+		"2040": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 4,
+			"title":"NEW GAME!",
+			"name":"樱宁宁"
+		},
+		"2041": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 6,
+			"cry": 2,
+			"title":"索菲的工作室～不可思议之书的炼金术士～",
+			"name":"普拉芙妲"
+		},
+		"2042": {
+			"star": 5,
+			"leftType": 1,
+			"rightType": 7,
+			"cry": 4,
+			"title":"索菲的工作室～不可思议之书的炼金术士～",
+			"name":"索菲·诺伊恩缪拉"
+		},
+		"2043": {
+			"star": 5,
+			"leftType": 4,
+			"rightType": 2,
+			"cry": 3,
+			"title":"Re:从零开始的异世界生活",
+			"name":"拉姆"
+		},
+		"2044": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"妖精剑士F",
+			"name":"缇亚拉&艾琳"
+		},
+		"2045": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"VOCALOID",
+			"name":"洛天依"
+		},
+		"2046": {
+			"star": 5,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 5,
+			"title":"东方Project",
+			"name":"帕秋莉·诺蕾姬"
+		},
+		"2047": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"东方Project",
+			"name":"十六夜咲夜"
+		},
+		"2048": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 2,
+			"title":"超次元游戏：海王星",
+			"name":"罗姆&拉姆"
+		},
+		"2049": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 4,
+			"title":"闪之轨迹",
+			"name":"提妲·拉塞尔"
+		},
+		"2050": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"闪之轨迹",
+			"name":"亚尔缇娜·奥莱恩"
+		},
+		"2051": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 4,
+			"title":"我的妹妹哪有这么可爱！",
+			"name":"高坂桐乃"
+		},
+		"2052": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 4,
+			"title":"我的妹妹哪有这么可爱！",
+			"name":"新垣绫濑"
+		},
+		"2053": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"东方Project",
+			"name":"魂魄妖梦"
+		},
+		"2054": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"缘之空",
+			"name":"春日野穹"
+		},
+		"2055": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"黄金拼图",
+			"name":"田中真奈美"
+		},
+		"2056": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"萝球社！",
+			"name":"袴田日向"
+		},
+		"2057": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"萝球社！",
+			"name":"凑智花"
+		},
+		"2058": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 1,
+			"title":"Fate/stay night",
+			"name":"远坂凛"
+		},
+		"2059": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 5,
+			"title":"邻家索菲",
+			"name":"索菲·特瓦伊莱特"
+		},
+		"2060": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 5,
+			"title":"总之就是非常可爱",
+			"name":"由崎司"
+		},
+		"2061": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 5,
+			"title":"五等分的新娘",
+			"name":"中野一花"
+		},
+		"2062": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 1,
+			"title":"五等分的新娘",
+			"name":"中野二乃"
+		},
+		"2063": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 2,
+			"title":"五等分的新娘",
+			"name":"中野三玖"
+		},
+		"2064": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 3,
+			"title":"五等分的新娘",
+			"name":"中野四叶"
+		},
+		"2065": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 4,
+			"title":"五等分的新娘",
+			"name":"中野五月"
+		},
+		"3001": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 2,
+			"title":"Re:从零开始的异世界生活",
+			"name":"雷姆"
+		},
+		"3002": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 7,
+			"cry": 5,
+			"title":"超次元游戏：海王星",
+			"name":"诺瓦露"
+		},
+		"3003": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 5,
+			"title":"东方Project",
+			"name":"蕾米莉亚"
+		},
+		"3004": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 1,
+			"title":"东方Project",
+			"name":"芙兰朵露"
+		},
+		"3005": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 4,
+			"cry": 2,
+			"title":"ARIA",
+			"name":"水无灯里"
+		},
+		"3006": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 4,
+			"title":"New Game!",
+			"name":"泷本日富美"
+		},
+		"3007": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 1,
+			"cry": 4,
+			"title":"龙王的工作",
+			"name":"空银子"
+		},
+		"3008": {
+			"star": 6,
+			"leftType": 4,
+			"rightType": 6,
+			"cry": 3,
+			"title":"文学少女",
+			"name":"天野远子"
+		},
+		"3009": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 5,
+			"title":"物语系列",
+			"name":"忍野忍"
+		},
+		"3010": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"请问您今天要来点兔子吗？",
+			"name":"香风智乃"
+		},
+		"3011": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"想要传达你的爱恋",
+			"name":"姬野星奏"
+		},
+		"3012": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"砂糖的幸福生活",
+			"name":"神户盐&松坂砂糖"
+		},
+		"3013": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 2,
+			"title":"末日时在做什么？有没有空？可以来拯救吗？",
+			"name":"珂朵莉·诺塔·瑟尼欧里斯"
+		},
+		"3014": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 7,
+			"cry": 5,
+			"title":"魔卡少女樱",
+			"name":"木之本樱"
+		},
+		"3015": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 2,
+			"title":"电波女与青春男",
+			"name":"藤和艾莉欧"
+		},
+		"3016": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 7,
+			"cry": 4,
+			"title":"罗罗娜的工作室～阿兰德的炼金术士～",
+			"name":"罗洛莱娜·弗莉克希尔"
+		},
+		"3017": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 7,
+			"cry": 4,
+			"title":"托托莉的工作室～阿兰德的炼金术士2～",
+			"name":"托特莉亚·赫尔莫德"
+		},
+		"3018": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 7,
+			"cry": 4,
+			"title":"梅露露的工作室～阿兰德的炼金术士3～",
+			"name":"梅露露琳丝·蕾蒂·阿鲁兹"
+		},
+		"3019": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 4,
+			"title":"零之使魔",
+			"name":"露易丝·法兰西斯·露·布朗·杜·拉·瓦利埃尔"
+		},
+		"3020": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"四月是你的谎言",
+			"name":"宫园薰"
+		},
+		"3021": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"CLANNAD",
+			"name":"冈崎汐"
+		},
+		"3022": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 7,
+			"cry": 1,
+			"title":"东方Project",
+			"name":"博丽灵梦"
+		},
+		"3023": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 1,
+			"title":"魔法少女小圆",
+			"name":"鹿目圆"
+		},
+		"3024": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 1,
+			"title":"地狱少女",
+			"name":"阎魔爱"
+		},
+		"3025": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"秋之回忆 -无垢少女-",
+			"name":"嘉神川诺艾尔"
+		},
+		"3026": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"新次元游戏海王星VII",
+			"name":"涅普迪努"
+		},
+		"3027": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"超次元游戏：海王星",
+			"name":"涅普基雅"
+		},
+		"3028": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 2,
+			"cry": 5,
+			"title":"我的妹妹哪有这么可爱！",
+			"name":"五更琉璃"
+		},
+		"3029": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"NEKOPARA",
+			"name":"巧克力&香草"
+		},
+		"3030": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 4,
+			"title":"东方Project",
+			"name":"雾雨魔理沙"
+		},
+		"3031": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 7,
+			"cry": 5,
+			"title":"Fate/kaleid liner 魔法少女☆伊莉雅",
+			"name":"伊莉雅丝菲尔·冯·爱因兹贝伦"
+		},
+		"3032": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"Little Busters!",
+			"name":"朱鹭户沙耶"
+		},
+		"3033": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"白色相簿2",
+			"name":"小木曾雪菜"
+		},
+		"3034": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 5,
+			"title":"白色相簿2",
+			"name":"冬马和纱"
+		}
+		
+	},
+	"level":[40,82,130,180,276,860]
+}

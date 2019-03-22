@@ -1,6 +1,25 @@
 var nodemailer = require('nodemailer');
 var emailCodeModel = require('../models/emailCode');
 var config = require('config-lite')(__dirname);
+var logModel = require('../models/log');
+//写入日志
+exports.writeLog = function (logObject) {
+    // document作成
+    var log = new logModel(logObject);
+
+    // document保存
+    log.save(function(err) {
+        if (err) {
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            throw err
+        }else{
+            console.log('邮箱：'+logObject.email+'，日志写入成功。');
+        };
+    });
+}
 //获取用户IP
 exports.getUserIp = function (req) {
     let ip =  req.headers['x-forwarded-for'] ||
