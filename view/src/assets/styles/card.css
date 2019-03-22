@@ -368,6 +368,9 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 	background: #f8f8f8;
 	cursor:pointer;
 }
+.wm_card_get_list_body{
+    margin-top: 20px;
+}
 .wm_card_get_list_body a.wm_card_get_list_card_link,.wm_card_get_list_body a.wm_getlist_link,.wm_card_get_list_body a.goto_wm_chiose_card{
 	color: #ff5364;
 	padding: 0 3px;

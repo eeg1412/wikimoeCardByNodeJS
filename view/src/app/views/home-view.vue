@@ -72,6 +72,7 @@
           </div>
         </sequential-entrance>
         <el-pagination
+          small
           layout="prev, pager, next"
           :total="cardTotle"
           @current-change="cardPageChange"
@@ -88,7 +89,7 @@
       <transition-group name="el-fade-in-linear">
         <div class="wm_card_get_list_item" v-for="(item,index) in logList" v-bind:key="index+1">
           <div class="wm_card_get_list_avatar" @click="watchUserCard(item.md5)">
-            <el-tooltip class="item" effect="dark" :content="'查看'+item.nickName+'的卡牌'" placement="top">
+            <el-tooltip class="item" effect="dark" :content="'查看'+item.nickName+'的卡牌'" placement="top" :hide-after="3000">
               <img class="wm_card_get_list_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'" width="45" height="45" data-md5="5e6892e999ca8c85a358d21164167f38">
             </el-tooltip>
           </div>
@@ -111,6 +112,7 @@
       </transition-group>
       <div class="log_page">
         <el-pagination
+          small
           layout="prev, pager, next"
           :total="logListTotal"
           @current-change="logPageChange"
