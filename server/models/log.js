@@ -10,6 +10,6 @@ var log = new Schema({
   time:{type: Number, default: 0},
   data:{},
   ip:String
-});
+},{ capped: { size: 5242880	, max: 100 } });
 
 module.exports = mongoose.model('log', log);
