@@ -1,5 +1,8 @@
 /* 公共 */
 @charset "utf-8";
+#app{
+    overflow-x: hidden;
+}
 /*CSS reset*/
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {margin:0;padding:0;} 
 table {border-collapse:collapse;border-spacing:0;}
@@ -146,7 +149,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 }
 .common_body{
     max-width: 980px;
-    padding:50px 10px;
+    padding:80px 10px;
     margin: 0 auto 0 auto;
 }
 @media screen and (max-width:480px) { 

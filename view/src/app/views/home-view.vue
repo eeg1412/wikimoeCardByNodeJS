@@ -234,11 +234,11 @@ export default {
       this.getLog(val);
     },
     cardPageChange(val){
-      this.scrollToTop(420,200);
       this.userCard=null;
       setTimeout(()=>{
+        this.scrollToTop(450,200);
         this.userCard = this.userCardCache.slice((val-1)*20,val*20);
-      },0);
+      },300);
     },
     PrefixInteger_(num,length){
       return PrefixInteger(num,length);
@@ -273,7 +273,7 @@ export default {
               };//当前用户信息
               console.log(this.userCardCache);
               if(goTop){
-                this.scrollToTop(420,200);
+                this.scrollToTop(450,200);
               }
               //this.userCard = res.data.card;
             }else{
