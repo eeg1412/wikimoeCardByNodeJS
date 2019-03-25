@@ -18,7 +18,7 @@
       <el-checkbox v-model="remEmail">抽卡并保存邮箱地址</el-checkbox>
     </div>
   </transition>
-  <div class="cardList">
+  <div class="cardList" ref="cardListParents">
     <div class="cardList_body" ref="cardListBody">
       <div class="card_list" :class="seled?'selectedcard':''" @click="getDailyCard(0)">
         <rotate3DCard trigger="custom" v-model="cardIsRotate[0]" direction="row" :cardSrc="getCardList[0]">
@@ -60,7 +60,7 @@
             <tr>
               <td class="wm_user_level">{{nowUserInfo.level}}</td>
             <td class="wm_user_score">{{nowUserInfo.score}}</td>
-              <td class="wm_user_getcard_count">{{nowUserInfo.cardCol}}</td>
+              <td class="wm_user_getcard_count">{{nowUserInfo.cardCol}}/{{nowUserInfo.cardCount}}</td>
             </tr>
           </tbody>
         </table>
@@ -152,7 +152,8 @@ export default {
         score:0,//竞技点
         level:0,//等级
         cardCol:0,//收集卡牌
-        nickName:''
+        nickName:'',
+        cardCount:0
       }//当前用户信息
     }
   },
@@ -182,8 +183,18 @@ export default {
   mounted() {
     this.getRememberEmail();
     this.getLog(1);
+    this.setCardScroll();
   },
   methods: {
+    setCardScroll(){
+      //小屏滚动条
+      var cardListWidth = this.$refs.cardListParents.clientWidth;
+      var wmGetCardWidth = this.$refs.cardListBody.clientWidth;
+      console.log(cardListWidth);
+      if(wmGetCardWidth>cardListWidth){
+        this.$refs.cardListParents.scrollLeft = (wmGetCardWidth-cardListWidth)/2;
+      }
+    },
     getLog(page){
       authApi.searchlog({page: page}).then(res => {
           console.log(res);
@@ -257,7 +268,8 @@ export default {
                 score:resData.score,//竞技点
                 level:resData.level,//等级
                 cardCol:this.cardTotle,//收集卡牌
-                nickName:resData.nickName
+                nickName:resData.nickName,
+                cardCount:resData.cardCount
               };//当前用户信息
               console.log(this.userCardCache);
               if(goTop){
@@ -333,6 +345,16 @@ export default {
             this.$set(this.getCardList, 1, '/static/img/'+PrefixInteger(resData.cardChoiseList[1],4)+'.jpg');
             this.$set(this.getCardList, 2, '/static/img/'+PrefixInteger(resData.cardChoiseList[2],4)+'.jpg');
             this.$set(this.cardIsRotate, resData.choiseIndex, true);
+            let leftGetChanceText = '';
+            if(resData.leftGetChance>0){
+              leftGetChanceText = '抽卡成功，今天还剩余'+resData.leftGetChance+'次抽卡机会！';
+            }else{
+              leftGetChanceText = '抽卡成功，这已经是您今天最后一次抽卡机会了！';
+            }
+            this.$message({
+              message: leftGetChanceText,
+              type: 'success'
+            });
             this.getLog(1);
             for(let i=0;i<3;i++){
               if(i!==resData.choiseIndex){

@@ -2,6 +2,7 @@ var usersModel = require('../models/users');
 var utils = require('../utils/utils');
 var md5 = require('md5-node');
 var fs = require('fs');
+var config = require('config-lite')(__dirname);
 module.exports = function(req, res, next){
     console.log(req.body.email+'开始日常抽卡。');
     if(req.body.email){
@@ -29,6 +30,20 @@ module.exports = function(req, res, next){
                     //判断是否有该用户
                     if(result){
                         let IP = utils.getUserIp(req);
+                        let dailyCard = result.dailyCard;
+                        let dailyCardTime = result.dailyCardTime*1000;
+                        let timeNow = Math.round(new Date().getTime()/1000);
+                        if(new Date(timeNow*1000).toDateString()===new Date(dailyCardTime).toDateString()){//如果是同天
+                            if(dailyCard>=config.dailyChance){
+                                res.send({
+                                    code:0,
+                                    msg:'已经超过今天的抽卡次数了！'
+                                });
+                                return false;
+                            }
+                        }else{
+                            dailyCard = 0;
+                        }
                         //循环三张牌
                         let cardIdArr = [];
                         while (cardIdArr.length<3){
@@ -59,7 +74,8 @@ module.exports = function(req, res, next){
                             cardDataBase[cardId] = 1;
                         }
                         let emailmd5 = result.md5;
-                        usersModel.updateOne({email: userEmail}, {card: cardDataBase,ip:IP}, function(err, docs){
+                        dailyCard = dailyCard +1;
+                        usersModel.updateOne({email: userEmail}, {dailyCard:dailyCard,card: cardDataBase,ip:IP,dailyCardTime:timeNow}, function(err, docs){
                             if(err) {
                                 throw err;
                             }else{
@@ -72,7 +88,7 @@ module.exports = function(req, res, next){
                                     md5:md5(userEmail),
                                     nickName:result.nickName,
                                     type:'dailyCard',
-                                    time:Math.round(new Date().getTime()/1000),
+                                    time:timeNow,
                                     data:{
                                         cardId:cardID_,
                                         title:cardData[cardID_].title,
@@ -88,6 +104,7 @@ module.exports = function(req, res, next){
                                     choiseIndex:sel,
                                     emailmd5:emailmd5,
                                     card:cardId,
+                                    leftGetChance:config.dailyChance-dailyCard,
                                     msg:'ok'
                                 });
                             }

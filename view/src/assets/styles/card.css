@@ -263,6 +263,12 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 .watch_img img{
     max-width: 100%;
 }
+.el-message{
+    min-width: 300px!important;
+}
+.el-message--success .el-message__content {
+    line-height: 18px;
+}
 /* 日志 */
 .wm_card_get_list_item{
 	position: relative;

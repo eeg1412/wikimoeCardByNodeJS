@@ -119,13 +119,20 @@ exports.sendMail = function(email, IP) {
                         reject(err);
                         throw err;
                     }else{
+                        let removeTime = time- 1800;
                         //判断是否有该邮箱
                         if(result){
                             emailCodeModel.updateOne({email: email}, {code: code,time:time,ip:IP}, function(err, docs){
                                 if(err) {
                                     throw err;
                                 }else{
-                                    resolve('ok');
+                                    emailCodeModel.remove({ time: {$lte:removeTime} }, function(err, result) {
+                                        if(err) {
+                                            throw err;
+                                        }else{
+                                            resolve('ok');
+                                        }
+                                    });
                                 }
                             })
                         }else{
@@ -143,7 +150,13 @@ exports.sendMail = function(email, IP) {
                                     reject(err);
                                     throw err;
                                 }else{
-                                    resolve('ok');
+                                    emailCodeModel.remove({ time: {$lte:removeTime} }, function(err, result) {
+                                        if(err) {
+                                            throw err;
+                                        }else{
+                                            resolve('ok');
+                                        }
+                                    });
                                 };
                             });
                         }
