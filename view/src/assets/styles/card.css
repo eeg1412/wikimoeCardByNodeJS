@@ -276,9 +276,6 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 .el-message--success .el-message__content {
     line-height: 18px;
 }
-.copyShareUrl {
-    
-}
 .copyShareUrl input{
     cursor: text!important;
     background-color: #fff!important;
