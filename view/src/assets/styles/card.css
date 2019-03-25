@@ -251,6 +251,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     margin-bottom: 5px;
     width: 45px!important;
     height: 45px!important;
+    cursor: pointer;
 }
 .wm_user_info_table {
     width: 100%;
@@ -271,6 +272,13 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 }
 .el-message--success .el-message__content {
     line-height: 18px;
+}
+.copyShareUrl {
+    
+}
+.copyShareUrl input{
+    cursor: text!important;
+    background-color: #fff!important;
 }
 /* 日志 */
 .wm_card_get_list_item{

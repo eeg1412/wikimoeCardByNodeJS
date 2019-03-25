@@ -44,7 +44,9 @@
     <el-collapse-transition>
       <div class="wm_mycard_list" v-if="userCard">
         <h5 class="wm_card_chiose_title">
-          <img class="wm_title_info_avatar_pic" :src="nowUserInfo.tx" width="45" height="45">
+          <el-tooltip class="item" effect="dark" content="点击分享卡牌信息" placement="top" :hide-after="3000">
+            <img class="wm_title_info_avatar_pic" :src="nowUserInfo.tx" width="45" height="45" @click="openShare()">
+          </el-tooltip>
           <br>
           <span>{{nowUserInfo.nickName}}的当前信息</span>
         </h5>
@@ -83,6 +85,18 @@
       </div>
     </el-collapse-transition>
   </div>
+  <el-dialog
+    title="分享卡牌信息"
+    :visible.sync="shareDialog"
+    class="reg_code_dialog"
+    width="100%">
+    <el-input v-model="shareUrl" disabled class="copyShareUrl">
+    </el-input>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="shareDialog = false">关闭</el-button>
+      <el-button type="primary" @click="copyUrl">复制</el-button>
+    </span>
+  </el-dialog>
   <div class="wm_card_get_list_body" v-if="logList.length>0">
     <h5 class="wm_card_chiose_title">最新动态</h5>
     <div class="wm_card_get_list_item_body">
@@ -128,12 +142,14 @@
 
 <script>
 import {authApi} from "../api";
-import {mailCheck,PrefixInteger} from "../../utils/utils";
+import {mailCheck,PrefixInteger,md5Check} from "../../utils/utils";
 import rotate3DCard from '../components/rotateCard.vue';
 import md5 from 'js-md5';
 export default {
   data() {
     return {
+      shareDialog:false,
+      shareUrl:'',
       logListTotal:0,
       logPage:1,
       logList:[],
@@ -153,7 +169,8 @@ export default {
         level:0,//等级
         cardCol:0,//收集卡牌
         nickName:'',
-        cardCount:0
+        cardCount:0,
+        md5:''
       }//当前用户信息
     }
   },
@@ -184,8 +201,31 @@ export default {
     this.getRememberEmail();
     this.getLog(1);
     this.setCardScroll();
+    this.urlUserInfo();
   },
   methods: {
+    copyUrl: function () {
+      this.$copyText(this.shareUrl).then( (e) => {
+        this.$message({
+          message: '复制分享地址成功！',
+          type: 'success'
+        });
+      }, function (e) {
+        this.$message.error('复制失败，请手动复制！');
+        console.log(e)
+      })
+    },
+    openShare(){
+      this.shareUrl = window.location.origin + '?md5=' + this.nowUserInfo.md5;
+      this.shareDialog = true;
+    },
+    urlUserInfo(){
+      let urlMD5 = this.$route.query.md5;
+      if(urlMD5!==undefined){
+        this.getUserCard(urlMD5,true);
+        this.$router.replace({ path:'/'});
+      }
+    },
     setCardScroll(){
       //小屏滚动条
       var cardListWidth = this.$refs.cardListParents.clientWidth;
@@ -250,6 +290,10 @@ export default {
       },0)
     },
     getUserCard(md5,goTop){
+      if(!md5Check(md5)){
+        this.$message.error('用户信息有误！');
+        return false;
+      }
       authApi.searchcard({md5: md5}).then(res => {
           console.log(res);
           if(res.data.code==0){
@@ -269,7 +313,8 @@ export default {
                 level:resData.level,//等级
                 cardCol:this.cardTotle,//收集卡牌
                 nickName:resData.nickName,
-                cardCount:resData.cardCount
+                cardCount:resData.cardCount,
+                md5:resData.md5
               };//当前用户信息
               console.log(this.userCardCache);
               if(goTop){
@@ -333,11 +378,11 @@ export default {
       console.log(Num);
       authApi.dailycard({email: this.email,sel:Num}).then(res => {
           console.log(res);
+          let emailMD5 = md5(this.email);
           if(res.data.code==0){
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
             this.rememberEmail();
-            let emailMD5 = md5(this.email);
             this.getUserCard(emailMD5);
             this.seled = true;
             let resData = res.data;
@@ -376,6 +421,9 @@ export default {
               this.$router.push({ path:'/reg'});
             }).catch(() => {         
             });
+          }else if(res.data.code==3){
+            this.$message.error(res.data.msg);
+            this.getUserCard(emailMD5);
           }
       })
     }

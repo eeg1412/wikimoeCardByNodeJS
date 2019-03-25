@@ -12,6 +12,9 @@ import './assets/styles/index.css';
 import './assets/styles/card.css';
 import SequentialEntrance from 'vue-sequential-entrance'
 import 'vue-sequential-entrance/vue-sequential-entrance.css'
+import VueClipboard from 'vue-clipboard2'
+
+Vue.use(VueClipboard)
 Vue.use(SequentialEntrance);
 Vue.use(ElementUI);
 Vue.use(httpPlugin)

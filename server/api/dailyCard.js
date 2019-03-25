@@ -36,7 +36,7 @@ module.exports = function(req, res, next){
                         if(new Date(timeNow*1000).toDateString()===new Date(dailyCardTime).toDateString()){//如果是同天
                             if(dailyCard>=config.dailyChance){
                                 res.send({
-                                    code:0,
+                                    code:3,
                                     msg:'已经超过今天的抽卡次数了！'
                                 });
                                 return false;

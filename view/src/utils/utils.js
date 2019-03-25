@@ -16,3 +16,7 @@ export const PrefixInteger = function(num, length) {
     }
     return (Array(length).join('0') + num).slice(-length);
 }
+//检查MD5
+export const md5Check = function (MD5) {
+    return /^[A-Za-z0-9]{32}$/.test(MD5)//32位MD5
+}
