@@ -68,7 +68,7 @@
         </table>
         <sequential-entrance delay="100" tag="div">
           <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box">
-            <img class="wm_getcard_img" :src="'https://wikimoesh.cn-sh2.ufileos.com/wmcard/'+PrefixInteger_(item[0],4)+'.jpg'" @click="openImg('https://wikimoesh.cn-sh2.ufileos.com/wmcard/'+PrefixInteger_(item[0],4)+'.jpg')">
+            <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'" @click="openImg('/static/img/'+PrefixInteger_(item[0],4)+'.jpg')">
             <br>
             <span class="wm_card_nums">×{{item[1]}}</span>
           </div>
@@ -117,7 +117,7 @@
                 大家好，我是萌新{{item.nickName}}。初来乍到对什么都还很陌生，还恳请大家能够多多指导我怎么抽出六星卡！
               </span>
               <span v-if="item.type=='dailyCard'">
-                我抽中了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" :class="item.data.star>=6?'wm_six_star_card_shake':''" @click="openImg('https://wikimoesh.cn-sh2.ufileos.com/wmcard/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
+                我抽中了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" :class="item.data.star>=6?'wm_six_star_card_shake':''" @click="openImg('/static/img/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
                 {{item.data.star|cardStarText}}
               </span>
               </p>
