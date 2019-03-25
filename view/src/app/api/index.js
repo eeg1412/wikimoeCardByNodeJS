@@ -6,10 +6,12 @@ const api = createAPI({ baseURL: '/api' })
 let apiLoading = null;
 
 api.defaults.timeout =  12000;
-
+let loadingSet = {
+  background:'rgba(255,255,255,0)'
+}
 //请求拦截器
 api.interceptors.request.use(config => {
-    apiLoading = Loading.service();
+    apiLoading = Loading.service(loadingSet);
     return config
 }, (error) => {
     apiLoading.close();

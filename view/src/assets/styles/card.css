@@ -157,6 +157,9 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
         width:300px!important;
     }
 }
+.progressive-image-wrapper {
+    background-color: #f0f0f0;
+}
 /* 卡牌 */
 .wm_card_remember_body {
     text-align: center;

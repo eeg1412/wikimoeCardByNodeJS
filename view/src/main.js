@@ -13,7 +13,9 @@ import './assets/styles/card.css';
 import SequentialEntrance from 'vue-sequential-entrance'
 import 'vue-sequential-entrance/vue-sequential-entrance.css'
 import VueClipboard from 'vue-clipboard2'
+import VueProgressiveImage from 'vue-progressive-image'
 
+Vue.use(VueProgressiveImage)
 Vue.use(VueClipboard)
 Vue.use(SequentialEntrance);
 Vue.use(ElementUI);

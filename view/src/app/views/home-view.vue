@@ -68,8 +68,12 @@
         </table>
         <sequential-entrance delay="100" tag="div">
           <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box">
-            <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'" @click="openImg('/static/img/'+PrefixInteger_(item[0],4)+'.jpg')">
-            <br>
+            <div @click="openImg('/static/img/'+PrefixInteger_(item[0],4)+'.jpg')">
+              <progressive-img class="wm_getcard_img" 
+                :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'"
+                :aspect-ratio="1.404"
+              />
+            </div>
             <span class="wm_card_nums">×{{item[1]}}</span>
           </div>
         </sequential-entrance>
@@ -371,7 +375,7 @@ export default {
       if(this.seled){
         return false;
       }
-      if(mailCheck(!this.email)){
+      if(!mailCheck(this.email)){
         this.$message.error('邮箱格式不正确！');
         return false;
       }
