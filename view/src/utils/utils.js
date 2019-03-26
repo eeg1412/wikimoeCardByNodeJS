@@ -20,3 +20,27 @@ export const PrefixInteger = function(num, length) {
 export const md5Check = function (MD5) {
     return /^[A-Za-z0-9]{32}$/.test(MD5)//32位MD5
 }
+//读图
+export const loadingImg = function(imgSrcArr,resolve_,reject_){
+    var imgLength = imgSrcArr.length;
+    var proArr = [];
+    let images = [];
+    for(var i=0;i<imgLength;i++){
+        proArr[i] = new Promise( (resolve, reject) => {
+            images[i] = new Image();
+            images[i].src = imgSrcArr[i];
+            images[i].onload = function(){
+                resolve('ok');
+            };
+            images[i].onerror = function(){
+                reject('err');
+            }
+        })
+    }
+    Promise.all(proArr).then( (results) => {
+        console.log(results);
+        resolve_('img all ok');
+    }).catch( (reason) => {
+        reject_(reason);
+    });
+}

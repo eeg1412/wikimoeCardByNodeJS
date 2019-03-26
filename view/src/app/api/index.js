@@ -5,9 +5,11 @@ import { Loading,Message } from 'element-ui';
 const api = createAPI({ baseURL: '/api' })
 let apiLoading = null;
 
-api.defaults.timeout =  12000;
+api.defaults.timeout =  30000;
 let loadingSet = {
-  background:'rgba(255,255,255,0)'
+  background:'rgba(255,255,255,0)',
+  text:'努力加载中...',
+  spinner:'el-icon-loading'
 }
 //请求拦截器
 api.interceptors.request.use(config => {

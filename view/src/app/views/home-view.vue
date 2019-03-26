@@ -68,12 +68,8 @@
         </table>
         <sequential-entrance delay="100" tag="div">
           <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box">
-            <div @click="openImg('/static/img/'+PrefixInteger_(item[0],4)+'.jpg')">
-              <progressive-img class="wm_getcard_img" 
-                :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'"
-                :aspect-ratio="1.404"
-              />
-            </div>
+            <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'" @click="openImg('/static/img/'+PrefixInteger_(item[0],4)+'.jpg')">
+            <br>
             <span class="wm_card_nums">×{{item[1]}}</span>
           </div>
         </sequential-entrance>
@@ -146,7 +142,7 @@
 
 <script>
 import {authApi} from "../api";
-import {mailCheck,PrefixInteger,md5Check} from "../../utils/utils";
+import {mailCheck,PrefixInteger,md5Check,loadingImg} from "../../utils/utils";
 import rotate3DCard from '../components/rotateCard.vue';
 import md5 from 'js-md5';
 export default {
@@ -277,18 +273,39 @@ export default {
     logPageChange(val){
       this.getLog(val);
     },
-    cardPageChange(val){
-      this.userCard=null;
-      setTimeout(()=>{
-        this.scrollToTop(450,200);
-        this.userCard = this.userCardCache.slice((val-1)*20,val*20);
-      },300);
+    cardPageChange(val,goTop){
+      let userCard_ = this.userCardCache.slice((val-1)*20,val*20);
+      let userCardSrc = [];
+      for(let i = 0;i<userCard_.length;i++){
+        let userCardSrcItem = '/static/img/'+PrefixInteger(userCard_[i][0],4)+'.jpg';
+        userCardSrc.push(userCardSrcItem);
+      }
+      const loading = this.$loading({
+        text: '卡牌资源加载中...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0)'
+      });
+      new Promise((resolve, reject)=>{
+        loadingImg(userCardSrc,resolve, reject);
+      }).then((result) => {
+          this.userCard=null;
+          setTimeout(()=>{
+            if((goTop&&val==1)||val!=1){
+              this.scrollToTop(450,200);
+            }
+            loading.close();
+            this.userCard = userCard_;
+          },300);
+      }).catch((reason)=> {
+        console.log(reason);
+          loading.close();
+          this.$message.error('图片资源加载失败');
+      });
     },
     PrefixInteger_(num,length){
       return PrefixInteger(num,length);
     },
     watchUserCard(md5){
-      this.userCard=null;
       setTimeout(()=>{
         this.getUserCard(md5,true);
       },0)
@@ -309,7 +326,7 @@ export default {
               this.userCardCache.reverse();
               this.cardPage = 1;
               this.cardTotle = this.userCardCache.length;
-              this.userCard = this.userCardCache.slice(0,20);
+              this.cardPageChange(1,goTop);
               console.log(this.nowUserInfo);
               this.nowUserInfo = {
                 tx:'https://cdn.v2ex.com/gravatar/'+resData.md5+'?s=100&d=mm&r=g&d=robohash',//头像地址
@@ -321,9 +338,6 @@ export default {
                 md5:resData.md5
               };//当前用户信息
               console.log(this.userCardCache);
-              if(goTop){
-                this.scrollToTop(450,200);
-              }
               //this.userCard = res.data.card;
             }else{
               this.$message({
@@ -387,35 +401,49 @@ export default {
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
             this.rememberEmail();
-            this.getUserCard(emailMD5);
-            this.seled = true;
             let resData = res.data;
-            this.$set(this.getCardList, 0, '/static/img/'+PrefixInteger(resData.cardChoiseList[0],4)+'.jpg');
-            this.$set(this.getCardList, 1, '/static/img/'+PrefixInteger(resData.cardChoiseList[1],4)+'.jpg');
-            this.$set(this.getCardList, 2, '/static/img/'+PrefixInteger(resData.cardChoiseList[2],4)+'.jpg');
-            this.$set(this.cardIsRotate, resData.choiseIndex, true);
-            let leftGetChanceText = '';
-            if(resData.leftGetChance>0){
-              leftGetChanceText = '抽卡成功，今天还剩余'+resData.leftGetChance+'次抽卡机会！';
-            }else{
-              leftGetChanceText = '抽卡成功，这已经是您今天最后一次抽卡机会了！';
-            }
-            this.$message({
-              message: leftGetChanceText,
-              type: 'success'
+            let getCardSrcArr = ['/static/img/'+PrefixInteger(resData.cardChoiseList[0],4)+'.jpg','/static/img/'+PrefixInteger(resData.cardChoiseList[1],4)+'.jpg','/static/img/'+PrefixInteger(resData.cardChoiseList[2],4)+'.jpg'];
+            const loading = this.$loading({
+              text: '卡牌资源加载中...',
+              spinner: 'el-icon-loading',
+              background: 'rgba(0, 0, 0, 0)'
             });
-            this.getLog(1);
-            for(let i=0;i<3;i++){
-              if(i!==resData.choiseIndex){
-                setTimeout(()=>{
-                  this.$refs.cardListBody.children[i].classList.add("no-selectedcard");
-                  this.restartDisabled = false;
-                },950);
-                setTimeout(()=>{
-                  this.$set(this.cardIsRotate, i, true);
-                },800)
-              }
-            }
+            new Promise((resolve, reject)=>{
+                loadingImg(getCardSrcArr,resolve, reject);
+              }).then((result) => {
+                this.seled = true;
+                this.getUserCard(emailMD5);
+                this.$set(this.getCardList, 0, getCardSrcArr[0]);
+                this.$set(this.getCardList, 1, getCardSrcArr[1]);
+                this.$set(this.getCardList, 2, getCardSrcArr[2]);
+                this.$set(this.cardIsRotate, resData.choiseIndex, true);
+                let leftGetChanceText = '';
+                if(resData.leftGetChance>0){
+                  leftGetChanceText = '抽卡成功，今天还剩余'+resData.leftGetChance+'次抽卡机会！';
+                }else{
+                  leftGetChanceText = '抽卡成功，这已经是您今天最后一次抽卡机会了！';
+                }
+                this.$message({
+                  message: leftGetChanceText,
+                  type: 'success'
+                });
+                this.getLog(1);
+                for(let i=0;i<3;i++){
+                  if(i!==resData.choiseIndex){
+                    setTimeout(()=>{
+                      this.$refs.cardListBody.children[i].classList.add("no-selectedcard");
+                      this.restartDisabled = false;
+                    },950);
+                    setTimeout(()=>{
+                      this.$set(this.cardIsRotate, i, true);
+                    },800)
+                  }
+                }
+            }).catch((reason)=> {
+                console.log(reason);
+                loading.close();
+                this.$message.error('图片资源加载失败');
+            });
           }else if(res.data.code==2){
             this.$confirm('您尚未注册，是否进入注册页？', '提示', {
               confirmButtonText: '确定',
