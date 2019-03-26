@@ -4,11 +4,11 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 
 使用NodeJs(搭配express-generator+mongoose)+MongoDB+Vue(搭配Vue-cli+Element-ui)
 
-###介绍
+### 介绍
 
 一款通过日常抽卡的卡牌收集游戏。
 
-###使用方法
+### 使用方法
 
 1. 将项目克隆下来（记得事先安装MongoDB）。
 2. `cd server`切换至服务端。
