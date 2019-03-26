@@ -142,7 +142,7 @@
 
 <script>
 import {authApi} from "../api";
-import {mailCheck,PrefixInteger,md5Check,loadingImg} from "../../utils/utils";
+import {mailCheck,PrefixInteger,md5Check,loadingImg,showLoading,hideLoading} from "../../utils/utils";
 import rotate3DCard from '../components/rotateCard.vue';
 import md5 from 'js-md5';
 export default {
@@ -222,7 +222,7 @@ export default {
     urlUserInfo(){
       let urlMD5 = this.$route.query.md5;
       if(urlMD5!==undefined){
-        this.getUserCard(urlMD5,true);
+        this.getUserCard(urlMD5,false);
         this.$router.replace({ path:'/'});
       }
     },
@@ -273,32 +273,28 @@ export default {
     logPageChange(val){
       this.getLog(val);
     },
-    cardPageChange(val,goTop){
+    cardPageChange(val,noGoTop){
       let userCard_ = this.userCardCache.slice((val-1)*20,val*20);
       let userCardSrc = [];
       for(let i = 0;i<userCard_.length;i++){
         let userCardSrcItem = '/static/img/'+PrefixInteger(userCard_[i][0],4)+'.jpg';
         userCardSrc.push(userCardSrcItem);
       }
-      const loading = this.$loading({
-        text: '卡牌资源加载中...',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0)'
-      });
+      showLoading();
       new Promise((resolve, reject)=>{
         loadingImg(userCardSrc,resolve, reject);
       }).then((result) => {
           this.userCard=null;
           setTimeout(()=>{
-            if((goTop&&val==1)||val!=1){
+            if(!noGoTop){
               this.scrollToTop(450,200);
             }
-            loading.close();
+            hideLoading();
             this.userCard = userCard_;
           },300);
       }).catch((reason)=> {
         console.log(reason);
-          loading.close();
+          hideLoading();
           this.$message.error('图片资源加载失败');
       });
     },
@@ -307,10 +303,10 @@ export default {
     },
     watchUserCard(md5){
       setTimeout(()=>{
-        this.getUserCard(md5,true);
+        this.getUserCard(md5);
       },0)
     },
-    getUserCard(md5,goTop){
+    getUserCard(md5,noGoTop){
       if(!md5Check(md5)){
         this.$message.error('用户信息有误！');
         return false;
@@ -326,7 +322,7 @@ export default {
               this.userCardCache.reverse();
               this.cardPage = 1;
               this.cardTotle = this.userCardCache.length;
-              this.cardPageChange(1,goTop);
+              this.cardPageChange(1,noGoTop);
               console.log(this.nowUserInfo);
               this.nowUserInfo = {
                 tx:'https://cdn.v2ex.com/gravatar/'+resData.md5+'?s=100&d=mm&r=g&d=robohash',//头像地址
@@ -403,16 +399,13 @@ export default {
             this.rememberEmail();
             let resData = res.data;
             let getCardSrcArr = ['/static/img/'+PrefixInteger(resData.cardChoiseList[0],4)+'.jpg','/static/img/'+PrefixInteger(resData.cardChoiseList[1],4)+'.jpg','/static/img/'+PrefixInteger(resData.cardChoiseList[2],4)+'.jpg'];
-            const loading = this.$loading({
-              text: '卡牌资源加载中...',
-              spinner: 'el-icon-loading',
-              background: 'rgba(0, 0, 0, 0)'
-            });
+            showLoading();
             new Promise((resolve, reject)=>{
                 loadingImg(getCardSrcArr,resolve, reject);
               }).then((result) => {
+                hideLoading();
                 this.seled = true;
-                this.getUserCard(emailMD5);
+                this.getUserCard(emailMD5,true);
                 this.$set(this.getCardList, 0, getCardSrcArr[0]);
                 this.$set(this.getCardList, 1, getCardSrcArr[1]);
                 this.$set(this.getCardList, 2, getCardSrcArr[2]);
@@ -441,7 +434,7 @@ export default {
                 }
             }).catch((reason)=> {
                 console.log(reason);
-                loading.close();
+                hideLoading();
                 this.$message.error('图片资源加载失败');
             });
           }else if(res.data.code==2){
@@ -455,7 +448,7 @@ export default {
             });
           }else if(res.data.code==3){
             this.$message.error(res.data.msg);
-            this.getUserCard(emailMD5);
+            this.getUserCard(emailMD5,true);
           }
       })
     }

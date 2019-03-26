@@ -1,3 +1,5 @@
+import { Loading } from 'element-ui';
+
 export const mailCheck = function(email){
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
@@ -44,3 +46,36 @@ export const loadingImg = function(imgSrcArr,resolve_,reject_){
         reject_(reason);
     });
 }
+
+//接口加载
+let loadingCount = 0;
+let loading;
+
+const startLoading = () => {
+  loading = Loading.service({
+    background:'rgba(255,255,255,0)',
+    text:'努力加载中...',
+    spinner:'el-icon-loading'
+  });
+};
+
+const endLoading = () => {
+  loading.close();
+};
+
+export const showLoading = () => {
+  if (loadingCount === 0) {
+    startLoading();
+  }
+  loadingCount += 1;
+};
+
+export const hideLoading = () => {
+  if (loadingCount <= 0) {
+    return;
+  }
+  loadingCount -= 1;
+  if (loadingCount === 0) {
+    endLoading();
+  }
+};
