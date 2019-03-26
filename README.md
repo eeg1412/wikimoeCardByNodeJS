@@ -3,6 +3,7 @@
 by 广树 [维基萌](https://www.wikimoe.com/)
 
 使用NodeJs(搭配express-generator+mongoose)+MongoDB+Vue(搭配Vue-cli+Element-ui)
+
 ###介绍
 
 一款通过日常抽卡的卡牌收集游戏。
