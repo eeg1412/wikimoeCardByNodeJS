@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('wikimoecard:server');
 var http = require('http');
 var config = require('config-lite')(__dirname);
+var demining = require('../api/demining');
 
 /**
  * Get port from environment and store in Express.
@@ -21,6 +22,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+var io = require('socket.io')(server);
 
 /**
  * Listen on provided port, on all network interfaces.
@@ -30,6 +32,13 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+io.on('connection',  (socket) => {
+  socket.on('demining',  (data) => {
+    console.log('deminging');
+    console.log(data);
+    socket.emit('demining',demining.mineSweepingMap(20,20,20));
+  });
+});
 /**
  * Normalize a port into a number, string, or false.
  */
