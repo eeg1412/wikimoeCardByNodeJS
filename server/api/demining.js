@@ -1,3 +1,6 @@
+var fs = require('fs');
+var utils = require('../utils/utils');
+
 exports.mineSweepingMap = function (r, c, num) {
     var map = []
     // 给行数，生成一个 1 维数组
@@ -66,5 +69,24 @@ exports.mineSweepingMap = function (r, c, num) {
     blankMap(r, c)
     writeInMine(num)
     writeInHint()
-    return map
+    let time = Math.round(new Date().getTime()/1000);
+    let randomMapType  = utils.randomNum(1,17)
+    let data = {
+        map:map,
+        creatTime:time,
+        mapType:randomMapType,
+        boomNum:num,
+        boomedNum:0,
+        rows:r,
+        cols:c,
+        player:[]
+    }
+    fs.writeFileSync('./api/deminingMap/map.json', JSON.stringify(data), (err) => {
+        if (err) {
+            throw err;
+        }else{
+            console.log('已生成新的地洞地图！');
+        }
+    });
+    return data
 }
