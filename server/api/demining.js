@@ -1,7 +1,15 @@
-var fs = require('fs');
 var utils = require('../utils/utils');
+var deminingModel = require('../models/demining');
+var md5 = require('md5-node');
+var usersModel = require('../models/users');
 
-exports.mineSweepingMap = function (r, c, num) {
+var mineSweepingMap = function (returnData) {
+    //20,30
+    let randomRowsCols = utils.randomNum(2,2);
+    let r = randomRowsCols;
+    let c = randomRowsCols;
+    //20,80
+    let num = utils.randomNum(1,2);
     var map = []
     // 给行数，生成一个 1 维数组
     var row = function (r) {
@@ -79,14 +87,149 @@ exports.mineSweepingMap = function (r, c, num) {
         boomedNum:0,
         rows:r,
         cols:c,
-        player:[]
+        player:null,
+        close:0
     }
-    fs.writeFileSync('./api/deminingMap/map.json', JSON.stringify(data), (err) => {
+    // document作成
+    var demining = new deminingModel(data);
+
+    // document保存
+    demining.save(function(err) {
+        if (err) throw err;
+        
+    });
+    if(returnData){
+        delete data.boomedNum;
+        delete data.boomNum;
+        delete data.map;
+        console.log(data);
+        return data
+    }
+}
+
+var getMineMap = function(socket,cast){
+    deminingModel.findOne({ close: 0 },'-_id creatTime mapType rows cols player close', (err, result)=> {
         if (err) {
+            socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
             throw err;
         }else{
-            console.log('已生成新的地洞地图！');
+            //判断是否有数据
+            if(result){
+                let resData = {
+                    data:result,
+                    code:0
+                };
+                socket.emit('demining',resData);
+                if(cast){
+                    socket.broadcast.emit('demining',resData);
+                }
+            }else{
+                let mineData = mineSweepingMap(true);
+                let resData = {
+                    data:mineData,
+                    code:0
+                };
+                socket.emit('demining',resData);
+                if(cast){
+                    socket.broadcast.emit('demining',resData);
+                }
+            }
         }
     });
-    return data
+}
+var openNode = function(socket,data){
+    deminingModel.findOne({ close: 0 }, (err, result)=> {
+        if (err) {
+            socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
+            throw err;
+        }else{
+            //判断是否有数据
+            if(result){
+                let x = data.x || 0;
+                let y = data.y || 0;
+                if(result.player){
+                    if(result.player[y+'_'+x]){
+                        socket.emit('demining',{code:1,msg:'此处已经被人抢先！'});
+                        return false;
+                    }
+                }
+                if(result.creatTime!=data.creatTime){
+                    socket.emit('demining',{code:1,msg:'矿场不正确，请刷新查看！'});
+                    return false;
+                }
+                let playData = result.player;
+                let demNum = result.map[y][x];
+                let boomedNum = result.boomedNum;
+                let boomNum = result.boomNum;
+                let close = result.close;
+                let starAdd = 0;
+                if(playData===null){
+                    playData = {};
+                }
+                playData[y+'_'+x] = {
+                    md5:md5(data.email),
+                    num:demNum
+                };
+                if(demNum==9){
+                    boomedNum = boomedNum +1;
+                    starAdd = utils.randomNum(20,40);
+                }
+                if(boomedNum>=boomNum){
+                    close = 1;
+                }
+                if(starAdd>0){
+                    usersModel.updateOne({email: data.email}, {$inc:{star:starAdd}}, function(err, docs){
+                        if(err) {
+                            throw err;
+                        }else{
+                            socket.emit('demining',{code:2,star:starAdd});
+                        }
+                    });
+                }
+                deminingModel.updateOne({close: 0}, {player:playData,boomedNum:boomedNum,close:close}, function(err, docs){
+                    if(err) {
+                        socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
+                        throw err;
+                    }else{
+                        getMineMap(socket,true);
+                    }
+                });
+            }else{
+                socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
+            }
+        }
+    });
+}
+exports.mine = function(socket,data){
+    if(data.email&&data.token){
+        usersModel.findOne({ email: data.email }, function(err, result) {
+            if (err) {
+                socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
+                throw err;
+            }else{
+                //判断是否有该用户
+                if(result){
+                    if(result.token!=data.token){
+                        console.log('登录信息已过期！');
+                        socket.emit('demining',{code:403,msg:'登录信息已过期！'});
+                        return false;
+                    }else{
+                        //开始处理挖矿逻辑
+                        if(data.type=='get'){
+                            console.log('获取挖矿地图');
+                            getMineMap(socket,false);
+                        }else if(data.type=='open'){
+                            openNode(socket,data);
+                        }
+                    }
+                }else{
+                    socket.emit('demining',{code:403,msg:'无该用户！'});
+                    return false;
+                }
+            }
+        });
+    }else{
+        socket.emit('demining',{code:403,msg:'参数有误！'});
+        return false;
+    }
 }

@@ -4,7 +4,7 @@
     overflow-x: hidden;
 }
 /*CSS reset*/
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {margin:0;padding:0;} 
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {margin:0;padding:0;}
 table {border-collapse:collapse;border-spacing:0;}
 fieldset,img {border:0;}
 address,caption,cite,code,dfn,em,strong,th,var,i{font-style:normal;font-weight:normal;}
@@ -152,7 +152,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     padding:80px 10px;
     margin: 0 auto 0 auto;
 }
-@media screen and (max-width:480px) { 
+@media screen and (max-width:480px) {
     .el-message-box{
         width:300px!important;
     }
@@ -838,4 +838,77 @@ transform:translate(0) rotate(0deg)
 }
 .reg_code_img{
     height: 32px;
+}
+/* 挖矿 */
+.wm_card_demining_body{
+  overflow: auto;
+  padding: 20px;
+  text-align: center;
+  display: none;
+  box-sizing: border-box;
+}
+.wm_card_demining_table_box{
+  max-width: calc(100vw - 40px);
+  width: 530px;
+  height: 532px;
+  overflow: auto;
+}
+.wm_card_demining_table td{
+  border: 1px solid #fff;
+}
+.wm_card_demining_table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 10px auto;
+}
+.wm_card_demining_table .wm_demining_item{
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+  cursor: pointer;
+  background-color: #464646;
+  background-size: cover;
+  position: relative;
+  z-index: 1;
+  text-shadow:0px 0px 5px #000;
+  font-size: 18px;
+}
+.wm_card_demining_table .wm_demining_item.selected{
+  -webkit-animation-name: pikapika;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-iteration-count: infinite;
+  animation-name: pikapika;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+.wm_card_demining_table .wm_demining_item.type_is_opened {
+    background-color: #a4a4a4;
+  color: #fff;
+  cursor: default;
+  background-image: none!important;
+  box-sizing: border-box;
+  border:1px solid #727272;
+}
+img.wm_demining_img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.2;
+  transition: all 0.3s linear 0.4s;
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s linear;
+}
+.wm_card_demining_table .wm_demining_item:hover img.wm_demining_img{
+  opacity: 1;
+}
+.wm_card_demining_tip{
+  padding-bottom: 10px;
+}
+.wm_card_demining_table .wm_demining_item.type_is_opened.is_wmdmstar{
+  color: #ffc800;
 }

@@ -17,6 +17,7 @@ var users = new Schema({
   deminingStamp:{type: Number, default: 0},
   deminingStarCount:{type: Number, default: 0},
   card: {},
+  token:{type: String, default: ''},
   ip:String
 });
 
