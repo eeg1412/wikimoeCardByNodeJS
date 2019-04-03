@@ -912,3 +912,12 @@ img.wm_demining_img {
 .wm_card_demining_table .wm_demining_item.type_is_opened.is_wmdmstar{
   color: #ffc800;
 }
+/* banner */
+.wm_card_banner_body{
+  height: 200px;
+}
+.wm_card_banner_body img{
+  width: 100px;
+  height: auto;
+
+}

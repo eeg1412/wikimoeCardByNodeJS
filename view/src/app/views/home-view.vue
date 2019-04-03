@@ -97,6 +97,19 @@
       <el-button type="primary" @click="copyUrl">复制</el-button>
     </span>
   </el-dialog>
+  <div class="wm_card_banner_body">
+    <swipe class="my-swipe">
+      <swipe-item class="slide1">
+        <img src="../../assets/images/banner/banner1.jpg" />
+      </swipe-item>
+      <swipe-item class="slide2">
+        <img src="../../assets/images/banner/banner4.jpg" />
+      </swipe-item>
+      <swipe-item class="slide3">
+        <img src="../../assets/images/banner/banner2.jpg" />
+      </swipe-item>
+    </swipe>
+  </div>
   <div class="wm_card_get_list_body" v-if="logList.length>0">
     <h5 class="wm_card_chiose_title">最新动态</h5>
     <div class="wm_card_get_list_item_body">
@@ -443,8 +456,13 @@ export default {
               cancelButtonText: '取消',
               type: 'warning'
             }).then(() => {
-              this.$router.push({ path:'/reg'});
-            }).catch(() => {         
+              this.$router.push({
+                path:'/reg',
+                query: {
+                  adr: btoa(this.email)
+                }
+              });
+            }).catch(() => {
             });
           }else if(res.data.code==3){
             this.$message.error(res.data.msg);
@@ -456,5 +474,5 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style src="../../assets/styles/vue-swipe.css">
 </style>

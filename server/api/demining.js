@@ -2,6 +2,8 @@ var utils = require('../utils/utils');
 var deminingModel = require('../models/demining');
 var md5 = require('md5-node');
 var usersModel = require('../models/users');
+var userData = require('../utils/database/user');
+var chalk = require('chalk');
 
 var mineSweepingMap = function (returnData) {
     //20,30
@@ -102,7 +104,7 @@ var mineSweepingMap = function (returnData) {
         delete data.boomedNum;
         delete data.boomNum;
         delete data.map;
-        console.log(data);
+        // console.log(data);
         return data
     }
 }
@@ -138,7 +140,7 @@ var getMineMap = function(socket,cast){
     });
 }
 var openNode = function(socket,data){
-    deminingModel.findOne({ close: 0 }, (err, result)=> {
+    deminingModel.findOne({ close: 0 }, async (err, result)=> {
         if (err) {
             socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
             throw err;
@@ -177,15 +179,28 @@ var openNode = function(socket,data){
                 if(boomedNum>=boomNum){
                     close = 1;
                 }
-                if(starAdd>0){
-                    usersModel.updateOne({email: data.email}, {$inc:{star:starAdd}}, function(err, docs){
-                        if(err) {
-                            throw err;
-                        }else{
-                            socket.emit('demining',{code:2,star:starAdd});
-                        }
-                    });
+
+                let timeNow = Math.round(new Date().getTime()/1000);
+                let filters = {
+                    email:data.email
                 }
+                let params = {
+                    $inc:{
+                        star:starAdd,
+                        deminingStarCount:starAdd
+                    },
+                    deminingStamp:timeNow
+                };
+                await userData.updataUser(filters,params).catch ((err)=>{
+                    socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
+                    console.error(
+                        chalk.red('数据库更新错误！')
+                    );
+                    throw err;
+                })
+                if(starAdd>0){
+                    socket.emit('demining',{code:2,star:starAdd});
+                };
                 deminingModel.updateOne({close: 0}, {player:playData,boomedNum:boomedNum,close:close}, function(err, docs){
                     if(err) {
                         socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
@@ -200,35 +215,59 @@ var openNode = function(socket,data){
         }
     });
 }
-exports.mine = function(socket,data){
+exports.mine = async function(socket,data){
+    let IP = '';
+    let timeNow = Math.round(new Date().getTime()/1000);
+    if(socket.handshake.headers['x-forwarded-for'] != null){
+        IP = socket.handshake.headers['x-forwarded-for'];
+    }else{
+        IP = socket.handshake.address;
+    }
+    console.log(IP);
     if(data.email&&data.token){
-        usersModel.findOne({ email: data.email }, function(err, result) {
-            if (err) {
-                socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
-                throw err;
+        let params = {
+            email: data.email
+        }
+        let result = await userData.findUser(params).catch ((err)=>{
+            socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
+            console.error(
+                chalk.red('数据库查询错误！')
+            );
+            throw err;
+        })
+        if(result){
+            if((result.token!=data.token)&&(result.token!='')){
+                console.info(
+                    chalk.yellow(data.email+'的登录信息已过期！')
+                );
+                socket.emit('demining',{code:403,msg:'登录信息已过期！'});
+                return false;
             }else{
-                //判断是否有该用户
-                if(result){
-                    if(result.token!=data.token){
-                        console.log('登录信息已过期！');
-                        socket.emit('demining',{code:403,msg:'登录信息已过期！'});
+                //开始处理挖矿逻辑
+                if(data.type=='get'){
+                    console.info(
+                        chalk.green(data.email+'获取挖矿地图')
+                    );
+                    getMineMap(socket,false);
+                }else if(data.type=='open'){
+                    if((timeNow-result.deminingStamp)<3600){
+                        socket.emit('demining',{code:1,msg:'挖矿尚在冷却中！'});
                         return false;
-                    }else{
-                        //开始处理挖矿逻辑
-                        if(data.type=='get'){
-                            console.log('获取挖矿地图');
-                            getMineMap(socket,false);
-                        }else if(data.type=='open'){
-                            openNode(socket,data);
-                        }
                     }
-                }else{
-                    socket.emit('demining',{code:403,msg:'无该用户！'});
-                    return false;
+                    openNode(socket,data);
                 }
             }
-        });
+        }else{
+            console.info(
+                chalk.yellow(data.email+'无该用户！')
+            );
+            socket.emit('demining',{code:403,msg:'无该用户！'});
+            return false;
+        }
     }else{
+        console.info(
+            chalk.yellow(data.email+'参数有误！')
+        );
         socket.emit('demining',{code:403,msg:'参数有误！'});
         return false;
     }

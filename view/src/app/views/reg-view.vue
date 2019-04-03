@@ -55,6 +55,11 @@ export default {
         }
     }
   },
+  mounted() {
+    if(this.$route.query.adr){
+      this.form.email = atob(this.$route.query.adr);
+    }
+  },
   methods: {
     captchaUpdata(){
       this.captchaSrc = '/api/captcha?time='+new Date().getTime();
@@ -81,6 +86,7 @@ export default {
       };
       authApi.sendmail(params).then(res => {
           console.log(res);
+          this.captchaUpdata();
           if(res.data.code==0){
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){

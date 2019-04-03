@@ -2,6 +2,7 @@ var nodemailer = require('nodemailer');
 var emailCodeModel = require('../models/emailCode');
 var config = require('config-lite')(__dirname);
 var logModel = require('../models/log');
+var chalk = require('chalk');
 //写入日志
 exports.writeLog = function (logObject) {
     // document作成
@@ -14,9 +15,14 @@ exports.writeLog = function (logObject) {
                 code:0,
                 msg:'内部错误请联系管理员！'
             });
+            console.error(
+                chalk.red('日志写入错误！')
+            );
             throw err
         }else{
-            console.log('邮箱：'+logObject.email+'，日志写入成功。');
+            console.info(
+                chalk.green('邮箱：'+logObject.email+'，日志写入成功。')
+            );
         };
     });
 }
@@ -112,6 +118,9 @@ exports.sendMail = function(email, IP) {
         }, function (err) {
             if (err) {
                 reject('Unable to send email: ' + err);
+                console.log(
+                    chalk.red('Unable to send email: ' + err)
+                );
             }else{
                 console.log('给邮箱：'+email+'发送了验证码！');
                 emailCodeModel.findOne({ email: email }, function(err, result) {

@@ -18,7 +18,8 @@ var users = new Schema({
   deminingStarCount:{type: Number, default: 0},
   card: {},
   token:{type: String, default: ''},
-  ip:String
+  ip:String,
+  ban:{type: Number, default: 0},
 });
 
 module.exports = mongoose.model('users', users);
