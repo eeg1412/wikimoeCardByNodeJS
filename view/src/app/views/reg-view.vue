@@ -43,7 +43,7 @@ import {mailCheck,passwordCheck,nickNameCheck} from "../../utils/utils";
 export default {
   data() {
     return {
-      captchaSrc:'/api/captcha',
+      captchaSrc:'/api/captcha?time='+new Date().getTime(),
       sending:false,
       codeShow:false,
       form: {

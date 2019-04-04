@@ -18,5 +18,8 @@ export default function (api) {
     searchlog(data){
       return api.post('searchlog',data)
     },
+    login(data){
+      return api.post('login',data)
+    },
   }
 }

@@ -19,6 +19,6 @@ router.post('/reg', apiReg);
 router.post('/searchcard', apiSearchCard);
 router.post('/searchlog', apiSearchLog);
 router.post('/sendmail', apiSendMail);
-// router.post('/login', apiLogin.login);
+router.post('/login', apiLogin);
 
 module.exports = router;

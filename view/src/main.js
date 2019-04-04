@@ -13,10 +13,7 @@ import './assets/styles/card.css';
 import SequentialEntrance from 'vue-sequential-entrance'
 import 'vue-sequential-entrance/vue-sequential-entrance.css'
 import VueClipboard from 'vue-clipboard2'
-import { Swipe, SwipeItem } from 'vue-swipe';
 
-Vue.component('swipe', Swipe);
-Vue.component('swipe-item', SwipeItem);
 Vue.use(VueClipboard)
 Vue.use(SequentialEntrance);
 Vue.use(ElementUI);

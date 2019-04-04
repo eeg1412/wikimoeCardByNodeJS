@@ -4,14 +4,15 @@ var md5 = require('md5-node');
 var usersModel = require('../models/users');
 var userData = require('../utils/database/user');
 var chalk = require('chalk');
+var config = require('config-lite')(__dirname);
 
 var mineSweepingMap = function (returnData) {
     //20,30
-    let randomRowsCols = utils.randomNum(2,2);
+    let randomRowsCols = utils.randomNum(20,25);
     let r = randomRowsCols;
     let c = randomRowsCols;
     //20,80
-    let num = utils.randomNum(1,2);
+    let num = utils.randomNum(20,80);
     var map = []
     // 给行数，生成一个 1 维数组
     var row = function (r) {
@@ -139,7 +140,7 @@ var getMineMap = function(socket,cast){
         }
     });
 }
-var openNode = function(socket,data){
+var openNode = function(socket,data,result_){
     deminingModel.findOne({ close: 0 }, async (err, result)=> {
         if (err) {
             socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
@@ -174,7 +175,7 @@ var openNode = function(socket,data){
                 };
                 if(demNum==9){
                     boomedNum = boomedNum +1;
-                    starAdd = utils.randomNum(20,40);
+                    starAdd = utils.randomNum(2,5);
                 }
                 if(boomedNum>=boomNum){
                     close = 1;
@@ -201,18 +202,32 @@ var openNode = function(socket,data){
                 if(starAdd>0){
                     socket.emit('demining',{code:2,star:starAdd});
                 };
-                deminingModel.updateOne({close: 0}, {player:playData,boomedNum:boomedNum,close:close}, function(err, docs){
+                deminingModel.updateOne({close: 0}, {player:playData,boomedNum:boomedNum,close:close}, (err, docs)=>{
                     if(err) {
                         socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
                         throw err;
                     }else{
                         getMineMap(socket,true);
+                        let userData = {
+                            star:result_.star+starAdd,
+                            md5:result_.md5,
+                            nickName:result_.nickName,
+                            nextTime:600
+                        };
+                        sendUserData(socket,userData);
                     }
                 });
             }else{
                 socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
             }
         }
+    });
+}
+var sendUserData = function(socket,userData){
+    socket.emit('demining',{
+        code:3,
+        msg:'ok',
+        userData:userData
     });
 }
 exports.mine = async function(socket,data){
@@ -224,7 +239,22 @@ exports.mine = async function(socket,data){
         IP = socket.handshake.address;
     }
     console.log(IP);
-    if(data.email&&data.token){
+    let token = data.token;
+    if(token){
+        let tokenDecode = await utils.tokenCheck(token).catch ((err)=>{
+            socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！'});
+            console.info(
+                chalk.yellow('登录信息已失效！')
+            );
+            throw err;
+        });
+        if(!tokenDecode.email){
+            socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！'});
+            console.info(
+                chalk.yellow('登录信息有误！')
+            );
+        }
+        data.email = tokenDecode.email;
         let params = {
             email: data.email
         }
@@ -240,22 +270,38 @@ exports.mine = async function(socket,data){
                 console.info(
                     chalk.yellow(data.email+'的登录信息已过期！')
                 );
-                socket.emit('demining',{code:403,msg:'登录信息已过期！'});
+                socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！'});
                 return false;
             }else{
+                let nextTime = timeNow-result.deminingStamp;
                 //开始处理挖矿逻辑
                 if(data.type=='get'){
                     console.info(
                         chalk.green(data.email+'获取挖矿地图')
                     );
                     getMineMap(socket,false);
+                    let userData = {
+                        star:result.star,
+                        md5:result.md5,
+                        nickName:result.nickName,
+                        nextTime:600-nextTime<0?0:600-nextTime
+                    };
+                    sendUserData(socket,userData);
                 }else if(data.type=='open'){
-                    if((timeNow-result.deminingStamp)<3600){
-                        socket.emit('demining',{code:1,msg:'挖矿尚在冷却中！'});
+                    if(nextTime<600){
+                        socket.emit('demining',{code:4,msg:'挖矿尚在冷却中！',nextTime:600-nextTime});
+                        let userData = {
+                            star:result.star,
+                            md5:result.md5,
+                            nickName:result.nickName,
+                            nextTime:600-nextTime<0?0:600-nextTime
+                        };
+                        sendUserData(socket,userData);
                         return false;
                     }
-                    openNode(socket,data);
+                    openNode(socket,data,result);
                 }
+                
             }
         }else{
             console.info(
@@ -268,7 +314,7 @@ exports.mine = async function(socket,data){
         console.info(
             chalk.yellow(data.email+'参数有误！')
         );
-        socket.emit('demining',{code:403,msg:'参数有误！'});
+        socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！'});
         return false;
     }
 }

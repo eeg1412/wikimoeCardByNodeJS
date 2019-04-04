@@ -2,6 +2,7 @@ var nodemailer = require('nodemailer');
 var emailCodeModel = require('../models/emailCode');
 var config = require('config-lite')(__dirname);
 var logModel = require('../models/log');
+var jwt = require('jsonwebtoken');
 var chalk = require('chalk');
 //写入日志
 exports.writeLog = function (logObject) {
@@ -26,6 +27,26 @@ exports.writeLog = function (logObject) {
         };
     });
 }
+//检查token
+exports.tokenCheck = async function (token) {
+    let secretOrPrivateKey = config.JWTSecret; // 这是加密的key（密钥）
+    return await new Promise((resolve, reject)=> {
+        jwt.verify(token, secretOrPrivateKey, function (err, decode) {
+            if (err) {  //  时间失效的时候/ 伪造的token 
+                console.info(
+                    chalk.yellow('token有误！')
+                );        
+                reject(err);           
+            } else {
+                console.info(
+                    chalk.green('token解密成功！')
+                );
+                resolve(decode);
+            }
+        });
+    });
+    
+};
 //获取用户IP
 exports.getUserIp = function (req) {
     let ip =  req.headers['x-forwarded-for'] ||

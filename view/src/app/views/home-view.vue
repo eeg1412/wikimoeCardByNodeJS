@@ -97,19 +97,7 @@
       <el-button type="primary" @click="copyUrl">复制</el-button>
     </span>
   </el-dialog>
-  <div class="wm_card_banner_body">
-    <swipe class="my-swipe">
-      <swipe-item class="slide1">
-        <img src="../../assets/images/banner/banner1.jpg" />
-      </swipe-item>
-      <swipe-item class="slide2">
-        <img src="../../assets/images/banner/banner4.jpg" />
-      </swipe-item>
-      <swipe-item class="slide3">
-        <img src="../../assets/images/banner/banner2.jpg" />
-      </swipe-item>
-    </swipe>
-  </div>
+  <menuView></menuView>
   <div class="wm_card_get_list_body" v-if="logList.length>0">
     <h5 class="wm_card_chiose_title">最新动态</h5>
     <div class="wm_card_get_list_item_body">
@@ -157,6 +145,7 @@
 import {authApi} from "../api";
 import {mailCheck,PrefixInteger,md5Check,loadingImg,showLoading,hideLoading} from "../../utils/utils";
 import rotate3DCard from '../components/rotateCard.vue';
+import menuView from '../components/menu.vue';
 import md5 from 'js-md5';
 export default {
   data() {
@@ -188,7 +177,8 @@ export default {
     }
   },
   components: {
-    rotate3DCard
+    rotate3DCard,
+    menuView
   },
   filters: {
     cardStarText(value){
@@ -474,5 +464,3 @@ export default {
 }
 </script>
 
-<style src="../../assets/styles/vue-swipe.css">
-</style>

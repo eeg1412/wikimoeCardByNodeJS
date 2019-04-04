@@ -180,7 +180,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     text-align: center;
     margin-top: 8px;
 }
-.wm_card_big_body * {
+* {
     -webkit-tap-highlight-color: transparent;
 }
 .cardList_body {
@@ -400,9 +400,9 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 	background: #f8f8f8;
 	cursor:pointer;
 }
-.wm_card_get_list_body{
+/* .wm_card_get_list_body{
     margin-top: 20px;
-}
+} */
 .wm_card_get_list_body a.wm_card_get_list_card_link,.wm_card_get_list_body a.wm_getlist_link,.wm_card_get_list_body a.goto_wm_chiose_card{
 	color: #ff5364;
 	padding: 0 3px;
@@ -848,9 +848,7 @@ transform:translate(0) rotate(0deg)
   box-sizing: border-box;
 }
 .wm_card_demining_table_box{
-  max-width: calc(100vw - 40px);
-  width: 530px;
-  height: 532px;
+  max-width: 100%;
   overflow: auto;
 }
 .wm_card_demining_table td{
@@ -862,10 +860,10 @@ transform:translate(0) rotate(0deg)
   margin: 10px auto;
 }
 .wm_card_demining_table .wm_demining_item{
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   text-align: center;
-  line-height: 50px;
+  line-height: 35px;
   cursor: pointer;
   background-color: #464646;
   background-size: cover;
@@ -912,12 +910,47 @@ img.wm_demining_img {
 .wm_card_demining_table .wm_demining_item.type_is_opened.is_wmdmstar{
   color: #ffc800;
 }
-/* banner */
-.wm_card_banner_body{
-  height: 200px;
+.wm_card_demining_table .wm_demining_item.selected{
+  animation-name: pikapika;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
-.wm_card_banner_body img{
-  width: 100px;
-  height: auto;
+.wm_card_demining_per_body{
+  max-width: 240px;
+  margin: 0 auto;
+  font-size: 14px;
+  line-height: 14px;
+}
+.wm_card_demining_star{
+  font-size: 18px;
+}
+@keyframes pikapika {
+  0% {
+    opacity: 1;
+  }
 
+  50% {
+    opacity: 0.65;
+  }
+  100%{
+    opacity: 1;
+  }
+}
+/* 菜单 */
+.wm_card_menu_body{
+  text-align: center;
+  padding: 10px 0;
+}
+.wm_card_menu_box{
+  display: inline-block;
+  margin: 10px;
+  cursor: pointer;
+}
+.wm_card_menu_ico{
+  height: 42px;
+  width: 42px;
+  background-color: #eee;
+  border-radius: 5px;
+  margin-bottom: 5px;
 }
