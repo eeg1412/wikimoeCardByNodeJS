@@ -50,7 +50,7 @@ module.exports = async function(req, res, next){
                     return false;
                 }
                 let dailyCard = result.dailyCard;
-                let dailyCardTime = result.dailyCardTime*1000;
+                let dailyCardTime = Math.round(Number(result.dailyCardTime)*1000);
                 let timeNow = Math.round(new Date().getTime()/1000);
                 if(new Date(timeNow*1000).toDateString()===new Date(dailyCardTime).toDateString()){//如果是同天
                     if(dailyCard>=config.dailyChance){

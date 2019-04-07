@@ -73,97 +73,115 @@ module.exports = async function(req, res, next){
                 return false;
             }
         }
-        let params = { email: email };
-        let result = await userData.findUser(params).catch ((err)=>{
+        let send = await sendMail(email,IP);
+        if(send==='ok'){
+            res.send({
+                code:1,
+                msg:'发送成功！'
+            });
+            console.info(
+                chalk.green('email:'+email+'邮箱验证码发送成功。IP为：'+IP)
+            );
+        }else{
             res.send({
                 code:0,
-                msg:'内部错误请联系管理员！'
+                msg:'发送失败！'
             });
-            console.error(
-                chalk.red('数据库查询错误！')
+            console.info(
+                chalk.yellow('email:'+email+'邮箱验证码发送失败。IP为：'+IP)
             );
-            throw err;
-        })
-        //判断是否有该用户
-        if(result){
-            if(type==='find'){
-                let send = await sendMail(email,IP);
-                if(send==='ok'){
-                    res.send({
-                        code:1,
-                        msg:'发送成功！'
-                    });
-                    console.info(
-                        chalk.green('email:'+email+'邮箱验证码发送成功。IP为：'+IP)
-                    );
-                }else{
-                    res.send({
-                        code:0,
-                        msg:'发送失败！'
-                    });
-                    console.info(
-                        chalk.yellow('email:'+email+'邮箱验证码发送失败。IP为：'+IP)
-                    );
-                }
-            }else if(type==='reg'){
-                res.send({
-                    code:0,
-                    msg:'该邮箱已注册！'
-                });
-                console.info(
-                    chalk.yellow('email:'+email+'邮箱验证码因已注册而失败。IP为：'+IP)
-                );
-                return false;
-            }else{
-                res.send({
-                    code:0,
-                    msg:'参数有误！'
-                });
-                console.info(
-                    chalk.yellow('IP为：'+IP+' 发送的参数有误！')
-                );
-                return false;
-            }
-        }else{
-            if(type==='reg'){
-                let send = await sendMail(email,IP);
-                if(send==='ok'){
-                    res.send({
-                        code:1,
-                        msg:'发送成功！'
-                    });
-                    console.info(
-                        chalk.green('email:'+email+'邮箱验证码发送成功。IP为：'+IP)
-                    );
-                }else if(type==='find'){
-                    res.send({
-                        code:0,
-                        msg:'该邮箱未注册！'
-                    });
-                    console.info(
-                        chalk.yellow('email:'+email+'邮箱验证码因未注册而失败。IP为：'+IP)
-                    );
-                    return false;
-                }else{
-                    res.send({
-                        code:0,
-                        msg:'发送失败！'
-                    });
-                    console.info(
-                        chalk.yellow('email:'+email+'邮箱验证码发送失败。IP为：'+IP)
-                    );
-                }
-            }else{
-                res.send({
-                    code:0,
-                    msg:'参数有误！'
-                });
-                console.info(
-                    chalk.yellow('IP为：'+IP+' 发送的参数有误！')
-                );
-                return false;
-            }
         }
+        // let params = { email: email };
+        // let result = await userData.findUser(params).catch ((err)=>{
+        //     res.send({
+        //         code:0,
+        //         msg:'内部错误请联系管理员！'
+        //     });
+        //     console.error(
+        //         chalk.red('数据库查询错误！')
+        //     );
+        //     throw err;
+        // })
+        // //判断是否有该用户
+        // if(result){
+        //     if(type==='find'){
+        //         let send = await sendMail(email,IP);
+        //         if(send==='ok'){
+        //             res.send({
+        //                 code:1,
+        //                 msg:'发送成功！'
+        //             });
+        //             console.info(
+        //                 chalk.green('email:'+email+'邮箱验证码发送成功。IP为：'+IP)
+        //             );
+        //         }else{
+        //             res.send({
+        //                 code:0,
+        //                 msg:'发送失败！'
+        //             });
+        //             console.info(
+        //                 chalk.yellow('email:'+email+'邮箱验证码发送失败。IP为：'+IP)
+        //             );
+        //         }
+        //     }else if(type==='reg'){
+        //         res.send({
+        //             code:0,
+        //             msg:'该邮箱已注册！'
+        //         });
+        //         console.info(
+        //             chalk.yellow('email:'+email+'邮箱验证码因已注册而失败。IP为：'+IP)
+        //         );
+        //         return false;
+        //     }else{
+        //         res.send({
+        //             code:0,
+        //             msg:'参数有误！'
+        //         });
+        //         console.info(
+        //             chalk.yellow('IP为：'+IP+' 发送的参数有误！')
+        //         );
+        //         return false;
+        //     }
+        // }else{
+        //     if(type==='reg'){
+        //         let send = await sendMail(email,IP);
+        //         if(send==='ok'){
+        //             res.send({
+        //                 code:1,
+        //                 msg:'发送成功！'
+        //             });
+        //             console.info(
+        //                 chalk.green('email:'+email+'邮箱验证码发送成功。IP为：'+IP)
+        //             );
+        //         }else if(type==='find'){
+        //             res.send({
+        //                 code:0,
+        //                 msg:'该邮箱未注册！'
+        //             });
+        //             console.info(
+        //                 chalk.yellow('email:'+email+'邮箱验证码因未注册而失败。IP为：'+IP)
+        //             );
+        //             return false;
+        //         }else{
+        //             res.send({
+        //                 code:0,
+        //                 msg:'发送失败！'
+        //             });
+        //             console.info(
+        //                 chalk.yellow('email:'+email+'邮箱验证码发送失败。IP为：'+IP)
+        //             );
+        //         }
+        //     }else{
+        //         res.send({
+        //             code:0,
+        //             msg:'参数有误！'
+        //         });
+        //         console.info(
+        //             chalk.yellow('IP为：'+IP+' 发送的参数有误！')
+        //         );
+        //         return false;
+        //     }
+        // }
     }else{
         res.send({
             code:0,

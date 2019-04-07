@@ -2,19 +2,27 @@
 <div>
   <div class="wm_card_menu_body">
     <div class="wm_card_menu_box" @click="goHome()" v-if="$route.path!='/'">
-      <div class="wm_card_menu_ico"></div>
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/home.jpg" width="100%" height="100%" />
+      </div>
       <div class="wm_card_menu_text">首页</div>
     </div>
     <div class="wm_card_menu_box" @click="login('/demining')" v-if="$route.path!='/demining'">
-      <div class="wm_card_menu_ico"></div>
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/kuangchang.jpg" width="100%" height="100%" />
+      </div>
       <div class="wm_card_menu_text">矿场</div>
     </div>
     <div class="wm_card_menu_box">
-      <div class="wm_card_menu_ico"></div>
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/shop.png" width="100%" height="100%" />
+      </div>
       <div class="wm_card_menu_text">商店</div>
     </div>
-    <div class="wm_card_menu_box">
-      <div class="wm_card_menu_ico"></div>
+    <div class="wm_card_menu_box" @click="openDonate">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/zanzhu.png" width="100%" height="100%" />
+      </div>
       <div class="wm_card_menu_text">捐赠</div>
     </div>
   </div>
@@ -69,6 +77,11 @@ export default {
     this.getRememberEmail();
   },
   methods: {
+    openDonate(){
+      this.$alert('<div class="watch_img"><img src="/static/otherImg/donate.jpg" /></div>', '捐赠', {
+        dangerouslyUseHTMLString: true
+      });
+    },
     goHome(){
       this.$router.push({ path:'/'});
     },

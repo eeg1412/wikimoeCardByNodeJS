@@ -1,26 +1,33 @@
 <template>
 <div>
   <div class="common_body">
+    <div class="wm_card_demining_tool_body" v-if="userData">
+      <div @click="selPickChange(0)"><pickaxe :type="0" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[0])"></pickaxe></div>
+      <div @click="selPickChange(1)"><pickaxe :type="1" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[1])"></pickaxe></div>
+      <div @click="selPickChange(2)"><pickaxe :type="2" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[2])"></pickaxe></div>
+    </div>
     <div v-if="userData">
       <div class="wm_card_chiose_title">
         <img class="wm_title_info_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+userData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'" width="45" height="45">
         <br>
         <span class="wm_card_demining_star">{{userData.nickName}}的星星:{{userData.star}}</span>
-        <div class="wm_card_demining_per_body">
-          <div class="wm_card_demining_time_body"><span>冷却:</span><span class="wm_card_demining_time_num">{{min}}</span><span>分</span><span class="wm_card_demining_time_num">{{sec}}</span><span>秒</span></div>
-        </div>
       </div>
     </div>
     <div class="wm_card_demining_table_box">
+      <div v-if="!mineInfo" class="wm_card_demining_table_loading">
+        矿场数据加载中...
+      </div>
       <table class="wm_card_demining_table">
         <tbody>
           <tr v-for="(item,index) in mineMap" v-bind:key="index">
             <td v-for="(items,indexs) in item" v-bind:key="indexs">
-              <div class="wm_demining_item" :class="deminingItemClass(items.num,indexs,index)" @click="openNode(indexs,index,items.num)">
-                <div v-if="items.num>=0">
-                  <span>{{items.num==9?'★':items.num}}</span>
-                  <img class="wm_demining_img" :src="'https://cdn.v2ex.com/gravatar/'+items.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'" width="50" height="50">
-                </div>
+              <div class="wm_demining_item" :class="deminingItemClass(items.num,indexs,index)" @click="openNode(indexs,index,items.num)" :style="'background-image:url(/static/otherImg/demining/bg'+mineInfo.data.mapType+'.png)'">
+                <el-tooltip class="item" effect="dark" :content="items.num==9?'这里是一片星星矿':'探测器显示周围有'+items.num+'片星星矿！'" placement="top" v-if="items.num>=0" :enterable="false">
+                  <div>
+                    <span>{{items.num==9?'★':items.num}}</span>
+                    <img class="wm_demining_img" :src="'https://cdn.v2ex.com/gravatar/'+items.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'" width="50" height="50">
+                  </div>
+                </el-tooltip>
               </div>
             </td>
           </tr>
@@ -34,7 +41,9 @@
 
 <script>
 import io from 'socket.io-client';
+import {showLoading,hideLoading} from "../../utils/utils";
 import menuView from '../components/menu.vue';
+import pickaxe from '../components/pickaxe.vue';
 
 export default {
   data() {
@@ -46,13 +55,13 @@ export default {
       selBlock:null,
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       userData:null,
-      min:'--',
-      sec:'--',
-      counter:null
+      openTime:null,
+      selPick:0
     }
   },
   components: {
-    menuView
+    menuView,
+    pickaxe
   },
   mounted() {
     let socketurl = window.location.hostname;
@@ -60,6 +69,10 @@ export default {
     this.socket.on('demining',(data)=>{
       // this.socket.emit('demining',{time:new Date()});
       console.log(data);
+      if(this.openTime===data.time){
+        hideLoading();
+        this.openTime = null;
+      }
       if(data.code==1){//一般性错误提示
         this.$message.error(data.msg);
       }else if(data.code==0){//获取地图
@@ -70,13 +83,13 @@ export default {
           message: '恭喜您挖到了'+data.star+'颗星星！',
           type: 'success'
         });
+      }else if(data.code==201){//未挖到星星
+        this.$message('很可惜并没有挖到星星，探测器显示周围有'+data.demNum+'处星星矿！');
       }else if(data.code==4){
-        this.$message('挖矿尚在冷却中！还剩'+data.nextTime+'秒');
-      }else if(data.code==3){
-        console.log(123);
+        this.$message(data.msg);
+      }else if(data.code==3){//用户信息
+        console.log(data.userData);
         this.userData = data.userData;
-        clearInterval(this.counter)
-        this.countdown();
       }else if(data.code==403){//账号验证错误
         sessionStorage.removeItem("token");
         localStorage.removeItem("token");
@@ -108,37 +121,8 @@ export default {
     });
   },
   methods: {
-    countdown() {
-      let nextTimeSec = Math.round(new Date().getTime() / 1000)+this.userData.nextTime;
-      this.counter = setInterval(() => {
-        let count =  nextTimeSec - Math.round(new Date().getTime() / 1000)
-        if (count <= -1) {
-          this.min = '00'
-          this.sec = '00'
-          clearInterval(this.counter)
-          return
-        }
-
-        let seconds = count % 60
-        let minutes = Math.floor(count / 60)
-        let hours = Math.floor(minutes / 60)
-        minutes %= 60
-        hours %= 60
-
-        if (minutes < 10) {
-          minutes = `0${minutes}`
-        }
-
-        if (hours < 10) {
-          hours = `0${hours}`
-        }
-
-        if (seconds < 10) {
-          seconds = `0${seconds}`
-        }
-        this.min = minutes
-        this.sec = seconds
-      }, 1000)
+    selPickChange(n){
+      this.selPick = n;
     },
     deminingItemClass(num,indexs,index){
       var c = '';
@@ -160,14 +144,18 @@ export default {
         return false;
       }
       let x_y = x+'_'+y;
+      this.openTime = new Date().getTime();
       if(x_y == this.selBlock){
           let parmas = {
           type:'open',
           creatTime:this.mineInfo.data.creatTime,
           x:x,
           y:y,
-          token:this.token
+          token:this.token,
+          tool:this.selPick,
+          time:this.openTime
         }
+        showLoading();
         this.socket.emit('demining',parmas);
         this.selBlock = null;
       }else{
@@ -204,7 +192,6 @@ export default {
   beforeDestroy(){
     this.backFlag = true;
     this.socket.close();
-    clearInterval(this.counter)
   }
 }
 </script>

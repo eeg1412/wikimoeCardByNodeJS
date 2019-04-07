@@ -152,12 +152,12 @@ var openNode = function(socket,data,result_){
                 let y = data.y || 0;
                 if(result.player){
                     if(result.player[y+'_'+x]){
-                        socket.emit('demining',{code:1,msg:'此处已经被人抢先！'});
+                        socket.emit('demining',{code:1,msg:'此处已经被人抢先！',time:data.time});
                         return false;
                     }
                 }
                 if(result.creatTime!=data.creatTime){
-                    socket.emit('demining',{code:1,msg:'矿场不正确，请刷新查看！'});
+                    socket.emit('demining',{code:1,msg:'矿场不正确，请刷新查看！',time:data.time});
                     return false;
                 }
                 let playData = result.player;
@@ -166,6 +166,7 @@ var openNode = function(socket,data,result_){
                 let boomNum = result.boomNum;
                 let close = result.close;
                 let starAdd = 0;
+                let useTool = data.tool;
                 if(playData===null){
                     playData = {};
                 }
@@ -175,7 +176,13 @@ var openNode = function(socket,data,result_){
                 };
                 if(demNum==9){
                     boomedNum = boomedNum +1;
-                    starAdd = utils.randomNum(2,5);
+                    if(useTool==0){
+                        starAdd = utils.randomNum(1,4);
+                    }else if(useTool==1){
+                        starAdd = utils.randomNum(5,15);
+                    }else if(useTool==2){
+                        starAdd = utils.randomNum(20,30);
+                    }
                 }
                 if(boomedNum>=boomNum){
                     close = 1;
@@ -185,26 +192,38 @@ var openNode = function(socket,data,result_){
                 let filters = {
                     email:data.email
                 }
+                let deminingTool = result_.deminingStamp;
+                let addToolTime = 0;
+                if(useTool==0){
+                    addToolTime = 60*10;
+                }else if(useTool==1){
+                    addToolTime = 60*30;
+                }else if(useTool==2){
+                    addToolTime = 60*60;
+                }
+                deminingTool[useTool] =  timeNow + addToolTime
                 let params = {
                     $inc:{
                         star:starAdd,
                         deminingStarCount:starAdd
                     },
-                    deminingStamp:timeNow
+                    deminingStamp:deminingTool
                 };
                 await userData.updataUser(filters,params).catch ((err)=>{
-                    socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
+                    socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
                     console.error(
                         chalk.red('数据库更新错误！')
                     );
                     throw err;
                 })
                 if(starAdd>0){
-                    socket.emit('demining',{code:2,star:starAdd});
+                    socket.emit('demining',{code:2,star:starAdd,time:data.time});
+                }else{
+                    socket.emit('demining',{code:201,demNum:demNum,time:data.time});
                 };
                 deminingModel.updateOne({close: 0}, {player:playData,boomedNum:boomedNum,close:close}, (err, docs)=>{
                     if(err) {
-                        socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
+                        socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
                         throw err;
                     }else{
                         getMineMap(socket,true);
@@ -212,13 +231,14 @@ var openNode = function(socket,data,result_){
                             star:result_.star+starAdd,
                             md5:result_.md5,
                             nickName:result_.nickName,
-                            nextTime:600
+                            deminingStamp:deminingTool,
+                            timeNow:timeNow
                         };
                         sendUserData(socket,userData);
                     }
                 });
             }else{
-                socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
+                socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
             }
         }
     });
@@ -273,7 +293,6 @@ exports.mine = async function(socket,data){
                 socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！'});
                 return false;
             }else{
-                let nextTime = timeNow-result.deminingStamp;
                 //开始处理挖矿逻辑
                 if(data.type=='get'){
                     console.info(
@@ -284,17 +303,20 @@ exports.mine = async function(socket,data){
                         star:result.star,
                         md5:result.md5,
                         nickName:result.nickName,
-                        nextTime:600-nextTime<0?0:600-nextTime
+                        deminingStamp:result.deminingStamp,
+                        timeNow:timeNow
                     };
                     sendUserData(socket,userData);
                 }else if(data.type=='open'){
-                    if(nextTime<600){
-                        socket.emit('demining',{code:4,msg:'挖矿尚在冷却中！',nextTime:600-nextTime});
+                    data.tool = (data.tool&&data.tool<=2)?data.tool:0;
+                    let useTool = data.tool;
+                    if(timeNow<Number(result.deminingStamp[useTool])){
+                        socket.emit('demining',{code:4,msg:'您选择的工具还在制作中！',time:data.time});
                         let userData = {
                             star:result.star,
                             md5:result.md5,
                             nickName:result.nickName,
-                            nextTime:600-nextTime<0?0:600-nextTime
+                            deminingStamp:result.deminingStamp,
                         };
                         sendUserData(socket,userData);
                         return false;

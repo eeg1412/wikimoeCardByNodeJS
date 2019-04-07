@@ -3,6 +3,24 @@
 #app{
     overflow-x: hidden;
 }
+*::-webkit-scrollbar-track-piece {
+    background: #eee
+}
+
+*::-webkit-scrollbar {
+    width: 6px;
+    height: 6px
+}
+
+*::-webkit-scrollbar-thumb {
+    height: 40px;
+    border-radius: 4px;
+    background-color: #A5A5A5
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background-color: #bbb
+}
 /*CSS reset*/
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {margin:0;padding:0;}
 table {border-collapse:collapse;border-spacing:0;}
@@ -840,6 +858,45 @@ transform:translate(0) rotate(0deg)
     height: 32px;
 }
 /* 挖矿 */
+.wm_card_demining_tool_body{
+    position: fixed;
+    background-color: #fff;
+    z-index: 2;
+    bottom: 5px;
+    border-radius: 5px;
+    left: 50%;
+    transform:translateX(-108px);
+    width: 216px;
+    height:62px;
+    box-shadow: 0 0px 5px rgba(0,0,0,0.3);
+}
+.wm_card_pickaxe_body{
+    width: 48px;
+    float: left;
+    margin: 8px 12px 0px 12px;
+    cursor: pointer;
+    transition: all 0.3s linear;
+    text-align: center;
+}
+.wm_card_pickaxe_body:hover .wm_card_pickaxe_ico,.wm_card_pickaxe_body.active .wm_card_pickaxe_ico{
+    opacity: 1;
+}
+.wm_card_pickaxe_ico{
+    opacity: 0.3;
+    height:32px;
+    margin-bottom: 4px;
+}
+.wm_card_demining_time_body{
+    font-size: 12px;
+    line-height: 14px;
+}
+.wm_card_demining_table_loading{
+    text-align:center;
+    padding: 300px 0;
+}
+.wm_card_pickaxe_par .el-progress-bar__outer{
+    background-color: #c9c9c9;
+}
 .wm_card_demining_body{
   overflow: auto;
   padding: 20px;
@@ -951,6 +1008,7 @@ img.wm_demining_img {
   height: 42px;
   width: 42px;
   background-color: #eee;
-  border-radius: 5px;
+  border-radius: 3px;
   margin-bottom: 5px;
+  overflow: hidden;
 }
