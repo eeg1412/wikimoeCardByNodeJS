@@ -97,7 +97,7 @@
       <el-button type="primary" @click="copyUrl">复制</el-button>
     </span>
   </el-dialog>
-  <menuView></menuView>
+  <menuView ref="menu"></menuView>
   <div class="wm_card_get_list_body" v-if="logList.length>0">
     <h5 class="wm_card_chiose_title">最新动态</h5>
     <div class="wm_card_get_list_item_body">
@@ -121,7 +121,10 @@
                 我抽中了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" :class="item.data.star>=6?'wm_six_star_card_shake':''" @click="openImg('/static/img/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
                 {{item.data.star|cardStarText}}
               </span>
-              </p>
+              <span v-if="item.type=='demining'">
+                我用{{item.data.pickaxe | pickaxeName}}在<span class="wm_card_get_list_card_link" @click="goMenu('/demining')">星星矿场</span>坐标【{{item.data.x+1}},{{item.data.y+1}}】处挖到了{{item.data.star}}颗星星，同时获得了{{item.data.exp}}点经验值！！请叫我专业的矿工！
+              </span>
+            </p>
           </div>
         </div>
       </transition-group>
@@ -181,6 +184,17 @@ export default {
     menuView
   },
   filters: {
+    pickaxeName(value){
+      if(value==0){
+        return '铜镐';
+      }else if(value==1){
+        return '银镐';
+      }else if(value==2){
+        return '金镐';
+      }else{
+        return '';
+      }
+    },
     cardStarText(value){
       if(value<=3){
         return '虽然卡牌星级不高，但是我也很喜欢！';
@@ -207,6 +221,9 @@ export default {
     this.urlUserInfo();
   },
   methods: {
+    goMenu(p){
+      this.$refs.menu.login(p);
+    },
     copyUrl: function () {
       this.$copyText(this.shareUrl).then( (e) => {
         this.$message({

@@ -4,6 +4,7 @@ var config = require('config-lite')(__dirname);
 var logModel = require('../models/log');
 var jwt = require('jsonwebtoken');
 var chalk = require('chalk');
+var fs = require('fs');
 //写入日志
 exports.writeLog = function (logObject) {
     // document作成
@@ -116,6 +117,33 @@ exports.wmCreatCardId = function($randomCardRate){
         $randomCardID = '3'+this.PrefixInteger( $randomCardSSR_,3);
     }
     return $randomCardID;
+}
+// 升级
+exports.levelCheck = function(level, exp) {
+    let cardData = fs.readFileSync('./data/cardData.json', 'utf8');
+    cardData = JSON.parse(cardData)['level'];
+    let level_ = Number(level);
+    let exp_ = Number(exp);
+    if(isNaN(level_)||isNaN(exp_)){
+        console.error(
+            chalk.red('经验等级数据错误！')
+        );
+        throw '经验等级数据错误！';
+    }
+    let flag = true;
+    while(flag){
+        let levelIndex = level_;
+        if(levelIndex>5){
+            levelIndex = 5;
+        }
+        if(cardData[levelIndex]<exp_){
+            exp_ = exp_ - cardData[levelIndex];
+            level_++;
+        }else{
+            flag = false;
+        }
+    }
+    return [level_,exp_]
 }
 //发送邮箱
 exports.sendMail = function(email, IP) {

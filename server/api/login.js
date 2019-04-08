@@ -93,7 +93,7 @@ module.exports = async function(req, res, next){
         let secretOrPrivateKey= config.JWTSecret; // 这是加密的key（密钥）
         let remTime = 60*60*24;
         if(remPass){
-            remTime = 60*60*24*7;
+            remTime = 60*60*24*30;
         }
         let token = jwt.sign(content, secretOrPrivateKey, {
             expiresIn: remTime

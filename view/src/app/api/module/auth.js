@@ -9,6 +9,9 @@ export default function (api) {
     reg(data){
       return api.post('reg',data)
     },
+    find(data){
+      return api.post('find',data)
+    },
     searchcard(data){
       return api.post('searchcard',data)
     },

@@ -46,6 +46,7 @@
     </el-form-item>
     <el-form-item label="记住密码">
       <el-switch v-model="form.remPass"></el-switch>
+      <router-link class="wm_find_ps_link" to="/find">找回密码</router-link>
     </el-form-item>
   </el-form>
     <span slot="footer" class="dialog-footer">

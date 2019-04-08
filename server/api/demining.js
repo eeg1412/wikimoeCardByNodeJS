@@ -201,13 +201,19 @@ var openNode = function(socket,data,result_){
                 }else if(useTool==2){
                     addToolTime = 60*60;
                 }
-                deminingTool[useTool] =  timeNow + addToolTime
+                deminingTool[useTool] =  timeNow + addToolTime;
+                let levle = result_.level;
+                let exp = result_.exp+10+demNum+starAdd;
+                let levelExp = utils.levelCheck(levle,exp);
                 let params = {
                     $inc:{
                         star:starAdd,
                         deminingStarCount:starAdd
                     },
-                    deminingStamp:deminingTool
+                    deminingStamp:deminingTool,
+                    level:levelExp[0],
+                    exp:levelExp[1],
+                    ip:data.IP
                 };
                 await userData.updataUser(filters,params).catch ((err)=>{
                     socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
@@ -216,16 +222,35 @@ var openNode = function(socket,data,result_){
                     );
                     throw err;
                 })
-                if(starAdd>0){
-                    socket.emit('demining',{code:2,star:starAdd,time:data.time});
-                }else{
-                    socket.emit('demining',{code:201,demNum:demNum,time:data.time});
-                };
+                console.info(
+                    chalk.green(data.email+'用工具'+useTool+'挖掘了['+x+','+y+']，其结果为：'+demNum+'，共获得星星'+starAdd+'颗，'+'IP为：'+data.IP)
+                )
                 deminingModel.updateOne({close: 0}, {player:playData,boomedNum:boomedNum,close:close}, (err, docs)=>{
                     if(err) {
                         socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
                         throw err;
                     }else{
+                        if(starAdd>0){
+                            socket.emit('demining',{code:2,star:starAdd,time:data.time});
+                            let logObject = {
+                                email:data.email,
+                                md5:md5(data.email),
+                                nickName:result_.nickName,
+                                type:'demining',
+                                time:timeNow,
+                                data:{
+                                    star:starAdd,
+                                    pickaxe:useTool,
+                                    exp:exp,
+                                    x:x,
+                                    y:y
+                                },
+                                ip:data.IP
+                            }
+                            utils.writeLog(logObject);
+                        }else{
+                            socket.emit('demining',{code:201,demNum:demNum,time:data.time});
+                        };
                         getMineMap(socket,true);
                         let userData = {
                             star:result_.star+starAdd,
@@ -258,7 +283,12 @@ exports.mine = async function(socket,data){
     }else{
         IP = socket.handshake.address;
     }
-    console.log(IP);
+    IP = IP.match(/\d+.\d+.\d+.\d+/);
+    IP = IP ? IP.join('.') : 'No IP';
+    data.IP = IP;
+    console.info(
+        chalk.green(IP+'连接挖矿服务器。')
+    )
     let token = data.token;
     if(token){
         let tokenDecode = await utils.tokenCheck(token).catch ((err)=>{
@@ -275,6 +305,9 @@ exports.mine = async function(socket,data){
             );
         }
         data.email = tokenDecode.email;
+        console.info(
+            chalk.green(data.IP+'的邮箱解析结果为'+data.email)
+        )
         let params = {
             email: data.email
         }
@@ -286,7 +319,7 @@ exports.mine = async function(socket,data){
             throw err;
         })
         if(result){
-            if((result.token!=data.token)&&(result.token!='')){
+            if((result.token!=data.token)||(result.token=='')){
                 console.info(
                     chalk.yellow(data.email+'的登录信息已过期！')
                 );
@@ -311,6 +344,9 @@ exports.mine = async function(socket,data){
                     data.tool = (data.tool&&data.tool<=2)?data.tool:0;
                     let useTool = data.tool;
                     if(timeNow<Number(result.deminingStamp[useTool])){
+                        console.info(
+                            chalk.yellow(data.email+'的工具'+useTool+'还在冷却。'+'IP为：'+data.IP)
+                        )
                         socket.emit('demining',{code:4,msg:'您选择的工具还在制作中！',time:data.time});
                         let userData = {
                             star:result.star,
