@@ -8,7 +8,6 @@
         position relative
         perspective 1500px
         background-color transparent
-        point cursor
         .card{
             position absolute
             top 0
@@ -18,10 +17,7 @@
             transition: all 0.8s
             backface-visibility: hidden
             border-radius 6px
-            &:hover{
-                box-shadow 0 1px 6px rgba(0,0,0,.2)
-                border-color #eee
-            }
+            box-shadow 0 1px 6px rgba(0,0,0,.2)
             &.card-z{
                 background-image: url(../../assets/images/card/back.jpg);
                 background-position: center center;

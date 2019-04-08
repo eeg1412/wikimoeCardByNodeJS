@@ -24,5 +24,11 @@ export default function (api) {
     login(data){
       return api.post('login',data)
     },
+    userinfo(data){
+      return api.post('userinfo',data)
+    },
+    shop(data){
+      return api.post('shop',data)
+    },
   }
 }

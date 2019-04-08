@@ -8,6 +8,8 @@ var apiSearchCard = require('../api/searchCard');
 var apiSearchLog = require('../api/searchLog');
 var apiCaptcha = require('../api/captcha');
 var apiSendMail = require('../api/sendEMail');
+var apiUserInfo = require('../api/userInfo');
+var apiShop = require('../api/shop');
 
 
 /* GET users listing. */
@@ -22,5 +24,7 @@ router.post('/searchcard', apiSearchCard);
 router.post('/searchlog', apiSearchLog);
 router.post('/sendmail', apiSendMail);
 router.post('/login', apiLogin);
+router.post('/userinfo', apiUserInfo);
+router.post('/shop', apiShop);
 
 module.exports = router;

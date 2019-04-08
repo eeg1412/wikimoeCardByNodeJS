@@ -13,7 +13,7 @@
       </div>
       <div class="wm_card_menu_text">矿场</div>
     </div>
-    <div class="wm_card_menu_box">
+    <div class="wm_card_menu_box" @click="login('/star/shop')" v-if="$route.path!='/star/shop'">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/shop.png" width="100%" height="100%" />
       </div>

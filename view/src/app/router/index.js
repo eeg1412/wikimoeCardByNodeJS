@@ -9,6 +9,7 @@ const NotfoundView = () => import(/* webpackChunkName: "rest" */ '@/views/notfou
 const regView = () => import(/* webpackChunkName: "regView" */ '@/views/reg-view.vue')
 const findView = () => import(/* webpackChunkName: "findView" */ '@/views/find-view.vue')
 const deminingView = () => import(/* webpackChunkName: "deminingView" */ '@/views/demining-view.vue')
+const shopView = () => import(/* webpackChunkName: "deminingView" */ '@/views/shop-view.vue')
 
 if (process.env.NODE_ENV === 'development') {
   Vue.use(VueRouter)
@@ -28,6 +29,7 @@ const router = new VueRouter({
     { name: 'reg', path: '/reg', meta:{login:false}, component: regView },
     { name: 'find', path: '/find', meta:{login:false}, component: findView },
     { name: 'demining', path: '/demining', meta:{login:false}, component: deminingView },
+    { name: 'shop', path: '/star/shop', meta:{login:true}, component: shopView },
     { name: '404', path: '/404', meta:{login:false}, component: NotfoundView },
     { path: '*', redirect: '/404' },
   ],

@@ -1021,4 +1021,33 @@ img.wm_demining_img {
   color: #FF4C4C;
   float: right;
 }
-/* 找回密码 */
+/* 商店 */
+.wm_shop_item_list_body{
+  text-align: center;
+  margin: 20px 0;
+}
+.wm_shop_item_list_box{
+  display: inline-block;
+  margin: 10px;
+}
+.wm_shop_item_list_ico{
+  width: 160px;
+  height: 225px;
+  border-radius: 6px;
+  background-image: url('../../assets/images/card/back.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.common_title.type_shop{
+  padding: 20px 0;
+}
+.shop_card_list_box{
+  display: inline-block;
+  margin: 10px;
+}
+.shop_card_list_body{
+  text-align: center;
+}

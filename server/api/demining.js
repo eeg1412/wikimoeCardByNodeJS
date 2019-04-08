@@ -303,6 +303,7 @@ exports.mine = async function(socket,data){
             console.info(
                 chalk.yellow('登录信息有误！')
             );
+            return false;
         }
         data.email = tokenDecode.email;
         console.info(
