@@ -1,5 +1,5 @@
 <template>
-  <div class="common_body">
+  <div class="common_body" v-show="userData">
     <h5 class="common_title type_shop">星星商店</h5>
     <div v-if="userData">
       <div class="wm_card_chiose_title">
