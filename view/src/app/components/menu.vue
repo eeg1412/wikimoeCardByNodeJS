@@ -95,6 +95,7 @@ export default {
           captcha:'',
           remPass:false
         }
+      this.getRememberEmail();
     },
     goLogin(){
       let params = {

@@ -1047,6 +1047,10 @@ img.wm_demining_img {
 .shop_card_list_box{
   display: inline-block;
   margin: 10px;
+  cursor: pointer;
+}
+.shop_card_list_box.selectedcard,.shop_card_list_box.selectedcard .wm_getcard_img{
+  cursor: default;
 }
 .shop_card_list_body{
   text-align: center;

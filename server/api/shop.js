@@ -130,6 +130,9 @@ module.exports = async function(req, res, next){
             email: email
         }
         let updataParams = {
+            $inc:{
+                star:-price
+            },
             card: databaseCard,
             ip:IP
         }

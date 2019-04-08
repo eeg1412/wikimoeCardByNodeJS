@@ -203,7 +203,8 @@ var openNode = function(socket,data,result_){
                 }
                 deminingTool[useTool] =  timeNow + addToolTime;
                 let levle = result_.level;
-                let exp = result_.exp+10+demNum+starAdd;
+                let getExp = 10+demNum+starAdd;
+                let exp = result_.exp+getExp;
                 let levelExp = utils.levelCheck(levle,exp);
                 let params = {
                     $inc:{
@@ -241,7 +242,7 @@ var openNode = function(socket,data,result_){
                                 data:{
                                     star:starAdd,
                                     pickaxe:useTool,
-                                    exp:exp,
+                                    exp:getExp,
                                     x:x,
                                     y:y
                                 },
