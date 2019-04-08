@@ -186,7 +186,7 @@ export default {
   filters: {
     pickaxeName(value){
       if(value==0){
-        return '铜镐';
+        return '铁镐';
       }else if(value==1){
         return '银镐';
       }else if(value==2){

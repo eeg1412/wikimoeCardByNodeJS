@@ -32,7 +32,7 @@
     :visible.sync="loginShow"
     class="reg_code_dialog"
     width="100%">
-    <el-form ref="form" :model="form" label-width="80px">
+    <el-form ref="form" :model="form" label-width="80px" @keyup.enter.native="goLogin()">
     <el-form-item label="账号">
       <el-input v-model="form.email" @input="emailToLowerCase" placeholder="请输入邮箱地址"></el-input>
     </el-form-item>
