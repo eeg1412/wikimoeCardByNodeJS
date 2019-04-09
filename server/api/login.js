@@ -4,7 +4,6 @@ var chalk = require('chalk');
 var userData = require('../utils/database/user');
 var jwt = require('jsonwebtoken');
 var chalk = require('chalk');
-var config = require('config-lite')(__dirname);
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let email = req.body.email;
@@ -90,7 +89,7 @@ module.exports = async function(req, res, next){
             return false;
         }
         let content ={email:email}; // 要生成token的主题信息
-        let secretOrPrivateKey= config.JWTSecret; // 这是加密的key（密钥）
+        let secretOrPrivateKey= global.myAppConfig.JWTSecret; // 这是加密的key（密钥）
         let remTime = 60*60*24;
         if(remPass){
             remTime = 60*60*24*30;

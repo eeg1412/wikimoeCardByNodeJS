@@ -1,6 +1,5 @@
 var nodemailer = require('nodemailer');
 var emailCodeModel = require('../models/emailCode');
-var config = require('config-lite')(__dirname);
 var logModel = require('../models/log');
 var jwt = require('jsonwebtoken');
 var chalk = require('chalk');
@@ -30,7 +29,7 @@ exports.writeLog = function (logObject) {
 }
 //检查token
 exports.tokenCheck = async function (token) {
-    let secretOrPrivateKey = config.JWTSecret; // 这是加密的key（密钥）
+    let secretOrPrivateKey = global.myAppConfig.JWTSecret; // 这是加密的key（密钥）
     return await new Promise((resolve, reject)=> {
         jwt.verify(token, secretOrPrivateKey, function (err, decode) {
             if (err) {  //  时间失效的时候/ 伪造的token 
@@ -151,16 +150,16 @@ exports.sendMail = function(email, IP) {
         var code = this.randomNum(100001, 999999);
         var time = Math.round(new Date().getTime()/1000);
         var mailTransport = nodemailer.createTransport({
-            host: config.smtpHost,
-            port: config.smtpPort,
+            host: global.myAppConfig.smtpHost,
+            port: global.myAppConfig.smtpPort,
             auth: {
-                user: config.smtpAuth.user,
-                pass: config.smtpAuth.pass
+                user: global.myAppConfig.smtpAuth.user,
+                pass: global.myAppConfig.smtpAuth.pass
             }
         });
         
         mailTransport.sendMail({
-            from: config.smtpAuth.user, //你的邮箱
+            from: global.myAppConfig.smtpAuth.user, //你的邮箱
             to: email, //发给谁
             subject: '抽卡邮箱验证码',
             text: '您本次的邮箱验证码为：'+code+'。半小时内可重复使用！'

@@ -1,8 +1,6 @@
 var utils = require('../utils/utils');
 var userData = require('../utils/database/user');
 var md5 = require('md5-node');
-var fs = require('fs');
-var config = require('config-lite')(__dirname);
 var chalk = require('chalk');
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);

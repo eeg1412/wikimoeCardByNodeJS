@@ -30,6 +30,7 @@
     title="请登录"
     :before-close="cancelLoginShow"
     :visible.sync="loginShow"
+    :close-on-click-modal="false"
     class="reg_code_dialog"
     width="100%">
     <el-form ref="form" :model="form" label-width="80px" @keyup.enter.native="goLogin()">

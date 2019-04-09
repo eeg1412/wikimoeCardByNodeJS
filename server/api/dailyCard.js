@@ -2,7 +2,6 @@ var utils = require('../utils/utils');
 var userData = require('../utils/database/user');
 var md5 = require('md5-node');
 var fs = require('fs');
-var config = require('config-lite')(__dirname);
 var chalk = require('chalk');
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
@@ -53,7 +52,7 @@ module.exports = async function(req, res, next){
                 let dailyCardTime = Math.round(Number(result.dailyCardTime)*1000);
                 let timeNow = Math.round(new Date().getTime()/1000);
                 if(new Date(timeNow*1000).toDateString()===new Date(dailyCardTime).toDateString()){//如果是同天
-                    if(dailyCard>=config.dailyChance){
+                    if(dailyCard>=global.myAppConfig.dailyChance){
                         res.send({
                             code:3,
                             msg:'已经超过今天的抽卡次数了！'
@@ -144,7 +143,7 @@ module.exports = async function(req, res, next){
                     choiseIndex:sel,
                     emailmd5:emailmd5,
                     card:cardId,
-                    leftGetChance:config.dailyChance-dailyCard,
+                    leftGetChance:global.myAppConfig.dailyChance-dailyCard,
                     msg:'ok'
                 });
             }else{

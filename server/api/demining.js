@@ -1,10 +1,8 @@
 var utils = require('../utils/utils');
 var deminingModel = require('../models/demining');
 var md5 = require('md5-node');
-var usersModel = require('../models/users');
 var userData = require('../utils/database/user');
 var chalk = require('chalk');
-var config = require('config-lite')(__dirname);
 
 var mineSweepingMap = function (returnData) {
     //20,30

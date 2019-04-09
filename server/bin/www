@@ -3,19 +3,15 @@
 /**
  * Module dependencies.
  */
-var app = require('../app');
-var debug = require('debug')('wikimoecard:server');
-var http = require('http');
-var config = require('config-lite')(__dirname);
-var demining = require('../api/demining');
-
+let app = require('../app');
+let debug = require('debug')('wikimoecard:server');
+let http = require('http');
+let demining = require('../api/demining');
 /**
  * Get port from environment and store in Express.
  */
-
-var port = normalizePort(config.port || '3000');
+var port = normalizePort(global.myAppConfig.port || '3000');
 app.set('port', port);
-
 /**
  * Create HTTP server.
  */
