@@ -56,7 +56,8 @@ export default {
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       userData:null,
       openTime:null,
-      selPick:0
+      selPick:0,
+      loading:false,
     }
   },
   components: {
@@ -70,7 +71,10 @@ export default {
       // this.socket.emit('demining',{time:new Date()});
       console.log(data);
       if(this.openTime===data.time){
-        hideLoading();
+        if(this.loading){
+          hideLoading();
+          this.loading = false;
+        }
         this.openTime = null;
       }
       if(data.code==1){//一般性错误提示
@@ -104,6 +108,10 @@ export default {
 
     });
     this.socket.on('connect', () => {
+      if(this.loading){
+        hideLoading();
+        this.loading = false;
+      }
       this.$message({
         message: '已连接服务器！',
         type: 'success'
@@ -156,6 +164,7 @@ export default {
           time:this.openTime
         }
         showLoading();
+        this.loading = true;
         this.socket.emit('demining',parmas);
         this.selBlock = null;
       }else{
