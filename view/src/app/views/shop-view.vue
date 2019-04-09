@@ -10,9 +10,11 @@
     </div>
     <el-collapse-transition>
       <div class="shop_card_list_body" v-if="openList">
-        <div>
-          <el-button type="primary" @click="back()">返回购买</el-button>
-          <el-button type="primary" @click="openAll()">全部翻开</el-button>
+        <div class="shop_card_list_btn_body" id="shopCardListBtnBody">
+          <div class="shop_card_list_btn_box" :class="shopCardListBtnBodyFixed?'flex_mode':''">
+            <el-button type="primary" @click="back()">返回购买</el-button>
+            <el-button type="primary" @click="openAll()">全部翻开</el-button>
+          </div>
         </div>
         <sequential-entrance delay="100" tag="div">
           <div v-for="(item,index) in cardList" v-bind:key="index+1" class="shop_card_list_box" :class="item.seled?'selectedcard':''" @click="openCard(index)">
@@ -53,7 +55,7 @@
 </template>
 
 <script>
-import {PrefixInteger,loadingImg,showLoading,hideLoading} from "../../utils/utils";
+import {scrollToTop,PrefixInteger,loadingImg,showLoading,hideLoading} from "../../utils/utils";
 import rotate3DCard from '../components/rotateCard.vue';
 import menuView from '../components/menu.vue';
 import {authApi} from "../api";
@@ -65,6 +67,7 @@ export default {
       cardList:[],
       userData:null,
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
+      shopCardListBtnBodyFixed:false
     }
   },
   components: {
@@ -73,8 +76,18 @@ export default {
   },
   mounted() {
     this.getUserInfo();
+    window.addEventListener('scroll', this.menuTop);
   },
   methods: {
+    menuTop(){
+      let el = document.getElementById('shopCardListBtnBody');
+      if(!el){
+        return false;
+      }
+      let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      let offsetTop = el.offsetTop;
+      scrollTop > offsetTop ? this.shopCardListBtnBodyFixed = true : this.shopCardListBtnBodyFixed = false;
+    },
     back(){
       this.cardList = [];
       this.openList = false;
@@ -111,16 +124,6 @@ export default {
               let CardSrcItem = '/static/img/'+PrefixInteger(cardResData[i][0],4)+'.jpg';
               cardSrc.push(CardSrcItem);
             }
-            showLoading();
-            new Promise((resolve, reject)=>{
-              loadingImg(cardSrc,resolve, reject);
-            }).then((result) => {
-                hideLoading();
-            }).catch((reason)=> {
-              console.log(reason);
-                hideLoading();
-                this.$message.error('图片资源加载失败');
-            });
             for(let i=0;i<cardResData.length;i++){
               let cardId = cardResData[i];
               let cardDataItem = {
@@ -131,6 +134,7 @@ export default {
             }
             this.cardList = cardData;
             setTimeout(()=>{
+              scrollToTop(0,200);
               this.openList = true;
             },120)
             this.getUserInfo();
@@ -147,6 +151,9 @@ export default {
           }
       });
     }
+  },
+  beforeDestroy(){
+    window.removeEventListener('scroll', this.menuTop);
   }
 }
 </script>

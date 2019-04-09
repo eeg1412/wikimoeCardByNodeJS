@@ -36,8 +36,18 @@ const router = new VueRouter({
 })
 router.beforeEach((to, from, next) => {
   console.log(to);
-  showLoading();
-  next();
+  if(to.meta.login){
+    let token = sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token");
+    if(token){
+      next();
+    }else{
+      router.replace('/');
+      return false;
+    }
+  }else{
+    showLoading();
+    next();
+  }
 });
 router.afterEach((to, from) => {
   hideLoading();

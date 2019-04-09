@@ -79,6 +79,9 @@ module.exports = async function(req, res, next){
         return false;
     }
     if(type==0){
+        console.info(
+            chalk.green(email+'选择的是抽卡类商品，IP为：'+IP)
+        )
         //抽卡类商品
         let times = 0;
         let price = 0;
@@ -109,11 +112,17 @@ module.exports = async function(req, res, next){
             });
             return false;
         }
+        console.info(
+            chalk.green(email+'选择了'+times+'抽，IP为：'+IP)
+        )
         if(result.star<price){
             res.send({
                 code:0,
                 msg:'星星不足！'
             });
+            console.info(
+                chalk.yellow(email+'的抽卡星星不足抽，IP为：'+IP)
+            )
             return false;
         }
         for(let i=0;i<times;i++){
@@ -146,6 +155,24 @@ module.exports = async function(req, res, next){
             );
             throw err;
         })
+        let timeNow = Math.round(new Date().getTime()/1000);
+        let logObject = {
+            email:email,
+            md5:md5(email),
+            nickName:result.nickName,
+            type:'shop_1',
+            time:timeNow,
+            data:{
+                card:card,
+                star:price,
+                times:times
+            },
+            ip:IP
+        }
+        utils.writeLog(logObject);
+        console.info(
+            chalk.green(email+'成功'+times+'抽，IP为：'+IP)
+        )
         res.send({
             code:1,
             data:card,

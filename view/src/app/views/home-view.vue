@@ -124,6 +124,9 @@
               <span v-if="item.type=='demining'">
                 我用{{item.data.pickaxe | pickaxeName}}在<span class="wm_card_get_list_card_link" @click="goMenu('/demining')">星星矿场</span>坐标【{{item.data.x+1}},{{item.data.y+1}}】处挖到了{{item.data.star}}颗星星，同时获得了{{item.data.exp}}点经验值！！请叫我专业的矿工！
               </span>
+              <span v-if="item.type=='shop_1'">
+                我用{{item.data.star}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/shop')">星星商店</span>购买了{{item.data.times}}次抽卡机会，共抽中了<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card6)">{{item.data.card6.length}}</span>张六星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card5)">{{item.data.card5.length}}</span>张五星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card4)">{{item.data.card4.length}}</span>张四星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card3)">{{item.data.card3.length}}</span>张三星及其以下的卡。
+              </span>
             </p>
           </div>
         </div>
@@ -146,7 +149,7 @@
 
 <script>
 import {authApi} from "../api";
-import {mailCheck,PrefixInteger,md5Check,loadingImg,showLoading,hideLoading} from "../../utils/utils";
+import {scrollToTop,mailCheck,PrefixInteger,md5Check,loadingImg,showLoading,hideLoading} from "../../utils/utils";
 import rotate3DCard from '../components/rotateCard.vue';
 import menuView from '../components/menu.vue';
 import md5 from 'js-md5';
@@ -221,6 +224,19 @@ export default {
     this.urlUserInfo();
   },
   methods: {
+    openShopCard(cardArr){
+      if(cardArr.length<1){
+        return false;
+      }
+      let shopImgHTML = '';
+      for(let i=0;i<cardArr.length;i++){
+        shopImgHTML = shopImgHTML+'<div class="watch_shop_img"><img src="'+'/static/img/'+PrefixInteger(cardArr[i],4)+'.jpg'+'" /></div>';
+      }
+      this.$alert('<div class="watch_shop_body">'+shopImgHTML+'</div>', '查看卡牌', {
+        dangerouslyUseHTMLString: true,
+        customClass:'watchShopAlert'
+      });
+    },
     goMenu(p){
       this.$refs.menu.login(p);
     },
@@ -261,7 +277,33 @@ export default {
           if(res.data.code==0){
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
-            this.logList = res.data.data;
+            let logListData = res.data.data;
+            for(let i=0;i<logListData.length;i++){
+              if(logListData[i].type=='shop_1'){//判断是否为商店
+                let shopCardData = logListData[i].data.card;
+                let card3 = [];
+                let card4 = [];
+                let card5 = [];
+                let card6 = [];
+                for(let j=0;j<shopCardData.length;j++){
+                  if(Number(shopCardData[j])<1000){//三星卡及其以下
+                    card3.push(shopCardData[j]);
+                  }else if(Number(shopCardData[j])<2000){//四星卡
+                    card4.push(shopCardData[j]);
+                  }else if(Number(shopCardData[j])<3000){//五星卡
+                    card5.push(shopCardData[j]);
+                  }else if(Number(shopCardData[j])<4000){//六星卡
+                    card6.push(shopCardData[j]);
+                  }
+                }
+                logListData[i].data.card3 = card3;
+                logListData[i].data.card4 = card4;
+                logListData[i].data.card5 = card5;
+                logListData[i].data.card6 = card6;
+              }
+            }
+            console.log(logListData);
+            this.logList = logListData;
             this.logListTotal = res.data.total;
             this.logPage = page;
           }
@@ -271,24 +313,6 @@ export default {
       this.$alert('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
         dangerouslyUseHTMLString: true
       });
-    },
-    scrollToTop(number = 0, time){
-        if (!time) {
-            document.body.scrollTop = document.documentElement.scrollTop = number;
-            return number;
-        }
-        const spacingTime = 20; // 设置循环的间隔时间  值越小消耗性能越高
-        let spacingInex = time / spacingTime; // 计算循环的次数
-        let nowTop = document.body.scrollTop + document.documentElement.scrollTop; // 获取当前滚动条位置
-        let everTop = (number - nowTop) / spacingInex; // 计算每次滑动的距离
-        let scrollTimer = setInterval(() => {
-            if (spacingInex > 0) {
-                spacingInex--;
-                this.scrollToTop(nowTop += everTop);
-            } else {
-                clearInterval(scrollTimer); // 清除计时器
-            }
-        }, spacingTime);
     },
     logPageChange(val){
       this.getLog(val);
@@ -307,7 +331,7 @@ export default {
           this.userCard=null;
           setTimeout(()=>{
             if(!noGoTop){
-              this.scrollToTop(450,200);
+              scrollToTop(450,200);
             }
             hideLoading();
             this.userCard = userCard_;
