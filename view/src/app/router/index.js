@@ -25,12 +25,54 @@ const router = new VueRouter({
     return savedPosition
   },
   routes: [
-    { name: 'home', path: '/', meta:{login:false}, component: HomeView },
-    { name: 'reg', path: '/reg', meta:{login:false}, component: regView },
-    { name: 'find', path: '/find', meta:{login:false}, component: findView },
-    { name: 'demining', path: '/demining', meta:{login:false}, component: deminingView },
-    { name: 'shop', path: '/star/shop', meta:{login:true}, component: shopView },
-    { name: '404', path: '/404', meta:{login:false}, component: NotfoundView },
+    {
+      name: 'home',
+      path: '/',
+      meta:{
+        login:false
+      },
+      component: HomeView
+    },
+    {
+      name: 'reg',
+      path: '/reg',
+      meta:{
+        login:false
+      },
+      component: regView
+    },
+    {
+      name: 'find',
+      path: '/find',
+      meta:{
+        login:false
+      },
+      component: findView
+    },
+    {
+      name: 'demining',
+      path: '/demining',
+      meta:{
+        login:false
+      },
+      component: deminingView
+    },
+    {
+      name: 'shop',
+      path: '/star/shop',
+      meta:{
+        login:true
+      },
+      component: shopView
+    },
+    {
+      name: '404',
+      path: '/404',
+      meta:{
+        login:false
+      },
+      component: NotfoundView
+    },
     { path: '*', redirect: '/404' },
   ],
 })
