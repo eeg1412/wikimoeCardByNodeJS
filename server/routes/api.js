@@ -11,6 +11,9 @@ var apiSendMail = require('../api/sendEMail');
 var apiUserInfo = require('../api/userInfo');
 var apiShop = require('../api/shop');
 
+var adminApiCheckInstall = require('../api/admin/install/checkInstall');
+var adminApiInstall = require('../api/admin/install/install');
+
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -26,5 +29,8 @@ router.post('/sendmail', apiSendMail);
 router.post('/login', apiLogin);
 router.post('/userinfo', apiUserInfo);
 router.post('/shop', apiShop);
+
+router.get('/admin/checkinstall', adminApiCheckInstall);
+router.post('/admin/install', adminApiInstall);
 
 module.exports = router;

@@ -30,5 +30,11 @@ export default function (api) {
     shop(data){
       return api.post('shop',data)
     },
+    admincheckinstall(){
+      return api.get('admin/checkinstall')
+    },
+    admininstall(data){
+      return api.post('admin/install',data)
+    },
   }
 }

@@ -11,6 +11,9 @@ const findView = () => import(/* webpackChunkName: "findView" */ '@/views/find-v
 const deminingView = () => import(/* webpackChunkName: "deminingView" */ '@/views/demining-view.vue')
 const shopView = () => import(/* webpackChunkName: "deminingView" */ '@/views/shop-view.vue')
 
+const adminLoginView = () => import(/* webpackChunkName: "adminLoginView" */ '@/views/admin/login-view.vue')
+const adminInstallView = () => import(/* webpackChunkName: "adminInstallView" */ '@/views/admin/install-view.vue')
+
 if (process.env.NODE_ENV === 'development') {
   Vue.use(VueRouter)
 }
@@ -29,7 +32,8 @@ const router = new VueRouter({
       name: 'home',
       path: '/',
       meta:{
-        login:false
+        login:false,
+        admin:false,
       },
       component: HomeView
     },
@@ -37,7 +41,8 @@ const router = new VueRouter({
       name: 'reg',
       path: '/reg',
       meta:{
-        login:false
+        login:false,
+        admin:false,
       },
       component: regView
     },
@@ -45,7 +50,8 @@ const router = new VueRouter({
       name: 'find',
       path: '/find',
       meta:{
-        login:false
+        login:false,
+        admin:false,
       },
       component: findView
     },
@@ -53,7 +59,8 @@ const router = new VueRouter({
       name: 'demining',
       path: '/demining',
       meta:{
-        login:false
+        login:false,
+        admin:false,
       },
       component: deminingView
     },
@@ -61,15 +68,35 @@ const router = new VueRouter({
       name: 'shop',
       path: '/star/shop',
       meta:{
-        login:true
+        login:true,
+        admin:false,
       },
       component: shopView
+    },
+    {
+      name: 'adminLogin',
+      path: '/cardadmin',
+      meta:{
+        login:false,
+        admin:true,
+      },
+      component: adminLoginView
+    },
+    {
+      name: 'adminInstallView',
+      path: '/cardinstall',
+      meta:{
+        login:false,
+        admin:true,
+      },
+      component: adminInstallView
     },
     {
       name: '404',
       path: '/404',
       meta:{
-        login:false
+        login:false,
+        admin:false,
       },
       component: NotfoundView
     },
@@ -78,12 +105,20 @@ const router = new VueRouter({
 })
 router.beforeEach((to, from, next) => {
   console.log(to);
-  if(to.meta.login){
+  if(to.meta.login&&!to.meta.admin){
     let token = sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token");
     if(token){
       next();
     }else{
       router.replace('/');
+      return false;
+    }
+  }else if(to.meta.login&&to.meta.admin){
+    let token = sessionStorage.getItem("adminToken")?sessionStorage.getItem("adminToken"):localStorage.getItem("adminToken");
+    if(token){
+      next();
+    }else{
+      router.replace('/cardadmin');
       return false;
     }
   }else{

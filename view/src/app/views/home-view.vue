@@ -218,12 +218,20 @@ export default {
       }
   },
   mounted() {
+    this.chekInstall();
     this.getRememberEmail();
     this.getLog(1);
     this.setCardScroll();
     this.urlUserInfo();
   },
   methods: {
+    chekInstall(){
+      authApi.admincheckinstall().then(res => {
+        if(res.data.code==1){
+          this.$router.replace({ path:'/cardinstall'});
+        }
+      });
+    },
     openShopCard(cardArr){
       if(cardArr.length<1){
         return false;
