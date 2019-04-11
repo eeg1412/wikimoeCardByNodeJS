@@ -13,6 +13,8 @@ var apiShop = require('../api/shop');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
+var adminApiLoging = require('../api/admin/login');
+var adminApiSetting = require('../api/admin/setting');
 
 
 /* GET users listing. */
@@ -32,5 +34,7 @@ router.post('/shop', apiShop);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);
+router.post('/admin/login', adminApiLoging);
+router.post('/admin/setting', adminApiSetting);
 
 module.exports = router;

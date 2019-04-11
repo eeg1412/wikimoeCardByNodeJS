@@ -1,40 +1,20 @@
 var md5 = require('md5-node');
-var utils = require('../utils/utils');
+var utils = require('../../utils/utils');
 var chalk = require('chalk');
-var userData = require('../utils/database/user');
+var adminAccount = require('../../utils/database/adminAccount');
 var jwt = require('jsonwebtoken');
 var chalk = require('chalk');
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
-    let email = req.body.email;
+    let account = req.body.account;
     let password = req.body.password;
     let captcha = req.body.captcha;
     let remPass = req.body.remPass;
     console.info(
-        chalk.green(email+'开始登录！IP为：'+IP)
+        chalk.green(account+'开始登录！IP为：'+IP)
     )
     // 数据验证
-    if(email&&password&&captcha){//判断是否有数据
-        if(!utils.emailCheck(email)){
-            res.send({
-                code:0,
-                msg:'邮箱格式有误！'
-            });
-            console.info(
-                chalk.yellow(email+'邮箱格式有误！IP为：'+IP)
-            )
-            return false;
-        }
-        if(!utils.passwordCheck(password)){
-            res.send({
-                code:0,
-                msg:'账户或密码不正确！'
-            });
-            console.info(
-                chalk.yellow(email+'密码格式有误！IP为：'+IP)
-            )
-            return false;
-        }
+    if(account&&password&&captcha){//判断是否有数据
         if(req.session.captcha!=captcha){
             req.session.destroy((err)=> {
                 chalk.red(IP+'验证码清理失败'+'，'+err)
@@ -44,14 +24,14 @@ module.exports = async function(req, res, next){
                 msg:'验证码有误！'
             });
             console.info(
-                chalk.yellow('email:'+email+'图形验证码有误。IP为：'+IP)
+                chalk.yellow('account:'+account+'图形验证码有误。IP为：'+IP)
             );
             return false;
         }
         let params = {
-            email:email
+            account:account
         }
-        let result = await userData.findUser(params).catch ((err)=>{
+        let result = await adminAccount.findAdmin(params).catch ((err)=>{
             res.send({
                 code:0,
                 msg:'内部错误请联系管理员！'
@@ -64,8 +44,11 @@ module.exports = async function(req, res, next){
         if(!result){
             res.send({
                 code:0,
-                msg:'无该用户！'
+                msg:'账户或密码不正确！'
             });
+            console.info(
+                chalk.yellow(account+'没有该账户！IP为：'+IP)
+            )
             return false;
         }
         if(md5(password)!==result.password){
@@ -74,21 +57,11 @@ module.exports = async function(req, res, next){
                 msg:'账户或密码不正确！'
             });
             console.info(
-                chalk.yellow(email+'密码错误！IP为：'+IP)
+                chalk.yellow(account+'密码错误！IP为：'+IP)
             )
             return false;
         }
-        if(result.ban >0){
-            res.send({
-                code:0,
-                msg:'该账户已被封禁！'
-            });
-            console.info(
-                chalk.yellow(req.body.email+'已被封禁！IP为：'+IP)
-            );
-            return false;
-        }
-        let content ={email:email}; // 要生成token的主题信息
+        let content ={account:account}; // 要生成token的主题信息
         let secretOrPrivateKey= global.myAppConfig.JWTSecret; // 这是加密的key（密钥）
         let remTime = 60*60*24;
         if(remPass){
@@ -98,13 +71,13 @@ module.exports = async function(req, res, next){
             expiresIn: remTime
         });
         let filters = {
-            email: email
+            account: account
         }
         let updataParams = {
             token:token,
             ip:IP
         }
-        await userData.updataUser(filters,updataParams).catch ((err)=>{
+        await adminAccount.updataAdmin(filters,updataParams).catch ((err)=>{
             res.send({
                 code:0,
                 msg:'内部错误请联系管理员！'
@@ -120,7 +93,7 @@ module.exports = async function(req, res, next){
             token:token
         });
         console.info(
-            chalk.green(email+'登录成功！IP为：'+IP)
+            chalk.green(account+'登录成功！IP为：'+IP)
         )
     }else{
         res.send({

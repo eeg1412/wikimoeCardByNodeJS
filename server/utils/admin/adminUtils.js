@@ -19,6 +19,9 @@ exports.writeGlobalOpt = function (opt) {
     fs.writeFileSync('./config/config.json', baseConfig_, 'utf8');
     global.myAppConfig = Object.assign(global.myAppConfig, baseConfig);
     console.info(
-        chalk.green('配置成功修改')
+        chalk.green('配置修改成功，新的配置为：')
+    );
+    console.info(
+        chalk.green(JSON.stringify(global.myAppConfig))
     );
 }

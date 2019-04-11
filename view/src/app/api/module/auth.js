@@ -36,5 +36,11 @@ export default function (api) {
     admininstall(data){
       return api.post('admin/install',data)
     },
+    adminLogin(data){
+      return api.post('admin/login',data)
+    },
+    adminsetting(data){
+      return api.post('admin/setting',data)
+    },
   }
 }

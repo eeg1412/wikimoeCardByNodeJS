@@ -1,0 +1,18 @@
+.wmcard_admin_center{
+  min-height: 100vh;
+}
+.wmcard_admin_center .el-menu{
+  min-height: 100%;
+}
+.wmcard_admin_header{
+  height: 60px;
+  line-height: 60px;
+  color: #fff;
+  background-color: #000;
+}
+.wmcard_admin_header_link{
+  color: #fff;
+}
+.wmcard_admincenter_common_right_body{
+  min-width: 600px;
+}

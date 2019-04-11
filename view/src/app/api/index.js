@@ -30,6 +30,14 @@ api.interceptors.response.use(
       sessionStorage.removeItem("token");
       localStorage.removeItem("token");
       router.replace('/');
+    }else if(response.data.code==402){
+      Message({
+        message:'管理员信息已过期，请重新登录！',
+        type:'error'
+      })
+      sessionStorage.removeItem("adminToken");
+      localStorage.removeItem("adminToken");
+      router.replace('/cardadmin');
     }
     return response;
   }, error => {

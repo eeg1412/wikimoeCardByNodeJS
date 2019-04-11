@@ -1,13 +1,6 @@
 <template>
-<div class="common_body">
-  <h5 class="common_title">初始化安装</h5>
+<div class="wmcard_admincenter_common_right_body">
   <el-form ref="form" :model="form" label-width="140px">
-    <el-form-item label="管理员账号">
-      <el-input v-model="form.account" placeholder="请设定管理员账号"></el-input>
-    </el-form-item>
-    <el-form-item label="管理员密码">
-      <el-input v-model="form.password" show-password placeholder="请设定管理员密码"></el-input>
-    </el-form-item>
     <el-form-item label="每日抽卡次数">
       <el-input v-model="form.dailyChance" placeholder="请设定每日抽卡次数" type="number"></el-input>
     </el-form-item>
@@ -30,43 +23,55 @@
       <el-input v-model="form.JWTSecret" placeholder="用于JWT加密字符串"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="onSubmit">安装</el-button>
-      <el-button @click="backIndex">返回首页</el-button>
+      <el-button type="primary" @click="onSubmit">保存</el-button>
     </el-form-item>
   </el-form>
 </div>
 </template>
 
 <script>
-import {authApi} from "../../api";
+import {authApi} from "../../../api";
 export default {
   data() {
     return {
       form: {
-          account: '',
-          password: '',
-          dailyChance: '',
-          smtpHost: '',
-          smtpPort: '',
+          sessionSecret:'',//session加密字符串
+          JWTSecret:'',//JWT加密字符串
+          dailyChance:1,//每日抽卡次数
+          smtpHost: '',//邮件发送host
+          smtpPort: 1,//邮件发送端口
           smtpAuthUser: '',
-          smtpAuthPass: '',
-          sessionSecret: '',
-          JWTSecret: '',
-        }
+          smtpAuthPass:'',
+        },
+      token:sessionStorage.getItem("adminToken")?sessionStorage.getItem("adminToken"):localStorage.getItem("adminToken"),
     }
   },
   mounted() {
-    this.chekInstall();
+    this.getSettingInfo();
   },
   methods: {
-    chekInstall(){
-      authApi.admincheckinstall().then(res => {
-        if(res.data.code!=1){
-          this.$router.replace({ path:'/'});
+    getSettingInfo(){
+      let params = {
+        token:this.token,
+        type:'get'
+      }
+      authApi.adminsetting(params).then(res => {
+        console.log(res);
+        if(res.data.code==1){
+          let resData = res.data.data;
+          this.form.sessionSecret = resData.sessionSecret;//session加密字符串
+          this.form.JWTSecret = resData.JWTSecret;//JWT加密字符串
+          this.form.dailyChance = resData.dailyChance;//每日抽卡次数
+          this.form.smtpHost = resData.smtpHost;//邮件发送host
+          this.form.smtpPort = resData.smtpPort;//邮件发送端口
+          this.form.smtpAuthUser = resData.smtpAuth.user;
+          this.form.smtpAuthPass = resData.smtpAuth.pass;
+        }else{
+          this.$message.error(res.data.msg);
         }
       });
     },
-    onSubmit() {
+    onSubmit(){
       // 校验数据
       for(var i in this.form) {
           if(!this.form[i]){
@@ -84,26 +89,24 @@ export default {
           this.$message.error('端口必须为数字');
           return false;
       }
-      let params = {config:this.form};
-      authApi.admininstall(params).then(res => {
-          console.log(res);
-          if(res.data.code==1){
-            this.$alert('恭喜您，安装成功！', '提示', {
-              confirmButtonText: '确定',
-              showClose:false,
-              callback: action => {
-                this.$router.push({ path:'/'});
-              }
-            });
-          }else{
-            this.$message.error(res.data.msg);
-          }
-      })
-    },
-    backIndex(){
-      this.$router.push({ path:'/'});
+      let params = {
+        token:this.token,
+        type:'edit',
+        config:this.form
+      }
+      authApi.adminsetting(params).then(res => {
+        console.log(res);
+        if(res.data.code==1){
+          this.$message({
+            message: '修改成功！',
+            type: 'success'
+          });
+        }else{
+          this.$message.error(res.data.msg);
+        }
+      });
     }
-  }
+  },
 }
 </script>
 

@@ -13,6 +13,7 @@ const shopView = () => import(/* webpackChunkName: "deminingView" */ '@/views/sh
 
 const adminLoginView = () => import(/* webpackChunkName: "adminLoginView" */ '@/views/admin/login-view.vue')
 const adminInstallView = () => import(/* webpackChunkName: "adminInstallView" */ '@/views/admin/install-view.vue')
+const adminCenter = () => import(/* webpackChunkName: "adminInstallView" */ '@/views/admin/center/index.vue')
 
 if (process.env.NODE_ENV === 'development') {
   Vue.use(VueRouter)
@@ -90,6 +91,25 @@ const router = new VueRouter({
         admin:true,
       },
       component: adminInstallView
+    },
+    {
+      path: '/cardadmin/center',
+      component: adminCenter,
+      children: [
+        { //默认
+          path: '',
+          redirect: 'setting'
+        },
+        {//设置
+          name: 'adminSetting',
+          path: 'setting',
+          component: resolve => require(['../views/admin/center/setting.vue'], resolve),
+          meta:{
+            login:true,
+            admin:true,
+          },
+        },
+      ]
     },
     {
       name: '404',

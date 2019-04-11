@@ -71,7 +71,6 @@ module.exports = async function(req, res, next){
                     pass: config_.smtpAuthPass//密码
                 }
             };
-            console.log(opt)
             adminUtilsDatabase.saveAdminAccount(adminParams);
             adminUtils.writeGlobalOpt(opt);
             res.send({
