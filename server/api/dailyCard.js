@@ -82,27 +82,15 @@ module.exports = async function(req, res, next){
                     return false;
                 }
                 let cardDataBase = {};
-                //判断是否有卡牌信息
-                if(result.card){
-                    cardDataBase = result.card;
-                    //判断是否已经拥有该卡
-                    if(cardDataBase[cardId]){
-                        cardDataBase[cardId] = cardDataBase[cardId]+1;
-                    }else{
-                        cardDataBase[cardId] = 1;
-                    }
-                }else{
-                    cardDataBase[cardId] = 1;
-                }
+                cardDataBase['card.'+cardId] = 1;
                 let emailmd5 = result.md5;
                 dailyCard = dailyCard +1;
-
                 let filters = {
                     email: userEmail
                 }
                 let updataParams = {
                     dailyCard:dailyCard,
-                    card: cardDataBase,
+                    $inc:cardDataBase,
                     ip:IP,
                     dailyCardTime:timeNow
                 }

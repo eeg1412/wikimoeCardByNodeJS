@@ -84,10 +84,7 @@ module.exports = async function(req, res, next){
         let times = 0;
         let price = 0;
         let card = [];
-        let databaseCard = result.card;
-        if(!databaseCard){
-            databaseCard = {};
-        }
+        let databaseCard = {};
         if(goods==0){
             times = 1;
             price = 30;
@@ -127,20 +124,19 @@ module.exports = async function(req, res, next){
             let rareNum = utils.randomNum(1,100);
             let cardId = utils.wmCreatCardId(rareNum);
             card.push(cardId);
-            if(databaseCard[cardId]){
-                databaseCard[cardId] = databaseCard[cardId]+1;
+            if(databaseCard['card.'+cardId]){
+                databaseCard['card.'+cardId] = databaseCard['card.'+cardId]+1;
             }else{
-                databaseCard[cardId] = 1;
+                databaseCard['card.'+cardId] = 1;
             }  
         }
+        databaseCard['star'] = -price;
         let filters = {
             email: email
         }
+        console.log(databaseCard);
         let updataParams = {
-            $inc:{
-                star:-price
-            },
-            card: databaseCard,
+            $inc:databaseCard,
             ip:IP
         }
         await userData.updataUser(filters,updataParams).catch ((err)=>{

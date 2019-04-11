@@ -27,6 +27,8 @@ api.interceptors.response.use(
         message:'用户信息已过期，请重新登录！',
         type:'error'
       })
+      sessionStorage.removeItem("token");
+      localStorage.removeItem("token");
       router.replace('/');
     }
     return response;
