@@ -65,7 +65,7 @@ module.exports = async function(req, res, next){
     if((result.token!=token)||(result.token=='')){
         res.send({
             code:402,
-            msg:'账户或密码不正确！'
+            msg:'账户信息已失效，请重新登录！'
         });
         console.info(
             chalk.yellow(account+'和数据库的token对不上,IP为：'+IP)

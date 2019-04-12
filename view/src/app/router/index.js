@@ -109,6 +109,24 @@ const router = new VueRouter({
             admin:true,
           },
         },
+        {//给星星
+          name: 'adminGiveStar',
+          path: 'givestar',
+          component: resolve => require(['../views/admin/center/givestar.vue'], resolve),
+          meta:{
+            login:true,
+            admin:true,
+          },
+        },
+        {//用户列表
+          name: 'userList',
+          path: 'userlist',
+          component: resolve => require(['../views/admin/center/userlist.vue'], resolve),
+          meta:{
+            login:true,
+            admin:true,
+          },
+        },
       ]
     },
     {

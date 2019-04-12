@@ -42,5 +42,8 @@ export default function (api) {
     adminsetting(data){
       return api.post('admin/setting',data)
     },
+    givestar(data){
+      return api.post('admin/givestar',data)
+    },
   }
 }

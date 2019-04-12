@@ -40,7 +40,10 @@ export default {
     }
   },
   mounted() {
-
+    let token = sessionStorage.getItem("adminToken")?sessionStorage.getItem("adminToken"):localStorage.getItem("adminToken");
+    if(token){
+      this.$router.replace({ path:'/cardadmin/center'});
+    }
   },
   methods: {
     captchaUpdata(){

@@ -15,6 +15,7 @@ var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
 var adminApiLoging = require('../api/admin/login');
 var adminApiSetting = require('../api/admin/setting');
+var adminApiGiveStar = require('../api/admin/givestar');
 
 
 /* GET users listing. */
@@ -36,5 +37,6 @@ router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);
 router.post('/admin/login', adminApiLoging);
 router.post('/admin/setting', adminApiSetting);
+router.post('/admin/givestar', adminApiGiveStar);
 
 module.exports = router;

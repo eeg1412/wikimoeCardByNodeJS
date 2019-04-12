@@ -1,5 +1,7 @@
 var chalk = require('chalk');
 var fs = require('fs');
+var utils = require('../utils');
+var adminAccount = require('../database/adminAccount');
 
 // 写入配置
 exports.writeGlobalOpt = function (opt) {
@@ -24,4 +26,40 @@ exports.writeGlobalOpt = function (opt) {
     console.info(
         chalk.green(JSON.stringify(global.myAppConfig))
     );
+}
+
+exports.checkAdmin = async function (token,IP){
+    let tokenDecode = await utils.tokenCheck(token).catch ((err)=>{
+        console.info(
+            chalk.yellow('登录信息已失效！')
+        );
+        throw err;
+    });
+    if(!tokenDecode.account){
+        console.info(
+            chalk.yellow('登录信息有误！')
+        );
+        return false;
+    }
+    let account = tokenDecode.account;
+    let params = {
+        account:account
+    }
+    let result = await adminAccount.findAdmin(params).catch ((err)=>{
+        console.error(
+            chalk.red('数据库查询错误！')
+        );
+        throw err;
+    })
+    if(!result){
+        return false;
+    }
+    if((result.token!=token)||(result.token=='')){
+        console.info(
+            chalk.yellow(account+'和数据库的token对不上,IP为：'+IP)
+        )
+        return false;
+    }else{
+        return result;
+    }
 }
