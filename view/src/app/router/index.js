@@ -127,6 +127,15 @@ const router = new VueRouter({
             admin:true,
           },
         },
+        {//修改密码
+          name: 'passwordchange',
+          path: 'passwordchange',
+          component: resolve => require(['../views/admin/center/passwordchange.vue'], resolve),
+          meta:{
+            login:true,
+            admin:true,
+          },
+        },
       ]
     },
     {

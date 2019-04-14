@@ -5,9 +5,10 @@ var adminUtils = require('../../utils/admin/adminUtils');
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
-    let page_ = isNaN(Math.round(req.body.page))?1:Math.round(req.body.page);
+    let _id = req.body.id||-1;
+    let type = req.body.type;
     console.info(
-        chalk.green('开始查询用户列表,IP为：'+IP)
+        chalk.green('开始封禁或者解封用户,IP为：'+IP)
     )
     if(!token){
         res.send({
@@ -30,15 +31,34 @@ module.exports = async function(req, res, next){
         )
         return false;
     }
-    let parmas = {};
-    let pageSize_ = 5;
-    let getParams = '_id email md5 nickName star score level exp deminingStarCount ip ban';
-    let sortData = {'_id':-1}
-    let userData_ =  await userData.findUserInPage(parmas,pageSize_,page_,getParams,sortData);
-
+    let banType = 0;
+    if(type=='ban'){
+        banType = 1;
+    }
+    let filters = {_id:_id};
+    let parmas = {
+        ban:banType,
+        token:''
+    };
+    userData.updataUser(filters,parmas).catch ((err)=>{
+        res.send({
+            code:0,
+            msg:'内部错误，更新失败！'
+        });
+        console.error(
+            chalk.red('数据库更新错误！')
+        );
+        throw err;
+    })
+    let text = '解封成功！';
+    if(type=='ban'){
+        text = '封号成功'
+    }
+    console.info(
+        chalk.green(text+'操作IP：'+IP)
+    );
     res.send({
         code:1,
-        data:userData_,
-        msg:'ok'
+        msg:text
     });
 }

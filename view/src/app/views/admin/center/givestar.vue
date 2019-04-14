@@ -44,7 +44,7 @@ export default {
         star:star,
         email:email
       }
-      authApi.givestar(params).then(res => {
+      authApi.admingivestar(params).then(res => {
         console.log(res);
         if(res.data.code==1){
           this.$message({

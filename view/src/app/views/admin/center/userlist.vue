@@ -38,7 +38,7 @@
     <el-table-column
       label="操作">
       <template slot-scope="scope">
-        <el-button type="text" size="small" @click="banEmail(scope)">{{scope.row.ban?'解封':'封号'}}</el-button>
+        <el-button type="text" size="small" @click="banEmail(scope.row.ban,scope.row._id)">{{scope.row.ban?'解封':'封号'}}</el-button>
         <el-button type="text" size="small" @click="watchCard(scope.row.md5)">卡牌</el-button>
       </template>
     </el-table-column>
@@ -88,16 +88,36 @@ export default {
         token:this.token,
         page:this.page
       }
-      authApi.searchuser(params).then(res => {
+      authApi.adminsearchuser(params).then(res => {
         console.log(res);
         if(res.data.code==1){
           this.tableData = res.data.data.data;
           this.cardTotle = res.data.data.total;
+        }else{
+          this.$message.error(res.data.msg);
         }
       });
     },
-    banEmail(v){
-      console.log(v);
+    banEmail(ban,id){
+      let params = {
+        token:this.token,
+        id:id,
+      }
+      if(!ban){
+        params['type'] = 'ban';
+      }
+      authApi.adminban(params).then(res => {
+        console.log(res);
+        if(res.data.code==1){
+          this.$message({
+            message: res.data.msg,
+            type: 'success'
+          });
+          this.getuserInfo();
+        }else{
+          this.$message.error(res.data.msg);
+        }
+      });
     },
   },
 }

@@ -42,11 +42,20 @@ export default function (api) {
     adminsetting(data){
       return api.post('admin/setting',data)
     },
-    givestar(data){
+    admingivestar(data){
       return api.post('admin/givestar',data)
     },
-    searchuser(data){
+    adminsearchuser(data){
       return api.post('admin/searchuser',data)
+    },
+    adminban(data){
+      return api.post('admin/ban',data)
+    },
+    adminpasswordchange(data){
+      return api.post('admin/passwordchange',data)
+    },
+    adminlogout(data){
+      return api.post('admin/logout',data)
     },
   }
 }

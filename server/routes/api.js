@@ -17,6 +17,9 @@ var adminApiLoging = require('../api/admin/login');
 var adminApiSetting = require('../api/admin/setting');
 var adminApiGiveStar = require('../api/admin/givestar');
 var adminApiSearchUser = require('../api/admin/searchUser');
+var adminApiBan = require('../api/admin/ban');
+var adminApiPasswordChange = require('../api/admin/passwordChange');
+var adminApiLogout = require('../api/admin/logout');
 
 
 /* GET users listing. */
@@ -40,5 +43,8 @@ router.post('/admin/login', adminApiLoging);
 router.post('/admin/setting', adminApiSetting);
 router.post('/admin/givestar', adminApiGiveStar);
 router.post('/admin/searchuser', adminApiSearchUser);
+router.post('/admin/ban', adminApiBan);
+router.post('/admin/passwordchange', adminApiPasswordChange);
+router.post('/admin/logout', adminApiLogout);
 
 module.exports = router;

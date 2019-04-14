@@ -18,11 +18,11 @@
             <i class="el-icon-tickets"></i>
             <span slot="title">用户列表</span>
           </el-menu-item>
-          <el-menu-item index="4">
+          <el-menu-item index="4" @click="goLink('/cardadmin/center/passwordchange')">
             <i class="el-icon-edit-outline"></i>
             <span slot="title">密码修改</span>
           </el-menu-item>
-          <el-menu-item index="5">
+          <el-menu-item index="5" @click="logout()">
             <i class="el-icon-upload2"></i>
             <span slot="title">登出</span>
           </el-menu-item>
@@ -37,15 +37,37 @@
 </template>
 
 <script>
+import {authApi} from "../../../api";
+
 export default {
   data() {
     return {
+      token:sessionStorage.getItem("adminToken")?sessionStorage.getItem("adminToken"):localStorage.getItem("adminToken")
     }
   },
   methods: {
     goLink(p){
       this.$router.push({ path:p});
-    }
+    },
+    logout(){
+      let params = {
+        token:this.token
+      }
+      authApi.adminlogout(params).then(res => {
+        console.log(res);
+        if(res.data.code==1){
+          this.$message({
+            message: '成功登出！',
+            type: 'success'
+          });
+          sessionStorage.removeItem("adminToken");
+          localStorage.removeItem("adminToken");
+          this.$router.replace('/cardadmin');
+        }else{
+          this.$message.error(res.data.msg);
+        }
+      });
+    },
   },
 }
 </script>
