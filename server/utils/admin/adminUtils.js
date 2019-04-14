@@ -33,7 +33,7 @@ exports.checkAdmin = async function (token,IP){
         console.info(
             chalk.yellow('登录信息已失效！')
         );
-        throw err;
+        return false;
     });
     if(!tokenDecode.account){
         console.info(

@@ -16,3 +16,7 @@
 .wmcard_admincenter_common_right_body{
   min-width: 600px;
 }
+.wmcard_user_page{
+  text-align: center;
+  padding: 20px 0;
+}

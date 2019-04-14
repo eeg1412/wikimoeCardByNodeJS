@@ -4,45 +4,54 @@
     :data="tableData"
     style="width: 100%">
     <el-table-column
-      prop="date"
+      prop="email"
       label="邮箱">
     </el-table-column>
     <el-table-column
-      prop="name"
+      prop="nickName"
       label="昵称">
     </el-table-column>
     <el-table-column
-      prop="address"
+      prop="star"
       label="星星">
     </el-table-column>
     <el-table-column
-      prop="address"
+      prop="score"
       label="竞技点">
     </el-table-column>
     <el-table-column
-      prop="address"
+      prop="level"
       label="等级">
     </el-table-column>
     <el-table-column
-      prop="address"
+      prop="exp"
       label="经验">
     </el-table-column>
     <el-table-column
-      prop="address"
+      prop="deminingStarCount"
       label="累计挖矿">
     </el-table-column>
     <el-table-column
-      prop="address"
+      prop="ip"
       label="IP">
     </el-table-column>
     <el-table-column
       label="操作">
       <template slot-scope="scope">
-        <el-button type="text" size="small" @click="banEmail(scope.row)">封号</el-button>
-        <el-button type="text" size="small">卡牌</el-button>
+        <el-button type="text" size="small" @click="banEmail(scope)">{{scope.row.ban?'解封':'封号'}}</el-button>
+        <el-button type="text" size="small" @click="watchCard(scope.row.md5)">卡牌</el-button>
       </template>
     </el-table-column>
   </el-table>
+  <el-pagination
+    small
+    layout="prev, pager, next"
+    :total="cardTotle"
+    @current-change="cardPageChange"
+    :current-page.sync="page"
+    :page-size="5"
+    class="wmcard_user_page">
+  </el-pagination>
 </div>
 </template>
 
@@ -52,61 +61,45 @@ import {mailCheck} from "../../../../utils/utils";
 export default {
   data() {
     return {
-      tableData: [{
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-          }],
-      token:sessionStorage.getItem("adminToken")?sessionStorage.getItem("adminToken"):localStorage.getItem("adminToken")
+      tableData: [],
+      token:sessionStorage.getItem("adminToken")?sessionStorage.getItem("adminToken"):localStorage.getItem("adminToken"),
+      page:1,
+      cardTotle:0,
     }
   },
+  mounted() {
+    this.getuserInfo();
+  },
   methods: {
-    banEmail(){
-
+    cardPageChange(p){
+      this.page = p;
+      this.getuserInfo();
     },
-    onSubmit(){
-      let star = Math.round(this.giveStar.star);
-      let email = this.giveStar.email;
-      if(isNaN(star)||star<=0){
-          this.$message.error('请填入正确的数值！');
-          return false;
-      }
-      if(!mailCheck(email)){
-          this.$message.error('邮箱格式有误！');
-          return false;
-      }
+    watchCard(md5){
+      console.log(md5);
+      let routeData = this.$router.resolve({
+        name: "home",
+        query: {md5:md5}
+      });
+      window.open(routeData.href, '_blank');
+    },
+    getuserInfo(){
       let params = {
         token:this.token,
-        star:star,
-        email:email
+        page:this.page
       }
-      authApi.givestar(params).then(res => {
+      authApi.searchuser(params).then(res => {
         console.log(res);
         if(res.data.code==1){
-          this.$message({
-            message: res.data.msg,
-            type: 'success'
-          });
-        }else{
-          this.$message.error(res.data.msg);
+          this.tableData = res.data.data.data;
+          this.cardTotle = res.data.data.total;
         }
       });
-    }
+    },
+    banEmail(v){
+      console.log(v);
+    },
   },
 }
 </script>
 
-<style lang="stylus" scoped>
-</style>

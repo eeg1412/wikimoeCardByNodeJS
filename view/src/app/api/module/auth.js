@@ -45,5 +45,8 @@ export default function (api) {
     givestar(data){
       return api.post('admin/givestar',data)
     },
+    searchuser(data){
+      return api.post('admin/searchuser',data)
+    },
   }
 }

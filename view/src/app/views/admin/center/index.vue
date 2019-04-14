@@ -50,5 +50,5 @@ export default {
 }
 </script>
 
-<style src="../../../../assets/styles/admin.css" scoped>
+<style src="../../../../assets/styles/admin.css">
 </style>
