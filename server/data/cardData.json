@@ -776,6 +776,38 @@
 			"title":"刀剑神域：虚空具现",
 			"name":"普蕾米亚"
 		},
+		"0098": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 5,
+			"title":"杀戮天使",
+			"name":"瑞吉儿·加德纳"
+		},
+		"0099": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 4,
+			"title":"Endro~！",
+			"name":"萝娜·普莉茜帕·欧·拉帕涅斯塔"
+		},
+		"0100": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 5,
+			"title":"Endro~！",
+			"name":"玛欧"
+		},
+		"0101": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 1,
+			"cry": 5,
+			"title":"闪之轨迹",
+			"name":"莎朗·克鲁格"
+		},
 		"1001": {
 			"star": 4,
 			"leftType": 1,
@@ -1424,6 +1456,46 @@
 			"title":"摇曳露营△",
 			"name":"齐藤惠那&竹轮"
 		},
+		"1082": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 2,
+			"cry": 2,
+			"title":"Endro~！",
+			"name":"梅瑟·恩达斯特"
+		},
+		"1083": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 7,
+			"cry": 1,
+			"title":"Endro~！",
+			"name":"尤莉娅·夏尔戴特"
+		},
+		"1084": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"Endro~！",
+			"name":"法伊·法伊"
+		},
+		"1085": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 5,
+			"title":"Endro~！",
+			"name":"艾蕾诺瓦尔·塞兰"
+		},
+		"1086": {
+			"star": 4,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 4,
+			"title":"闪之轨迹",
+			"name":"托娃·赫歇尔"
+		},
 		"2001": {
 			"star": 5,
 			"leftType": 5,
@@ -1478,7 +1550,7 @@
 			"rightType": 4,
 			"cry": 4,
 			"title":"小林家的龙女仆",
-			"name":"康纳"
+			"name":"康娜卡姆依"
 		},
 		"2008": {
 			"star": 5,
@@ -1944,6 +2016,30 @@
 			"title":"五等分的新娘",
 			"name":"中野五月"
 		},
+		"2066": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"请问您今天要来点兔子吗？",
+			"name":"天天座理世"
+		},
+		"2067": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 3,
+			"title":"请问您今天要来点兔子吗？",
+			"name":"宇治松千夜"
+		},
+		"2068": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 1,
+			"title":"辉夜大小姐想让我告白～天才们的恋爱头脑战～",
+			"name":"四宫辉夜"
+		},
 		"3001": {
 			"star": 6,
 			"leftType": 2,
@@ -2215,6 +2311,38 @@
 			"cry": 5,
 			"title":"白色相簿2",
 			"name":"冬马和纱"
+		},
+		"3035": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 5,
+			"title":"辉夜大小姐想让我告白～天才们的恋爱头脑战～",
+			"name":"藤原千花"
+		},
+		"3036": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"天使降临到了我身边",
+			"name":"白咲花"
+		},
+		"3037": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"路人女主的养成方法",
+			"name":"加藤恵"
+		},
+		"3038": {
+			"star": 6,
+			"leftType": 4,
+			"rightType": 1,
+			"cry": 3,
+			"title":"刀剑神域",
+			"name":"朝田诗乃"
 		}
 		
 	},

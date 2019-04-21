@@ -4,6 +4,7 @@ var md5 = require('md5-node');
 var utils = require('../utils/utils');
 var chalk = require('chalk');
 var userData = require('../utils/database/user');
+var oldUsersModel = require('../models/oldUsers');
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     console.info(
@@ -114,14 +115,46 @@ module.exports = async function(req, res, next){
             )
             return false;
         }else{
-            // document作成
-            var user = new usersModel({
+            // 查询旧版数据
+            var oldData = await oldUsersModel.findOne({md5:md5(email)}, function(err, result) {
+                if (err) {
+                    throw err;
+                }else{
+                    if(result){
+                        return result;
+                    }
+                }
+            });
+            var creatAccountData = {
                 email:email,
                 nickName:nickName,
                 password:md5(password),
                 md5:md5(email),
                 ip:IP
-            });
+            }
+            if(oldData){
+                let BouerseStar = 0;
+                if(oldData.bouerse){
+                    let oldBouerse = JSON.parse(oldData.bouerse);
+                    for(var i in oldBouerse) {
+                        BouerseStar = BouerseStar + oldBouerse[i].have*35;
+                    }
+                }
+                creatAccountData['star'] = Number(oldData.starCount)+BouerseStar;
+                creatAccountData['score'] = Number(oldData.score);
+                creatAccountData['level'] = Number(oldData.level);
+                creatAccountData['exp'] = Number(oldData.exp);
+                creatAccountData['deminingStarCount'] = Number(oldData.deminingStarStarCount);
+                let oldCardId = oldData.cardID.split(',');
+                let oldCardCount = oldData.cardCount.split(',');
+                let oldCard = {};
+                for(let i = 0;i<oldCardId.length;i++){
+                    oldCard[Number(oldCardId[i])] = Number(oldCardCount[i])
+                }
+                creatAccountData['card'] = oldCard;
+            }
+            // document作成
+            var user = new usersModel(creatAccountData);
 
             // document保存
             user.save(function(err) {
