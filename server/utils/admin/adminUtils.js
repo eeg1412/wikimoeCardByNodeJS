@@ -2,6 +2,7 @@ var chalk = require('chalk');
 var fs = require('fs');
 var utils = require('../utils');
 var adminAccount = require('../database/adminAccount');
+var adminLogModel = require('../../models/adminLog');
 
 // 写入配置
 exports.writeGlobalOpt = function (opt) {
@@ -62,4 +63,27 @@ exports.checkAdmin = async function (token,IP){
     }else{
         return result;
     }
+}
+//写入管理员日志
+exports.adminWriteLog = function (logObject) {
+    // document作成
+    var log = new adminLogModel(logObject);
+
+    // document保存
+    log.save(function(err) {
+        if (err) {
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('管理员日志写入错误！')
+            );
+            throw err
+        }else{
+            console.info(
+                chalk.green('管理员日志写入成功。')
+            );
+        };
+    });
 }

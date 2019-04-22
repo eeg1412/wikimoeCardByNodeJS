@@ -4,6 +4,7 @@ var chalk = require('chalk');
 var adminAccount = require('../../utils/database/adminAccount');
 var jwt = require('jsonwebtoken');
 var chalk = require('chalk');
+var adminUtils = require('../../utils/admin/adminUtils');
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let account = req.body.account;
@@ -46,6 +47,11 @@ module.exports = async function(req, res, next){
                 code:0,
                 msg:'账户或密码不正确！'
             });
+            let logObj = {
+                text:'尝试使用管理员账号'+account+'登录，但是并没有此管理员。',
+                ip:IP
+            }
+            adminUtils.adminWriteLog(logObj);
             console.info(
                 chalk.yellow(account+'没有该账户！IP为：'+IP)
             )
@@ -56,6 +62,11 @@ module.exports = async function(req, res, next){
                 code:0,
                 msg:'账户或密码不正确！'
             });
+            let logObj = {
+                text:'尝试使用密码'+password+'登录管理员账号：'+account+'，但是密码错误。',
+                ip:IP
+            }
+            adminUtils.adminWriteLog(logObj);
             console.info(
                 chalk.yellow(account+'密码错误！IP为：'+IP)
             )
@@ -92,6 +103,11 @@ module.exports = async function(req, res, next){
             msg:'ok',
             token:token
         });
+        let logObj = {
+            text:'管理员'+account+'登录成功。',
+            ip:IP
+        }
+        adminUtils.adminWriteLog(logObj);
         console.info(
             chalk.green(account+'登录成功！IP为：'+IP)
         )
