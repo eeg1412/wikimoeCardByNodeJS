@@ -23,41 +23,32 @@ module.exports = async function(req, res, next){
             console.info(
                 chalk.yellow('token解析失败,IP为：'+IP)
             )
+            let logObj = {
+                text:'尝试更改管理员账号密码，但是token错误。',
+                ip:IP
+            }
+            adminUtils.adminWriteLog(logObj);
             return false;
         }
         let account = checkAdminResult.account;
-        let params = {
-            account:account
-        }
-        let result = await adminAccount.findAdmin(params).catch ((err)=>{
-            res.send({
-                code:0,
-                msg:'内部错误请联系管理员！'
-            });
-            console.error(
-                chalk.red('数据库查询错误！')
-            );
-            throw err;
-        })
-        if(!result){
+        let dataPassword = checkAdminResult.password;
+        if(md5(password)!==dataPassword){
             res.send({
                 code:0,
                 msg:'旧密码错误！'
             });
-            console.info(
-                chalk.yellow(account+'没有该账户！IP为：'+IP)
-            )
-            return false;
-        }
-        if(md5(password)!==result.password){
-            res.send({
-                code:0,
-                msg:'旧密码错误！'
-            });
+            let logObj = {
+                text:'尝试更改管理员账号'+account+'密码，但是原密码错误。',
+                ip:IP
+            }
+            adminUtils.adminWriteLog(logObj);
             console.info(
                 chalk.yellow(account+'密码错误！IP为：'+IP)
             )
             return false;
+        }
+        let params = {
+            account:account
         }
         let updataParams = {
             password:md5(newPassword),
@@ -79,6 +70,11 @@ module.exports = async function(req, res, next){
             msg:'密码修改成功！',
             token:token
         });
+        let logObj = {
+            text:'修改管理员账号'+account+'的密码成功！',
+            ip:IP
+        }
+        adminUtils.adminWriteLog(logObj);
         console.info(
             chalk.green(account+'密码修改成功！IP为：'+IP)
         )

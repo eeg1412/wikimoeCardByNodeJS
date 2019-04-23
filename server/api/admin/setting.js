@@ -1,6 +1,5 @@
 var chalk = require('chalk');
 var utils = require('../../utils/utils');
-var adminAccount = require('../../utils/database/adminAccount');
 var adminUtils = require('../../utils/admin/adminUtils');
 var fs = require('fs');
 module.exports = async function(req, res, next){
@@ -18,58 +17,21 @@ module.exports = async function(req, res, next){
         });
         return false;
     }
-    let tokenDecode = await utils.tokenCheck(token).catch ((err)=>{
+    let checkAdminResult = await adminUtils.checkAdmin(token,IP);
+    let account = checkAdminResult.account;
+    if(!checkAdminResult){
         res.send({
             code:402,
             msg:'账户信息已失效，请重新登录！'
         });
         console.info(
-            chalk.yellow('登录信息已失效！')
-        );
-        throw err;
-    });
-    if(!tokenDecode.account){
-        res.send({
-            code:402,
-            msg:'账户信息已失效，请重新登录！'
-        });
-        console.info(
-            chalk.yellow('登录信息有误！')
-        );
-        return false;
-    }
-    let account = tokenDecode.account;
-    console.info(
-        chalk.green(IP+'的管理员账号解析结果为'+account)
-    )
-    let params = {
-        account:account
-    }
-    let result = await adminAccount.findAdmin(params).catch ((err)=>{
-        res.send({
-            code:0,
-            msg:'内部错误请联系管理员！'
-        });
-        console.error(
-            chalk.red('数据库查询错误！')
-        );
-        throw err;
-    })
-    if(!result){
-        res.send({
-            code:402,
-            msg:'无该用户！'
-        });
-        return false;
-    }
-    if((result.token!=token)||(result.token=='')){
-        res.send({
-            code:402,
-            msg:'账户信息已失效，请重新登录！'
-        });
-        console.info(
-            chalk.yellow(account+'和数据库的token对不上,IP为：'+IP)
+            chalk.yellow('token解析失败,IP为：'+IP)
         )
+        let logObj = {
+            text:'尝试更改系统设置，但是token错误。',
+            ip:IP
+        }
+        adminUtils.adminWriteLog(logObj);
         return false;
     }
     if(type=='get'){
@@ -151,6 +113,11 @@ module.exports = async function(req, res, next){
             code:1,
             msg:'修改配置成功'
         });
+        let logObj = {
+            text:'管理员账号'+account+'，修改了配置。',
+            ip:IP
+        }
+        adminUtils.adminWriteLog(logObj);
         console.info(
             chalk.green(account+'修改配置成功。IP为：'+IP)
         );

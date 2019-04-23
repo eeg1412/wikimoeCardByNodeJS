@@ -45,6 +45,11 @@ module.exports = async function(req, res, next){
             msg:'登出成功！',
             token:token
         });
+        let logObj = {
+            text:'管理员账号'+account+'登出成功。',
+            ip:IP
+        }
+        adminUtils.adminWriteLog(logObj);
         console.info(
             chalk.green(account+'登出成功！IP为：'+IP)
         )

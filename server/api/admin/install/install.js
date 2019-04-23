@@ -14,6 +14,11 @@ module.exports = async function(req, res, next){
             code:403,
             msg:'项目已安装！'
         });
+        let logObj = {
+            text:'试图安装抽卡，但是已经安装过了。',
+            ip:IP
+        }
+        adminUtils.adminWriteLog(logObj);
         console.info(
             chalk.yellow(IP+'结果为已安装')
         );

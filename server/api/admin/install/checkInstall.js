@@ -1,5 +1,6 @@
 var utils = require('../../../utils/utils');
 var chalk = require('chalk');
+var adminUtils = require('../../../utils/admin/adminUtils');
 
 module.exports = function(req, res, next){
     let IP = utils.getUserIp(req);
@@ -11,6 +12,11 @@ module.exports = function(req, res, next){
             code:0,
             msg:'项目已安装！'
         });
+        let logObj = {
+            text:'试图检查安装抽卡，但是已经安装过了。',
+            ip:IP
+        }
+        adminUtils.adminWriteLog(logObj);
         console.info(
             chalk.yellow(IP+'结果为已安装')
         );

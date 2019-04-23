@@ -41,11 +41,17 @@ module.exports = async function(req, res, next){
         return false;
     }
     let result = await adminUtils.checkAdmin(token,IP);
+    let account = result.account;
     if(!result){
         res.send({
             code:402,
             msg:'账户信息已失效，请重新登录！'
         });
+        let logObj = {
+            text:'尝试给'+email+'送星星，但是管理员token有误。',
+            ip:IP
+        }
+        adminUtils.adminWriteLog(logObj);
         console.info(
             chalk.yellow('token解析失败,IP为：'+IP)
         )
@@ -84,4 +90,9 @@ module.exports = async function(req, res, next){
         code:1,
         msg:'成功给'+email+'赠送了'+star+'颗星星！'
     });
+    let logObj = {
+        text:'管理员账号'+account+'给邮箱：'+email+'赠送了'+star+'颗星星。',
+        ip:IP
+    }
+    adminUtils.adminWriteLog(logObj);
 }

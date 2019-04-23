@@ -52,8 +52,13 @@ module.exports = async function(req, res, next){
     })
     let text = '解封成功！';
     if(type=='ban'){
-        text = '封号成功'
+        text = '封号成功！'
     }
+    let logObj = {
+        text:'管理员'+result.account+'对id：'+_id+text,
+        ip:IP
+    }
+    adminUtils.adminWriteLog(logObj);
     console.info(
         chalk.green(text+'操作IP：'+IP)
     );

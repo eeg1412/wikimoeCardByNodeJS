@@ -1,1 +1,1 @@
-{"init":false}
+{"init":"true","sessionSecret":"wikimoe_","JWTSecret":"wikimoe_","dailyChance":20,"smtpHost":"smtp.exmail.qq.com","smtpPort":465,"smtpAuth":{"user":"hiroki@exmail.wikimoe.com","pass":"Error1"}}
