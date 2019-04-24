@@ -57,5 +57,8 @@ export default function (api) {
     adminlogout(data){
       return api.post('admin/logout',data)
     },
+    adminsceretkey(data){
+      return api.post('admin/sceretkey',data)
+    },
   }
 }

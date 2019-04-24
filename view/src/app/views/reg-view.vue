@@ -123,7 +123,7 @@ export default {
         email: this.form.email,
         password:this.form.password,
         nickName:this.form.nickName,
-        emailCode:this.form.code
+        emailCode:this.form.code,
       };
       authApi.reg(params).then(res => {
           console.log(res);

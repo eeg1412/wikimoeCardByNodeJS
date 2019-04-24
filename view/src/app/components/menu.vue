@@ -60,6 +60,7 @@
 
 <script>
 import {authApi} from "../api";
+import {mailCheck,passwordCheck} from "../../utils/utils";
 
 export default {
   data() {
@@ -99,6 +100,19 @@ export default {
       this.getRememberEmail();
     },
     goLogin(){
+      //检查格式
+      if(!mailCheck(this.form.email)){
+          this.$message.error('邮箱格式有误！');
+          return false;
+      }
+      if(this.form.password==''){
+          this.$message.error('请输入密码！');
+          return false;
+      }
+      if(this.form.captcha==''){
+          this.$message.error('请输入验证码！');
+          return false;
+      }
       let params = {
         email: this.form.email,
         password:this.form.password,

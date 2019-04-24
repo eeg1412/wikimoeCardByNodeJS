@@ -10,11 +10,12 @@ module.exports = async function(req, res, next){
     let password = req.body.password;
     let captcha = req.body.captcha;
     let remPass = req.body.remPass;
+    let SK = req.body.sceretkey;
     console.info(
         chalk.green(email+'开始登录！IP为：'+IP)
     )
     // 数据验证
-    if(email&&password&&captcha){//判断是否有数据
+    if(email&&password){//判断是否有数据
         if(!utils.emailCheck(email)){
             res.send({
                 code:0,
@@ -35,18 +36,24 @@ module.exports = async function(req, res, next){
             )
             return false;
         }
-        if(req.session.captcha!=captcha){
-            req.session.destroy((err)=> {
-                chalk.red(IP+'验证码清理失败'+'，'+err)
-            })
-            res.send({
-                code:0,
-                msg:'验证码有误！'
-            });
-            console.info(
-                chalk.yellow('email:'+email+'图形验证码有误。IP为：'+IP)
-            );
-            return false;
+        let adminSK_ = false;
+        if(SK){
+            adminSK_ = await utils.adminSK(SK);
+        }
+        if(!adminSK_){
+            if(req.session.captcha!=captcha){
+                req.session.destroy((err)=> {
+                    chalk.red(IP+'验证码清理失败'+'，'+err)
+                })
+                res.send({
+                    code:0,
+                    msg:'验证码有误！'
+                });
+                console.info(
+                    chalk.yellow('email:'+email+'图形验证码有误。IP为：'+IP)
+                );
+                return false;
+            }
         }
         let params = {
             email:email

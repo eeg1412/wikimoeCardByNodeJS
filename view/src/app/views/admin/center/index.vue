@@ -18,11 +18,15 @@
             <i class="el-icon-tickets"></i>
             <span slot="title">用户列表</span>
           </el-menu-item>
-          <el-menu-item index="4" @click="goLink('/cardadmin/center/passwordchange')">
+          <el-menu-item index="4" @click="goLink('/cardadmin/center/secretkey')">
+            <i class="el-icon-news"></i>
+            <span slot="title">设置Key</span>
+          </el-menu-item>
+          <el-menu-item index="5" @click="goLink('/cardadmin/center/passwordchange')">
             <i class="el-icon-edit-outline"></i>
             <span slot="title">密码修改</span>
           </el-menu-item>
-          <el-menu-item index="5" @click="logout()">
+          <el-menu-item index="6" @click="logout()">
             <i class="el-icon-upload2"></i>
             <span slot="title">登出</span>
           </el-menu-item>

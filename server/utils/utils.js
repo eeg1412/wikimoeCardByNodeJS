@@ -4,7 +4,28 @@ var logModel = require('../models/log');
 var jwt = require('jsonwebtoken');
 var chalk = require('chalk');
 var fs = require('fs');
-//写入日志
+var adminAccount = require('./database/adminAccount');
+//验证管理员密钥
+exports.adminSK = async function (SK) {
+    if(SK){
+        let params = {
+            sceretkey:SK
+        }
+        let result = await adminAccount.findAdmin(params).catch ((err)=>{
+            console.error(
+                chalk.red('数据库查询错误！')
+            );
+            return false;
+        })
+        if(result){
+            return true;
+        }else{
+            return false;
+        }
+    }else{
+        return false;
+    }
+}
 exports.writeLog = function (logObject) {
     // document作成
     var log = new logModel(logObject);

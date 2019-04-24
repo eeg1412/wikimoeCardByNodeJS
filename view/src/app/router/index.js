@@ -136,6 +136,15 @@ const router = new VueRouter({
             admin:true,
           },
         },
+        {//设置secretkey
+          name: 'secretkey',
+          path: 'secretkey',
+          component: resolve => require(['../views/admin/center/secretKey.vue'], resolve),
+          meta:{
+            login:true,
+            admin:true,
+          },
+        },
       ]
     },
     {

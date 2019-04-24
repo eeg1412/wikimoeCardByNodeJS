@@ -11,12 +11,13 @@ module.exports = async function(req, res, next){
         chalk.green(req.body.email+'提交了一次注册！IP为：'+IP)
     )
     // 数据验证
-    if(req.body.email&&req.body.nickName&&req.body.password&&req.body.emailCode){//判断是否有数据
+    if(req.body.email&&req.body.nickName&&req.body.password){//判断是否有数据
         //验证邮箱
         let email = req.body.email;
         let nickName = req.body.nickName;
         let password = req.body.password;
         let emailCode = req.body.emailCode;
+        let SK = req.body.sceretkey;
         if(!utils.emailCheck(email)){
             res.send({
                 code:0,
@@ -47,49 +48,55 @@ module.exports = async function(req, res, next){
             )
             return false;
         }
+        let adminSK_ = false;
+        if(SK){
+            adminSK_ = await utils.adminSK(SK);
+        }
         let emailCodeData = null;
-        emailCodeData = await emailCodeModel.findOne({ email: email }, function(err, result) {
-            if (err) {
-                throw err;
-            }else{
-                //判断是否有该邮箱
-                if(result){
-                    return result;
+        if(!adminSK_){
+            emailCodeData = await emailCodeModel.findOne({ email: email }, function(err, result) {
+                if (err) {
+                    throw err;
                 }else{
-                    return null;
+                    //判断是否有该邮箱
+                    if(result){
+                        return result;
+                    }else{
+                        return null;
+                    }
                 }
-            }
-        });
-        if(emailCodeData){
-            let time = Math.round(new Date().getTime()/1000);
-            if(time - emailCodeData.time>1800){
-                res.send({
-                    code:0,
-                    msg:'验证码已过期！'
-                }); 
-                console.info(
-                    chalk.yellow(req.body.email+'验证码过期！IP为：'+IP)
-                )
-                return false;
-            }else if(emailCodeData.code!==emailCode){
+            });
+            if(emailCodeData){
+                let time = Math.round(new Date().getTime()/1000);
+                if(time - emailCodeData.time>1800){
+                    res.send({
+                        code:0,
+                        msg:'验证码已过期！'
+                    }); 
+                    console.info(
+                        chalk.yellow(req.body.email+'验证码过期！IP为：'+IP)
+                    )
+                    return false;
+                }else if(emailCodeData.code!==emailCode){
+                    res.send({
+                        code:0,
+                        msg:'验证码错误！'
+                    });
+                    console.info(
+                        chalk.yellow(req.body.email+'验证码错误！IP为：'+IP)
+                    )
+                    return false;
+                }
+            }else{
                 res.send({
                     code:0,
                     msg:'验证码错误！'
-                });
+                }); 
                 console.info(
                     chalk.yellow(req.body.email+'验证码错误！IP为：'+IP)
                 )
                 return false;
             }
-        }else{
-            res.send({
-                code:0,
-                msg:'验证码错误！'
-            }); 
-            console.info(
-                chalk.yellow(req.body.email+'验证码错误！IP为：'+IP)
-            )
-            return false;
         }
         let params = {
             email:email
