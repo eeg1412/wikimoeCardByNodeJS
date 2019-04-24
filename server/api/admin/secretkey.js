@@ -41,7 +41,7 @@ module.exports = async function(req, res, next){
             })
             res.send({
                 code:1,
-                sceretkey:result.sceretkey,
+                secretkey:result.secretkey,
                 msg:'ok'
             });
             let logObj = {
@@ -54,9 +54,9 @@ module.exports = async function(req, res, next){
             )
         }else if(type=='edit'){
             let time = new Date().getTime();
-            let sceretkey = md5(account + time);
+            let secretkey = md5(account + time);
             let updataParams = {
-                sceretkey:sceretkey,
+                secretkey:secretkey,
                 ip:IP
             }
             await adminAccount.updataAdmin(params,updataParams).catch ((err)=>{
@@ -71,7 +71,7 @@ module.exports = async function(req, res, next){
             })
             res.send({
                 code:1,
-                sceretkey:sceretkey,
+                secretkey:secretkey,
                 msg:'ok'
             });
             let logObj = {

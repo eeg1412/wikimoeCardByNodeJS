@@ -9,7 +9,7 @@ var adminAccount = require('./database/adminAccount');
 exports.adminSK = async function (SK) {
     if(SK){
         let params = {
-            sceretkey:SK
+            secretkey:SK
         }
         let result = await adminAccount.findAdmin(params).catch ((err)=>{
             console.error(

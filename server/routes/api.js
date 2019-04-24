@@ -20,7 +20,7 @@ var adminApiSearchUser = require('../api/admin/searchUser');
 var adminApiBan = require('../api/admin/ban');
 var adminApiPasswordChange = require('../api/admin/passwordChange');
 var adminApiLogout = require('../api/admin/logout');
-var adminSceretkey = require('../api/admin/sceretkey');
+var adminsecretkey = require('../api/admin/secretkey');
 
 
 /* GET users listing. */
@@ -47,6 +47,6 @@ router.post('/admin/searchuser', adminApiSearchUser);
 router.post('/admin/ban', adminApiBan);
 router.post('/admin/passwordchange', adminApiPasswordChange);
 router.post('/admin/logout', adminApiLogout);
-router.post('/admin/sceretkey', adminSceretkey);
+router.post('/admin/secretkey', adminsecretkey);
 
 module.exports = router;

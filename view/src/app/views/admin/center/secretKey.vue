@@ -33,10 +33,10 @@ export default {
         type:'get',
         token:this.token
       }
-      authApi.adminsceretkey(params).then(res => {
+      authApi.adminsecretkey(params).then(res => {
           console.log(res);
           if(res.data.code==1){
-            this.key.key = res.data.sceretkey || '';
+            this.key.key = res.data.secretkey || '';
           }else{
             this.$message.error(res.data.msg);
           }
@@ -52,14 +52,14 @@ export default {
           type:'edit',
           token:this.token
         }
-        authApi.adminsceretkey(params).then(res => {
+        authApi.adminsecretkey(params).then(res => {
           console.log(res);
           if(res.data.code==1){
             this.$message({
               message: '生成成功！',
               type: 'success'
             });
-            this.key.key = res.data.sceretkey;
+            this.key.key = res.data.secretkey;
           }else{
             this.$message.error(res.data.msg);
           }

@@ -17,7 +17,7 @@ module.exports = async function(req, res, next){
         let nickName = req.body.nickName;
         let password = req.body.password;
         let emailCode = req.body.emailCode;
-        let SK = req.body.sceretkey;
+        let SK = req.body.secretkey;
         if(!utils.emailCheck(email)){
             res.send({
                 code:0,

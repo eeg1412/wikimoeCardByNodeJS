@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var adminAccount = new Schema({
   account:String,
   password:String,
-  sceretkey:String,
+  secretkey:String,
   token:{type: String, default: ''},
   level:{type: Number, default: 0},
   ip:String,

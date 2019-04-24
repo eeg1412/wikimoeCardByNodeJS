@@ -10,7 +10,7 @@ module.exports = async function(req, res, next){
     let password = req.body.password;
     let captcha = req.body.captcha;
     let remPass = req.body.remPass;
-    let SK = req.body.sceretkey;
+    let SK = req.body.secretkey;
     console.info(
         chalk.green(email+'开始登录！IP为：'+IP)
     )
