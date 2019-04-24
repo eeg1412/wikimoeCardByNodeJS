@@ -2,7 +2,7 @@
 <div class="wmcard_admincenter_common_right_body">
   <el-form :model="key" label-width="140px">
     <el-form-item label="key：">
-      <p class="wm_admin_sk_copy">{{key.key}}</p>
+      <p class="wm_admin_sk_copy">{{key.key || '您还未设置secret key，请重新生成！'}}</p>
     </el-form-item>
     <el-form-item>
       <p>注：开发者在使用接口时加上{secretkey:上面的key}可以避免验证码和邮箱验证。</p>
