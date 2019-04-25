@@ -60,5 +60,8 @@ export default function (api) {
     adminsecretkey(data){
       return api.post('admin/secretkey',data)
     },
+    adminSearchlog(data){
+      return api.post('admin/searchlog',data)
+    },
   }
 }

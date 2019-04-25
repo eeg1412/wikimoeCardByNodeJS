@@ -1,7 +1,7 @@
 var logModel = require('../models/log');
 module.exports = async function(req, res, next){
     let pageSize = 5;
-    let page = req.body.page?req.body.page:1;
+    let page = isNaN(Math.round(req.body.page))?1:Math.round(req.body.page);
     let query = logModel.find({},"type time nickName md5 data -_id").sort({'_id':-1});
     let total = await query.countDocuments();
     let data = await query

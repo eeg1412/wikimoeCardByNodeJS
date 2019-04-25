@@ -21,6 +21,7 @@ var adminApiBan = require('../api/admin/ban');
 var adminApiPasswordChange = require('../api/admin/passwordChange');
 var adminApiLogout = require('../api/admin/logout');
 var adminsecretkey = require('../api/admin/secretkey');
+var adminApiSearchLog = require('../api/admin/searchLog');
 
 
 /* GET users listing. */
@@ -48,5 +49,6 @@ router.post('/admin/ban', adminApiBan);
 router.post('/admin/passwordchange', adminApiPasswordChange);
 router.post('/admin/logout', adminApiLogout);
 router.post('/admin/secretkey', adminsecretkey);
+router.post('/admin/searchlog', adminApiSearchLog);
 
 module.exports = router;

@@ -145,6 +145,15 @@ const router = new VueRouter({
             admin:true,
           },
         },
+        {//管理员日志
+          name: 'adminlogs',
+          path: 'adminlogs',
+          component: resolve => require(['../views/admin/center/log.vue'], resolve),
+          meta:{
+            login:true,
+            admin:true,
+          },
+        },
       ]
     },
     {
