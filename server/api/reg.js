@@ -159,6 +159,9 @@ module.exports = async function(req, res, next){
                     oldCard[Number(oldCardId[i])] = Number(oldCardCount[i])
                 }
                 creatAccountData['card'] = oldCard;
+                let userCardCache = Object.entries(oldCard);
+                let cardTotle = userCardCache.length;
+                creatAccountData['cardIndexCount'] = cardTotle;
             }
             // document作成
             var user = new usersModel(creatAccountData);

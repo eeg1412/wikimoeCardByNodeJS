@@ -6,6 +6,9 @@ module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
     let page_ = isNaN(Math.round(req.body.page))?1:Math.round(req.body.page);
+    let type = req.body.type;
+    let searchText = req.body.text;
+    let sort = req.body.sort;
     console.info(
         chalk.green('开始查询用户列表,IP为：'+IP)
     )
@@ -31,9 +34,12 @@ module.exports = async function(req, res, next){
         return false;
     }
     let parmas = {};
+    if((type==='md5'||type==='nickName'||type==='email'||type==='ip')&&searchText){
+        parmas[type] = searchText;
+    }
     let pageSize_ = 5;
     let getParams = '_id email md5 nickName star score level exp deminingStarCount ip ban';
-    let sortData = {'_id':-1}
+    let sortData = sort;
     let userData_ =  await userData.findUserInPage(parmas,pageSize_,page_,getParams,sortData);
 
     res.send({

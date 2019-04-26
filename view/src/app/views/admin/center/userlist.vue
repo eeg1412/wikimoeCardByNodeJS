@@ -1,7 +1,25 @@
 <template>
 <div class="wmcard_admincenter_common_right_body">
+  <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+    <el-form-item label="类型">
+      <el-select v-model="searchForm.type" placeholder="搜索类型">
+        <el-option label="邮箱" value="email"></el-option>
+        <el-option label="md5" value="md5"></el-option>
+        <el-option label="昵称" value="nickName"></el-option>
+        <el-option label="IP" value="ip"></el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="内容">
+      <el-input v-model="searchForm.text" placeholder="请输入搜索内容"></el-input>
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary" @click="search">查询</el-button>
+      <el-button @click="clearSearch">取消</el-button>
+    </el-form-item>
+  </el-form>
   <el-table
     :data="tableData"
+    @sort-change="sortChange"
     style="width: 100%">
     <el-table-column
       prop="email"
@@ -12,14 +30,17 @@
       label="昵称">
     </el-table-column>
     <el-table-column
+      sortable="custom"
       prop="star"
       label="星星">
     </el-table-column>
     <el-table-column
+      sortable="custom"
       prop="score"
       label="竞技点">
     </el-table-column>
     <el-table-column
+      sortable="custom"
       prop="level"
       label="等级">
     </el-table-column>
@@ -28,6 +49,7 @@
       label="经验">
     </el-table-column>
     <el-table-column
+      sortable="custom"
       prop="deminingStarCount"
       label="累计挖矿">
     </el-table-column>
@@ -65,12 +87,48 @@ export default {
       token:sessionStorage.getItem("adminToken")?sessionStorage.getItem("adminToken"):localStorage.getItem("adminToken"),
       page:1,
       cardTotle:0,
+      searchForm:{
+        type:'email',
+        text:''
+      },
+      searchParams:{},
+      searchSort:{
+        _id:-1
+      }
     }
   },
   mounted() {
     this.getuserInfo();
   },
   methods: {
+    sortChange(column){
+      console.log(column)
+      if(column.order === 'descending'){
+        this.searchSort = {};
+        this.searchSort[column.prop] = -1;
+        this.getuserInfo();
+      }else if(column.order === 'ascending'){
+        this.searchSort = {};
+        this.searchSort[column.prop] = 1;
+        this.getuserInfo();
+      }else {
+        this.searchSort = {};
+        this.searchSort['_id'] = -1;
+        this.getuserInfo();
+      }
+    },
+    clearSearch(){
+      this.page = 1;
+      this.getuserInfo();
+    },
+    search(){
+      if(this.searchForm.text==''){
+        this.$message.error('请输入搜索内容！');
+      }
+      this.page = 1;
+      let fift = this.searchForm;
+      this.getuserInfo(fift);
+    },
     cardPageChange(p){
       this.page = p;
       this.getuserInfo();
@@ -83,10 +141,14 @@ export default {
       });
       window.open(routeData.href, '_blank');
     },
-    getuserInfo(){
+    getuserInfo(fift){
       let params = {
         token:this.token,
-        page:this.page
+        page:this.page,
+        sort:this.searchSort
+      }
+      if(fift){
+        params = Object.assign(params, fift);
       }
       authApi.adminsearchuser(params).then(res => {
         console.log(res);

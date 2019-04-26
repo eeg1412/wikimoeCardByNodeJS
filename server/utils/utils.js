@@ -5,6 +5,43 @@ var jwt = require('jsonwebtoken');
 var chalk = require('chalk');
 var fs = require('fs');
 var adminAccount = require('./database/adminAccount');
+var userData = require('./database/user');
+// 统计卡牌数量
+exports.setCardCount = async function (email) {
+    console.info(
+        chalk.green('开始统计'+email+'的卡牌收集率。')
+    );
+    let params = { email: email }
+    // document查询
+    let result = await userData.findUser(params).catch ((err)=>{
+        console.error(
+            chalk.red('数据库查询错误！')
+        );
+        return false;
+    })
+    if(result&&result.card){
+        let userCardCache = Object.entries(result.card);
+        let cardTotle = userCardCache.length;
+        let filters = {
+            email: email
+        }
+        let updataParams = {
+            cardIndexCount:cardTotle
+        }
+        await userData.updataUser(filters,updataParams).catch ((err)=>{
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            return false;
+        })
+        console.info(
+            chalk.green('统计'+email+'的卡牌收集率成功，一共获取了'+cardTotle+'张卡牌。')
+        );
+        return true;
+    }else{
+        return false;
+    }
+}
 //验证管理员密钥
 exports.adminSK = async function (SK) {
     if(SK){

@@ -1,4 +1,6 @@
 var usersModel = require('../../models/users');
+var utils = require('../utils');
+
 exports.findUser = async function (parmas) {
     // document查询
     return await usersModel.findOne(parmas);
@@ -7,9 +9,16 @@ exports.findUserNotAll = async function (parmas,notParams) {
     // document查询
     return await usersModel.findOne(parmas,notParams);
 }
-exports.updataUser = async function (filters,parmas) {
+exports.updataUser = async function (filters,parmas,updateIndex) {
     // document查询
-    return await usersModel.updateOne(filters, parmas);
+    let upRes = await usersModel.updateOne(filters, parmas);
+    if(updateIndex){
+        let upCountRes = await utils.setCardCount(filters.email);
+        if(!upCountRes){
+            throw '更新获取卡牌收集率失败';
+        }
+    }
+    return upRes
 }
 exports.findUserInPage = async function (parmas = {},pageSize_ = 5,page_ = 1,getParams = '',sortData = {'_id':-1}) {
     // document查询

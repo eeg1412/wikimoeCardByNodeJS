@@ -94,7 +94,7 @@ module.exports = async function(req, res, next){
                     ip:IP,
                     dailyCardTime:timeNow
                 }
-                await userData.updataUser(filters,updataParams).catch ((err)=>{
+                await userData.updataUser(filters,updataParams,true).catch ((err)=>{
                     res.send({
                         code:0,
                         msg:'内部错误请联系管理员！'

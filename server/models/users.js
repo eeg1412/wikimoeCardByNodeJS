@@ -18,6 +18,7 @@ var users = new Schema({
   deminingStamp:{type: [SchemaTypes.Long],default: [0,0,0]},
   deminingStarCount:{type: SchemaTypes.Long, default: 0},
   card: {},
+  cardIndexCount:{type: Number, default: 0},
   token:{type: String, default: ''},
   ip:String,
   ban:{type: Number, default: 0},
