@@ -54,6 +54,11 @@
       label="累计挖矿">
     </el-table-column>
     <el-table-column
+      sortable="custom"
+      prop="cardIndexCount"
+      label="收集卡牌">
+    </el-table-column>
+    <el-table-column
       prop="ip"
       label="IP">
     </el-table-column>
@@ -71,7 +76,7 @@
     :total="cardTotle"
     @current-change="cardPageChange"
     :current-page.sync="page"
-    :page-size="5"
+    :page-size="20"
     class="wmcard_user_page">
   </el-pagination>
 </div>

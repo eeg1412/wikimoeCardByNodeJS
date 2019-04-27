@@ -37,8 +37,8 @@ module.exports = async function(req, res, next){
     if((type==='md5'||type==='nickName'||type==='email'||type==='ip')&&searchText){
         parmas[type] = searchText;
     }
-    let pageSize_ = 5;
-    let getParams = '_id email md5 nickName star score level exp deminingStarCount ip ban';
+    let pageSize_ = 20;
+    let getParams = '_id email md5 nickName star score level exp deminingStarCount ip ban cardIndexCount';
     let sortData = sort;
     let userData_ =  await userData.findUserInPage(parmas,pageSize_,page_,getParams,sortData);
 
