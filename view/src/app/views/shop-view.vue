@@ -1,13 +1,7 @@
 <template>
-  <div class="common_body" v-show="userData">
+  <div class="common_body">
+    <userTop ref="userTop" />
     <h5 class="common_title type_shop">星星商店</h5>
-    <div v-if="userData">
-      <div class="wm_card_chiose_title">
-        <img class="wm_title_info_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+userData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'" width="45" height="45">
-        <br>
-        <span class="wm_card_demining_star">{{userData.nickName}}的星星:{{userData.star}}</span>
-      </div>
-    </div>
     <el-collapse-transition>
       <div class="shop_card_list_body" v-if="openList">
         <div class="shop_card_list_btn_body" id="shopCardListBtnBody">
@@ -59,6 +53,7 @@ import {scrollToTop,PrefixInteger,loadingImg,showLoading,hideLoading} from "../.
 import rotate3DCard from '../components/rotateCard.vue';
 import menuView from '../components/menu.vue';
 import {authApi} from "../api";
+import userTop from '../components/topUserInfo.vue';
 
 export default {
   data() {
@@ -72,10 +67,10 @@ export default {
   },
   components: {
     rotate3DCard,
-    menuView
+    menuView,
+    userTop
   },
   mounted() {
-    this.getUserInfo();
     window.addEventListener('scroll', this.menuTop);
   },
   methods: {
@@ -133,24 +128,14 @@ export default {
               cardData.push(cardDataItem);
             }
             this.cardList = cardData;
+            this.$refs.userTop.getUserInfo();
             setTimeout(()=>{
               scrollToTop(0,200);
               this.openList = true;
             },120)
-            this.getUserInfo();
           }
       });
     },
-    getUserInfo(){
-      authApi.userinfo({token:this.token}).then(res => {
-          console.log(res);
-          if(res.data.code==0){
-            this.$message.error(res.data.msg);
-          }else if(res.data.code==1){
-            this.userData = res.data.data;
-          }
-      });
-    }
   },
   beforeDestroy(){
     window.removeEventListener('scroll', this.menuTop);

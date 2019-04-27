@@ -1,17 +1,12 @@
 <template>
 <div>
+  <userTop ref="userTop" />
   <div class="common_body">
+    <h5 class="common_title type_demining">星星矿场</h5>
     <div class="wm_card_demining_tool_body" v-if="userData">
       <div @click="selPickChange(0)"><pickaxe :type="0" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[0])"></pickaxe></div>
       <div @click="selPickChange(1)"><pickaxe :type="1" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[1])"></pickaxe></div>
       <div @click="selPickChange(2)"><pickaxe :type="2" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[2])"></pickaxe></div>
-    </div>
-    <div v-if="userData">
-      <div class="wm_card_chiose_title">
-        <img class="wm_title_info_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+userData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'" width="45" height="45">
-        <br>
-        <span class="wm_card_demining_star">{{userData.nickName}}的星星:{{userData.star}}</span>
-      </div>
     </div>
     <div class="wm_card_demining_table_box">
       <div v-if="!mineInfo" class="wm_card_demining_table_loading">
@@ -44,6 +39,7 @@ import io from 'socket.io-client';
 import {showLoading,hideLoading} from "../../utils/utils";
 import menuView from '../components/menu.vue';
 import pickaxe from '../components/pickaxe.vue';
+import userTop from '../components/topUserInfo.vue';
 
 export default {
   data() {
@@ -62,7 +58,8 @@ export default {
   },
   components: {
     menuView,
-    pickaxe
+    pickaxe,
+    userTop
   },
   mounted() {
     let socketurl = window.location.hostname;
@@ -87,12 +84,12 @@ export default {
           message: '恭喜您挖到了'+data.star+'颗星星！',
           type: 'success'
         });
+        this.$refs.userTop.getUserInfo();
       }else if(data.code==201){//未挖到星星
         this.$message('很可惜并没有挖到星星，探测器显示周围有'+data.demNum+'处星星矿！');
       }else if(data.code==4){
         this.$message(data.msg);
       }else if(data.code==3){//用户信息
-        console.log(data.userData);
         this.userData = data.userData;
       }else if(data.code==403){//账号验证错误
         sessionStorage.removeItem("token");

@@ -33,7 +33,7 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green(IP+'的邮箱解析结果为'+email)
         )
-        let notParams = '-_id star level exp md5 score nickName token'
+        let notParams = '-_id star level exp md5 score nickName token deminingStarCount cardIndexCount'
         let params = {
             email:email
         }

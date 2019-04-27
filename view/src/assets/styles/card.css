@@ -882,6 +882,9 @@ transform:translate(0) rotate(0deg)
     height: 32px;
 }
 /* 挖矿 */
+.common_title.type_demining{
+  padding: 0 0 20px 0;
+}
 .wm_card_demining_tool_body{
     position: fixed;
     background-color: #fff;
@@ -1077,11 +1080,15 @@ img.wm_demining_img {
 }
 .shop_card_list_btn_body{
   padding: 10px 0;
+  height: 40px;
+}
+.shop_card_list_btn_box{
+  transition: padding .3s;
 }
 .shop_card_list_btn_box.flex_mode {
   position: fixed;
   z-index: 3;
-  padding: 10px 0;
+  padding: 40px 0 10px 0;
   top: 0px;
   left: 0;
   right: 0;
@@ -1105,4 +1112,54 @@ img.wm_demining_img {
 .watchShopAlert{
   max-width: 96vw!important;
   width: auto!important;
+}
+/* 顶部用户信息 */
+.wm_card_top_userinfo_body{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 30px;
+  z-index: 99;
+  background-color: rgba(255,255,255,0.4);
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  line-height: 30px;
+  font-size: 12px;
+}
+.wm_top_info_avatar_pic{
+  width: 20px;
+  height: 20px;
+  margin: 5px 5px 0 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: block;
+  background-color: #ccc;
+}
+.wm_top_info_star{
+  color: #ffc800;
+}
+.wm_top_info_more_body{
+  text-align: center;
+}
+.wm_top_moreinfo_avatar_pic{
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  background-color: #ccc;
+}
+.wm_top_moreinfo_name{
+  font-size: 14px;
+  line-height: 24px;
+}
+.wm_top_moreinfo_body{
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 36px;
+}
+.wm_top_moreinfo_box{
+  width: 180px;
+  margin: 4px 2px;
+  border: 1px solid #ccc;
+  display: inline-block;
+  border-radius: 5px;
 }

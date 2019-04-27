@@ -47,6 +47,9 @@
     <el-table-column
       prop="exp"
       label="经验">
+      <template slot-scope="scope">
+        <span>{{scope.row.exp}}/{{cardData.level[scope.row.level>5?5:scope.row.level]}}</span>
+      </template>
     </el-table-column>
     <el-table-column
       sortable="custom"
@@ -56,7 +59,10 @@
     <el-table-column
       sortable="custom"
       prop="cardIndexCount"
-      label="收集卡牌">
+      label="收集率">
+      <template slot-scope="scope">
+        <span>{{scope.row.cardIndexCount}}/{{cardDataCount.length}}</span>
+      </template>
     </el-table-column>
     <el-table-column
       prop="ip"
@@ -85,9 +91,12 @@
 <script>
 import {authApi} from "../../../api";
 import {mailCheck} from "../../../../utils/utils";
+import cardData from "../../../../utils/cardData"
 export default {
   data() {
     return {
+      cardData:cardData,
+      cardDataCount:Object.keys(cardData.cardData),
       tableData: [],
       token:sessionStorage.getItem("adminToken")?sessionStorage.getItem("adminToken"):localStorage.getItem("adminToken"),
       page:1,
