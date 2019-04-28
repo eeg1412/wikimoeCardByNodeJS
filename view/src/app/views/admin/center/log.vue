@@ -24,7 +24,7 @@
     :total="totle"
     @current-change="pageChange"
     :current-page.sync="page"
-    :page-size="5"
+    :page-size="20"
     class="wmcard_user_page">
   </el-pagination>
 </div>

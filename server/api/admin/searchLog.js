@@ -35,7 +35,7 @@ module.exports = async function(req, res, next){
     let total = await query.countDocuments();
     let data = await query
         .find()
-        .skip(5*(page-1))
+        .skip(pageSize*(page-1))
         .limit(pageSize);
     res.send({
         code:1,
