@@ -1163,3 +1163,12 @@ img.wm_demining_img {
   display: inline-block;
   border-radius: 5px;
 }
+/* 新闻 */
+.wm_topnews_body{
+  width: 100%;
+  max-width: 530px;
+  margin: 0 auto;
+  border-radius: 3px;
+  height: 24px;
+  line-height: 24px;
+}

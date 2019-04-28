@@ -40,6 +40,7 @@
       </div>
     </div>
   </div>
+  <topNews />
   <div class="wm_user_info_body">
     <el-collapse-transition>
       <div class="wm_mycard_list" v-if="userCard">
@@ -152,6 +153,7 @@ import {authApi} from "../api";
 import {scrollToTop,mailCheck,PrefixInteger,md5Check,loadingImg,showLoading,hideLoading} from "../../utils/utils";
 import rotate3DCard from '../components/rotateCard.vue';
 import menuView from '../components/menu.vue';
+import topNews from '../components/topNews.vue';
 import md5 from 'js-md5';
 export default {
   data() {
@@ -184,7 +186,8 @@ export default {
   },
   components: {
     rotate3DCard,
-    menuView
+    menuView,
+    topNews
   },
   filters: {
     pickaxeName(value){
