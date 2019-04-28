@@ -121,9 +121,9 @@ var getMineMap = function(socket,cast){
                     code:0
                 };
                 socket.emit('demining',resData);
-                if(cast){
-                    socket.broadcast.emit('demining',resData);
-                }
+                // if(cast){
+                //     socket.broadcast.emit('demining',resData);
+                // }
             }else{
                 let mineData = mineSweepingMap(true);
                 let resData = {
@@ -146,16 +146,19 @@ var openNode = function(socket,data,result_){
         }else{
             //判断是否有数据
             if(result){
-                let x = data.x || 0;
-                let y = data.y || 0;
+                let x = Math.round(data.x) || 0;
+                let y = Math.round(data.y) || 0;
                 if(result.player){
+                    // 判断是否被人挖
                     if(result.player[y+'_'+x]){
                         socket.emit('demining',{code:1,msg:'此处已经被人抢先！',time:data.time});
                         return false;
                     }
                 }
+                // 判断矿场时间戳是否对的上
                 if(result.creatTime!=data.creatTime){
                     socket.emit('demining',{code:1,msg:'矿场不正确，请刷新查看！',time:data.time});
+                    console.info(chalk.yellow('错误的矿场时间戳'))
                     return false;
                 }
                 let playData = result.player;
@@ -165,6 +168,11 @@ var openNode = function(socket,data,result_){
                 let close = result.close;
                 let starAdd = 0;
                 let useTool = data.tool;
+                if(demNum===undefined||demNum===null){
+                    socket.emit('demining',{code:1,msg:'矿场不正确，请刷新查看！',time:data.time});
+                    console.info(chalk.yellow('错误的矿场坐标'))
+                    return false;
+                }
                 if(playData===null){
                     playData = {};
                 }
@@ -198,6 +206,10 @@ var openNode = function(socket,data,result_){
                     addToolTime = 60*30;
                 }else if(useTool==2){
                     addToolTime = 60*60;
+                }else{
+                    socket.emit('demining',{code:1,msg:'稿子参数不对！',time:data.time});
+                    console.info(chalk.yellow('使用错误的稿子参数'))
+                    return false;
                 }
                 deminingTool[useTool] =  timeNow + addToolTime;
                 let levle = result_.level;
@@ -214,6 +226,7 @@ var openNode = function(socket,data,result_){
                     exp:levelExp[1],
                     ip:data.IP
                 };
+                let md5Email = md5(data.email);
                 await userData.updataUser(filters,params).catch ((err)=>{
                     socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
                     console.error(
@@ -230,10 +243,10 @@ var openNode = function(socket,data,result_){
                         throw err;
                     }else{
                         if(starAdd>0){
-                            socket.emit('demining',{code:2,star:starAdd,time:data.time});
+                            socket.emit('demining',{code:2,star:starAdd,demNum:demNum,time:data.time,x:x,y:y,md5:md5Email,close:close});
                             let logObject = {
                                 email:data.email,
-                                md5:md5(data.email),
+                                md5:md5Email,
                                 nickName:result_.nickName,
                                 type:'demining',
                                 time:timeNow,
@@ -248,9 +261,14 @@ var openNode = function(socket,data,result_){
                             }
                             utils.writeLog(logObject);
                         }else{
-                            socket.emit('demining',{code:201,demNum:demNum,time:data.time});
+                            socket.emit('demining',{code:201,demNum:demNum,time:data.time,x:x,y:y,md5:md5Email});
                         };
-                        getMineMap(socket,true);
+                        // 广播挖矿信息
+                        if(close){
+                            getMineMap(socket,true);
+                        }else{
+                            socket.broadcast.emit('demining',{code:5,demNum:demNum,x:x,y:y,md5:md5Email});
+                        }
                         let userData = {
                             star:result_.star+starAdd,
                             md5:result_.md5,

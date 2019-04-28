@@ -80,18 +80,24 @@ export default {
         this.mineInfo = data;
         this.creatMap(data.data)
       }else if(data.code==2){//挖到星星
+        this.upDateMapData(data.x,data.y,data.md5,data.demNum)
         this.$message({
           message: '恭喜您挖到了'+data.star+'颗星星！',
           type: 'success'
         });
         this.$refs.userTop.getUserInfo();
       }else if(data.code==201){//未挖到星星
-        this.$message('很可惜并没有挖到星星，探测器显示周围有'+data.demNum+'处星星矿！');
-      }else if(data.code==4){
+        this.upDateMapData(data.x,data.y,data.md5,data.demNum)
+        this.$message('很可惜并没有挖到星星，探测器显示周围有'+data.demNum+'片星星矿！');
+      }else if(data.code==4){//您选择的工具还在制作中！
         this.$message(data.msg);
       }else if(data.code==3){//用户信息
         this.userData = data.userData;
-      }else if(data.code==403){//账号验证错误
+      }else if(data.code==5){//别人挖矿
+      console.log('别人挖矿');
+        this.upDateMapData(data.x,data.y,data.md5,data.demNum)
+      }
+      else if(data.code==403){//账号验证错误
         sessionStorage.removeItem("token");
         localStorage.removeItem("token");
         this.$alert(data.msg, '提示', {
@@ -126,6 +132,14 @@ export default {
     });
   },
   methods: {
+    upDateMapData(x,y,md5,num){
+      console.log('更新');
+      this.mineMap[y][x] = {
+        md5:md5,
+        num:num,
+      };
+      this.$forceUpdate()
+    },
     selPickChange(n){
       this.selPick = n;
     },
