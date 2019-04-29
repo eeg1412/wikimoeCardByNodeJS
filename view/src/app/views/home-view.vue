@@ -40,7 +40,7 @@
       </div>
     </div>
   </div>
-  <!-- <topNews /> -->
+  <topNews />
   <div class="wm_user_info_body">
     <el-collapse-transition>
       <div class="wm_mycard_list" v-if="userCard">

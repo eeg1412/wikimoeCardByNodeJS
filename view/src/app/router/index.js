@@ -154,6 +154,24 @@ const router = new VueRouter({
             admin:true,
           },
         },
+        {//新闻列表
+          name: 'newslist',
+          path: 'newslist',
+          component: resolve => require(['../views/admin/center/newsList.vue'], resolve),
+          meta:{
+            login:true,
+            admin:true,
+          },
+        },
+        {//编辑更新新闻
+          name: 'newseditor',
+          path: 'newseditor',
+          component: resolve => require(['../views/admin/center/newseditor.vue'], resolve),
+          meta:{
+            login:true,
+            admin:true,
+          },
+        },
       ]
     },
     {
@@ -165,7 +183,7 @@ const router = new VueRouter({
       },
       component: NotfoundView
     },
-    { path: '*', redirect: '/404' },
+    { path: '*', redirect: '/' },
   ],
 })
 router.beforeEach((to, from, next) => {

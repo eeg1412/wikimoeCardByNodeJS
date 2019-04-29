@@ -1176,3 +1176,10 @@ img.wm_demining_img {
   height: 24px;
   line-height: 24px;
 }
+.wm_topnews_item{
+  cursor: pointer;
+  margin: 0 5px;
+}
+.wm_topnews_item:hover{
+  color: #ff5364;
+}

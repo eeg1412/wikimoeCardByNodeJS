@@ -66,5 +66,8 @@ export default function (api) {
     adminSearchlog(data){
       return api.post('admin/searchlog',data)
     },
+    adminNews(data){
+      return api.post('admin/news',data)
+    },
   }
 }
