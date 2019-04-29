@@ -103,8 +103,49 @@ exports.tokenCheck = async function (token) {
             }
         });
     });
-    
 };
+exports.tokenCheckAndEmail = async function (token) {
+    let tokenDecode = await this.tokenCheck(token).catch ((err)=>{
+        console.info(
+            chalk.yellow('登录信息已失效！')
+        );
+        return false;
+    });
+    if(!tokenDecode.email){
+        console.info(
+            chalk.yellow('用户登录信息有误！')
+        );
+        return false;
+    }
+    let email = tokenDecode.email;
+    console.info(
+        chalk.green('邮箱解析结果为'+email)
+    )
+    let params = {
+        email:email
+    }
+    let result = await userData.findUser(params).catch ((err)=>{
+        res.send({
+            code:0,
+            msg:'内部错误请联系管理员！'
+        });
+        console.error(
+            chalk.red('数据库查询错误！')
+        );
+        throw err;
+    })
+    if(!result){
+        return false;
+    }
+    if((result.token!=token)||(result.token=='')){
+        console.info(
+            chalk.yellow(account+'和数据库的token对不上,IP为：'+IP)
+        )
+        return false;
+    }else{
+        return result;
+    }
+}
 //获取用户IP
 exports.getUserIp = function (req) {
     let ip =  req.headers['x-forwarded-for'] ||

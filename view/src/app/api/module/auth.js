@@ -30,6 +30,9 @@ export default function (api) {
     shop(data){
       return api.post('shop',data)
     },
+    logout(data){
+      return api.post('logout',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },

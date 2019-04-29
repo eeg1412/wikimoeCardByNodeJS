@@ -8,10 +8,8 @@
             <span>{{userData.nickName||'获取中'}}</span>
             <span><span class="wm_top_info_star">★</span>{{userData.star||'获取中'}}</span>
         </div>
-        <div></div>
-        <div></div>
     </div>
-    <div class="fr"></div>
+    <div class="fr wm_topuserinfo_logout" @click="logout">登出</div>
     <el-dialog
         :title="userData.nickName+'的信息'"
         :visible.sync="dialogVisible"
@@ -67,6 +65,22 @@ export default {
       this.getUserInfo();
   },
   methods:{
+    logout(){
+        authApi.logout({token:this.token}).then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+                this.$message({
+                    message: '成功登出！',
+                    type: 'success'
+                });
+                sessionStorage.removeItem("token");
+                localStorage.removeItem("token");
+                this.$router.replace('/');
+          }
+        });
+    },
     openMore(){
         if(this.userData.md5){
             this.dialogVisible = true;

@@ -10,6 +10,7 @@ var apiCaptcha = require('../api/captcha');
 var apiSendMail = require('../api/sendEMail');
 var apiUserInfo = require('../api/userInfo');
 var apiShop = require('../api/shop');
+var apiLogout = require('../api/logout');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -38,6 +39,7 @@ router.post('/sendmail', apiSendMail);
 router.post('/login', apiLogin);
 router.post('/userinfo', apiUserInfo);
 router.post('/shop', apiShop);
+router.post('/logout', apiLogout);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);

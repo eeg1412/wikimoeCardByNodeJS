@@ -308,84 +308,53 @@ exports.mine = async function(socket,data){
     )
     let token = data.token;
     if(token){
-        let tokenDecode = await utils.tokenCheck(token).catch ((err)=>{
-            socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！'});
-            console.info(
-                chalk.yellow('登录信息已失效！')
-            );
+        let result = await utils.tokenCheckAndEmail(token).catch ((err)=>{
             throw err;
         });
-        if(!tokenDecode.email){
-            socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！'});
+        if(!result){
+            socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！',time:data.time});
             console.info(
-                chalk.yellow('登录信息有误！')
+                chalk.yellow('查询结果无该用户,IP为：'+IP)
             );
             return false;
         }
-        data.email = tokenDecode.email;
+        data.email = result.email;
         console.info(
-            chalk.green(data.IP+'的邮箱解析结果为'+data.email)
+            chalk.green(IP+'的邮箱解析结果为'+data.email)
         )
-        let params = {
-            email: data.email
-        }
-        let result = await userData.findUser(params).catch ((err)=>{
-            socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
-            console.error(
-                chalk.red('数据库查询错误！')
-            );
-            throw err;
-        })
-        if(result){
-            if((result.token!=data.token)||(result.token=='')){
-                console.info(
-                    chalk.yellow(data.email+'的登录信息已过期！')
-                );
-                socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！'});
-                return false;
-            }else{
-                //开始处理挖矿逻辑
-                if(data.type=='get'){
-                    console.info(
-                        chalk.green(data.email+'获取挖矿地图')
-                    );
-                    getMineMap(socket,false);
-                    let userData = {
-                        star:result.star,
-                        md5:result.md5,
-                        nickName:result.nickName,
-                        deminingStamp:result.deminingStamp,
-                        timeNow:timeNow
-                    };
-                    sendUserData(socket,userData);
-                }else if(data.type=='open'){
-                    data.tool = (data.tool&&data.tool<=2)?data.tool:0;
-                    let useTool = data.tool;
-                    if(timeNow<Number(result.deminingStamp[useTool])){
-                        console.info(
-                            chalk.yellow(data.email+'的工具'+useTool+'还在冷却。'+'IP为：'+data.IP)
-                        )
-                        socket.emit('demining',{code:4,msg:'您选择的工具还在制作中！',time:data.time});
-                        let userData = {
-                            star:result.star,
-                            md5:result.md5,
-                            nickName:result.nickName,
-                            deminingStamp:result.deminingStamp,
-                        };
-                        sendUserData(socket,userData);
-                        return false;
-                    }
-                    openNode(socket,data,result);
-                }
-                
-            }
-        }else{
+        //开始处理挖矿逻辑
+        if(data.type=='get'){
             console.info(
-                chalk.yellow(data.email+'无该用户！')
+                chalk.green(data.email+'获取挖矿地图')
             );
-            socket.emit('demining',{code:403,msg:'无该用户！'});
-            return false;
-        }
+            getMineMap(socket,false);
+            let userData = {
+                star:result.star,
+                md5:result.md5,
+                nickName:result.nickName,
+                deminingStamp:result.deminingStamp,
+                timeNow:timeNow
+            };
+            sendUserData(socket,userData);
+        }else if(data.type=='open'){
+            data.tool = (data.tool&&data.tool<=2)?data.tool:0;
+            let useTool = data.tool;
+            if(timeNow<Number(result.deminingStamp[useTool])){
+                console.info(
+                    chalk.yellow(data.email+'的工具'+useTool+'还在冷却。'+'IP为：'+data.IP)
+                )
+                socket.emit('demining',{code:4,msg:'您选择的工具还在制作中！',time:data.time});
+                let userData = {
+                    star:result.star,
+                    md5:result.md5,
+                    nickName:result.nickName,
+                    deminingStamp:result.deminingStamp,
+                };
+                sendUserData(socket,userData);
+                return false;
+            }
+            openNode(socket,data,result);
+        }  
     }else{
         console.info(
             chalk.yellow(data.email+'参数有误！')

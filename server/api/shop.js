@@ -18,64 +18,23 @@ module.exports = async function(req, res, next){
         });
         return false;
     }
-    let tokenDecode = await utils.tokenCheck(token).catch ((err)=>{
-        res.send({
-            code:403,
-            msg:'账户信息已失效，请重新登录！'
-        });
-        console.info(
-            chalk.yellow('登录信息已失效！')
-        );
+    let result = await utils.tokenCheckAndEmail(token).catch ((err)=>{
         throw err;
     });
-    if(!tokenDecode.email){
+    if(!result){
         res.send({
             code:403,
             msg:'账户信息已失效，请重新登录！'
         });
         console.info(
-            chalk.yellow('登录信息有误！')
+            chalk.yellow('查询结果无该用户,IP为：'+IP)
         );
         return false;
     }
-    let email = tokenDecode.email;
+    let email = result.email;
     console.info(
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
-    let params = {
-        email:email
-    }
-    let result = await userData.findUser(params).catch ((err)=>{
-        res.send({
-            code:0,
-            msg:'内部错误请联系管理员！'
-        });
-        console.error(
-            chalk.red('数据库查询错误！')
-        );
-        throw err;
-    })
-    if(result){
-        if((result.token!=token)||(result.token=='')){
-            res.send({
-                code:403,
-                msg:'账户信息已失效，请重新登录！'
-            });
-            console.info(
-                chalk.yellow(email+'和数据库的token对不上,IP为：'+IP)
-            );
-            return false;
-        }
-    }else{
-        console.info(
-            chalk.yellow(email+'邮箱不存在，IP为：'+IP)
-        )
-        res.send({
-            code:403,
-            msg:'无该用户信息！'
-        });
-        return false;
-    }
     if(type==0){
         console.info(
             chalk.green(email+'选择的是抽卡类商品，IP为：'+IP)
@@ -134,7 +93,6 @@ module.exports = async function(req, res, next){
         let filters = {
             email: email
         }
-        console.log(databaseCard);
         let updataParams = {
             $inc:databaseCard,
             ip:IP

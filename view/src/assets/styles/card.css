@@ -1163,6 +1163,10 @@ img.wm_demining_img {
   display: inline-block;
   border-radius: 5px;
 }
+.wm_topuserinfo_logout{
+  cursor: pointer;
+  margin-right: 10px;
+}
 /* 新闻 */
 .wm_topnews_body{
   width: 100%;
