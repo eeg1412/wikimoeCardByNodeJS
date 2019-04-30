@@ -24,7 +24,7 @@
       </el-date-picker>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="onSubmit">发布</el-button>
+      <el-button type="primary" @click="onSubmit">{{id?'修改':'发布'}}</el-button>
       <el-button @click="backIndex">返回</el-button>
     </el-form-item>
   </el-form>
@@ -49,6 +49,9 @@ export default {
   },
   created() {
     this.id = this.$route.query._id;
+    if(this.id){
+      this.getNews();
+    }
   },
   mounted() {
   },
@@ -56,15 +59,16 @@ export default {
     backIndex(){
       this.$router.push({ path:'/cardadmin/center/newslist'});
     },
-    getKey(){
+    getNews(){
       let params = {
         type:'get',
-        token:this.token
+        token:this.token,
+        _id:this.id
       }
-      authApi.adminsecretkey(params).then(res => {
+      authApi.adminNews(params).then(res => {
           console.log(res);
           if(res.data.code==1){
-            this.key.key = res.data.secretkey || '';
+            this.form = res.data.data
           }else{
             this.$message.error(res.data.msg);
           }
@@ -75,13 +79,24 @@ export default {
         type:'add',
         token:this.token,
       }
+      if(this.id){
+        params.type = 'edit';
+        params['_id'] = this.id;
+      }
       params = Object.assign(params, this.form);
+      if(!params.text||!params.title||isNaN(params.time)){
+        this.$message.error('提交内容有误，请检查！');
+        return false;
+      }
       authApi.adminNews(params).then(res => {
         console.log(res);
         if(res.data.code==1){
           this.$message({
             message: '新闻发布成功！',
             type: 'success'
+          });
+          this.$router.push({
+            path:'/cardadmin/center/newslist'
           });
         }else{
           this.$message.error(res.data.msg);

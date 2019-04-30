@@ -33,6 +33,9 @@ export default function (api) {
     logout(data){
       return api.post('logout',data)
     },
+    news(data){
+      return api.post('news',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },

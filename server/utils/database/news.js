@@ -5,6 +5,9 @@ exports.saveNews = async function (parmas) {
     // document保存
     return await news.save()
 }
+exports.findNewsOne = async function (parmas) {
+    return await newsModel.findOne(parmas);
+}
 exports.findNews = async function (pageSize_,page_,parmas) {
     // document查询
     let pageSize = pageSize_;
@@ -21,7 +24,7 @@ exports.updataNews = async function (filters,parmas) {
     // document查询
     return await newsModel.updateOne(filters, parmas);
 }
-exports.deletNews = async function (filters,parmas) {
+exports.deletNews = async function (parmas) {
     // document查询
     return await newsModel.deleteOne(parmas);
 }

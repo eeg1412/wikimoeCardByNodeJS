@@ -20,3 +20,10 @@
   text-align: center;
   padding: 20px 0;
 }
+/* 新闻 */
+.wmcard_admincenter_news_text{
+  white-space:nowrap; 
+	overflow:hidden; 
+  text-overflow:ellipsis;
+  max-width: 250px;
+}

@@ -40,7 +40,7 @@
       </div>
     </div>
   </div>
-  <topNews />
+  <topNews ref="topNews" />
   <div class="wm_user_info_body">
     <el-collapse-transition>
       <div class="wm_mycard_list" v-if="userCard">
@@ -314,7 +314,8 @@ export default {
     },
     openImg(imgsrc){
       this.$alert('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
-        dangerouslyUseHTMLString: true
+        dangerouslyUseHTMLString: true,
+        lockScroll:false
       });
     },
     logPageChange(val){
@@ -334,7 +335,8 @@ export default {
           this.userCard=null;
           setTimeout(()=>{
             if(!noGoTop){
-              scrollToTop(450,200);
+              let topNewsHeight = this.$refs.topNews.$el.clientHeight?this.$refs.topNews.$el.clientHeight+20:0;
+              scrollToTop(450+topNewsHeight,200);
             }
             hideLoading();
             this.userCard = userCard_;

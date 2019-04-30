@@ -5,7 +5,7 @@ var adminUtils = require('../../utils/admin/adminUtils');
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
-    let _id = req.body.id||-1;
+    let _id = req.body.id;
     let type = req.body.type;
     console.info(
         chalk.green('开始封禁或者解封用户,IP为：'+IP)

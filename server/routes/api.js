@@ -11,6 +11,7 @@ var apiSendMail = require('../api/sendEMail');
 var apiUserInfo = require('../api/userInfo');
 var apiShop = require('../api/shop');
 var apiLogout = require('../api/logout');
+var apiNews = require('../api/searchNews');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -41,6 +42,7 @@ router.post('/login', apiLogin);
 router.post('/userinfo', apiUserInfo);
 router.post('/shop', apiShop);
 router.post('/logout', apiLogout);
+router.post('/news', apiNews);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);
