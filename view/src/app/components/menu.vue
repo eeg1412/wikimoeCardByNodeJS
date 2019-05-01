@@ -41,6 +41,7 @@
   <el-dialog
     title="新闻公告"
     :visible.sync="newsDialog"
+    :lock-scroll="false"
     class="reg_code_dialog"
     width="100%">
     <div class="wm_menu_news_body" v-if="newsList">
