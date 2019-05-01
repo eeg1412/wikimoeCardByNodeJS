@@ -19,6 +19,18 @@
       </div>
       <div class="wm_card_menu_text">商店</div>
     </div>
+    <div class="wm_card_menu_box">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/market.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">市场</div>
+    </div>
+    <div class="wm_card_menu_box" @click="openNews">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/news.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">公告</div>
+    </div>
     <div class="wm_card_menu_box" @click="openDonate">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/zanzhu.png" width="100%" height="100%" />
@@ -26,6 +38,32 @@
       <div class="wm_card_menu_text">捐赠</div>
     </div>
   </div>
+  <el-dialog
+    title="新闻公告"
+    :visible.sync="newsDialog"
+    class="reg_code_dialog"
+    width="100%">
+    <div class="wm_menu_news_body" v-if="newsList">
+      <el-collapse accordion>
+        <el-collapse-item :title="item.title" :name="index" v-for="(item,index) in newsList" v-bind:key="index">
+          <div class="wm_menu_news_time">发布于：{{item.time | capitalize}}</div>
+          <div class="wm_menu_news_text">{{item.text}}</div>
+        </el-collapse-item>
+      </el-collapse>
+      <el-pagination
+        small
+        layout="prev, pager, next"
+        :total="totle"
+        @current-change="pageChange"
+        :current-page.sync="page"
+        :page-size="20"
+        class="wm_menu_news_page">
+      </el-pagination>
+    </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="newsDialog=false">关闭</el-button>
+    </span>
+  </el-dialog>
   <el-dialog
     title="请登录"
     :before-close="cancelLoginShow"
@@ -68,6 +106,10 @@ export default {
       captchaSrc:'/api/captcha?time='+new Date().getTime(),
       routPath:null,
       loginShow:false,
+      newsDialog:false,
+      newsList:null,
+      page:1,
+      totle:0,
       form: {
           email: '',
           password: '',
@@ -79,7 +121,37 @@ export default {
   mounted() {
     this.getRememberEmail();
   },
+  filters:{
+    capitalize: function (value) {
+      var date = new Date(parseInt(value));
+        var tt = [date.getFullYear(), ((date.getMonth()+1)<10?'0'+(date.getMonth()+1):date.getMonth()+1), (date.getDate()<10?'0'+date.getDate():date.getDate())].join('-') + '  ' +[(date.getHours()<10?'0'+date.getHours():date.getHours()), (date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes()), (date.getSeconds()<10?'0'+date.getSeconds():date.getSeconds())].join(':');
+        return tt;
+    }
+  },
   methods: {
+    openNews(){
+      this.page = 1;
+      this.newsDialog = true;
+      this.getNews();
+    },
+    pageChange(p){
+      this.page = p;
+      this.getNews();
+    },
+    getNews(){
+      let params = {
+        page:this.page
+      }
+      authApi.news(params).then(res => {
+        console.log(res);
+        if(res.data.code==1){
+          this.newsList = res.data.data;
+          this.totle = res.data.total;
+        }else{
+          this.$message.error(res.data.msg);
+        }
+      });
+    },
     openDonate(){
       this.$alert('<div class="watch_img"><img src="/static/otherImg/donate.jpg" /></div>', '捐赠', {
         dangerouslyUseHTMLString: true

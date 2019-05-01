@@ -21,7 +21,21 @@ body::-webkit-scrollbar-thumb {
 body::-webkit-scrollbar-thumb:hover {
     background-color: #bbb
 }
-
+.el-dialog__wrapper::-webkit-scrollbar-track-piece {
+  background: #eee
+}
+.el-dialog__wrapper::-webkit-scrollbar {
+  width: 6px;
+  height: 6px
+}
+.el-dialog__wrapper::-webkit-scrollbar-thumb {
+  height: 40px;
+  border-radius: 4px;
+  background-color: #A5A5A5
+}
+.el-dialog__wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: #bbb
+}
 
 .el-message-box__content::-webkit-scrollbar-track-piece {
   background: #eee
@@ -1191,4 +1205,36 @@ img.wm_demining_img {
 .wm_topnews_content_time{
   font-size: 14px;
   padding-bottom: 10px;
+}
+/* 新闻 */
+.wm_menu_news_time{
+  font-size: 12px;
+  color: #7b7b7b;
+}
+.wm_menu_news_text{
+  white-space: pre-line;
+}
+.wm_menu_news_body{
+  overflow: auto;
+  max-height: 300px;
+  padding: 0 10px;
+}
+.wm_menu_news_body::-webkit-scrollbar-track-piece {
+  background: #eee
+}
+.wm_menu_news_body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px
+}
+.wm_menu_news_body::-webkit-scrollbar-thumb {
+  height: 40px;
+  border-radius: 4px;
+  background-color: #A5A5A5
+}
+.wm_menu_news_body::-webkit-scrollbar-thumb:hover {
+  background-color: #bbb
+}
+.wm_menu_news_page{
+  text-align: center;
+  margin: 10px 0;
 }
