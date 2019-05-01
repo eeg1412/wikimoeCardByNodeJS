@@ -9,7 +9,8 @@ const NotfoundView = () => import(/* webpackChunkName: "rest" */ '@/views/notfou
 const regView = () => import(/* webpackChunkName: "regView" */ '@/views/reg-view.vue')
 const findView = () => import(/* webpackChunkName: "findView" */ '@/views/find-view.vue')
 const deminingView = () => import(/* webpackChunkName: "deminingView" */ '@/views/demining-view.vue')
-const shopView = () => import(/* webpackChunkName: "deminingView" */ '@/views/shop-view.vue')
+const shopView = () => import(/* webpackChunkName: "shopView" */ '@/views/shop-view.vue')
+const marketView = () => import(/* webpackChunkName: "marketView" */ '@/views/market/index.vue')
 
 const adminLoginView = () => import(/* webpackChunkName: "adminLoginView" */ '@/views/admin/login-view.vue')
 const adminInstallView = () => import(/* webpackChunkName: "adminInstallView" */ '@/views/admin/install-view.vue')
@@ -73,6 +74,43 @@ const router = new VueRouter({
         admin:false,
       },
       component: shopView
+    },
+    {
+      path: '/star/market',
+      component: marketView,
+      children: [
+        { //默认
+          path: '',
+          redirect: 'buycard'
+        },
+        {//买卡
+          name: 'buyCard',
+          path: 'buycard',
+          component: resolve => require(['../views/market/buy.vue'], resolve),
+          meta:{
+            login:true,
+            admin:false,
+          },
+        },
+        {//卖卡
+          name: 'sellCard',
+          path: 'sellcard',
+          component: resolve => require(['../views/market/sell.vue'], resolve),
+          meta:{
+            login:true,
+            admin:false,
+          },
+        },
+        {//卡牌详情
+          name: 'cardDetail',
+          path: 'carddetail',
+          component: resolve => require(['../views/market/carddetail.vue'], resolve),
+          meta:{
+            login:true,
+            admin:false,
+          },
+        },
+      ]
     },
     {
       name: 'adminLogin',

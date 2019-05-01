@@ -17,7 +17,7 @@
         :append-to-body="true"
         width="95%"
         >
-        <div class="wm_top_info_more_body" v-if="userData.level">
+        <div class="wm_top_info_more_body" v-if="userData.level!==undefined">
             <div><img class="wm_top_moreinfo_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+userData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'"></div>
             <div class="wm_top_moreinfo_name">{{userData.nickName}}</div>
             <div class="wm_top_moreinfo_body clearfix">

@@ -19,7 +19,7 @@
       </div>
       <div class="wm_card_menu_text">商店</div>
     </div>
-    <div class="wm_card_menu_box">
+    <div class="wm_card_menu_box" @click="login('/star/market')" v-if="$route.path.indexOf('/star/market')==-1">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/market.png" width="100%" height="100%" />
       </div>
