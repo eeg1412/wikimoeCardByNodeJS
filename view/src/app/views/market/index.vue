@@ -7,7 +7,7 @@
         <el-menu-item index="sellCard">卖卡</el-menu-item>
     </el-menu>
     <div>
-        <router-view></router-view>
+        <router-view @updateUserinfo="updateUserinfo"></router-view>
     </div>
     <menuView></menuView>
 </div>
@@ -39,8 +39,11 @@ export default {
     }
   },
   methods: {
+    updateUserinfo(){
+      this.$refs.userTop.getUserInfo();
+    },
     handleSelect(key, keyPath) {
-        this.$router.push({ name:key});
+      this.$router.push({ name:key});
     }
   }
 }

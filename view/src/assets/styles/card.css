@@ -1322,3 +1322,33 @@ img.wm_demining_img {
 .wm_market_card_datail_captcha{
   padding: 0 0 10px 0;
 }
+.wm_market_selling_tag{
+  min-height: 32px;
+  position: absolute;
+  top: 0px;
+  height: 90%;
+  width: 100%;
+  background-color: rgba(0,0,0,0.75);
+  border-radius: 3px;
+  box-sizing: border-box;
+  padding-top: 75px;
+}
+.wm_market_mycard_item{
+  cursor: pointer;
+  margin: 5px;
+  display: inline-block;
+  text-align: center;
+  width: 180px;
+  position: relative;
+}
+.wm_market_selling_tag_item{
+  margin-bottom: 10px;
+}
+.wm_market_mycard_item .wm_getcard_img{
+  width: 180px;
+  height: 253px;
+}
+.wm_market_card_datail_charts_empty{
+  padding: 150px 0;
+  text-align: center;
+}

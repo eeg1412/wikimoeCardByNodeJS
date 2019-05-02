@@ -1,14 +1,15 @@
 <template>
     <div class="wm_market_content_body">
-        <div class="wm_market_selling_body">
-            <h5 class="common_title type_shop">贩卖中的卡牌</h5>
+        <div class="wm_market_selling_body" v-if="myMarket.length>0">
+            <h5 class="common_title type_shop">贩卖中的卡牌({{myMarket.length}}/3)</h5>
             <div class="wm_mycard_list">
-                <div class="wm_getcard_box">
-                    <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(1,4)+'.jpg'">
-                    <div class="wm_card_nums"><span class="wm_top_info_star">★</span>99999999</div>
-                    <div>
-                        <el-tag type="success">可收取星星</el-tag>
-                        <el-tag type="danger">已过期</el-tag>
+                <div class="wm_market_mycard_item" v-for="(item,index) in myMarket" v-bind:key="index+1" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">
+                    <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg'">
+                    <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
+                    <div class="wm_market_selling_tag" v-if="item.selled || serverTime-item.time>604800">
+                        <!-- 更新点击事件记得更新标签 -->
+                        <el-tag type="success" v-if="item.selled" class="wm_market_selling_tag_item" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">可收取星星</el-tag>
+                        <el-tag type="danger" v-if="serverTime-item.time>604800" class="wm_market_selling_tag_item" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">已过期，请更新！</el-tag>
                     </div>
                 </div>
             </div>
@@ -54,18 +55,54 @@ export default {
         userCardCache:[],//用户卡牌
         cardPage:1,//当前卡牌页码
         cardTotle:0,//一共多少
+        myMarket:[],//自己上架的卡牌
+        serverTime:0,//服务器时间
     }
   },
   mounted() {
     this.getUserCard(); 
+    this.getUserMarket();
   },
   methods: {
+    editCard(cardId,time,selled,price,id){
+        let stat = 1;
+        if(selled){
+            stat = 2;
+        }
+        this.$router.push({ 
+        name:'cardDetail',
+        query: {
+                type:'sell',
+                card:cardId,
+                stat:stat,
+                price:price,
+                time:time,
+                id:id
+            }
+        });
+    },
+    getUserMarket(){
+        let params = {
+            type:'search',
+            token:this.token
+        }
+        authApi.marketsell(params).then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            this.myMarket = res.data.data;
+            this.serverTime = res.data.time;
+          }
+        });
+    },
     upCard(card){
         this.$router.push({ 
             name:'cardDetail',
             query: {
                     type:'sell',
-                    card:card
+                    card:card,
+                    stat:0
                 }
             });
     },
@@ -77,7 +114,6 @@ export default {
         this.userCard = userCard_;
     },
     checkCanBuy(item) {
-        console.log(item);
         return item[1]>1;
     },
     getUserCard(){

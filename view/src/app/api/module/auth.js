@@ -36,6 +36,12 @@ export default function (api) {
     news(data){
       return api.post('news',data)
     },
+    marketchart(data){
+      return api.post('marketchart',data)
+    },
+    marketsell(data){
+      return api.post('marketsell',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },

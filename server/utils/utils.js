@@ -6,6 +6,68 @@ var chalk = require('chalk');
 var fs = require('fs');
 var adminAccount = require('./database/adminAccount');
 var userData = require('./database/user');
+var marketData = require('./database/market');
+// 统计交易市场
+exports.marketDataCalc = async function (cardId) {
+    console.info(
+        chalk.green('开始统计交易市场卡牌：'+cardId+'的最低最高价。')
+    );
+    let time = Math.round(new Date().getTime()/1000);
+    let search = {
+        time:{$gt:time-604800},
+        cardId:cardId,
+        selled:false
+    };
+    let lowData = await marketData.findMarket(1,1,search,{'price':1}).catch ((err)=>{
+        throw err;
+    });
+    let highData = await marketData.findMarket(1,1,search,{'price':-1}).catch ((err)=>{
+        throw err;
+    });
+    if(lowData[1]||highData[1]){
+        let lowPrice = lowData[0][0].price;
+        let highPrice = highData[0][0].price;
+        let newLog = await marketData.findMarketLog(1,1,{cardId:cardId},{'_id':-1}).catch ((err)=>{
+            throw err;
+        });
+        if(newLog[1]){
+            console.info(
+                chalk.green(cardId+'检查最高最低和上次一样吗？')
+            );
+            if(newLog[0][0].lowPrice==lowPrice&&newLog[0][0].highPrice==highPrice){
+                console.info(
+                    chalk.green(cardId+'最高最低和上次一样。')
+                );
+                return false;
+            }
+        }
+        let parmas = {
+            time:time,
+            cardId:cardId,
+            lowPrice:lowPrice,
+            highPrice:highPrice
+        }
+        await marketData.saveMarketLog(parmas).catch ((err)=>{
+            throw err;
+        });
+        let delParmas = {
+            time:{$lt:time-1209600},
+        }
+        // 删除两周前的数据
+        await marketData.deletMarketLog(delParmas).catch ((err)=>{
+            throw err;
+        });
+        console.info(
+            chalk.green(cardId+'的最低最高价更新成功。')
+        );
+        return true;
+    }else{
+        console.info(
+            chalk.green(cardId+'没有最低最高价。')
+        );
+        return false;
+    }
+}
 // 统计卡牌数量
 exports.setCardCount = async function (email) {
     console.info(
@@ -167,6 +229,10 @@ exports.passwordCheck = function (password) {
 //检查昵称格式
 exports.nickNameCheck = function (nickName) {
     return /^[\u4E00-\u9FA5\u0800-\u4e00A-Za-z0-9_]{2,8}$/.test(nickName)//2-8位中文、日文、英文、数字包括下划线
+}
+//检查数据库ID
+exports.objectIDCheck = function (bjectID) {
+    return /^[0-9a-f]{24}$/.test(bjectID)
 }
 //检查MD5
 exports.md5Check = function (MD5) {

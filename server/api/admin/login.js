@@ -18,7 +18,11 @@ module.exports = async function(req, res, next){
     if(account&&password&&captcha){//判断是否有数据
         if(req.session.captcha!=captcha){
             req.session.destroy((err)=> {
-                chalk.red(IP+'验证码清理失败'+'，'+err)
+                if(err){
+                    console.info(
+                        chalk.red(IP+'验证码清理失败'+'，'+err)
+                    );
+                }
             })
             res.send({
                 code:0,

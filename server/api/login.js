@@ -41,9 +41,13 @@ module.exports = async function(req, res, next){
             adminSK_ = await utils.adminSK(SK);
         }
         if(!adminSK_){
-            if(req.session.captcha!=captcha){
+            if(req.session.captcha!=captcha || !captcha){
                 req.session.destroy((err)=> {
-                    chalk.red(IP+'验证码清理失败'+'，'+err)
+                    if(err){
+                        console.info(
+                            chalk.red(IP+'验证码清理失败'+'，'+err)
+                        );
+                    }
                 })
                 res.send({
                     code:0,

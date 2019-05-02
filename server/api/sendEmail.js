@@ -33,9 +33,13 @@ module.exports = async function(req, res, next){
             );
             return false;
         }
-        if(req.session.captcha!=captcha){
+        if(req.session.captcha!=captcha || !captcha){
             req.session.destroy((err)=> {
-                chalk.red(IP+'验证码清理失败'+'，'+err)
+                if(err){
+                    console.info(
+                        chalk.red(IP+'验证码清理失败'+'，'+err)
+                    );
+                }
             })
             res.send({
                 code:0,
@@ -47,7 +51,11 @@ module.exports = async function(req, res, next){
             return false;
         }
         req.session.destroy((err)=> {
-            chalk.red(IP+'验证码清理失败'+'，'+err)
+            if(err){
+                console.info(
+                    chalk.red(IP+'验证码清理失败'+'，'+err)
+                );
+            }
         })
         let emailCodeData = null;
         emailCodeData = await emailCodeModel.findOne({ email: email }, function(err, result) {
