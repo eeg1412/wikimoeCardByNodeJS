@@ -5,6 +5,7 @@ module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let type = req.body.type;
     let page = isNaN(Math.round(req.body.page))?1:Math.round(req.body.page);
+    page = Math.abs(page);
     let pageSize = 20;
     console.info(
         chalk.green('开始查询新闻,IP为：'+IP)

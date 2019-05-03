@@ -5,6 +5,9 @@ var SchemaTypes = mongoose.Schema.Types;
 // Schema
 var market = new Schema({
   email:String,
+  name:String,
+  title:String,
+  star:{type: Number, default: 0},
   selled:{type: Boolean, default: false},
   cardId:{type: Number, default: 0},
   price:{type: Number, default: 30},

@@ -6,17 +6,17 @@ exports.saveMarket = async function (parmas) {
     // document保存
     return await market.save()
 }
-exports.findMarketOne = async function (parmas) {
-    return await marketModel.findOne(parmas);
+exports.findMarketOne = async function (parmas,getInfo = '-__v') {
+    return await marketModel.findOne(parmas,getInfo);
 }
-exports.findMarketMany = async function (parmas) {
-    return await marketModel.find(parmas);
+exports.findMarketMany = async function (parmas,getInfo = '-__v') {
+    return await marketModel.find(parmas,getInfo);
 }
-exports.findMarket = async function (pageSize_,page_,parmas,sort) {
+exports.findMarket = async function (pageSize_,page_,parmas,sort,getInfo = '-__v') {
     // document查询
     let pageSize = pageSize_;
     let page = isNaN(Math.round(page_))?1:Math.round(page_);
-    let query = marketModel.find(parmas).sort(sort);
+    let query = marketModel.find(parmas,getInfo).sort(sort);
     let total = await query.countDocuments();
     let data = await query
         .find()
@@ -43,7 +43,7 @@ exports.findMarketLog = async function (pageSize_,page_,parmas,sort) {
     // document查询
     let pageSize = pageSize_;
     let page = isNaN(Math.round(page_))?1:Math.round(page_);
-    let query = marketLogsModel.find(parmas).sort(sort);
+    let query = marketLogsModel.find(parmas,'-__v -_id').sort(sort);
     let total = await query.countDocuments();
     let data = await query
         .find()

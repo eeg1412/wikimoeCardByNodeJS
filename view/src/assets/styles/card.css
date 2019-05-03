@@ -1352,3 +1352,10 @@ img.wm_demining_img {
   padding: 150px 0;
   text-align: center;
 }
+.wm_market_buy_search_body{
+  text-align: center;
+  width: 100%;
+}
+.wm_market_buy_search_btn_body{
+  margin-right: 0px!important;
+}

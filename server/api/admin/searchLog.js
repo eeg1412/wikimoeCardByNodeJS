@@ -31,6 +31,7 @@ module.exports = async function(req, res, next){
     }
     let pageSize = 20;
     let page = isNaN(Math.round(req.body.page))?1:Math.round(req.body.page);
+    page = Math.abs(page);
     let query = adminLogModel.find({},"text ip createTime -_id").sort({'_id':-1});
     let total = await query.countDocuments();
     let data = await query

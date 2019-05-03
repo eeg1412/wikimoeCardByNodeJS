@@ -6,7 +6,7 @@
     <div class="fl">
         <div>
             <span>{{userData.nickName||'获取中'}}</span>
-            <span><span class="wm_top_info_star">★</span>{{userData.star||'获取中'}}</span>
+            <span><span class="wm_top_info_star">★</span>{{userData.star||'0'}}</span>
         </div>
     </div>
     <div class="fr wm_topuserinfo_logout" @click="logout">登出</div>

@@ -42,6 +42,9 @@ export default function (api) {
     marketsell(data){
       return api.post('marketsell',data)
     },
+    marketbuy(data){
+      return api.post('marketbuy',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },

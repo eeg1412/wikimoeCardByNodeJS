@@ -19,7 +19,7 @@
           </el-input>
         </div>
         <div v-if="type=='buy'">
-          <el-button type="primary" class="wm_market_card_datail_buy_btn">购买</el-button>
+          <el-button type="primary" class="wm_market_card_datail_buy_btn" @click="buyCard()">购买</el-button>
         </div>
         <div class="wm_market_card_datail_set_body" v-if="type=='sell'">
           <div class="wm_market_card_datail_tips" v-if="stat==1 || stat==0">tips:将会收取售价的10%作为手续费。卡牌上架后会在7天后过期。</div>
@@ -63,6 +63,7 @@ import VeLine from 'v-charts/lib/line.common'
 export default {
   data() {
     return {
+      fromFullPath:'/',
       captchaSrc:'/api/captcha?time='+new Date().getTime(),
       cardData:cardData['cardData'],
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
@@ -94,6 +95,11 @@ export default {
   },
   components: {
     VeLine
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.fromFullPath = from.fullPath
+    })
   },
   filters:{
     capitalize(value) {
@@ -132,6 +138,28 @@ export default {
     this.getChart();
   },
   methods: {
+    buyCard(){
+      let params = {
+        captcha:this.captcha,
+        type:'buy',
+        token:this.token,
+        id:this.id
+      }
+      authApi.marketbuy(params).then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            this.$message({
+              message: res.data.msg,
+              type: 'success'
+            });
+            this.$emit('updateUserinfo');
+            this.$router.replace({ path:this.fromFullPath});
+          }
+          this.captchaUpdata();
+      });
+    },
     getChart(){
       let params = {
         token:this.token,

@@ -27,18 +27,26 @@ export default {
     menuView,
     userTop
   },
-  mounted() {
-    this.activeIndex = this.$route.name
-    if(this.activeIndex=='cardDetail'){
-        let type = this.$route.query.type;
-        if(type=='buy'){
-            this.activeIndex = 'buyCard';
-        }else{
-            this.activeIndex = 'sellCard';
-        }
+  watch:{
+    $route(to,from){
+      this.setMenuActive();
     }
   },
+  mounted() {
+    this.setMenuActive();
+  },
   methods: {
+    setMenuActive(){
+      this.activeIndex = this.$route.name
+      if(this.activeIndex=='cardDetail'){
+          let type = this.$route.query.type;
+          if(type=='buy'){
+              this.activeIndex = 'buyCard';
+          }else{
+              this.activeIndex = 'sellCard';
+          }
+      }
+    },
     updateUserinfo(){
       this.$refs.userTop.getUserInfo();
     },

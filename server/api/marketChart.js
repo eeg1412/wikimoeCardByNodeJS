@@ -48,7 +48,7 @@ module.exports = async function(req, res, next){
     let parmas = {
         cardId:cardId
     }
-    let chartsData = await marketData.findMarketLog(10,1,parmas,{time:-1}).catch ((err)=>{
+    let chartsData = await marketData.findMarketLog(20,1,parmas,{time:-1}).catch ((err)=>{
         res.send({
             code:0,
             msg:'内部错误，更新失败！'

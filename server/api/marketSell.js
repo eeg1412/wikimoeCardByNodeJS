@@ -42,7 +42,7 @@ module.exports = async function(req, res, next){
     }
     if(!adminSK_ && type!=='search'){
         if(req.session.captcha!=captcha || !captcha){
-            req.session.destroy((err)=> {
+            await req.session.destroy((err)=> {
                 if(err){
                     console.info(
                         chalk.red(IP+'验证码清理失败'+'，'+err)
@@ -58,13 +58,13 @@ module.exports = async function(req, res, next){
             );
             return false;
         }
-        req.session.destroy((err)=> {
+        await req.session.destroy((err)=> {
             if(err){
                 console.info(
                     chalk.red(IP+'验证码清理失败'+'，'+err)
                 );
             }
-        })
+        });
     }
     if(price>99999999){
         res.send({
@@ -221,9 +221,12 @@ module.exports = async function(req, res, next){
         })
         // 存入市场
         let time = Math.round(new Date().getTime()/1000);
-        
+        let myCardInfo = cardData['cardData'][utils.PrefixInteger(cardId,4)];
         let params = {
             email:email,
+            name:myCardInfo.name,
+            title:myCardInfo.title,
+            star:myCardInfo.star,
             selled:false,
             cardId:Number(cardId),
             price:price,
@@ -524,12 +527,13 @@ module.exports = async function(req, res, next){
             throw err;
         });
         // 拿星星
+        let getStar = Math.floor(myData.price*0.9);
         let userFilters = {
             email:email
         }
         let updataParams = {
             $inc:{
-                star:myData.price
+                star:getStar
             },
             ip:IP
         }
@@ -550,5 +554,10 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green('email:'+email+'成功卖卡领取了，'+myData.price+'颗星星。IP为：'+IP)
         );
+    }else{
+        res.send({
+            code:1,
+            msg:'参数有误！'
+        });
     }
 }

@@ -13,6 +13,7 @@ var apiShop = require('../api/shop');
 var apiLogout = require('../api/logout');
 var apiNews = require('../api/searchNews');
 var apiMarketSell = require('../api/marketSell');
+var apiMarketBuy = require('../api/marketBuy');
 var apiMarketChart = require('../api/marketChart');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
@@ -46,6 +47,7 @@ router.post('/shop', apiShop);
 router.post('/logout', apiLogout);
 router.post('/news', apiNews);
 router.post('/marketsell', apiMarketSell);
+router.post('/marketbuy', apiMarketBuy);
 router.post('/marketchart', apiMarketChart);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);

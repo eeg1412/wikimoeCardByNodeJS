@@ -229,6 +229,7 @@ router.beforeEach((to, from, next) => {
   if(to.meta.login&&!to.meta.admin){
     let token = sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token");
     if(token){
+      showLoading();
       next();
     }else{
       router.replace('/');
@@ -237,6 +238,7 @@ router.beforeEach((to, from, next) => {
   }else if(to.meta.login&&to.meta.admin){
     let token = sessionStorage.getItem("adminToken")?sessionStorage.getItem("adminToken"):localStorage.getItem("adminToken");
     if(token){
+      showLoading();
       next();
     }else{
       router.replace('/cardadmin');

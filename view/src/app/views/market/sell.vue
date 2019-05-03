@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import {base64_,md5Check,PrefixInteger} from "../../../utils/utils";
+import {md5Check,PrefixInteger} from "../../../utils/utils";
 import md5_ from 'js-md5';
 import {authApi} from "../../api";
 // 状态
@@ -104,7 +104,7 @@ export default {
                     card:card,
                     stat:0
                 }
-            });
+        });
     },
     PrefixInteger_(num,length){
       return PrefixInteger(num,length);
@@ -118,8 +118,7 @@ export default {
     },
     getUserCard(){
         let tokenUserInfo = this.token.split('.')[1];
-        let base = new base64_();
-        let email = JSON.parse(base.decode(tokenUserInfo)).email;
+        let email = JSON.parse(atob(tokenUserInfo)).email;
         let md5 = md5_(email);
         if(!md5Check(md5)){
             this.$message.error('用户信息有误！');
