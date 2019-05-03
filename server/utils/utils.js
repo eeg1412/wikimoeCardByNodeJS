@@ -201,7 +201,7 @@ exports.tokenCheckAndEmail = async function (token) {
     }
     if((result.token!=token)||(result.token=='')){
         console.info(
-            chalk.yellow(account+'和数据库的token对不上,IP为：'+IP)
+            chalk.yellow(email+'和数据库的token对不上')
         )
         return false;
     }else{
