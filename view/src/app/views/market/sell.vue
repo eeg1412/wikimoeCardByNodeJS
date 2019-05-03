@@ -16,7 +16,7 @@
         </div>
         <div>
             <h5 class="common_title type_shop">可卖的卡牌</h5>
-            <div class="wm_market_tips" v-if="userCard.length<0">您暂时没有可以卖的卡牌！</div>
+            <div class="wm_market_tips" v-if="userCard.length<=0">您暂时没有可以卖的卡牌！</div>
             <div class="wm_mycard_list" v-else>
                 <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box" @click="upCard(item[0])">
                     <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
