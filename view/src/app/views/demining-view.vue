@@ -63,7 +63,8 @@ export default {
   },
   mounted() {
     let socketurl = window.location.hostname;
-    this.socket = io.connect('//'+socketurl+':3000');
+    let port = window.location.port;
+    this.socket = io.connect('//'+socketurl+':'+port);
     this.socket.on('demining',(data)=>{
       // this.socket.emit('demining',{time:new Date()});
       console.log(data);
