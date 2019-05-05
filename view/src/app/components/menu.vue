@@ -226,6 +226,7 @@ export default {
       if(token){
         this.goLink();
       }else{
+        this.getRememberEmail();
         this.loginShow = true;
         this.captchaSrc= '/api/captcha?time='+new Date().getTime();
       }

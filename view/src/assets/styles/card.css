@@ -55,6 +55,23 @@ body::-webkit-scrollbar-thumb:hover {
 .el-message-box__content::-webkit-scrollbar-thumb:hover {
   background-color: #bbb
 }
+body{
+  cursor: url(/static/cur/default.cur),default;
+}
+input{
+  cursor: url(/static/cur/text.cur),text;
+}
+button,a,.el-button,.el-dialog__headerbtn,.el-pager li,.el-input-number__decrease, .el-input-number__increase{
+  cursor: url(/static/cur/pointer.cur),pointer;
+}
+.el-loading-mask{
+  cursor: url(/static/cur/wait.cur),default;
+}
+.el-collapse-item__header{
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: url(/static/cur/pointer.cur),pointer;
+}
 /*CSS reset*/
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {margin:0;padding:0;}
 table {border-collapse:collapse;border-spacing:0;}
@@ -260,10 +277,10 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     margin: 10px;
     display: inline-block;
     perspective: 800px;
-    cursor: pointer;
+    cursor: url(/static/cur/pointer.cur),pointer;
 }
 .card_list.selectedcard{
-    cursor: default;
+    cursor: url(/static/cur/default.cur),default;
 }
 .no-selectedcard{
 	opacity: 0.5;
@@ -311,7 +328,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 .wm_getcard_img {
     width: 100%;
     border-radius: 5px;
-    cursor: pointer;
+    cursor: url(/static/cur/pointer.cur),pointer;
 }
 .wm_card_nums {
     font-size: 21px;
@@ -325,7 +342,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     margin-bottom: 5px;
     width: 45px!important;
     height: 45px!important;
-    cursor: pointer;
+    cursor: url(/static/cur/pointer.cur),pointer;
 }
 .wm_user_info_table {
     width: 100%;
@@ -348,7 +365,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     line-height: 18px;
 }
 .copyShareUrl input{
-    cursor: text!important;
+    cursor: url(/static/cur/text.cur),text!important;
     background-color: #fff!important;
 }
 /* 日志 */
@@ -454,7 +471,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 	width: 45px;
 	height: 45px;
 	background: #f8f8f8;
-	cursor:pointer;
+	cursor: url(/static/cur/pointer.cur),pointer;
 }
 /* .wm_card_get_list_body{
     margin-top: 20px;
@@ -471,7 +488,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     margin-top: 20px;
 }
 .wm_card_get_list_card_link{
-    cursor: pointer;
+    cursor: url(/static/cur/pointer.cur),pointer;
     color: #ff5364;
     padding: 0 3px;
 }
@@ -894,6 +911,7 @@ transform:translate(0) rotate(0deg)
 }
 .reg_code_img{
     height: 32px;
+    cursor: url(/static/cur/pointer.cur),pointer;
 }
 /* 挖矿 */
 .common_title.type_demining{
@@ -915,7 +933,7 @@ transform:translate(0) rotate(0deg)
     width: 48px;
     float: left;
     margin: 8px 12px 0px 12px;
-    cursor: pointer;
+    cursor: url(/static/cur/pointer.cur),pointer;
     transition: all 0.3s linear;
     text-align: center;
 }
@@ -962,7 +980,7 @@ transform:translate(0) rotate(0deg)
   height: 35px;
   text-align: center;
   line-height: 35px;
-  cursor: pointer;
+  cursor: url(/static/cur/pointer.cur),pointer;
   background-color: #464646;
   background-size: cover;
   position: relative;
@@ -984,7 +1002,7 @@ transform:translate(0) rotate(0deg)
 .wm_card_demining_table .wm_demining_item.type_is_opened {
     background-color: #a4a4a4;
   color: #fff;
-  cursor: default;
+  cursor: url(/static/cur/default.cur),default;
   background-image: none!important;
   box-sizing: border-box;
   border:1px solid #727272;
@@ -1044,7 +1062,7 @@ img.wm_demining_img {
 .wm_card_menu_box{
   display: inline-block;
   margin: 10px;
-  cursor: pointer;
+  cursor: url(/static/cur/pointer.cur),pointer;
 }
 .wm_card_menu_ico{
   height: 42px;
@@ -1076,7 +1094,7 @@ img.wm_demining_img {
   background-repeat: no-repeat;
   background-size: cover;
   margin-bottom: 10px;
-  cursor: pointer;
+  cursor: url(/static/cur/pointer.cur),pointer;
 }
 .common_title.type_shop{
   padding: 20px 0;
@@ -1084,10 +1102,10 @@ img.wm_demining_img {
 .shop_card_list_box{
   display: inline-block;
   margin: 10px;
-  cursor: pointer;
+  cursor: url(/static/cur/pointer.cur),pointer;
 }
 .shop_card_list_box.selectedcard,.shop_card_list_box.selectedcard .wm_getcard_img{
-  cursor: default;
+  cursor: url(/static/cur/default.cur),default;
 }
 .shop_card_list_body{
   text-align: center;
@@ -1133,19 +1151,19 @@ img.wm_demining_img {
   top: 0;
   left: 0;
   width: 100%;
-  height: 30px;
+  height: 40px;
   z-index: 99;
   background-color: rgba(255,255,255,0.8);
   box-shadow: 0 1px 2px rgba(0,0,0,.1);
-  line-height: 30px;
-  font-size: 12px;
+  line-height: 40px;
+  font-size: 14px;
 }
 .wm_top_info_avatar_pic{
-  width: 20px;
-  height: 20px;
-  margin: 5px 5px 0 10px;
+  width: 30px;
+  height: 30px;
+  margin: 5px 10px 0 5px;
   border-radius: 3px;
-  cursor: pointer;
+  cursor: url(/static/cur/pointer.cur),pointer;
   display: block;
   background-color: #ccc;
 }
@@ -1178,8 +1196,8 @@ img.wm_demining_img {
   border-radius: 5px;
 }
 .wm_topuserinfo_logout{
-  cursor: pointer;
-  margin-right: 10px;
+  cursor: url(/static/cur/pointer.cur),pointer;
+  margin-right: 5px;
 }
 /* 新闻 */
 .wm_topnews_body{
@@ -1191,7 +1209,7 @@ img.wm_demining_img {
   line-height: 24px;
 }
 .wm_topnews_item{
-  cursor: pointer;
+  cursor: url(/static/cur/pointer.cur),pointer;
   margin: 0 5px;
   display: inline-block;
 }
@@ -1334,7 +1352,7 @@ img.wm_demining_img {
   padding-top: 75px;
 }
 .wm_market_mycard_item{
-  cursor: pointer;
+  cursor: url(/static/cur/pointer.cur),pointer;
   margin: 5px;
   display: inline-block;
   text-align: center;
@@ -1358,4 +1376,22 @@ img.wm_demining_img {
 }
 .wm_market_buy_search_btn_body{
   margin-right: 0px!important;
+}
+@media ( max-width : 768px) {
+  /* 首页 */
+  .wm_card_nums{
+    font-size: 16px;
+    padding: 5px;
+    line-height: 28px;
+  }
+  .wm_top_info_avatar_pic{
+    width: 20px;
+    height: 20px;
+    margin: 5px 5px 0 5px;
+  }
+  .wm_card_top_userinfo_body{
+    height: 30px;
+    line-height: 30px;
+    font-size: 12px;
+  }
 }

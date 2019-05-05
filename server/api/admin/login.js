@@ -67,7 +67,7 @@ module.exports = async function(req, res, next){
                 msg:'账户或密码不正确！'
             });
             let logObj = {
-                text:'尝试使用密码'+password+'登录管理员账号：'+account+'，但是密码错误。',
+                text:'尝试登录管理员账号：'+account+'，但是密码错误。',
                 ip:IP
             }
             adminUtils.adminWriteLog(logObj);

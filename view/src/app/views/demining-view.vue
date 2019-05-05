@@ -10,7 +10,7 @@
     </div>
     <div class="wm_card_demining_table_box">
       <div v-if="!mineInfo" class="wm_card_demining_table_loading">
-        矿场数据加载中...
+        矿场数据加载中...如果长时间无反应请刷新。
       </div>
       <table class="wm_card_demining_table">
         <tbody>
@@ -65,6 +65,7 @@ export default {
     let socketurl = window.location.hostname;
     let port = window.location.port;
     this.socket = io.connect('//'+socketurl+':'+port);
+    // this.socket = io.connect('//'+socketurl+':3000');
     this.socket.on('demining',(data)=>{
       // this.socket.emit('demining',{time:new Date()});
       console.log(data);
@@ -83,13 +84,21 @@ export default {
       }else if(data.code==2){//挖到星星
         this.upDateMapData(data.x,data.y,data.md5,data.demNum)
         this.$message({
-          message: '恭喜您挖到了'+data.star+'颗星星！',
+          dangerouslyUseHTMLString: true,
+          showClose: true,
+          duration:10000,
+          message: '恭喜您挖到了<span class="cOrange">'+data.star+'</span>颗星星！',
           type: 'success'
         });
         this.$refs.userTop.getUserInfo();
       }else if(data.code==201){//未挖到星星
         this.upDateMapData(data.x,data.y,data.md5,data.demNum)
-        this.$message('很可惜并没有挖到星星，探测器显示周围有'+data.demNum+'片星星矿！');
+        this.$message({
+          dangerouslyUseHTMLString: true,
+          showClose: true,
+          duration:10000,
+          message:'很可惜并没有挖到星星，探测器显示周围有<span class="cOrange">'+data.demNum+'</span>片星星矿！'
+        });
       }else if(data.code==4){//您选择的工具还在制作中！
         this.$message(data.msg);
       }else if(data.code==3){//用户信息
@@ -207,6 +216,7 @@ export default {
           }
         }
       }
+      this.$forceUpdate();
       console.log(this.mineMap);
     }
   },

@@ -5,7 +5,7 @@
         placement="top"
         :title="pickTitle()"
         width="200"
-        trigger="focus"
+        trigger="hover"
         :content="pickContent()">
     </el-popover>
     <div v-popover:popover>

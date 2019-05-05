@@ -505,6 +505,7 @@ export default {
             });
           }else if(res.data.code==3){
             this.$message.error(res.data.msg);
+            this.rememberEmail();
             this.getUserCard(emailMD5,true);
           }
       })
