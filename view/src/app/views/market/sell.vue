@@ -111,6 +111,7 @@ export default {
     },
     cardPageChange(val){
         let userCard_ = this.userCardCache.slice((val-1)*20,val*20);
+        this.userCard = [];
         this.userCard = userCard_;
     },
     checkCanBuy(item) {

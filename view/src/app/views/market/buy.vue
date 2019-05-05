@@ -133,6 +133,7 @@ export default {
               });
               this.getUserMarket();
             }
+            this.cardList = [];
             this.cardList = res.data.data;
             this.cardTotle = res.data.totle;
           }
