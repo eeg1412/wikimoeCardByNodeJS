@@ -162,7 +162,15 @@ var openNode = function(socket,data,result_){
                     return false;
                 }
                 let playData = result.player;
-                let demNum = result.map[y][x];
+                let demNum = null;
+                try {
+                    demNum = result.map[y][x];
+                }catch(err) {
+                    socket.emit('demining',{code:1,msg:'矿场不正确，请刷新查看！',time:data.time});
+                    console.info(chalk.yellow('矿场x,y有误！'))
+                    return false;
+                }
+                console.log('123');
                 let boomedNum = result.boomedNum;
                 let boomNum = result.boomNum;
                 let close = result.close;
