@@ -40,15 +40,19 @@
       </div>
     </div>
     <div>
-      <div class="wm_market_card_datail_charts_empty" v-if="cardList.length<=0">
-        市场空空如也
-      </div>
-      <div class="wm_mycard_list" v-else>
-          <div class="wm_market_mycard_item" v-for="(item,index) in cardList" v-bind:key="index+1" @click="buyCard(item.cardId,item.time,item.price,item._id)">
-              <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg'">
-              <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
-          </div>
-      </div>
+      <transition name="el-fade-in-linear">
+        <div class="wm_market_card_datail_charts_empty" v-if="cardList.length<=0&&!pageChangeing">
+          市场空空如也
+        </div>
+      </transition>
+      <el-collapse-transition>
+        <div class="wm_mycard_list" v-if="cardList.length>0">
+            <div class="wm_market_mycard_item" v-for="(item,index) in cardList" v-bind:key="index+1" @click="buyCard(item.cardId,item.time,item.price,item._id)">
+                <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg'">
+                <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
+            </div>
+        </div>
+      </el-collapse-transition>
       <div class="wm_market_content_page" v-if="cardTotle">
           <el-pagination
           small
@@ -76,6 +80,7 @@ export default {
       cardList:[],
       cardPage:Number(this.$route.query.page) || 1,//当前卡牌页码
       cardTotle:0,//一共多少
+      pageChangeing:false,
       searchForm:{
         name:this.$route.query.name || 'name',
         text:decodeURIComponent(this.$route.query.text||''),
@@ -133,8 +138,14 @@ export default {
               });
               this.getUserMarket();
             }
+            if(res.data.data.length>0){
+              this.pageChangeing = true;
+            }
             this.cardList = [];
-            this.cardList = res.data.data;
+            setTimeout(()=>{
+              this.pageChangeing = false;
+              this.cardList = res.data.data;
+            },300)
             this.cardTotle = res.data.totle;
           }
         });

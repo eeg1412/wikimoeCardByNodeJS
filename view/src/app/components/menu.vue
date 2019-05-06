@@ -7,6 +7,12 @@
       </div>
       <div class="wm_card_menu_text">首页</div>
     </div>
+    <router-link tag="div" to="/reg" class="wm_card_menu_box" v-if="$route.path!='/reg' && !token">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/reg.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">注册</div>
+    </router-link>
     <div class="wm_card_menu_box" @click="login('/demining')" v-if="$route.path!='/demining'">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/kuangchang.jpg" width="100%" height="100%" />
