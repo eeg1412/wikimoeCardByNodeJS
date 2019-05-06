@@ -31,6 +31,12 @@
       </div>
       <div class="wm_card_menu_text">公告</div>
     </div>
+    <div class="wm_card_menu_box" @click="watchMyCard()" v-if="token">
+      <div class="wm_card_menu_ico">
+        <img :src="'https://cdn.v2ex.com/gravatar/'+getCardMd5()+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'" class="wm_card_menu_ico_my" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">我的</div>
+    </div>
     <div class="wm_card_menu_box" @click="openDonate">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/zanzhu.png" width="100%" height="100%" />
@@ -100,10 +106,12 @@
 <script>
 import {authApi} from "../api";
 import {mailCheck,passwordCheck} from "../../utils/utils";
+import md5_ from 'js-md5';
 
 export default {
   data() {
     return {
+      token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       captchaSrc:'/api/captcha?time='+new Date().getTime(),
       routPath:null,
       loginShow:false,
@@ -130,6 +138,18 @@ export default {
     }
   },
   methods: {
+    getCardMd5(){
+      let md5 = '';
+      try {
+          let tokenUserInfo = this.token.split('.')[1];
+          let email = JSON.parse(atob(tokenUserInfo)).email;
+          md5 = md5_(email);
+      }
+      catch(err) {
+          md5 = '';
+      }
+      return md5;
+    },
     openNews(){
       this.page = 1;
       this.newsDialog = true;
@@ -156,6 +176,14 @@ export default {
     openDonate(){
       this.$alert('<div class="watch_img"><img src="/static/otherImg/donate.jpg" /></div>', '捐赠', {
         dangerouslyUseHTMLString: true
+      });
+    },
+    watchMyCard(){
+      let md5 = this.getCardMd5();
+      console.log(md5);
+      this.$router.push({ 
+        path:'/',
+        query:{md5:md5}
       });
     },
     goHome(){

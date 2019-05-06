@@ -44,6 +44,9 @@
   <div class="wm_user_info_body">
     <el-collapse-transition>
       <div class="wm_mycard_list" v-if="userCard">
+        <el-tooltip class="item" effect="dark" content="关闭信息" placement="top" :hide-after="3000">
+          <div class="wm_mycard_list_close" @click="closeUserInfo"><i class="el-icon el-icon-close"></i></div>
+        </el-tooltip>
         <h5 class="wm_card_chiose_title">
           <el-tooltip class="item" effect="dark" content="点击分享卡牌信息" placement="top" :hide-after="3000">
             <img class="wm_title_info_avatar_pic" :src="nowUserInfo.tx" width="45" height="45" @click="openShare()">
@@ -157,10 +160,12 @@ import {scrollToTop,mailCheck,PrefixInteger,md5Check,loadingImg,showLoading,hide
 import rotate3DCard from '../components/rotateCard.vue';
 import menuView from '../components/menu.vue';
 import topNews from '../components/topNews.vue';
+import userTop from '../components/topUserInfo.vue';
 import md5 from 'js-md5';
 export default {
   data() {
     return {
+      token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       shareDialog:false,
       shareUrl:'',
       logListTotal:0,
@@ -190,7 +195,8 @@ export default {
   components: {
     rotate3DCard,
     menuView,
-    topNews
+    topNews,
+    userTop
   },
   filters: {
     pickaxeName(value){
@@ -223,6 +229,13 @@ export default {
         return tt;
       }
   },
+  watch:{
+    $route(to,from){
+      if(to.query.md5){
+        this.urlUserInfo();
+      }
+    }
+  },
   mounted() {
     this.getRememberEmail();
     this.getLog(1);
@@ -230,6 +243,10 @@ export default {
     this.urlUserInfo();
   },
   methods: {
+    closeUserInfo(){
+      this.userCard = null;
+      this.userCardCache = null;
+    },
     openShopCard(cardArr){
       if(cardArr.length<1){
         return false;

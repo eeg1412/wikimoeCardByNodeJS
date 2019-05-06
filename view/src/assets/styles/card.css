@@ -315,6 +315,19 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 .wm_mycard_list {
     text-align: center;
     margin-top: 10px;
+    position: relative;
+    z-index: 1;
+}
+.wm_mycard_list_close{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 0;
+  background: 0 0;
+  border: none;
+  outline: 0;
+  cursor: url(/static/cur/pointer.cur),pointer;
+  font-size: 16px;
 }
 .my_card_page{
     margin-top: 20px;
@@ -1071,6 +1084,10 @@ img.wm_demining_img {
   border-radius: 3px;
   margin-bottom: 5px;
   overflow: hidden;
+}
+.wm_card_menu_ico_my{
+  border:2px solid #7b7b7b;
+  box-sizing: border-box;
 }
 .wm_find_ps_link{
   color: #FF4C4C;
