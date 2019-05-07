@@ -45,14 +45,14 @@
           市场空空如也
         </div>
       </transition>
-      <el-collapse-transition>
+      <transition name="el-fade-in-linear">
         <div class="wm_mycard_list" v-if="cardList.length>0">
             <div class="wm_market_mycard_item" v-for="(item,index) in cardList" v-bind:key="index+1" @click="buyCard(item.cardId,item.time,item.price,item._id)">
                 <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg'">
                 <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
             </div>
         </div>
-      </el-collapse-transition>
+      </transition>
       <div class="wm_market_content_page" v-if="cardTotle">
           <el-pagination
           small
@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import {PrefixInteger} from "../../../utils/utils";
+import {PrefixInteger,scrollToTop} from "../../../utils/utils";
 import md5_ from 'js-md5';
 import {authApi} from "../../api";
 
@@ -108,6 +108,16 @@ export default {
     cardPageChange(val){
       this.cardPage = val;
       this.getUserMarket();
+      this.$router.replace({ 
+        name:'buyCard',
+        query: {
+          page:val,
+          name:this.searchForm.name,
+          text:encodeURIComponent(this.searchForm.text),
+          star:this.searchForm.star,
+          sort:this.searchForm.sort,
+        }
+      });
     },
     getUserMarket(){
         let params = {
@@ -145,7 +155,10 @@ export default {
             setTimeout(()=>{
               this.pageChangeing = false;
               this.cardList = res.data.data;
-            },300)
+              if(this.$route.query.page){
+                scrollToTop(250,200)
+              }
+            },100)
             this.cardTotle = res.data.totle;
           }
         });

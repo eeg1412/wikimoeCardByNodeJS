@@ -37,6 +37,12 @@
       </div>
       <div class="wm_card_menu_text">公告</div>
     </div>
+    <div class="wm_card_menu_box" @click="login('/handbook')" v-if="$route.path.indexOf('/handbook')==-1">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/handbook.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">图鉴</div>
+    </div>
     <div class="wm_card_menu_box" @click="watchMyCard()" v-if="token">
       <div class="wm_card_menu_ico">
         <img :src="'https://cdn.v2ex.com/gravatar/'+getCardMd5()+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'" class="wm_card_menu_ico_my" width="100%" height="100%" />
