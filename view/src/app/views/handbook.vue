@@ -6,13 +6,13 @@
             <div class="wm_market_tips" v-if="userCard.length<=0&&!pageChangeing"><i class="el-icon-loading"></i> 读取中...</div>
         </transition>
             <div class="wm_handbook_cardlist">
-                <transition name="el-fade-in-linear">
+                <el-collapse-transition>
                     <div class="wm_mycard_list" v-if="userCard.length>0">
                         <div class="wm_market_mycard_item" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg('/static/img/'+item.cardId+'.jpg')">
                             <img class="wm_getcard_img" :src="'/static/img/'+item.cardId+'.jpg'">
                         </div>
                     </div>
-                </transition>
+                </el-collapse-transition>
                 <div class="wm_market_content_page" v-if="userCard.length>0">
                     <el-pagination
                     small
@@ -115,7 +115,7 @@ export default {
         setTimeout(()=>{
             this.pageChangeing = false;
             this.userCard = userCard_;
-        },100)
+        },300)
         this.$router.replace({ 
             name:'handbook',
             query: {
