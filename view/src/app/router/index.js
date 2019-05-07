@@ -23,13 +23,17 @@ if (process.env.NODE_ENV === 'development') {
 
 const router = new VueRouter({
   mode: 'history',
-  // scrollBehavior(to, from, savedPosition) {
-  //   if (!savedPosition) {
-  //     savedPosition = { x: 0, y: 0 }
-  //   }
+  scrollBehavior(to, from, savedPosition) {
+    console.log(to.query.page);
+    if(!to.query.page){
+      console.log('需要滚动到顶部');
+      if (!savedPosition) {
+        savedPosition = { x: 0, y: 0 }
+      }
 
-  //   return savedPosition
-  // },
+      return savedPosition
+    }
+  },
   routes: [
     {
       name: 'home',
