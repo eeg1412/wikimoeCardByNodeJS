@@ -8,7 +8,7 @@
             <div class="wm_handbook_cardlist">
                 <el-collapse-transition>
                     <div class="wm_mycard_list" v-if="userCard.length>0">
-                        <div class="wm_market_mycard_item" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg('/static/img/'+item.cardId+'.jpg')">
+                        <div class="wm_market_mycard_item" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg('/static/img/'+item.cardId+'.jpg',item.name)">
                             <img class="wm_getcard_img" :src="'/static/img/'+item.cardId+'.jpg'">
                         </div>
                     </div>
@@ -56,11 +56,23 @@ export default {
       this.getUserCard();
   },
   methods: {
-    openImg(imgsrc){
-      this.$alert('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
-        dangerouslyUseHTMLString: true,
-        lockScroll:false
-      });
+    openImg(imgsrc,name){
+        this.$confirm('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
+            dangerouslyUseHTMLString: true,
+            lockScroll:false,
+            showCancelButton: false,
+            confirmButtonText: '去市场'
+        }).then(() => {
+            this.$router.push({ 
+                name:'buyCard',
+                query: {
+                    name:'name',
+                    text:encodeURIComponent(name)
+                }
+            });
+        }).catch(() => {
+                   
+        });
     },
     getUserCard(){
         if(!this.token){
@@ -82,6 +94,7 @@ export default {
                     for(let i =0;i<this.card.length;i++){
                         let cardI = {
                             cardId:this.card[i],
+                            name:cardData.cardData[this.card[i]].name,
                             have:res.data.card[Number(this.card[i])]
                         }
                         cardCache.push(cardI);
