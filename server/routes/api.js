@@ -15,6 +15,8 @@ var apiNews = require('../api/searchNews');
 var apiMarketSell = require('../api/marketSell');
 var apiMarketBuy = require('../api/marketBuy');
 var apiMarketChart = require('../api/marketChart');
+var apiGravatar = require('../api/gravatar');
+var apiBattle = require('../api/battle');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -35,6 +37,7 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 router.get('/captcha', apiCaptcha);
+router.get('/gravatar', apiGravatar);
 router.post('/dailycard', apiDailycard);
 router.post('/reg', apiReg);
 router.post('/find', apiFind);
@@ -49,6 +52,7 @@ router.post('/news', apiNews);
 router.post('/marketsell', apiMarketSell);
 router.post('/marketbuy', apiMarketBuy);
 router.post('/marketchart', apiMarketChart);
+router.post('/battle', apiBattle);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);

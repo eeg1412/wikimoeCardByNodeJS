@@ -15,6 +15,8 @@ var users = new Schema({
   level:{type: Number, default: 0},
   exp:{type: Number, default: 0},
   battleStamp:{type: SchemaTypes.Long, default: 0},
+  battleDailyCount:{type: Number, default: 0},
+  battleCard:{type: Array, default: []},
   deminingStamp:{type: [SchemaTypes.Long],default: [0,0,0]},
   deminingStarCount:{type: SchemaTypes.Long, default: 0},
   card: {},
