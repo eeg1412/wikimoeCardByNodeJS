@@ -8,7 +8,7 @@
             <div class="wm_handbook_cardlist">
                 <el-collapse-transition>
                     <div class="wm_mycard_list" v-if="userCard.length>0">
-                        <div class="wm_market_mycard_item" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg('/static/img/'+item.cardId+'.jpg',item.name)">
+                        <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg('/static/img/'+item.cardId+'.jpg',item.name)">
                             <img class="wm_getcard_img" :src="'/static/img/'+item.cardId+'.jpg'">
                         </div>
                     </div>

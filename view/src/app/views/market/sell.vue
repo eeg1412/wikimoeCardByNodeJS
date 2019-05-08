@@ -23,7 +23,7 @@
             </transition>
             <el-collapse-transition>
                 <div class="wm_mycard_list" v-if="userCard.length>0">
-                    <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box" @click="upCard(item[0])">
+                    <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box type_mobile" @click="upCard(item[0])">
                         <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
                         <div class="wm_card_nums">可卖{{item[1]-1}}张</div>
                     </div>

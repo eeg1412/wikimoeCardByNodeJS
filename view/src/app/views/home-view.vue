@@ -356,7 +356,12 @@ export default {
           setTimeout(()=>{
             if(!noGoTop){
               let topNewsHeight = this.$refs.topNews.$el.clientHeight?this.$refs.topNews.$el.clientHeight+20:0;
-              scrollToTop(450+topNewsHeight,200);
+              let windowWidth = window.screen.width;
+              let topSet = 450;
+              if(windowWidth<=768){
+                topSet = 410;
+              }
+              scrollToTop(topSet+topNewsHeight,200);
             }
             hideLoading();
             this.userCard = userCard_;
