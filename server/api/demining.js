@@ -9,8 +9,8 @@ var mineSweepingMap = function (returnData) {
     let randomRowsCols = utils.randomNum(20,25);
     let r = randomRowsCols;
     let c = randomRowsCols;
-    //20,80
-    let num = utils.randomNum(20,80);
+    //40,80
+    let num = utils.randomNum(40,80);
     var map = []
     // 给行数，生成一个 1 维数组
     var row = function (r) {

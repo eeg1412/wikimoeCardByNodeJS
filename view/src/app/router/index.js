@@ -11,7 +11,8 @@ const findView = () => import(/* webpackChunkName: "findView" */ '@/views/find-v
 const deminingView = () => import(/* webpackChunkName: "deminingView" */ '@/views/demining-view.vue')
 const shopView = () => import(/* webpackChunkName: "shopView" */ '@/views/shop-view.vue')
 const marketView = () => import(/* webpackChunkName: "marketView" */ '@/views/market/index.vue')
-const handbookView = () => import(/* webpackChunkName: "marketView" */ '@/views/handbook.vue')
+const handbookView = () => import(/* webpackChunkName: "handbookView" */ '@/views/handbook.vue')
+const battleView = () => import(/* webpackChunkName: "battleView" */ '@/views/battle.vue')
 
 const adminLoginView = () => import(/* webpackChunkName: "adminLoginView" */ '@/views/admin/login-view.vue')
 const adminInstallView = () => import(/* webpackChunkName: "adminInstallView" */ '@/views/admin/install-view.vue')
@@ -125,6 +126,15 @@ const router = new VueRouter({
         admin:false,
       },
       component: handbookView
+    },
+    {
+      name: 'battle',
+      path: '/battle',
+      meta:{
+        login:true,
+        admin:false,
+      },
+      component: battleView
     },
     {
       name: 'adminLogin',

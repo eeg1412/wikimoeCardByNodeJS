@@ -345,6 +345,7 @@ module.exports = async function(req, res, next){
         MyBattleCard = MyBattleCard.slice(MyBattleCard.length-20,MyBattleCard.length);
     }
     // 设置我的出战卡牌信息
+    MyBattleCardArr_ = [...MyBattleCard]
     MyBattleCard = setBattleCardInfo(MyBattleCard);
     // 我的卡牌星级统计
     let MyCardStarRes = starCount(MyBattleCard);
@@ -361,7 +362,6 @@ module.exports = async function(req, res, next){
         )
         EmBattleCard = creatAICard(MyCardStarCount);
         EmName = '自动书记人偶'+ utils.randomNum(0,99) + '号';
-        EmMD5 = 'fbb31d99a24cf9a56c48b44dd0797d22';
     }else{
         // 有匹配设置对方的卡牌
         emData = emData[0];
@@ -378,6 +378,7 @@ module.exports = async function(req, res, next){
         }
     }
     // 设置对方出战卡牌信息
+    EmBattleCardArr_ = [...EmBattleCard]
     EmBattleCard = setBattleCardInfo(EmBattleCard);
     // 对方卡牌星级统计
     let EmCardStarRes = starCount(EmBattleCard);
@@ -447,10 +448,12 @@ module.exports = async function(req, res, next){
     let battleOverChance = false;//是否超过当日对战次数
     let dailyIsToday = false;//对战次数数据是否是当日
     if(new Date().toDateString()===new Date(dailyBattleTime).toDateString()){//如果是同天
-        if(myBattleTimes>3){//如果今日已经战斗三次
+        if(myBattleTimes>=3){//如果今日已经战斗三次
             battleOverChance = true;
         }
         dailyIsToday = true;
+    }else{
+        myBattleTimes = 0;
     }
     // 如果并未超过当日的对战次数则结算竞技点、经验
     let getScore = 0;//获取竞技点
@@ -459,6 +462,10 @@ module.exports = async function(req, res, next){
     let EmGetScore = 0;
     let MyScore = result.score;//我的竞技点
     if(!battleOverChance){
+        let userFilters = null;
+        let updataParams = null;
+        let EmUserFilters = null;
+        let EmUpdataParams = null;
         if(AiMode){//如果是AI模式则竞技点与自己一样
             EmScore = MyScore;
         }else{
@@ -476,16 +483,90 @@ module.exports = async function(req, res, next){
             }else{
                 myBattleTimes = 1;
             }
+            // 写入我方胜利数据
+            let myLevle = result.level;
+            let MyExp = result.exp+getExp;
+            let levelExp = utils.levelCheck(myLevle,MyExp);
+            userFilters = {
+                email:email
+            }
+            updataParams = {
+                battleStamp:Math.round(new Date().getTime()/1000),
+                battleDailyCount:myBattleTimes,
+                score:result.score + getScore,
+                level:levelExp[0],
+                exp:levelExp[1],
+                ip:IP
+            }
+            if(!AiMode){
+                let EmNewScore = EmScore + EmGetScore;
+                if(EmNewScore<0){//防止竞技点小于0
+                    EmNewScore = 0;
+                }
+                EmUserFilters = {
+                    email:emData.email
+                }
+                EmUpdataParams = {
+                    score:EmNewScore
+                }
+            }
+            console.info(
+                chalk.green(email+'对战胜利。IP为：'+IP)
+            )
         }else if(win===0){//如果是输
             getScore = Math.round((EmScore - MyScore)/2);
             if(getScore>-10){//如果对方竞技点比我们高也要至少扣十点竞技点
                 getScore = -10;
             }
             EmGetScore = Math.abs(getScore);
-        }else{//平局就加点经验
-            getExp = 10;
+            let myNewScore = result.score + getScore;
+            if(myNewScore<0){//防止竞技点小于0
+                myNewScore = 0;
+            }
+            userFilters = {
+                email:email
+            }
+            updataParams = {
+                score:myNewScore,
+                ip:IP
+            }
+            if(!AiMode){
+                let EmNewScore = EmScore + EmGetScore;
+                EmUserFilters = {
+                    email:emData.email
+                }
+                EmUpdataParams = {
+                    score:EmNewScore
+                }
+            }
+            console.info(
+                chalk.green(email+'战败。IP为：'+IP)
+            )
         }
-
+        if(userFilters){
+            await userData.updataUser(userFilters,updataParams).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+        }
+        if(EmUserFilters){
+            await userData.updataUser(EmUserFilters,EmUpdataParams).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+        }
     }
     // 记得赢了才更新对战时间和次数
     
@@ -494,14 +575,14 @@ module.exports = async function(req, res, next){
         // MyCardStarCount:MyCardStarCount,
         // MyStarAll:MyStarAll,
         // MyCryCount:MyCryCount,
-        MyBattleCard:MyBattleCard,
+        MyBattleCard:MyBattleCardArr_,
         MyADSHP:MyADSHP_,
         MyName:MyName,
         MyMD5:MyMD5,
         // EmCardStarCount:EmCardStarCount,
         // EmStarAll:EmStarAll,
         // EmCryCount:EmCryCount,
-        EmBattleCard:EmBattleCard,
+        EmBattleCard:EmBattleCardArr_,
         EmADSHP:EmADSHP_,
         EmName:EmName,
         EmMD5:EmMD5,
@@ -511,6 +592,8 @@ module.exports = async function(req, res, next){
         speed:speed,
         myBattleTimes:myBattleTimes,
         battleOverChance:battleOverChance,
+        getScore:getScore,
+        getExp:getExp,
         msg:'获取成功'
     });
 }

@@ -37,7 +37,7 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 router.get('/captcha', apiCaptcha);
-router.get('/gravatar', apiGravatar);
+router.get('/gravatar.png', apiGravatar);
 router.post('/dailycard', apiDailycard);
 router.post('/reg', apiReg);
 router.post('/find', apiFind);
