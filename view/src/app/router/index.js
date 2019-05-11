@@ -13,6 +13,7 @@ const shopView = () => import(/* webpackChunkName: "shopView" */ '@/views/shop-v
 const marketView = () => import(/* webpackChunkName: "marketView" */ '@/views/market/index.vue')
 const handbookView = () => import(/* webpackChunkName: "handbookView" */ '@/views/handbook.vue')
 const battleView = () => import(/* webpackChunkName: "battleView" */ '@/views/battle.vue')
+const battleCardView = () => import(/* webpackChunkName: "battleView" */ '@/views/battlecard.vue')
 
 const adminLoginView = () => import(/* webpackChunkName: "adminLoginView" */ '@/views/admin/login-view.vue')
 const adminInstallView = () => import(/* webpackChunkName: "adminInstallView" */ '@/views/admin/install-view.vue')
@@ -135,6 +136,15 @@ const router = new VueRouter({
         admin:false,
       },
       component: battleView
+    },
+    {
+      name: 'battlecard',
+      path: '/battlecard',
+      meta:{
+        login:true,
+        admin:false,
+      },
+      component: battleCardView
     },
     {
       name: 'adminLogin',

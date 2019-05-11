@@ -26,6 +26,11 @@ export const PrefixInteger = function(num, length) {
 export const md5Check = function (MD5) {
     return /^[A-Za-z0-9]{32}$/.test(MD5)//32位MD5
 }
+// 随机区间内整数
+export const randomNum = function (n,m) {
+    var random = Math.floor(Math.random()*(m-n+1)+n);
+    return random;
+}
 //读图
 export const loadingImg = function(imgSrcArr,resolve_,reject_){
     var imgLength = imgSrcArr.length;

@@ -45,6 +45,9 @@ export default function (api) {
     marketbuy(data){
       return api.post('marketbuy',data)
     },
+    battle(data){
+      return api.post('battle',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },

@@ -1,0 +1,567 @@
+<template>
+    <div id="battleView" class="wm_battle_body" @click="closeBattle()"></div>
+</template>
+
+<script>
+import * as PIXI from 'pixi.js'
+import {PrefixInteger,randomNum} from "../../utils/utils";
+
+export default {
+    props:{
+        battleData:{ //哪种稿
+            type:Object
+        },
+    },
+  data() {
+    return {
+        app:null,
+        canClose:false,
+    }
+  },
+  mounted() {
+      this.drawBattle();
+  },
+  methods: {
+      closeBattle(){
+          if(this.canClose){
+              this.$emit('gameover');
+          }
+      },
+      MergeArray(arr1,arr2){
+            var _arr = new Array();
+            for(var i=0;i<arr1.length;i++){
+            _arr.push(arr1[i]);
+            }
+            for(var i=0;i<arr2.length;i++){
+                var flag = true;
+                for(var j=0;j<arr1.length;j++){
+                    if(arr2[i]==arr1[j]){
+                        flag=false;
+                        break;
+                    }
+                }
+                if(flag){
+                    _arr.push(arr2[i]);
+                }
+            }
+            return _arr;
+        },
+      drawBattle(){
+            let loadingAlphUp = false;
+            let that = this;
+            let senceChangeFlag = false;//场景切换标记
+            let timerCount = 0;//动画延时计算用
+            const loader = new PIXI.Loader();
+            const app = new PIXI.Application({
+                width: 720, height: 1280, backgroundColor: 0x000000, resolution: window.devicePixelRatio || 1,
+            });
+            this.app = app;
+            document.getElementById('battleView').appendChild(app.view);
+            // 三个场景读取、战斗、结算
+            const loadingSence = new PIXI.Container();
+            const battleStartSence = new PIXI.Container();
+            let battleSence = new PIXI.Container();
+            battleSence.sortableChildren = true;
+            const battleEndSence = new PIXI.Container();
+            app.stage.addChild(loadingSence);
+            app.stage.addChild(battleStartSence);
+            app.stage.addChild(battleSence);
+            app.stage.addChild(battleEndSence);
+            battleStartSence.visible = false;
+            battleSence.visible = false;
+            battleEndSence.visible = false;
+            battleStartSence.alpha = 0;
+            battleSence.alpha = 0;
+            battleEndSence.alpha = 0;
+            // 精灵们
+            let sprites = {};
+            // 绘制加载画面
+            let loadingText = new PIXI.Text('资源读取中...',{fontFamily : 'Arial', fontSize: 36, fill : 0xffffff, align : 'center'});
+            loadingText.anchor.set(0.5);
+            loadingText.position.set(360, 640);
+            loadingSence.addChild(loadingText);
+            // 加载资源
+            let cardList_ = this.MergeArray(this.battleData.MyBattleCard,this.battleData.EmBattleCard);
+            for(let i=0;i<cardList_.length;i++){
+                loader.add(cardList_[i], '/static/img/'+PrefixInteger(cardList_[i],4)+'.jpg');
+            }
+            loader.add('myAvatar','/api/gravatar.png?md5='+this.battleData.MyMD5);
+            if(this.battleData.EmMD5){
+                loader.add('emAvatar','/api/gravatar.png?md5='+this.battleData.EmMD5);
+            }else{
+                loader.add('emAvatar','/api/gravatar.png?md5='+this.battleData.MyMD5);
+            }
+            loader.add('battle_bg','/static/img/battle_bg.jpg');
+            // 资源加载完毕
+            loader.load((loader, resources) => {
+                let myCardList = this.battleData.MyBattleCard;
+                let emCardList = this.battleData.EmBattleCard;
+                sprites['mycard'] = {};
+                sprites['emcard'] = {};
+                for(let i=0;i<myCardList.length;i++){
+                    sprites['mycard'][myCardList[i]] = new PIXI.Sprite(resources[myCardList[i]]['texture']);
+                }
+                for(let i=0;i<emCardList.length;i++){
+                    sprites['emcard'][emCardList[i]] = new PIXI.Sprite(resources[emCardList[i]]['texture']);
+                }
+                sprites['battle_bg'] = new PIXI.Sprite(resources['battle_bg']['texture']);
+                initBattleSence(resources);
+                initGameStartSence(resources);
+                initGameEndSdence(resources);
+                senceChangeFlag = true;
+
+            });
+            // 战斗结算
+            function initGameEndSdence(resources){
+                let myEndNickname = new PIXI.Text(that.battleData.MyName,{ fontSize: 36, fill : 0xffffff, align : 'center'});//昵称
+                let myEndAvatarSprite = new PIXI.Sprite(resources['myAvatar']['texture']);//我的头像
+                let winText = '平局'
+                if(that.battleData.win===1){
+                    winText = '胜利';
+                }else if(that.battleData.win===0){
+                    winText = '战败';
+                }
+                let myEndWin= new PIXI.Text(winText,{ fontSize: 48, fill : 0xffffff, align : 'center'});//战败与否
+                // 结算竞技点
+                let myScore = that.battleData.score + that.battleData.getScore;
+                if(myScore<0){
+                    myScore= 0;
+                }
+                let getScore= new PIXI.Text('我的竞技点：'+myScore,{ fontSize: 36, fill : 0xffffff, align : 'center'});//竞技点
+                let getExp = new PIXI.Text('获得经验值：'+that.battleData.getExp,{ fontSize: 36, fill : 0xffffff, align : 'center'});//经验
+                let overChance = new PIXI.Text(that.battleData.battleOverChance?'您已超过今天的最大胜利次数，将不会获得竞技点与经验值。':'',{ fontSize: 22, fill : 0xffffff, align : 'center'});//经验
+                // 布局
+                getScore.anchor.set(0.5);
+                getExp.anchor.set(0.5);
+                myEndNickname.anchor.set(0.5);
+                myEndAvatarSprite.anchor.set(0.5);
+                myEndWin.anchor.set(0.5);
+                overChance.anchor.set(0.5);
+
+                myEndAvatarSprite.position.set(360,425);
+                myEndNickname.position.set(360,516);
+                getScore.position.set(360,582);
+                getExp.position.set(360,648);
+                myEndWin.position.set(360,300);
+                overChance.position.set(360,726);
+                // 插入场景
+                battleEndSence.addChild(getScore);
+                battleEndSence.addChild(getExp);
+                battleEndSence.addChild(myEndNickname);
+                battleEndSence.addChild(myEndAvatarSprite);
+                battleEndSence.addChild(myEndWin);
+                battleEndSence.addChild(overChance);
+            }
+            // 战斗场景初始化
+            let battleSenceItem = {
+                bg:null,
+                myAvatarSprite:null,
+                myNickname:null,
+                mySAN:null,
+                myBgSanB:null,
+                myBgSanA:null,
+                emAvatarSprite:null,
+                emNickname:null,
+                emSAN:null,
+                emBgSanB:null,
+                emBgSanA:null,
+                battleMyInfo:new PIXI.Container(),
+                battleEmInfo:new PIXI.Container(),
+            }
+            function initBattleSence(resources){
+                battleSenceItem.bg = sprites['battle_bg'];//战斗背景
+                // 我的信息
+                battleSenceItem.myNickname = new PIXI.Text(that.battleData.MyName,{ fontSize: 24, fill : 0xffffff, align : 'left'});//昵称
+                battleSenceItem.myAvatarSprite = new PIXI.Sprite(resources['myAvatar']['texture']);//我的头像
+                battleSenceItem.mySAN = new PIXI.Text('SAN:'+that.battleData.MyADSHP[3],{ fontSize: 36, fill : 0xffffff, align : 'left'});//SAN
+                // 画我的血条背景
+                battleSenceItem.myBgSanB = new PIXI.Graphics();
+                battleSenceItem.myBgSanB.beginFill(0x890606);
+                battleSenceItem.myBgSanB.drawRect(136, 1233, 564, 27);
+                battleSenceItem.myBgSanB.endFill();
+                // 画我的血条
+                battleSenceItem.myBgSanA = new PIXI.Graphics();
+                battleSenceItem.myBgSanA.beginFill(0xfee140);
+                battleSenceItem.myBgSanA.drawRect(136, 1233, 564, 27);
+                battleSenceItem.myBgSanA.endFill();
+                // 对方的信息
+                battleSenceItem.emAvatarSprite = new PIXI.Sprite(resources['emAvatar']['texture']);//他的头像
+                battleSenceItem.emNickname = new PIXI.Text(that.battleData.EmName,{ fontSize: 24, fill : 0xffffff, align : 'left'});//他的昵称
+                battleSenceItem.emSAN = new PIXI.Text('SAN:'+that.battleData.EmADSHP[3],{ fontSize: 36, fill : 0xffffff, align : 'left'});//SAN
+                // 画他的血条背景
+                battleSenceItem.emBgSanB = new PIXI.Graphics();
+                battleSenceItem.emBgSanB.beginFill(0x890606);
+                battleSenceItem.emBgSanB.drawRect(136, 94, 564, 27);
+                battleSenceItem.emBgSanB.endFill();
+                // 画他的血条
+                battleSenceItem.emBgSanA = new PIXI.Graphics();
+                battleSenceItem.emBgSanA.beginFill(0xfee140);
+                battleSenceItem.emBgSanA.drawRect(136, 94, 564, 27);
+                battleSenceItem.emBgSanA.endFill();
+                // 设定我的坐标
+                battleSenceItem.myAvatarSprite.position.set(20, 1160);
+                battleSenceItem.myNickname.position.set(136, 1160);
+                battleSenceItem.mySAN.position.set(136, 1188);
+                // 设定他的坐标
+                battleSenceItem.emAvatarSprite.position.set(20, 20);
+                battleSenceItem.emNickname.position.set(136, 20);
+                battleSenceItem.emSAN.position.set(136, 48);
+                // 插入背景
+                battleSence.addChild(battleSenceItem.bg);
+                // 将我的信息插入容器
+                battleSenceItem.battleMyInfo.addChild(battleSenceItem.myAvatarSprite);
+                battleSenceItem.battleMyInfo.addChild(battleSenceItem.myNickname);
+                battleSenceItem.battleMyInfo.addChild(battleSenceItem.mySAN);
+                battleSenceItem.battleMyInfo.addChild(battleSenceItem.myBgSanB);
+                battleSenceItem.battleMyInfo.addChild(battleSenceItem.myBgSanA);
+                // 将他的信息插入容器
+                battleSenceItem.battleEmInfo.addChild(battleSenceItem.emAvatarSprite);
+                battleSenceItem.battleEmInfo.addChild(battleSenceItem.emNickname);
+                battleSenceItem.battleEmInfo.addChild(battleSenceItem.emSAN);
+                battleSenceItem.battleEmInfo.addChild(battleSenceItem.emBgSanB);
+                battleSenceItem.battleEmInfo.addChild(battleSenceItem.emBgSanA);
+                // 将卡牌插入到场景
+                for(let i=0;i<20;i++){
+                    sprites['mycard'][that.battleData.MyBattleCard[i]].width = 300;
+                    sprites['mycard'][that.battleData.MyBattleCard[i]].height = 422;
+                    sprites['mycard'][that.battleData.MyBattleCard[i]].anchor.set(0.5);
+                    sprites['mycard'][that.battleData.MyBattleCard[i]].position.set(-180,922);
+                    sprites['mycard'][that.battleData.MyBattleCard[i]].rotation = randomNum(-30,30)/1000;
+                    battleSence.addChild(sprites['mycard'][that.battleData.MyBattleCard[i]]);
+                    sprites['emcard'][that.battleData.EmBattleCard[i]].width = 300;
+                    sprites['emcard'][that.battleData.EmBattleCard[i]].height = 422;
+                    sprites['emcard'][that.battleData.EmBattleCard[i]].anchor.set(0.5);
+                    sprites['emcard'][that.battleData.EmBattleCard[i]].position.set(900,360);
+                    sprites['emcard'][that.battleData.EmBattleCard[i]].rotation = randomNum(-30,30)/1000;
+                    battleSence.addChild(sprites['emcard'][that.battleData.EmBattleCard[i]]);
+                }
+                // 将容器插入场景
+                battleSence.addChild(battleSenceItem.battleMyInfo);
+                battleSence.addChild(battleSenceItem.battleEmInfo);
+            }
+            // 画战斗
+            let battleInfo = {
+                turn : 0,
+                battleUser:that.battleData.speed,//当前是谁在打
+                turnEndFlag:0,//打两回合意味着回合结束
+                cardEnter :true,//是否在卡牌入场阶段
+                gameOver:false,//是否游戏结束
+                turnStep:{
+                    attacked:false
+                },
+                indexCache:null,
+            }
+            function drawBattle(){
+                if(battleInfo.gameOver){
+                    timerCount++;
+                    if(timerCount>30){
+                        senceChangeFlag = true;
+                        timerCount = 0;
+                    }
+                }else if(battleInfo.turnEndFlag<=1){
+                    if(battleInfo.cardEnter){//卡牌入场阶段
+                        cardEnter();
+                    }else{//使用技能阶段
+                        cardUseSkill();
+                    }
+                }else if(battleInfo.turnEndFlag>1&&!battleInfo.gameOver){
+                    battleInfo.turn++
+                    battleInfo.turnEndFlag = 0;
+                    battleInfo.turnStep.attacked = false;
+                    battleInfo.cardEnter = true;
+                }
+            }
+            // 过度动画
+            function cardAnime(card,params,to,step){
+                let paramStep = card[params] + step;
+                if(step<0){
+                    if(paramStep<=to){
+                        paramStep = to;
+                        card[params] = paramStep;
+                        return true;
+                    }
+                    card[params] = paramStep;
+                }else{
+                    if(paramStep>=to){
+                        paramStep = to;
+                        card[params] = paramStep;
+                        return true;
+                    }
+                    card[params] = paramStep;
+                }
+                return false;
+            }
+            // 减SAN
+            let mySANW = 1;
+            let emSANW = 1;
+            function SANCount(){
+                let hpFullWidth = 564;//血条长度;
+                if(battleInfo.battleUser==1){
+                    battleSenceItem.mySAN.text = 'SAN:'+that.battleData.MyBattleData[battleInfo.turn][1];
+                    battleSenceItem.emSAN.text = 'SAN:'+that.battleData.MyBattleData[battleInfo.turn][3];
+
+                    mySANW = hpFullWidth*(that.battleData.MyBattleData[battleInfo.turn][1]/that.battleData.MyADSHP[3]);
+                    if(mySANW>hpFullWidth){
+                        mySANW = hpFullWidth;
+                    }
+
+                    emSANW = hpFullWidth*(that.battleData.MyBattleData[battleInfo.turn][3]/that.battleData.EmADSHP[3]);
+                    if(emSANW>hpFullWidth){
+                        emSANW = hpFullWidth;
+                    }
+                    // 画我的血条
+                    battleSenceItem.myBgSanA.clear();
+                    battleSenceItem.myBgSanA.beginFill(0xfee140);
+                    battleSenceItem.myBgSanA.drawRect(136, 1233, mySANW, 27);
+                    battleSenceItem.myBgSanA.endFill();
+                    // 画他的血条
+                    battleSenceItem.emBgSanA.clear();
+                    battleSenceItem.emBgSanA.beginFill(0xfee140);
+                    battleSenceItem.emBgSanA.drawRect(136, 94, emSANW, 27);
+                    battleSenceItem.emBgSanA.endFill();
+
+                }else{
+                    battleSenceItem.mySAN.text = 'SAN:'+that.battleData.EmBattleData[battleInfo.turn][3];
+                    battleSenceItem.emSAN.text = 'SAN:'+that.battleData.EmBattleData[battleInfo.turn][1];
+
+                    mySANW = hpFullWidth*(that.battleData.EmBattleData[battleInfo.turn][3]/that.battleData.MyADSHP[3]);
+                    if(mySANW>hpFullWidth){
+                        mySANW = hpFullWidth;
+                    }
+
+                    emSANW = hpFullWidth*(that.battleData.EmBattleData[battleInfo.turn][1]/that.battleData.EmADSHP[3]);
+                    if(emSANW>hpFullWidth){
+                        emSANW = hpFullWidth;
+                    }
+                    // 画我的血条
+                    battleSenceItem.myBgSanA.clear();
+                    battleSenceItem.myBgSanA.beginFill(0xfee140);
+                    battleSenceItem.myBgSanA.drawRect(136, 1233, mySANW, 27);
+                    battleSenceItem.myBgSanA.endFill();
+                    // 画他的血条
+                    battleSenceItem.emBgSanA.clear();
+                    battleSenceItem.emBgSanA.beginFill(0xfee140);
+                    battleSenceItem.emBgSanA.drawRect(136, 94, emSANW, 27);
+                    battleSenceItem.emBgSanA.endFill();
+                }
+            }
+            function cardUseSkill(){
+                let myCard = sprites['mycard'][that.battleData.MyBattleCard[battleInfo.turn]];
+                let emCard = sprites['emcard'][that.battleData.EmBattleCard[battleInfo.turn]];
+                if(battleInfo.battleUser==1){
+                    if(battleInfo.indexCache===null){
+                        battleInfo.indexCache = myCard.zIndex;
+                        myCard.zIndex = 9999;
+                    }
+                    if(!battleInfo.turnStep.attacked){
+                        let animed = cardAnime(myCard,'y',360,-50);
+                        if(animed){
+                            battleInfo.turnStep.attacked = animed;
+                            SANCount();
+                        }
+                    }else{
+                        let animed = cardAnime(myCard,'y',922,50);
+                        if(animed){
+                            myCard.zIndex = battleInfo.indexCache;
+                            battleInfo.indexCache = null;
+                            if(mySANW==0 || emSANW==0){
+                                battleInfo.gameOver = true;
+                                return false;
+                            }
+                            battleInfo.turnEndFlag++;
+                            if(battleInfo.battleUser==1){
+                                battleInfo.battleUser = 0;
+                            }else{
+                                battleInfo.battleUser = 1;
+                            }
+                            battleInfo.turnStep.attacked = false;
+                        }
+                    }
+                }else{
+                    if(battleInfo.indexCache===null){
+                        battleInfo.indexCache = emCard.zIndex;
+                        emCard.zIndex = 9999;
+                    }
+                    if(!battleInfo.turnStep.attacked){
+                        let animed = cardAnime(emCard,'y',922,50);
+                        if(animed){
+                            battleInfo.turnStep.attacked = animed;
+                            SANCount();
+                        }
+                    }else{
+                        let animed = cardAnime(emCard,'y',360,-50);
+                        if(animed&&!battleInfo.gameOver){
+                            emCard.zIndex = battleInfo.indexCache;
+                            battleInfo.indexCache = null;
+                            if(mySANW==0 || emSANW==0){
+                                battleInfo.gameOver = true;
+                                return false;
+                            }
+                            battleInfo.turnEndFlag++;
+                            if(battleInfo.battleUser==1){
+                                battleInfo.battleUser = 0;
+                            }else{
+                                battleInfo.battleUser = 1;
+                            }
+                            battleInfo.turnStep.attacked = false;
+                        }
+                    }
+                }
+            }
+            function cardEnter(){
+                let myCard = sprites['mycard'][that.battleData.MyBattleCard[battleInfo.turn]];
+                let emCard = sprites['emcard'][that.battleData.EmBattleCard[battleInfo.turn]];
+                myCard.zIndex = battleInfo.turn;
+                emCard.zIndex = battleInfo.turn;
+                if(myCard.x!=360){
+                    myCard.x += 20;
+                    emCard.x -= 20;
+                }else{
+                    timerCount++
+                    if(timerCount>30){
+                        timerCount = 0;
+                        battleInfo.cardEnter=false;
+                    }
+                }
+            }
+            // 切换场景的淡入淡出
+            function sencenChange(a,b){
+                if(a.visible&&!b.visible){
+                    a.alpha -= 0.05;
+                    if(a.alpha<=0){
+                        b.visible = true;
+                    }
+                }else if(b.visible){
+                    if(b.alpha<1){
+                        b.alpha += 0.05;
+                    }else{
+                        a.visible = false;
+                        senceChangeFlag = false;
+                    }
+                }
+            }
+            let myInfoContainer = new PIXI.Container();//我信息组容器
+            let emInfoContainer = new PIXI.Container();//他信息组容器
+            function initGameStartSence(resources){
+                let battleVS = new PIXI.Text('VS',{fontFamily : 'Arial', fontSize: 56, fill : 0xffffff, align : 'center'});//VS字体
+                let myAvatarSprite = new PIXI.Sprite(resources['myAvatar']['texture']);//我的头像
+                let myNickname = new PIXI.Text(that.battleData.MyName,{fontFamily : 'Arial', fontSize: 26, fill : 0xffffff, align : 'center'});//昵称
+                // 对方的头像和信息
+                let emAvatarSprite = new PIXI.Sprite(resources['emAvatar']['texture']);//我的头像
+                let emNickname = new PIXI.Text(that.battleData.EmName,{fontFamily : 'Arial', fontSize: 26, fill : 0xffffff, align : 'center'});//昵称
+                // 头像和昵称中心点
+                myAvatarSprite.anchor.set(0.5);
+                myNickname.anchor.set(0.5);
+                myNickname.position.set(0, 80);
+                // 将头像和昵称塞入容器
+                myInfoContainer.addChild(myAvatarSprite);
+                myInfoContainer.addChild(myNickname);
+                // 设置容器坐标
+                myInfoContainer.alpha = 0;
+                myInfoContainer.position.set(0, 810);
+                // 插入到场景
+                battleStartSence.addChild(myInfoContainer);
+                // 设置VS字样坐标并插入场景
+                battleVS.anchor.set(0.5);
+                battleVS.position.set(360, 640);
+                battleStartSence.addChild(battleVS);
+                // 对方头像和昵称中心点
+                emAvatarSprite.anchor.set(0.5);
+                emNickname.anchor.set(0.5);
+                emNickname.position.set(0, 80);
+                // 将对方头像和昵称塞入容器
+                emInfoContainer.addChild(emAvatarSprite);
+                emInfoContainer.addChild(emNickname);
+                // 设置容器坐标
+                emInfoContainer.alpha = 0;
+                emInfoContainer.position.set(720, 440);
+                // 插入到场景
+                battleStartSence.addChild(emInfoContainer);
+
+            }
+            function gameStartAnime(){
+                if(timerCount>=30){
+                    senceChangeFlag = true;
+                    timerCount = 0;
+                }
+                if(myInfoContainer.alpha<1){
+                    myInfoContainer.alpha += 0.1;
+                    emInfoContainer.alpha += 0.1;
+                }
+                if(emInfoContainer.position.x===360||myInfoContainer.position.x===360){
+                    timerCount += 1;
+                    return false;
+                }
+                emInfoContainer.position.x -=10;
+                myInfoContainer.position.x +=10;
+            }
+            // 动画
+            app.ticker.add((delta) => {
+                // 如果还在加载则使用加载动画
+                if(loadingSence.visible){
+                    if(loadingText.alpha>=1){
+                        loadingText.alpha -=0.01*delta;
+                        loadingAlphUp = false;
+                    }else if(loadingText.alpha<=0.5){
+                        loadingText.alpha +=0.01*delta;
+                        loadingAlphUp = true;
+                    }else{
+                        if(loadingAlphUp){
+                            loadingText.alpha +=0.01*delta;
+                        }else{
+                            loadingText.alpha -=0.01*delta;
+                        }
+                    }
+                }else if(battleStartSence.visible){
+                    // 战斗开始动画
+                    gameStartAnime();
+                    // app.destroy(true);
+                }else if(battleSence.visible){
+                    // 战斗动画
+                    drawBattle();
+                }else if(battleEndSence.visible){
+                    this.canClose = true;
+                    timerCount++
+                    if(timerCount>120){
+                        this.$emit('gameover');
+                        timerCount = 0;
+                    }
+                }
+                // 换场
+                if(senceChangeFlag){
+                    if(loadingSence.visible){
+                        sencenChange(loadingSence,battleStartSence);
+                    }else if(battleStartSence.visible){
+                        sencenChange(battleStartSence,battleSence);
+                    }else if(battleSence.visible){
+                        sencenChange(battleSence,battleEndSence);
+                    }
+                }
+                
+            });
+      }
+  },
+  beforeDestroy(){
+      this.app.destroy(true);
+  }
+}
+</script>
+
+<style lang="stylus">
+.wm_battle_body{
+    height 100vh
+    width 100vw
+    position fixed
+    left 0
+    top 0
+    z-index 9999
+    background #000
+}
+.wm_battle_body canvas{
+    max-width 100%
+    max-height 100%
+    width auto 
+    height auto
+    margin: 0 auto;
+}
+</style>

@@ -102,39 +102,45 @@ export default {
       return PrefixInteger(num,length);
     },
     buy(t,g){
-      let params = {
-        type:t,
-        goods:g,
-        token:this.token
-      }
-      authApi.shop(params).then(res => {
-          console.log(res);
-          if(res.data.code==0){
-            this.$message.error(res.data.msg);
-          }else if(res.data.code==1){
-            let cardResData = res.data.data;
-            let cardData = [];
-            let cardSrc = [];
-            for(let i = 0;i<cardResData.length;i++){
-              let CardSrcItem = '/static/img/'+PrefixInteger(cardResData[i][0],4)+'.jpg';
-              cardSrc.push(CardSrcItem);
-            }
-            for(let i=0;i<cardResData.length;i++){
-              let cardId = cardResData[i];
-              let cardDataItem = {
-                id:cardId,
-                seled:false
-              }
-              cardData.push(cardDataItem);
-            }
-            this.cardList = cardData;
-            this.$refs.userTop.getUserInfo();
-            setTimeout(()=>{
-              scrollToTop(0,200);
-              this.openList = true;
-            },120)
+      this.$confirm('确定要购买吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let params = {
+            type:t,
+            goods:g,
+            token:this.token
           }
-      });
+          authApi.shop(params).then(res => {
+              console.log(res);
+              if(res.data.code==0){
+                this.$message.error(res.data.msg);
+              }else if(res.data.code==1){
+                let cardResData = res.data.data;
+                let cardData = [];
+                let cardSrc = [];
+                for(let i = 0;i<cardResData.length;i++){
+                  let CardSrcItem = '/static/img/'+PrefixInteger(cardResData[i][0],4)+'.jpg';
+                  cardSrc.push(CardSrcItem);
+                }
+                for(let i=0;i<cardResData.length;i++){
+                  let cardId = cardResData[i];
+                  let cardDataItem = {
+                    id:cardId,
+                    seled:false
+                  }
+                  cardData.push(cardDataItem);
+                }
+                this.cardList = cardData;
+                this.$refs.userTop.getUserInfo();
+                setTimeout(()=>{
+                  scrollToTop(0,200);
+                  this.openList = true;
+                },120)
+              }
+          });
+        }).catch(() => {});
     },
   },
   beforeDestroy(){

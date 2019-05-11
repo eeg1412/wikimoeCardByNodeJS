@@ -229,15 +229,13 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     background-color: #f0f0f0;
 }
 .el-loading-spinner{
-    right: 15px;
-    left: auto;
-    width: auto;
-    bottom: 15px;
-    top: auto;
-    padding: 5px 8px;
-    border-radius: 6px;
-    background-color: rgba(255,255,255,0.9);
-    box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+  left: 50%;
+  margin-left: -83px;
+  padding: 8px 8px;
+  width: 150px;
+  border-radius: 6px;
+  background-color: rgba(255,255,255,0.9);
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
 }
 .el-loading-spinner .el-loading-text{
     display: inline-block;

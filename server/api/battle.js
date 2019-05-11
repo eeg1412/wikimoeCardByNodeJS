@@ -64,7 +64,7 @@ function isWin(MyADSHP,EmADSHP){
     }else if(MyADSHP[3]<=0){
         return 0;//输
     }else{
-        return 2;
+        return 3;
     }
 }
 // 对战
@@ -408,7 +408,7 @@ module.exports = async function(req, res, next){
             EmADSHP[3] = MybattleDataRound[3];
             MyBattleData.push(MybattleDataRound);
             win = isWin(MyADSHP,EmADSHP);
-            if(win!==2){
+            if(win!==3){
                 break;
             }
             // 对方攻击
@@ -417,7 +417,7 @@ module.exports = async function(req, res, next){
             EmADSHP[3] = EmbattleDataRound[1];
             EmBattleData.push(EmbattleDataRound);
             win = isWin(MyADSHP,EmADSHP);
-            if(win!==2){
+            if(win!==3){
                 break;
             }
         }else{
@@ -427,7 +427,7 @@ module.exports = async function(req, res, next){
             EmADSHP[3] = EmbattleDataRound[1];
             EmBattleData.push(EmbattleDataRound);
             win = isWin(MyADSHP,EmADSHP);
-            if(win!==2){
+            if(win!==3){
                 break;
             }
             // 我方攻击
@@ -436,7 +436,7 @@ module.exports = async function(req, res, next){
             EmADSHP[3] = MybattleDataRound[3];
             MyBattleData.push(MybattleDataRound);
             win = isWin(MyADSHP,EmADSHP);
-            if(win!==2){
+            if(win!==3){
                 break;
             }
         }
@@ -592,6 +592,7 @@ module.exports = async function(req, res, next){
         speed:speed,
         myBattleTimes:myBattleTimes,
         battleOverChance:battleOverChance,
+        score:myScore,
         getScore:getScore,
         getExp:getExp,
         msg:'获取成功'
