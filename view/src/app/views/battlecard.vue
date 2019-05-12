@@ -3,7 +3,7 @@
         <userTop ref="userTop" />
         <h5 class="common_title type_shop">设置出战卡牌</h5>
         <el-collapse-transition>
-            <div class="wm_battlecard_body" v-if="selIndex===null">
+            <div class="wm_battlecard_body" v-show="selIndex===null">
                 <div>
                     <table class="wm_user_info_table type_battlecard">
                     <thead>
@@ -25,14 +25,17 @@
                     </table>
                 </div>
                 <div class="wm_battlecard_list_body">
-                    <div class="wm_battlecard_list_box" v-for="(item,index) in myCard" v-bind:key="index+1" @click="selcard(index)">
-                        <div class="wm_battlecard_list_number">{{index+1}}</div>
-                        <div v-if="item!==null"><img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item,4)+'.jpg'"></div>
-                    </div>
+                    <draggable v-model="myCard" @change="change" handle=".handle">
+                        <div class="wm_battlecard_list_box" v-for="(item,index) in myCard" v-bind:key="index+1" @click="selcard(index)">
+                            <div class="wm_battlecard_list_move handle"><i class="el-icon-s-grid"></i></div>
+                            <div class="wm_battlecard_list_number">{{index+1}}</div>
+                            <div v-if="item!==null"><img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item,4)+'.jpg'"></div>
+                        </div>
+                    </draggable>
                 </div>
             </div>
         </el-collapse-transition>
-        <div class="wm_battlecard_usercard" v-if="selIndex!==null">
+        <div class="wm_battlecard_usercard" v-show="selIndex!==null">
             <el-collapse-transition>
                 <div class="wm_mycard_list" v-if="userCard.length>0">
                     <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" @click="seledCard(index)">
@@ -69,6 +72,7 @@ import {authApi} from "../api";
 import userTop from '../components/topUserInfo.vue';
 import md5_ from 'js-md5';
 import cardData from '../../utils/cardData.json';
+import draggable from 'vuedraggable'
 
 export default {
   data() {
@@ -89,11 +93,27 @@ export default {
   components: {
     menuView,
     userTop,
+    draggable
   },
   created() {
     this.getMyBattleCard();
   },
   methods: {
+    change(data){
+        console.log(data);
+        let newIndex = data.moved.newIndex;
+        let oldIndex = data.moved.oldIndex;
+        let oldCardIndex = this.myCardIndex[oldIndex];
+        if(newIndex>oldIndex){
+            console.log('新比旧大');
+            this.myCardIndex.splice(newIndex+1, 0, oldCardIndex);
+            this.myCardIndex.splice(oldIndex, 1);
+        }else{
+            this.myCardIndex.splice(newIndex, 0, oldCardIndex);
+            this.myCardIndex.splice(oldIndex+1, 1);
+        }
+        console.log(this.myCardIndex);
+    },
     openTips(){
       this.$alert('<div class="watch_tips"><img src="/static/otherImg/battletips.png" /></div>', '配卡说明', {
         dangerouslyUseHTMLString: true,
@@ -327,6 +347,19 @@ export default {
 .wm_battlecard_nocard{
     padding:50px 0;
     text-align: center;
+}
+.wm_battlecard_list_move{
+    position: absolute;
+    background: #fff;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    right: 5px;
+    bottom: 5px;
+    border-radius: 3px;
+    cursor: url(/static/cur/move.cur),move;
+    color: #4f4f4f;
+    z-index: 3;
 }
 @media (max-width: 768px){
     .wm_battlecard_list_box{
