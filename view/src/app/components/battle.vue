@@ -1,5 +1,7 @@
 <template>
-    <div id="battleView" class="wm_battle_body" @click="closeBattle()"></div>
+    <div id="battleView" class="wm_battle_body" @click="closeBattle()">
+        <div class="wm_battle_box" @click="closeBattle()"></div>
+    </div>
 </template>
 
 <script>
@@ -129,6 +131,8 @@ export default {
                 }
                 let getScore= new PIXI.Text('我的竞技点：'+myScore,{ fontSize: 36, fill : 0xffffff, align : 'center'});//竞技点
                 let getExp = new PIXI.Text('获得经验值：'+that.battleData.getExp,{ fontSize: 36, fill : 0xffffff, align : 'center'});//经验
+                let tips = new PIXI.Text('点击画面可立即关闭战斗窗口！',{ fontSize: 22, fill : 0xffffff, align : 'center'});//经验
+                // 提示
                 let overChance = new PIXI.Text(that.battleData.battleOverChance?'您已超过今天的最大胜利次数，将不会获得竞技点与经验值。':'',{ fontSize: 22, fill : 0xffffff, align : 'center'});//经验
                 // 布局
                 getScore.anchor.set(0.5);
@@ -137,13 +141,15 @@ export default {
                 myEndAvatarSprite.anchor.set(0.5);
                 myEndWin.anchor.set(0.5);
                 overChance.anchor.set(0.5);
+                tips.anchor.set(0.5);
 
                 myEndAvatarSprite.position.set(360,425);
                 myEndNickname.position.set(360,516);
                 getScore.position.set(360,582);
                 getExp.position.set(360,648);
                 myEndWin.position.set(360,300);
-                overChance.position.set(360,726);
+                overChance.position.set(360,766);
+                tips.position.set(360,726);
                 // 插入场景
                 battleEndSence.addChild(getScore);
                 battleEndSence.addChild(getExp);
@@ -151,6 +157,7 @@ export default {
                 battleEndSence.addChild(myEndAvatarSprite);
                 battleEndSence.addChild(myEndWin);
                 battleEndSence.addChild(overChance);
+                battleEndSence.addChild(tips);
             }
             // 战斗场景初始化
             let battleSenceItem = {
@@ -522,7 +529,7 @@ export default {
                 }else if(battleEndSence.visible){
                     this.canClose = true;
                     timerCount++
-                    if(timerCount>120){
+                    if(timerCount>180){
                         this.$emit('gameover');
                         timerCount = 0;
                     }
@@ -563,5 +570,13 @@ export default {
     width auto 
     height auto
     margin: 0 auto;
+}
+.wm_battle_box{
+    position: absolute;
+    left 0
+    top 0
+    height 100vh
+    width 100vw
+    z-index 2
 }
 </style>

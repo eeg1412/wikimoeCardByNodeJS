@@ -72,6 +72,10 @@ button,a,.el-button,.el-dialog__headerbtn,.el-pager li,.el-input-number__decreas
   overflow: hidden;
   cursor: url(/static/cur/pointer.cur),pointer;
 }
+.watch_tips img{
+  max-width: 100%;
+  height: auto;
+}
 /*CSS reset*/
 body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {margin:0;padding:0;}
 table {border-collapse:collapse;border-spacing:0;}
@@ -236,6 +240,13 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
   border-radius: 6px;
   background-color: rgba(255,255,255,0.9);
   box-shadow: 0px 0px 5px rgba(0,0,0,0.2);
+  opacity: 1;
+  animation: loadingAnime 1s 1;
+}
+@keyframes loadingAnime{
+  0% {opacity: 0;}
+  50% {opacity: 0;}
+  100% {opacity: 1;}
 }
 .el-loading-spinner .el-loading-text{
     display: inline-block;

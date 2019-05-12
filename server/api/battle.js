@@ -287,8 +287,8 @@ module.exports = async function(req, res, next){
     let mycardIndexCount = result.cardIndexCount;
     if(mycardIndexCount<20){
         res.send({
-            code:1,
-            msg:'卡牌必须大于20张才能对战！'
+            code:0,
+            msg:'卡牌必须大于20张才能对战哦！赶快抽卡吧！'
         });
         console.info(
             chalk.green(email+'卡牌小于20不能对战。IP为：'+IP)
@@ -510,6 +510,23 @@ module.exports = async function(req, res, next){
                     score:EmNewScore
                 }
             }
+            let timeNow = Math.round(new Date().getTime()/1000);
+            let logObject = {
+                email:email,
+                md5:result.md5,
+                nickName:result.nickName,
+                type:'battle',
+                time:timeNow,
+                data:{
+                    win:win,
+                    EmName:EmName,
+                    EmMD5:EmMD5,
+                    getScore:getScore,
+                    getExp:getExp
+                },
+                ip:IP
+            }
+            utils.writeLog(logObject);
             console.info(
                 chalk.green(email+'对战胜利。IP为：'+IP)
             )

@@ -121,18 +121,21 @@
               <span v-if="item.type=='register'"
               >大家好，我是萌新{{item.nickName}}。初来乍到对什么都还很陌生，还恳请大家能够多多指导我怎么抽出六星卡！
               </span>
-              <span v-if="item.type=='dailyCard'"
+              <span v-else-if="item.type=='dailyCard'"
               >我抽中了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" :class="item.data.star>=6?'wm_six_star_card_shake':''" @click="openImg('/static/img/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
                 {{item.data.star|cardStarText}}
               </span>
-              <span v-if="item.type=='demining'"
+              <span v-else-if="item.type=='demining'"
               >我用{{item.data.pickaxe | pickaxeName}}在<span class="wm_card_get_list_card_link" @click="goMenu('/demining')">星星矿场</span>坐标【{{item.data.x+1}},{{item.data.y+1}}】处挖到了{{item.data.star}}颗星星，同时获得了{{item.data.exp}}点经验值！！请叫我专业的矿工！
               </span>
-              <span v-if="item.type=='shop_1'"
+              <span v-else-if="item.type=='shop_1'"
               >我用{{item.data.star}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/shop')">星星商店</span>购买了{{item.data.times}}次抽卡机会，共抽中了<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card6)">{{item.data.card6.length}}</span>张六星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card5)">{{item.data.card5.length}}</span>张五星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card4)">{{item.data.card4.length}}</span>张四星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card3)">{{item.data.card3.length}}</span>张三星及其以下的卡。
               </span>
-              <span v-if="item.type=='marketBuy'"
+              <span v-else-if="item.type=='marketBuy'"
               >我用{{item.data.price}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/market/buycard')">星星交易市场</span>购买了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" @click="openImg('/static/img/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
+              </span>
+              <span v-else-if="item.type=='battle'"
+              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/battle')">卡牌对战</span>中战胜了<span class="wm_card_get_list_card_link" @click="watchUserCard(item.data.EmMD5)" v-if="item.data.EmMD5">{{item.data.EmName}}</span><span v-else>{{item.data.EmName}}</span>，共获得了{{item.data.getScore}}点竞技点和{{item.data.getExp}}点经验值。谁来与我大战三百回合？
               </span>
             </p>
           </div>

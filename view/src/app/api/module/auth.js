@@ -48,6 +48,9 @@ export default function (api) {
     battle(data){
       return api.post('battle',data)
     },
+    battlecard(data){
+      return api.post('battlecard',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },
