@@ -187,7 +187,7 @@ export default {
                 }else if(leftType===3){//盾3
                     D = D + 50;
                 }else if(leftType===5){//爱5
-                    HP = HP + 250;
+                    HP = HP + 500;
                 }  
             }
             this.ADSHP = [A,D,S,HP];

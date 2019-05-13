@@ -102,6 +102,7 @@
     </span>
   </el-dialog>
   <menuView ref="menu"></menuView>
+  <rank />
   <div class="wm_card_get_list_body" v-if="logList.length>0">
     <h5 class="wm_card_chiose_title">最新动态</h5>
     <div class="wm_card_get_list_item_body">
@@ -164,6 +165,7 @@ import rotate3DCard from '../components/rotateCard.vue';
 import menuView from '../components/menu.vue';
 import topNews from '../components/topNews.vue';
 import userTop from '../components/topUserInfo.vue';
+import rank from '../components/rank.vue';
 import md5 from 'js-md5';
 export default {
   data() {
@@ -199,7 +201,8 @@ export default {
     rotate3DCard,
     menuView,
     topNews,
-    userTop
+    userTop,
+    rank
   },
   filters: {
     pickaxeName(value){

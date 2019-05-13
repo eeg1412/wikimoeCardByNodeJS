@@ -104,7 +104,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
         if(AttackRightType===7 || AttackRightType===1){
             AttackA = AttackA+Math.floor(AttackA*0.1);
         }else if(AttackRightType===4){
-            AttackHP = AttackHP+Math.floor(AttackA*0.5);
+            AttackHP = AttackHP+Math.floor(AttackA*0.1);
         }
     }
     // 攻击前结算属性相克
@@ -117,7 +117,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
         if(DefendRightType===7 || DefendRightType===3){
             DefendD = DefendD+Math.floor(DefendA*0.1);
         }else if(DefendRightType===6){
-            DefendShield = Math.floor(DefendA*0.2);
+            DefendShield = Math.floor(AttackA*0.1);
         }
     }
     // 开始攻击
@@ -213,7 +213,7 @@ function setADSHP(cardArr,starArr,starCount,cryArr){
         }else if(leftType===3){//盾3
             D = D + 50;
         }else if(leftType===5){//爱5
-            HP = HP + 250;
+            HP = HP + 500;
         }  
     }
     return [A,D,S,HP];

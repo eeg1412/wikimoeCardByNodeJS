@@ -1452,3 +1452,90 @@ img.wm_demining_img {
     height: 124px;
   }
 }
+/* 排行榜 */
+.el-carousel__indicator.is-active button{
+  background-color: #ff5364;;
+}
+.wm_card_rank_body{
+  padding: 0 4%;
+}
+.wm_card_rank_last_updata{
+  text-align: center;
+  height: 20px;
+  padding-bottom: 10px;
+}
+.wm_card_rank_item_box{
+  width: 100%;
+  text-align: center;
+  background: #fff;
+  box-sizing: border-box;
+  padding: 2%;
+  height: 414px;
+  overflow: hidden;
+}
+.wm_card_rank_box{
+  height: 55px;
+  padding: 5px;
+  line-height: 45px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  background-image:repeating-linear-gradient(45deg,hsla(0,0%,100%,.3),hsla(0,0%,100%,.3)15px,transparent 0,transparent 30px);
+  cursor: url(/static/cur/pointer.cur),pointer;
+  display: inline-block;
+  width: 100%;
+}
+.wm_card_rank_box:nth-child(1n+0){
+  background-color: #fff8e1;
+}
+.wm_card_rank_box:nth-child(2n+0){
+  background-color: #fff0e6;
+}
+.wm_card_rank_box:nth-child(3n+0){
+  background-color: #f7fdde;
+}
+.wm_card_rank_box:nth-child(4n+0){
+  background-color: #f4f6fe;
+}
+.wm_card_rank_box:nth-child(5n+0){
+  background-color: #fef4ff;
+}
+.wm_card_rank_box:nth-child(5n+1){
+  background-color: #fff8e1;
+}
+.wm_card_rank_box:nth-child(5n+2){
+  background-color: #fff0e6;
+}
+.wm_card_rank_box:nth-child(5n+3){
+  background-color: #f7fdde;
+}
+.wm_card_rank_box:nth-child(5n+4){
+  background-color: #f4f6fe;
+}
+.wm_card_rank_box:nth-child(5n+5){
+  background-color: #fef4ff;
+}
+.wm_card_rank_text{
+  padding: 0 10px;
+  font-size: 18px;
+  width: 35px;
+}
+.wm_card_rank_img{
+  border-radius: 50px;
+  overflow: hidden;
+  margin-right: 20px;
+  background: #fff;
+  height: 45px;
+  width: 45px;
+  margin-top: -4px;
+  border: 4px solid #fff;
+}
+.wm_card_rank_img img{
+  height: 45px;
+  width: 45px;
+  vertical-align:baseline;
+}
+.wm_card_rank_point{
+  padding-right: 20px;
+  font-size: 14px;
+}
