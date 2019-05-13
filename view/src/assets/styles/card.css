@@ -1009,6 +1009,7 @@ transform:translate(0) rotate(0deg)
   text-shadow:0px 0px 5px #000;
   font-size: 18px;
   user-select:none;
+  image-rendering: pixelated;
 }
 .wm_card_demining_table .wm_demining_item.selected{
   -webkit-animation-name: pikapika;
@@ -1035,6 +1036,7 @@ img.wm_demining_img {
   width: 100%;
   height: 100%;
   opacity: 0.2;
+  image-rendering: auto;
   transition: all 0.3s linear 0.4s;
   -webkit-transition: all 0.3s linear;
   -moz-transition: all 0.3s linear;

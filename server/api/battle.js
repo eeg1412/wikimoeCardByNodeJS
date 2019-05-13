@@ -104,7 +104,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
         if(AttackRightType===7 || AttackRightType===1){
             AttackA = AttackA+Math.floor(AttackA*0.1);
         }else if(AttackRightType===4){
-            AttackHP = AttackHP+Math.floor(AttackA*0.1);
+            AttackHP = AttackHP+Math.floor(AttackA*0.5);
         }
     }
     // 攻击前结算属性相克
@@ -130,7 +130,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
     // 结算伤害反弹
     let DefendPow = 0;
     if(DefendRightType===2){
-        DefendPow = Math.floor(AttackPow*0.2);
+        DefendPow = Math.floor(AttackPow*0.5);
         AttackHP = AttackHP - DefendPow;
     }
     // 防止HP为负数
@@ -197,7 +197,7 @@ function setADSHP(cardArr,starArr,starCount,cryArr){
     // 攻击=x*100 防=x*50 血=x*200
     let A = x*100;
     let D = x*50;
-    let HP = x*200;
+    let HP = x*500;
     // 设置速度
     let S = 0;
     for(let j =0;j<cardArr.length;j++){
@@ -213,7 +213,7 @@ function setADSHP(cardArr,starArr,starCount,cryArr){
         }else if(leftType===3){//盾3
             D = D + 50;
         }else if(leftType===5){//爱5
-            HP = HP + 200;
+            HP = HP + 250;
         }  
     }
     return [A,D,S,HP];

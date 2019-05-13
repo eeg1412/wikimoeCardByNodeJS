@@ -273,6 +273,10 @@ export default {
                     }
                 }else if(battleInfo.turnEndFlag>1&&!battleInfo.gameOver){
                     battleInfo.turn++
+                    if(battleInfo.turn>19){
+                        battleInfo.gameOver = true;
+                        drawBattle();
+                    }
                     battleInfo.turnEndFlag = 0;
                     battleInfo.turnStep.attacked = false;
                     battleInfo.cardEnter = true;

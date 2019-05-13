@@ -171,7 +171,7 @@ export default {
             // 攻击=x*100 防=x*50 血=x*200
             let A = x*100;
             let D = x*50;
-            let HP = x*200;
+            let HP = x*500;
             // 设置速度
             let S = 0;
             for(let j =0;j<cardArr.length;j++){
@@ -187,7 +187,7 @@ export default {
                 }else if(leftType===3){//盾3
                     D = D + 50;
                 }else if(leftType===5){//爱5
-                    HP = HP + 200;
+                    HP = HP + 250;
                 }  
             }
             this.ADSHP = [A,D,S,HP];
