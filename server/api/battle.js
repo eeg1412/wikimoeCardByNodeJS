@@ -441,7 +441,9 @@ module.exports = async function(req, res, next){
             }
         }
     }
-
+    if(win===3){//打完还是3说明是平局
+        win = 2;
+    }
     // 计算当天战斗次数
     let dailyBattleTime = Math.round(Number(result.battleStamp)*1000);
     let myBattleTimes = result.battleDailyCount;//战斗次数
@@ -510,23 +512,6 @@ module.exports = async function(req, res, next){
                     score:EmNewScore
                 }
             }
-            let timeNow = Math.round(new Date().getTime()/1000);
-            let logObject = {
-                email:email,
-                md5:result.md5,
-                nickName:result.nickName,
-                type:'battle',
-                time:timeNow,
-                data:{
-                    win:win,
-                    EmName:EmName,
-                    EmMD5:EmMD5,
-                    getScore:getScore,
-                    getExp:getExp
-                },
-                ip:IP
-            }
-            utils.writeLog(logObject);
             console.info(
                 chalk.green(email+'对战胜利。IP为：'+IP)
             )
@@ -584,6 +569,23 @@ module.exports = async function(req, res, next){
                 throw err;
             })
         }
+        let timeNow = Math.round(new Date().getTime()/1000);
+        let logObject = {
+            email:email,
+            md5:result.md5,
+            nickName:result.nickName,
+            type:'battle',
+            time:timeNow,
+            data:{
+                win:win,
+                EmName:EmName,
+                EmMD5:EmMD5,
+                getScore:getScore,
+                getExp:getExp
+            },
+            ip:IP
+        }
+        utils.writeLog(logObject);
     }
     // 记得赢了才更新对战时间和次数
     

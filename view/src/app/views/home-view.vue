@@ -136,7 +136,7 @@
               >我用{{item.data.price}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/market/buycard')">星星交易市场</span>购买了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" @click="openImg('/static/img/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
               </span>
               <span v-else-if="item.type=='battle'"
-              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/battle')">卡牌对战</span>中战胜了<span class="wm_card_get_list_card_link" @click="watchUserCard(item.data.EmMD5)" v-if="item.data.EmMD5">{{item.data.EmName}}</span><span v-else>{{item.data.EmName}}</span>，共获得了{{item.data.getScore}}点竞技点和{{item.data.getExp}}点经验值。谁来与我大战三百回合？
+              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/battle')">卡牌对战</span>中<span v-if="item.data.win===1">战胜了</span><span v-else-if="item.data.win===0">败给了</span><span v-else>打平了</span><span class="wm_card_get_list_card_link" @click="watchUserCard(item.data.EmMD5)" v-if="item.data.EmMD5">{{item.data.EmName}}</span><span v-else>{{item.data.EmName}}</span>，<span v-if="item.data.win===1||item.data.win===0"><span v-if="item.data.win===1">共获得了</span><span v-else-if="item.data.win===0">失去了</span>{{Math.abs(item.data.getScore)}}点竞技点<span v-if="item.data.win===1">和{{item.data.getExp}}点经验值</span>。</span><span v-else>什么也没有获得。</span><span v-if="item.data.win===1">谁来与我大战三百回合？</span><span v-else-if="item.data.win===0">什么? 此地叫麦城！？</span><span v-else>真可惜，就差一点，下次一定要打赢这位大佬！</span>
               </span>
             </p>
           </div>

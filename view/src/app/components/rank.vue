@@ -20,6 +20,7 @@
                   data-md5="95f3c59f0990cb8bb2888d49997e5579"
                 >
               </div>
+              <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
               <div class="fr wm_card_rank_point">{{item.cardIndexCount}}种卡牌</div>
             </div>
           </div>
@@ -45,7 +46,8 @@
                   data-md5="fcd2f50ff3096a29dd37b139b54d81fe"
                 >
               </div>
-              <div class="fr wm_card_rank_point">{{item.deminingStarCount}}颗星星</div>
+              <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
+              <div class="fr wm_card_rank_point">{{item.deminingStarCount|setBigNum}}颗星星</div>
             </div>
           </div>
         </div>
@@ -70,6 +72,7 @@
                   data-md5="fdce61cf9cc17461b2bccec659480671"
                 >
               </div>
+              <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
               <div class="fr wm_card_rank_point">{{item.score}}点</div>
             </div>
           </div>
@@ -94,6 +97,7 @@
                   data-md5="fcd2f50ff3096a29dd37b139b54d81fe"
                 >
               </div>
+              <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
               <div class="fr wm_card_rank_point">{{item.level}}级</div>
             </div>
           </div>
@@ -122,6 +126,14 @@ export default {
     window.addEventListener('resize', this.setCard);
   },
   filters: {
+    setBigNum:function(v){
+        let n = Number(v);
+        if(n>=100000){
+            return Math.floor(n/10000)+'万';
+        }else{
+            return v;
+        }
+    },
     rankTetx:function(v){
         if(v==1){
             return '1st'

@@ -1179,7 +1179,7 @@ img.wm_demining_img {
   left: 0;
   width: 100%;
   height: 40px;
-  z-index: 99;
+  z-index: 1000;
   background-color: rgba(255,255,255,0.8);
   box-shadow: 0 1px 2px rgba(0,0,0,.1);
   line-height: 40px;
@@ -1520,10 +1520,23 @@ img.wm_demining_img {
   font-size: 18px;
   width: 35px;
 }
+.wm_card_nickname_text{
+  padding: 0 10px;
+  font-size: 14px;
+  width: 22%;
+  white-space:nowrap; 
+	overflow:hidden; 
+  text-overflow:ellipsis;
+  text-align: left;
+}
+@media ( max-width : 413px) {
+  .wm_card_nickname_text{
+    display: none;
+  }
+}
 .wm_card_rank_img{
   border-radius: 50px;
   overflow: hidden;
-  margin-right: 20px;
   background: #fff;
   height: 45px;
   width: 45px;
