@@ -51,6 +51,9 @@ export default function (api) {
     battlecard(data){
       return api.post('battlecard',data)
     },
+    rank(){
+      return api.get('rank')
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },

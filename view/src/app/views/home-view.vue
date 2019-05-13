@@ -102,7 +102,7 @@
     </span>
   </el-dialog>
   <menuView ref="menu"></menuView>
-  <rank />
+  <rank @watchInfo="watchRank"></rank>
   <div class="wm_card_get_list_body" v-if="logList.length>0">
     <h5 class="wm_card_chiose_title">最新动态</h5>
     <div class="wm_card_get_list_item_body">
@@ -249,6 +249,9 @@ export default {
     this.urlUserInfo();
   },
   methods: {
+    watchRank(md5){
+      this.watchUserCard(md5);
+    },
     closeUserInfo(){
       this.userCard = null;
       this.userCardCache = null;

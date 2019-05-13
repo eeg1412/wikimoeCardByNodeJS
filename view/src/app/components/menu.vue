@@ -66,6 +66,7 @@
     title="新闻公告"
     :visible.sync="newsDialog"
     :lock-scroll="false"
+    :append-to-body="true"
     class="reg_code_dialog"
     width="100%">
     <div class="wm_menu_news_body" v-if="newsList">
@@ -93,6 +94,7 @@
     title="请登录"
     :before-close="cancelLoginShow"
     :visible.sync="loginShow"
+    :append-to-body="true"
     :close-on-click-modal="false"
     class="reg_code_dialog"
     width="100%">

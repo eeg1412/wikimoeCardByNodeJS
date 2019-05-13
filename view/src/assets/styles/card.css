@@ -1462,7 +1462,7 @@ img.wm_demining_img {
 .wm_card_rank_last_updata{
   text-align: center;
   height: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 15px;
 }
 .wm_card_rank_item_box{
   width: 100%;
@@ -1470,7 +1470,7 @@ img.wm_demining_img {
   background: #fff;
   box-sizing: border-box;
   padding: 2%;
-  height: 414px;
+  height: 420px;
   overflow: hidden;
 }
 .wm_card_rank_box{
