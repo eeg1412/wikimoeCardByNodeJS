@@ -1552,3 +1552,20 @@ img.wm_demining_img {
   padding-right: 20px;
   font-size: 14px;
 }
+/* 卡牌筛选 */
+.wm_cardlist_select {
+  width: 80px;
+}
+.wm_cardlist_select_search_body{
+  text-align: center;
+}
+@media (max-width: 348px){
+  .wm_cardlist_select {
+      width: 200px;
+  }
+}
+/* 无卡牌 */
+.common_nocard_tips{
+  padding: 100px 0;
+  text-align: center;
+}

@@ -36,13 +36,60 @@
             </div>
         </el-collapse-transition>
         <div class="wm_battlecard_usercard" v-show="selIndex!==null">
+            <div class="wm_cardlist_select_search_body">
+                <el-form :inline="true" :model="searchForm">
+                    <el-form-item label="星星等级">
+                        <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.star" placeholder="筛选星级">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="1星" value="1"></el-option>
+                        <el-option label="2星" value="2"></el-option>
+                        <el-option label="3星" value="3"></el-option>
+                        <el-option label="4星" value="4"></el-option>
+                        <el-option label="5星" value="5"></el-option>
+                        <el-option label="6星" value="6"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="水晶属性">
+                        <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.cry" placeholder="筛选水晶属性">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="红火" value="1"></el-option>
+                        <el-option label="蓝水" value="2"></el-option>
+                        <el-option label="绿风" value="3"></el-option>
+                        <el-option label="光" value="4"></el-option>
+                        <el-option label="暗" value="5"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="被动属性">
+                        <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.leftType" placeholder="筛选被动属性">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="全能" value="1"></el-option>
+                        <el-option label="兵攻" value="2"></el-option>
+                        <el-option label="盾防" value="3"></el-option>
+                        <el-option label="速度" value="4"></el-option>
+                        <el-option label="爱心" value="5"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="主动技能">
+                        <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.rightType" placeholder="筛选主动技能">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="物" value="1"></el-option>
+                        <el-option label="魔" value="2"></el-option>
+                        <el-option label="防" value="3"></el-option>
+                        <el-option label="治" value="4"></el-option>
+                        <el-option label="妨" value="5"></el-option>
+                        <el-option label="支" value="6"></el-option>
+                        <el-option label="特" value="7"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+            </div>
             <el-collapse-transition>
                 <div class="wm_mycard_list" v-if="userCard.length>0">
                     <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" @click="seledCard(index)">
                         <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
                     </div>
                 </div>
-                <div class="wm_battlecard_nocard" v-if="userCard.length<=0&&!pageChangeing">您目前还没有卡牌呢！快去抽卡！</div>
+                <div class="wm_battlecard_nocard" v-if="userCard.length<=0&&!pageChangeing">您目前还没有这些卡牌呢！快去抽卡！</div>
             </el-collapse-transition>
             <div class="wm_market_content_page" v-if="userCard.length>0">
                 <el-pagination
@@ -87,7 +134,13 @@ export default {
         cardTotle:0,
         userCard:[],
         pageChangeing:false,
-        ADSHP:[0,0,0,0]
+        ADSHP:[0,0,0,0],
+        searchForm:{
+            star:'0',
+            cry:'0',
+            rightType:'0',
+            leftType:'0'
+        }
     }
   },
   components: {
@@ -213,11 +266,54 @@ export default {
     PrefixInteger_(num,length){
       return PrefixInteger(num,length);
     },
+    searchChanged(){
+        this.cardPage = 1;
+        this.cardPageChange(1);
+    },
     cardPageChange(val){
       this.pageChangeing = true;
       this.userCard = [];
-      let userCard_ = this.userCardCache.filter(item => item[2]).slice((val-1)*20,val*20);
-      this.cardTotle = this.userCardCache.filter(item => item[2]).length;
+      let that = this;
+      // 筛选条件
+      function setStar(item){
+          let p_ = that.searchForm.star;
+          if(p_==='0'){
+              return true;
+          }else if(item==p_){
+              return true;
+          }
+          return false;
+      }
+      function setCry(item){
+          let p_ = that.searchForm.cry;
+          if(p_==='0'){
+              return true;
+          }else if(item==p_){
+              return true;
+          }
+          return false;
+      }
+      function setRightType(item){
+          let p_ = that.searchForm.rightType;
+          if(p_==='0'){
+              return true;
+          }else if(item==p_){
+              return true;
+          }
+          return false;
+      }
+      function setLeftType(item){
+          let p_ = that.searchForm.leftType;
+          if(p_==='0'){
+              return true;
+          }else if(item==p_){
+              return true;
+          }
+          return false;
+      }
+      let userCardSearchRes = this.userCardCache.filter(item => item[2] && setStar(item[4].star) && setCry(item[4].cry) && setRightType(item[4].rightType) && setLeftType(item[4].leftType));
+      let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
+      this.cardTotle = userCardSearchRes.length;
       setTimeout(()=>{
         this.userCard = userCard_;
         this.pageChangeing = false;
@@ -273,8 +369,10 @@ export default {
                             }
                         }
                         this.userCardCache[i][3] = i;
+                        let cardData_ = cardData['cardData'];//卡牌信息
+                        this.userCardCache[i][4] = cardData_[PrefixInteger(this.userCardCache[i][0],4)];//输入卡牌信息
                     }
-                    // 0卡牌id、1卡牌数量、2卡牌是否已选、3卡牌index
+                    // 0卡牌id、1卡牌数量、2卡牌是否已选、3卡牌index、4卡牌信息
                     this.cardPage = 1;
                     this.sumADSHP();
                     this.cardPageChange(1);
