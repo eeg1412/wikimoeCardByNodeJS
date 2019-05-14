@@ -1244,7 +1244,7 @@ img.wm_demining_img {
   color: #ff5364;
 }
 .wm_topnews_content{
-  white-space: pre;
+  white-space: pre-line;
   word-break: break-all;
 }
 .wm_topnews_content_time{
