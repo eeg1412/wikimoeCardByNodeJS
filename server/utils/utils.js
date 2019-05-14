@@ -295,6 +295,7 @@ exports.levelCheck = function(level, exp) {
         throw '经验等级数据错误！';
     }
     let flag = true;
+    let upNum = 0;//升级次数
     while(flag){
         let levelIndex = level_;
         if(levelIndex>5){
@@ -302,12 +303,13 @@ exports.levelCheck = function(level, exp) {
         }
         if(cardData[levelIndex]<exp_){
             exp_ = exp_ - cardData[levelIndex];
+            upNum++;
             level_++;
         }else{
             flag = false;
         }
     }
-    return [level_,exp_]
+    return [level_,exp_,upNum]
 }
 //发送邮箱
 exports.sendMail = function(email, IP) {

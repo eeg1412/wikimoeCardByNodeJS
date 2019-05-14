@@ -137,6 +137,7 @@ module.exports = async function(req, res, next){
                 nickName:nickName,
                 password:md5(password),
                 md5:md5(email),
+                star:50,
                 ip:IP
             }
             if(oldData){

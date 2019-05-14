@@ -224,9 +224,10 @@ var openNode = function(socket,data,result_){
                 let getExp = 10+demNum+starAdd;
                 let exp = result_.exp+getExp;
                 let levelExp = utils.levelCheck(levle,exp);
+                let levelUpStar = levelExp[2]*30;
                 let params = {
                     $inc:{
-                        star:starAdd,
+                        star:starAdd + levelUpStar,
                         deminingStarCount:starAdd
                     },
                     deminingStamp:deminingTool,
@@ -251,7 +252,7 @@ var openNode = function(socket,data,result_){
                         throw err;
                     }else{
                         if(starAdd>0){
-                            socket.emit('demining',{code:2,star:starAdd,demNum:demNum,time:data.time,x:x,y:y,md5:md5Email,close:close});
+                            socket.emit('demining',{code:2,star:starAdd,demNum:demNum,time:data.time,x:x,y:y,md5:md5Email,close:close,levelUpStar:levelUpStar});
                             let logObject = {
                                 email:data.email,
                                 md5:md5Email,
@@ -269,7 +270,7 @@ var openNode = function(socket,data,result_){
                             }
                             utils.writeLog(logObject);
                         }else{
-                            socket.emit('demining',{code:201,demNum:demNum,time:data.time,x:x,y:y,md5:md5Email});
+                            socket.emit('demining',{code:201,demNum:demNum,time:data.time,x:x,y:y,md5:md5Email,levelUpStar:levelUpStar});
                         };
                         // 广播挖矿信息
                         if(close){

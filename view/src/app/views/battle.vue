@@ -51,6 +51,15 @@ export default {
             if(res.data.code==0){
                 this.$message.error(res.data.msg);
             }else if(res.data.code==1){
+                if(res.data.levelUpStar>0){
+                    this.$notify.info({
+                        title: '升级啦！',
+                        message: '恭喜您升级啦，作为奖励获得'+res.data.levelUpStar+'颗星星！',
+                        duration:3000,
+                        customClass:'wm_battle_notify'
+                    });
+                    this.$refs.userTop.getUserInfo();
+                }
                 this.battleData = res.data;
                 this.battleSence = true;
             }

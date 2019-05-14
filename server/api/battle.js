@@ -462,6 +462,7 @@ module.exports = async function(req, res, next){
     let getExp = 0;//获取经验
     let EmScore = 0;//对方的竞技点
     let EmGetScore = 0;
+    let levelUpStar = 0;
     let MyScore = result.score;//我的竞技点
     if(!battleOverChance){
         let userFilters = null;
@@ -489,10 +490,14 @@ module.exports = async function(req, res, next){
             let myLevle = result.level;
             let MyExp = result.exp+getExp;
             let levelExp = utils.levelCheck(myLevle,MyExp);
+            levelUpStar = levelExp[2]*30;
             userFilters = {
                 email:email
             }
             updataParams = {
+                $inc:{
+                    star:levelUpStar
+                },
                 battleStamp:Math.round(new Date().getTime()/1000),
                 battleDailyCount:myBattleTimes,
                 score:result.score + getScore,
@@ -614,6 +619,7 @@ module.exports = async function(req, res, next){
         score:myScore,
         getScore:getScore,
         getExp:getExp,
+        levelUpStar:levelUpStar,
         msg:'获取成功'
     });
 }

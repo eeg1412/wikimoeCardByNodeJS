@@ -72,6 +72,9 @@ button,a,.el-button,.el-dialog__headerbtn,.el-pager li,.el-input-number__decreas
   overflow: hidden;
   cursor: url(/static/cur/pointer.cur),pointer;
 }
+.el-notification{
+  width: 290px;
+}
 .watch_tips img{
   max-width: 100%;
   height: auto;
@@ -1568,4 +1571,8 @@ img.wm_demining_img {
 .common_nocard_tips{
   padding: 100px 0;
   text-align: center;
+}
+/* 对战 */
+.wm_battle_notify{
+  z-index: 9999!important;
 }

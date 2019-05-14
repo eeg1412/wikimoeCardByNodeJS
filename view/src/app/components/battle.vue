@@ -565,7 +565,7 @@ export default {
     position fixed
     left 0
     top 0
-    z-index 9999
+    z-index 9998
     background #000
 }
 .wm_battle_body canvas{

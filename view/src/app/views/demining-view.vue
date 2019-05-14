@@ -82,7 +82,14 @@ export default {
         this.mineInfo = data;
         this.creatMap(data.data)
       }else if(data.code==2){//挖到星星
-        this.upDateMapData(data.x,data.y,data.md5,data.demNum)
+        this.upDateMapData(data.x,data.y,data.md5,data.demNum);
+        if(data.levelUpStar>0){
+          this.$notify.info({
+            title: '升级啦！',
+            message: '恭喜您升级啦，作为奖励获得'+data.levelUpStar+'颗星星！',
+            duration:13000
+          });
+        }
         this.$message({
           dangerouslyUseHTMLString: true,
           showClose: true,
@@ -93,6 +100,14 @@ export default {
         this.$refs.userTop.getUserInfo();
       }else if(data.code==201){//未挖到星星
         this.upDateMapData(data.x,data.y,data.md5,data.demNum)
+        if(data.levelUpStar>0){
+          this.$notify.info({
+            title: '升级啦！',
+            message: '恭喜您升级啦，作为奖励获得'+data.levelUpStar+'颗星星！',
+            duration:13000
+          });
+          this.$refs.userTop.getUserInfo();
+        }
         this.$message({
           dangerouslyUseHTMLString: true,
           showClose: true,
