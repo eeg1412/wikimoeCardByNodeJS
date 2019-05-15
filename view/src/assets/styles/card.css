@@ -1383,7 +1383,9 @@ img.wm_demining_img {
   background-color: rgba(0,0,0,0.75);
   border-radius: 3px;
   box-sizing: border-box;
-  padding-top: 75px;
+  padding-top: 85px;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .wm_market_mycard_item{
   cursor: url(/static/cur/pointer.cur),pointer;
@@ -1453,6 +1455,18 @@ img.wm_demining_img {
   }
   .wm_market_content_body .wm_getcard_box .wm_getcard_img{
     height: 124px;
+  }
+  .wm_market_selling_tag{
+    height: 124px;
+    padding-top: 28px;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+  .wm_market_selling_tag_item{
+    padding: 0 3px;
+  }
+  .wm_market_content_body .wm_card_nums{
+    padding-top: 4px;
   }
 }
 /* 排行榜 */

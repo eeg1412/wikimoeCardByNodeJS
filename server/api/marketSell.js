@@ -15,13 +15,13 @@ function checkMinPrice(cardId){
     }
     let minPrice = null;
     if(cardStar==6){
-        minPrice = 1200;
+        minPrice = 600;
     }else if(cardStar==5){
-        minPrice = 400;
+        minPrice = 200;
     }else if(cardStar==4){
-        minPrice = 180;
+        minPrice = 90;
     }else if(cardStar<=3){
-        minPrice = 60;
+        minPrice = 30;
     }
     return minPrice;
 }
@@ -168,10 +168,10 @@ module.exports = async function(req, res, next){
             );
             throw err;
         });
-        if(myMarket.length>=3){
+        if(myMarket.length>=5){
             res.send({
                 code:0,
-                msg:'同时只能上架3张卡牌！'
+                msg:'同时只能上架5张卡牌！'
             });
             console.info(
                 chalk.yellow('email:'+email+'上架卡牌过多：'+cardId+'。IP为：'+IP)

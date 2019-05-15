@@ -2,15 +2,15 @@
     <div class="wm_market_content_body">
         <transition name="el-fade-in-linear">
             <div class="wm_market_selling_body" v-if="myMarket.length>0">
-                <h5 class="common_title type_shop">贩卖中的卡牌({{myMarket.length}}/3)</h5>
+                <h5 class="common_title type_shop">贩卖中的卡牌({{myMarket.length}}/5)</h5>
                 <div class="wm_mycard_list">
-                    <div class="wm_market_mycard_item" v-for="(item,index) in myMarket" v-bind:key="index+1" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">
+                    <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in myMarket" v-bind:key="index+1" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">
                         <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg'">
                         <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
                         <div class="wm_market_selling_tag" v-if="item.selled || serverTime-item.time>604800">
                             <!-- 更新点击事件记得更新标签 -->
                             <el-tag type="success" v-if="item.selled" class="wm_market_selling_tag_item" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">可收取星星</el-tag>
-                            <el-tag type="danger" v-if="serverTime-item.time>604800" class="wm_market_selling_tag_item" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">已过期，请更新！</el-tag>
+                            <el-tag type="danger" v-if="serverTime-item.time>604800" class="wm_market_selling_tag_item" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">过期请更新</el-tag>
                         </div>
                     </div>
                 </div>

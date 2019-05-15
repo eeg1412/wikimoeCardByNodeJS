@@ -127,13 +127,13 @@ export default {
     this.type = type;
     // 计算最低售价
     if(this.cardData[this.cardIdFormat].star==6){
-      this.minPrice = 1200;
+      this.minPrice = 600;
     }else if(this.cardData[this.cardIdFormat].star==5){
-      this.minPrice = 400;
+      this.minPrice = 200;
     }else if(this.cardData[this.cardIdFormat].star==4){
-      this.minPrice = 180;
+      this.minPrice = 90;
     }else{
-      this.minPrice = 60;
+      this.minPrice = 30;
     }
     this.getChart();
   },
