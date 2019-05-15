@@ -14,7 +14,7 @@
               <div class="fl wm_card_rank_img">
                 <img
                   class="wm_card_get_list_avatar_pic"
-                  :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'"
+                  :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
                   width="45"
                   height="45"
                   data-md5="95f3c59f0990cb8bb2888d49997e5579"
@@ -40,7 +40,7 @@
               <div class="fl wm_card_rank_img">
                 <img
                   class="wm_card_get_list_avatar_pic"
-                  :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'"
+                  :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
                   width="45"
                   height="45"
                   data-md5="fcd2f50ff3096a29dd37b139b54d81fe"
@@ -66,7 +66,7 @@
               <div class="fl wm_card_rank_img">
                 <img
                   class="wm_card_get_list_avatar_pic"
-                  :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'"
+                  :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
                   width="45"
                   height="45"
                   data-md5="fdce61cf9cc17461b2bccec659480671"
@@ -91,7 +91,7 @@
               <div class="fl wm_card_rank_img">
                 <img
                   class="wm_card_get_list_avatar_pic"
-                  :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'"
+                  :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
                   width="45"
                   height="45"
                   data-md5="fcd2f50ff3096a29dd37b139b54d81fe"
@@ -113,6 +113,7 @@ import {authApi} from "../api";
 export default {
   data() {
     return {
+        txDays:new Date().getDate(),
         card:'card',
         changed:true,
         rankData:null

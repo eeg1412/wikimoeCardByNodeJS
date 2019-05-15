@@ -110,7 +110,7 @@
         <div class="wm_card_get_list_item" v-for="(item,index) in logList" v-bind:key="index+1">
           <div class="wm_card_get_list_avatar" @click="watchUserCard(item.md5)">
             <el-tooltip class="item" effect="dark" :content="'查看'+item.nickName+'的卡牌'" placement="top" :hide-after="3000">
-              <img class="wm_card_get_list_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'" width="45" height="45" data-md5="5e6892e999ca8c85a358d21164167f38">
+              <img class="wm_card_get_list_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" width="45" height="45" data-md5="5e6892e999ca8c85a358d21164167f38">
             </el-tooltip>
           </div>
           <div class="wm_card_get_list_comment">
@@ -170,6 +170,7 @@ import md5 from 'js-md5';
 export default {
   data() {
     return {
+      txDays:new Date().getDate(),
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       shareDialog:false,
       shareUrl:'',
@@ -408,7 +409,7 @@ export default {
               this.cardPageChange(1,noGoTop);
               console.log(this.nowUserInfo);
               this.nowUserInfo = {
-                tx:'https://cdn.v2ex.com/gravatar/'+resData.md5+'?s=100&d=mm&r=g&d=robohash',//头像地址
+                tx:'https://cdn.v2ex.com/gravatar/'+resData.md5+'?s=100&d=mm&r=g&d=robohash&days='+this.txDays,//头像地址
                 score:resData.score,//竞技点
                 level:resData.level,//等级
                 cardCol:this.cardTotle,//收集卡牌

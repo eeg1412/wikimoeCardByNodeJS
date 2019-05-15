@@ -4,7 +4,7 @@ var chalk = require('chalk');
 
 module.exports = function(req, res, next){
 	let md5 = req.query.md5;
-	var url = 'https://cdn.v2ex.com/gravatar/'+md5+'?s=100&d=mm&r=g&d=robohash';
+	var url = 'https://cdn.v2ex.com/gravatar/'+md5+'?s=100&d=mm&r=g&d=robohash&days='+new Date().getDate();
     var options = {
 		url: url,
 		encoding: null,

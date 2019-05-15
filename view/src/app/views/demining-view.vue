@@ -20,7 +20,7 @@
                 <el-tooltip class="item" effect="dark" :content="items.num==9?'这里是一片星星矿':'探测器显示周围有'+items.num+'片星星矿！'" placement="top" v-if="items.num>=0" :enterable="false">
                   <div>
                     <span>{{items.num==9?'★':items.num}}</span>
-                    <img class="wm_demining_img" :src="'https://cdn.v2ex.com/gravatar/'+items.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash'" width="50" height="50">
+                    <img class="wm_demining_img" :src="'https://cdn.v2ex.com/gravatar/'+items.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" width="50" height="50">
                   </div>
                 </el-tooltip>
               </div>
@@ -44,6 +44,7 @@ import userTop from '../components/topUserInfo.vue';
 export default {
   data() {
     return {
+      txDays:new Date().getDate(),
       backFlag:false,
       socket:null,
       mineMap:[],

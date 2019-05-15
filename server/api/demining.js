@@ -170,7 +170,6 @@ var openNode = function(socket,data,result_){
                     console.info(chalk.yellow('矿场x,y有误！'))
                     return false;
                 }
-                console.log('123');
                 let boomedNum = result.boomedNum;
                 let boomNum = result.boomNum;
                 let close = result.close;
@@ -201,7 +200,10 @@ var openNode = function(socket,data,result_){
                 if(boomedNum>=boomNum){
                     close = 1;
                 }
-
+                if(demNum==9&&close===1){//如果是最后一矿且挖到矿了*3的矿
+                    starAdd = starAdd*3;
+                    console.info(chalk.green('当前为最后一片矿，三倍出矿，总出矿：'+starAdd))
+                }
                 let timeNow = Math.round(new Date().getTime()/1000);
                 let filters = {
                     email:data.email
