@@ -186,7 +186,7 @@ module.exports = async function(req, res, next){
             $inc:starCard,
             ip:IP
         }
-        await userData.updataUser(userFilters,updataParams).catch ((err)=>{
+        await userData.updataUser(userFilters,updataParams,true).catch ((err)=>{
             res.send({
                 code:0,
                 msg:'内部错误请联系管理员！'
