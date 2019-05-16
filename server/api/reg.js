@@ -5,6 +5,8 @@ var utils = require('../utils/utils');
 var chalk = require('chalk');
 var userData = require('../utils/database/user');
 var oldUsersModel = require('../models/oldUsers');
+var jwt = require('jsonwebtoken');
+
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     console.info(
@@ -164,6 +166,13 @@ module.exports = async function(req, res, next){
                 let cardTotle = userCardCache.length;
                 creatAccountData['cardIndexCount'] = cardTotle;
             }
+            let content ={email:email}; // 要生成token的主题信息
+            let secretOrPrivateKey= global.myAppConfig.JWTSecret; // 这是加密的key（密钥）
+            let remTime = 60*60*24;//24小时失效
+            let token = jwt.sign(content, secretOrPrivateKey, {
+                expiresIn: remTime
+            });
+            creatAccountData['token'] = token;
             // document作成
             var user = new usersModel(creatAccountData);
 
@@ -188,6 +197,7 @@ module.exports = async function(req, res, next){
                     utils.writeLog(logObject);
                     res.send({
                         code:1,
+                        token:token,
                         msg:'注册成功！'
                     });
                     console.info(

@@ -48,7 +48,10 @@
       <transition name="el-fade-in-linear">
         <div class="wm_mycard_list" v-if="cardList.length>0">
             <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in cardList" v-bind:key="index+1" @click="buyCard(item.cardId,item.time,item.price,item._id)">
-                <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg'">
+                <div class="wm_getcard_img_box">
+                  <div class="wm_getcard_img_checked" v-if="haveCardCheck(item.cardId)>0"><i class="el-icon-check"></i></div>
+                  <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg'">
+                </div>
                 <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
             </div>
         </div>
@@ -69,7 +72,7 @@
 </template>
 
 <script>
-import {PrefixInteger,scrollToTop} from "../../../utils/utils";
+import {PrefixInteger,scrollToTop,md5Check} from "../../../utils/utils";
 import md5_ from 'js-md5';
 import {authApi} from "../../api";
 
@@ -78,6 +81,7 @@ export default {
     return {
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       cardList:[],
+      myCard:{},
       cardPage:Number(this.$route.query.page) || 1,//当前卡牌页码
       cardTotle:0,//一共多少
       pageChangeing:false,
@@ -90,10 +94,41 @@ export default {
     }
   },
   created() {
-    this.getUserMarket();
+    this.getUserCard();
   },
   methods: {
+    haveCardCheck(cardID){
+      let cardHave = this.myCard[cardID]
+      if(cardHave){
+        return cardHave;
+      }else{
+        return 0;
+      }
+    },
+    getUserCard(){
+        let tokenUserInfo = this.token.split('.')[1];
+        let email = JSON.parse(atob(tokenUserInfo)).email;
+        let md5 = md5_(email);
+        if(!md5Check(md5)){
+            this.$message.error('用户信息有误！');
+            return false;
+        }
+        authApi.searchcard({md5: md5}).then(res => {
+            console.log(res);
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                let resData = res.data;
+                if(res.data.card){
+                    this.myCard = res.data.card;
+                    console.log(this.myCard);
+                }
+                this.getUserMarket();
+            }
+        });
+    }, 
     buyCard(cardId,time,price,id){
+        let cardHave = this.haveCardCheck(cardId);
         this.$router.push({ 
           name:'cardDetail',
           query: {
@@ -101,7 +136,8 @@ export default {
             card:cardId,
             price:price,
             time:time,
-            id:id
+            id:id,
+            have:cardHave
           }
         });
     },

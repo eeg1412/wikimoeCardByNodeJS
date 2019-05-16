@@ -11,6 +11,7 @@
           <div><span class="fb">卡牌人物：</span>{{cardData[cardIdFormat].name}}</div>
           <div><span class="fb">出自作品：</span>《{{cardData[cardIdFormat].title}}》</div>
           <div><span class="fb">星级：</span>{{cardData[cardIdFormat].star}}星</div>
+          <div v-if="have!=undefined"><span class="fb">持有：</span>{{have}}张</div>
           <div v-if="uptime"><span class="fb">上架时间：</span>{{uptime | capitalize}}</div>
         </div>
         <div class="wm_market_card_datail_captcha" v-if="type=='buy'">
@@ -77,6 +78,7 @@ export default {
       minPrice:0,//最小售价
       uptime:null,//上架时间
       stat:undefined,//卖卡状态
+      have:this.$route.query.have,
       extend:{
         'xAxis.0.axisLabel.rotate': 45
       },
