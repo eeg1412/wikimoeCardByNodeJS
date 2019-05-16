@@ -2,7 +2,7 @@
     <div class="wm_market_content_body">
         <transition name="el-fade-in-linear">
             <div class="wm_market_selling_body" v-if="myMarket.length>0">
-                <h5 class="common_title type_shop">贩卖中的卡牌({{myMarket.length}}/5)</h5>
+                <h5 class="common_title type_shop">贩卖中的卡牌({{myMarket.length}}/20)</h5>
                 <div class="wm_mycard_list">
                     <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in myMarket" v-bind:key="index+1" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">
                         <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg'">

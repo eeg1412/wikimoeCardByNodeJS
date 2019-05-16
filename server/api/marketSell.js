@@ -168,10 +168,10 @@ module.exports = async function(req, res, next){
             );
             throw err;
         });
-        if(myMarket.length>=5){
+        if(myMarket.length>=20){
             res.send({
                 code:0,
-                msg:'同时只能上架5张卡牌！'
+                msg:'同时只能上架20张卡牌！'
             });
             console.info(
                 chalk.yellow('email:'+email+'上架卡牌过多：'+cardId+'。IP为：'+IP)
