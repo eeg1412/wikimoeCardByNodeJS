@@ -336,8 +336,8 @@ module.exports = async function(req, res, next){
     let AiP = utils.randomNum(1,100);//AI概率因子
     let emData = [];
     if(AiP>40){//40%概率遇见AI
-        let emMinScore = myScore-250<0?0:myScore-250;
-        let emMaxScore = myScore+250;
+        let emMinScore = myScore-500<0?0:myScore-500;
+        let emMaxScore = myScore+500;
         let emScore = {
             score:{$gte:emMinScore,$lte:emMaxScore},
             email:{$ne:email},
