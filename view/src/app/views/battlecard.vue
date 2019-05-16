@@ -2,28 +2,50 @@
     <div class="common_body">
         <userTop ref="userTop" />
         <h5 class="common_title type_shop">设置出战卡牌</h5>
+        <div id="battlecardTable">
+            <table class="wm_user_info_table type_battlecard">
+            <thead>
+                <tr>
+                    <th>攻</th>
+                    <th>防</th>
+                    <th>速</th>
+                    <th>SAN</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span v-show="selIndex!==null" :class="{'cGreen1A7':ifADSHPSUM[0]<0,'cRed':ifADSHPSUM[0]>0}">{{ifADSHPSUM[0]>=0?'+':''}}{{ifADSHPSUM[0]}}<br /></span>{{ADSHP[0]}}</td>
+                    <td><span v-show="selIndex!==null" :class="{'cGreen1A7':ifADSHPSUM[1]<0,'cRed':ifADSHPSUM[1]>0}">{{ifADSHPSUM[1]>=0?'+':''}}{{ifADSHPSUM[1]}}<br /></span>{{ADSHP[1]}}</td>
+                    <td><span v-show="selIndex!==null" :class="{'cGreen1A7':ifADSHPSUM[2]<0,'cRed':ifADSHPSUM[2]>0}">{{ifADSHPSUM[2]>=0?'+':''}}{{ifADSHPSUM[2]}}<br /></span>{{ADSHP[2]}}</td>
+                    <td><span v-show="selIndex!==null" :class="{'cGreen1A7':ifADSHPSUM[3]<0,'cRed':ifADSHPSUM[3]>0}">{{ifADSHPSUM[3]>=0?'+':''}}{{ifADSHPSUM[3]}}<br /></span>{{ADSHP[3]}}</td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+        <div class="wm_battlecard_table_fixed_body" v-show="fixedTable">
+            <div class="wm_battlecard_table_fixed_box">
+                <table class="wm_user_info_table type_battlecard">
+                <thead>
+                    <tr>
+                        <th>攻</th>
+                        <th>防</th>
+                        <th>速</th>
+                        <th>SAN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span v-show="selIndex!==null" :class="{'cGreen1A7':ifADSHPSUM[0]<0,'cRed':ifADSHPSUM[0]>0}">{{ifADSHPSUM[0]>=0?'+':''}}{{ifADSHPSUM[0]}}<br /></span>{{ADSHP[0]}}</td>
+                        <td><span v-show="selIndex!==null" :class="{'cGreen1A7':ifADSHPSUM[1]<0,'cRed':ifADSHPSUM[1]>0}">{{ifADSHPSUM[1]>=0?'+':''}}{{ifADSHPSUM[1]}}<br /></span>{{ADSHP[1]}}</td>
+                        <td><span v-show="selIndex!==null" :class="{'cGreen1A7':ifADSHPSUM[2]<0,'cRed':ifADSHPSUM[2]>0}">{{ifADSHPSUM[2]>=0?'+':''}}{{ifADSHPSUM[2]}}<br /></span>{{ADSHP[2]}}</td>
+                        <td><span v-show="selIndex!==null" :class="{'cGreen1A7':ifADSHPSUM[3]<0,'cRed':ifADSHPSUM[3]>0}">{{ifADSHPSUM[3]>=0?'+':''}}{{ifADSHPSUM[3]}}<br /></span>{{ADSHP[3]}}</td>
+                    </tr>
+                </tbody>
+                </table>
+            </div>
+        </div>
         <el-collapse-transition>
             <div class="wm_battlecard_body" v-show="selIndex===null">
-                <div>
-                    <table class="wm_user_info_table type_battlecard">
-                    <thead>
-                        <tr>
-                            <th>攻</th>
-                            <th>防</th>
-                            <th>速</th>
-                            <th>SAN</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                        <td class="wm_user_level">{{ADSHP[0]}}</td>
-                        <td class="wm_user_score">{{ADSHP[1]}}</td>
-                        <td class="wm_user_getcard_count">{{ADSHP[2]}}</td>
-                        <td class="wm_user_getcard_count">{{ADSHP[3]}}</td>
-                        </tr>
-                    </tbody>
-                    </table>
-                </div>
                 <div class="wm_battlecard_list_body">
                     <draggable v-model="myCard" @change="change" handle=".handle">
                         <div class="wm_battlecard_list_box" v-for="(item,index) in myCard" v-bind:key="index+1" @click="selcard(index)">
@@ -85,7 +107,7 @@
             </div>
             <el-collapse-transition>
                 <div class="wm_mycard_list" v-if="userCard.length>0">
-                    <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" @click="seledCard(index)">
+                    <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="ifIndex===index?'card_sel_pikapika':''" @click="seledCard(index)">
                         <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
                     </div>
                 </div>
@@ -124,6 +146,9 @@ import draggable from 'vuedraggable'
 export default {
   data() {
     return {
+        fixedTable:false,
+        ifIndex:null,//当前暂时选择的卡
+        ifADSHPSUM:[0,0,0,0],//暂时卡组的增减差
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         myCard:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
         myCardIndex:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
@@ -151,7 +176,19 @@ export default {
   created() {
     this.getMyBattleCard();
   },
+  mounted() {
+    window.addEventListener('scroll', this.tableFixed);
+  },
   methods: {
+    tableFixed(){
+        let el = document.getElementById('battlecardTable');
+        if(!el){
+            return false;
+        }
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+        let offsetTop = el.offsetTop;
+        scrollTop > offsetTop ? this.fixedTable = true : this.fixedTable = false;
+    },
     change(data){
         console.log(data);
         let newIndex = data.moved.newIndex;
@@ -191,12 +228,13 @@ export default {
             }
         });
     },
-    sumADSHP(){
+    sumADSHP(cardArr){
         let cardData_ = cardData['cardData'];
         let myCardInfo = [];
-        for(let i=0;i<this.myCard.length;i++){
-            if(this.myCard[i]!==null){
-                let cardInfo = cardData_[PrefixInteger(this.myCard[i],4)];
+        let cardList = cardArr;
+        for(let i=0;i<cardList.length;i++){
+            if(cardList[i]!==null){
+                let cardInfo = cardData_[PrefixInteger(cardList[i],4)];
                 myCardInfo.push(cardInfo);
             }
         }
@@ -243,19 +281,36 @@ export default {
                     HP = HP + 500;
                 }  
             }
-            this.ADSHP = [A,D,S,HP];
+            return [A,D,S,HP];
+        }else{
+            return [0,0,0,0];
         }
     },
     seledCard(i){
-        this.myCard[this.selIndex] = this.userCard[i][0];
-        let mycardIndex_ = this.myCardIndex[this.selIndex];
-        if(mycardIndex_!==null){
-            this.userCardCache[mycardIndex_][2] = true;
+        if(i===this.ifIndex){
+            this.myCard[this.selIndex] = this.userCard[i][0];
+            let mycardIndex_ = this.myCardIndex[this.selIndex];
+            if(mycardIndex_!==null){
+                this.userCardCache[mycardIndex_][2] = true;
+            }
+            this.myCardIndex[this.selIndex] = this.userCard[i][3];
+            this.selIndex = null;
+            this.userCardCache[this.userCard[i][3]][2] = false;
+            this.ADSHP = this.sumADSHP(this.myCard);
+            this.restIf();
+        }else{
+            this.ifIndex = i;
+            let cardCache = [...this.myCard];
+            cardCache[this.selIndex] = this.userCard[i][0];
+            let ifADSHP = this.sumADSHP(cardCache);
+            for(let i=0;i<ifADSHP.length;i++){
+                this.ifADSHPSUM[i] = ifADSHP[i] - this.ADSHP[i];
+            }
         }
-        this.myCardIndex[this.selIndex] = this.userCard[i][3];
-        this.selIndex = null;
-        this.userCardCache[this.userCard[i][3]][2] = false;
-        this.sumADSHP();
+    },
+    restIf(){
+        this.ifIndex = null;
+        this.ifADSHPSUM = [0,0,0,0]
     },
     selcard(i){
       this.cardPage = 1;
@@ -267,6 +322,7 @@ export default {
       return PrefixInteger(num,length);
     },
     searchChanged(){
+        this.restIf();
         this.cardPage = 1;
         this.cardPageChange(1);
     },
@@ -374,7 +430,7 @@ export default {
                     }
                     // 0卡牌id、1卡牌数量、2卡牌是否已选、3卡牌index、4卡牌信息
                     this.cardPage = 1;
-                    this.sumADSHP();
+                    this.ADSHP = this.sumADSHP(this.myCard);
                     this.cardPageChange(1);
                 }else{
                     this.$message({
@@ -394,6 +450,9 @@ export default {
             this.selIndex = null;
         }
     },
+  },
+  beforeDestroy(){
+    window.removeEventListener('scroll', this.tableFixed);
   }
 }
 </script>
@@ -458,6 +517,21 @@ export default {
     cursor: url(/static/cur/move.cur),move;
     color: #4f4f4f;
     z-index: 3;
+}
+.wm_battlecard_table_fixed_body{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    padding: 60px 10px 0px 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,.3);
+}
+.wm_battlecard_table_fixed_box{
+    margin: 0 auto;
+    width: 100%;
+    max-width: 980px;
 }
 @media (max-width: 768px){
     .wm_battlecard_list_box{

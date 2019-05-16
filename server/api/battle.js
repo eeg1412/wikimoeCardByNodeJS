@@ -78,6 +78,17 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
     // 支6：敌方攻击前临时产生x*20%的临时HP
     // 妨5：使对方的主动技能失效
     // 克制表属性克制为火→风→水→火 暗→水火风 光→暗
+
+    // 20190516修改
+    // 物：攻= +攻*10%*星级
+    // 防：防= +防*10%*星级
+    // 支：产生对方伤害*10*星级的护盾
+    // 特：攻=攻*6%*星级、防=攻*6%*星级
+    // 治：SAN = +攻*10*星级
+    // 魔：反弹对方伤害的10%*星级
+
+    // 克：增伤10%*星级差(最多10%)
+    // 被克：防御减少10%*星级差(最多10%)
     let cryKe = {
         '1':[3],
         '2':[1],
@@ -91,6 +102,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
     // let AttackD = AttackADSHP[1];
     let AttackHP = AttackADSHP[3];
     // let AttackShield = 0;//临时护盾
+    let AttackStar = AttackCard.star;//攻击卡牌的星级
 
     let DefendRightType = DefendCard.rightType;
     // let DefendCry = DefendCard.cry;
@@ -98,26 +110,43 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
     let DefendD = DefendEmADSHP[1];
     let DefendHP = DefendEmADSHP[3];
     let DefendShield = 0;//临时护盾
+    let DefendStar = DefendCard.star;//防守卡牌的星级
 
     // 攻击方攻击前
     if(DefendRightType!==5){
-        if(AttackRightType===7 || AttackRightType===1){
-            AttackA = AttackA+Math.floor(AttackA*0.1);
+        if(AttackRightType===1){
+            AttackA = AttackA+Math.floor(AttackA*0.1*AttackStar);
+        }else if(AttackRightType===7){
+            AttackA = AttackA+Math.floor(AttackA*0.06*AttackStar);
         }else if(AttackRightType===4){
-            AttackHP = AttackHP+Math.floor(AttackA*0.1);
+            AttackHP = AttackHP+Math.floor(AttackA*0.1*AttackStar);
         }
     }
     // 攻击前结算属性相克
-    let ke = cryKe[AttackCard.cry].indexOf(DefendCard.cry)
-    if(ke!==-1){
-        AttackA = AttackA+Math.floor(AttackA*0.1);
+    let ke = cryKe[AttackCard.cry].indexOf(DefendCard.cry);
+    let beike = cryKe[DefendCard.cry].indexOf(AttackCard.cry);
+    if(ke!==-1){//克制增伤
+        let starCha = AttackStar - DefendStar//星级差
+        if(starCha<1){
+            starCha = 1;
+        }
+        AttackA = AttackA+Math.floor(AttackA*0.1*starCha);
+    }
+    if(beike!==-1){//被克减伤
+        let starCha = DefendStar - AttackStar//星级差
+        if(starCha<1){
+            starCha = 1;
+        }
+        DefendD = DefendD+Math.floor(DefendA*0.1*starCha);
     }
     // 防守方接受攻击前
     if(AttackRightType!==5){
-        if(DefendRightType===7 || DefendRightType===3){
-            DefendD = DefendD+Math.floor(DefendA*0.1);
+        if(DefendRightType===3){
+            DefendD = DefendD+Math.floor(DefendA*0.1*DefendStar);
+        }else if(DefendRightType===7){
+            DefendD = DefendD+Math.floor(DefendA*0.06*DefendStar);
         }else if(DefendRightType===6){
-            DefendShield = Math.floor(AttackA*0.1);
+            DefendShield = Math.floor(AttackA*0.1*DefendStar);
         }
     }
     // 开始攻击
@@ -129,8 +158,8 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
     DefendHP = DefendHP - AttackPow;
     // 结算伤害反弹
     let DefendPow = 0;
-    if(DefendRightType===2){
-        DefendPow = Math.floor(AttackPow*0.5);
+    if(DefendRightType===2&&AttackRightType!==5){
+        DefendPow = Math.floor(AttackPow*0.10*DefendStar);
         AttackHP = AttackHP - DefendPow;
     }
     // 防止HP为负数
@@ -256,6 +285,10 @@ function creatAICard(starArr){
     }
     return cardArr;
 }
+// 卡牌排序
+function cardSort(a,b){
+    return b-a;
+}
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
@@ -303,8 +336,8 @@ module.exports = async function(req, res, next){
     let AiP = utils.randomNum(1,100);//AI概率因子
     let emData = [];
     if(AiP>40){//40%概率遇见AI
-        let emMinScore = myScore-500<0?0:myScore-500;
-        let emMaxScore = myScore+500;
+        let emMinScore = myScore-250<0?0:myScore-250;
+        let emMaxScore = myScore+250;
         let emScore = {
             score:{$gte:emMinScore,$lte:emMaxScore},
             email:{$ne:email},
@@ -343,6 +376,7 @@ module.exports = async function(req, res, next){
         )
         MyBattleCard = Object.keys(result.card);
         MyBattleCard = MyBattleCard.slice(MyBattleCard.length-20,MyBattleCard.length);
+        MyBattleCard = MyBattleCard.sort(cardSort);
     }
     // 设置我的出战卡牌信息
     MyBattleCardArr_ = [...MyBattleCard]
@@ -361,6 +395,7 @@ module.exports = async function(req, res, next){
             chalk.green(email+'无匹配的情况下给一个AI。IP为：'+IP)
         )
         EmBattleCard = creatAICard(MyCardStarCount);
+        EmBattleCard = EmBattleCard.sort(cardSort);
         EmName = '自动书记人偶'+ utils.randomNum(0,99) + '号';
     }else{
         // 有匹配设置对方的卡牌
@@ -375,6 +410,7 @@ module.exports = async function(req, res, next){
             )
             EmBattleCard = Object.keys(emData.card);
             EmBattleCard = EmBattleCard.slice(EmBattleCard.length-20,EmBattleCard.length);
+            EmBattleCard = EmBattleCard.sort(cardSort);
         }
     }
     // 设置对方出战卡牌信息

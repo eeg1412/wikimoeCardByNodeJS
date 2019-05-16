@@ -207,6 +207,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 .cGray768{color:#756F8B;}
 .cGreen1A7{color:#14A774;}
 .cOrange{color:#FF9F18;}
+.cRed{color:#ff5364;}
 /*背景颜色*/
 .bcGrayE6{background-color: #E6E6E6;}
 .bcWhite{background-color: #FFFFFF;}
@@ -258,6 +259,12 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 .el-message-box__content{
   max-height: calc(100vh - 120px);
   overflow: auto;
+}
+.card_sel_pikapika{
+  animation-name: pikapika;
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
 /* 卡牌 */
 .wm_card_remember_body {
@@ -1015,17 +1022,13 @@ transform:translate(0) rotate(0deg)
   image-rendering: pixelated;
 }
 .wm_card_demining_table .wm_demining_item.selected{
-  -webkit-animation-name: pikapika;
-  -webkit-animation-duration: 1s;
-  -webkit-animation-timing-function: ease-in-out;
-  -webkit-animation-iteration-count: infinite;
   animation-name: pikapika;
   animation-duration: 1s;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
 }
 .wm_card_demining_table .wm_demining_item.type_is_opened {
-    background-color: #a4a4a4;
+  background-color: #a4a4a4;
   color: #fff;
   cursor: url(/static/cur/default.cur),default;
   background-image: none!important;
@@ -1074,7 +1077,7 @@ img.wm_demining_img {
   }
 
   50% {
-    opacity: 0.65;
+    opacity: 0.45;
   }
   100%{
     opacity: 1;
@@ -1150,7 +1153,7 @@ img.wm_demining_img {
 .shop_card_list_btn_box.flex_mode {
   position: fixed;
   z-index: 3;
-  padding: 40px 0 10px 0;
+  padding: 50px 0 10px 0;
   top: 0px;
   left: 0;
   right: 0;
