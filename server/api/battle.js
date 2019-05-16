@@ -486,7 +486,7 @@ module.exports = async function(req, res, next){
     let battleOverChance = false;//是否超过当日对战次数
     let dailyIsToday = false;//对战次数数据是否是当日
     if(new Date().toDateString()===new Date(dailyBattleTime).toDateString()){//如果是同天
-        if(myBattleTimes>=3){//如果今日已经战斗三次
+        if(myBattleTimes>=5){//如果今日已经战斗五次
             battleOverChance = true;
         }
         dailyIsToday = true;
