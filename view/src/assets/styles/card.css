@@ -266,6 +266,10 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
 }
+.common_title_tips{
+  text-align: center;
+  font-size: 14px;
+}
 /* 卡牌 */
 .wm_card_remember_body {
     text-align: center;
@@ -1443,6 +1447,13 @@ img.wm_demining_img {
 }
 .wm_handbook_cardlist .wm_mycard_list .wm_market_mycard_item.have{
   opacity: 1;
+}
+/* 分解 */
+.wm_mycard_list.type_dec .el-input-number--mini .el-input-number__decrease, .wm_mycard_list.type_dec .el-input-number--mini .el-input-number__increase{
+  width: 22px;
+}
+.wm_mycard_list.type_dec .el-input-number--mini .el-input__inner{
+  padding: 0 25px;
 }
 @media ( max-width : 768px) {
   .common_body{

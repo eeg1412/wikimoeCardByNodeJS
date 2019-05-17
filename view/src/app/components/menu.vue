@@ -37,6 +37,12 @@
       </div>
       <div class="wm_card_menu_text">市场</div>
     </div>
+    <div class="wm_card_menu_box" @click="login('/decompose')" v-if="$route.path.indexOf('/decompose')==-1">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/decompose.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">分解</div>
+    </div>
     <div class="wm_card_menu_box" @click="openNews">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/news.png" width="100%" height="100%" />
