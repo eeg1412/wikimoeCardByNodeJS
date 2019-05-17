@@ -14,7 +14,7 @@ exports.marketDataCalc = async function (cardId) {
     );
     let time = Math.round(new Date().getTime()/1000);
     let search = {
-        time:{$gt:time-604800},
+        time:{$gt:time-2592000},
         cardId:cardId,
         selled:false
     };
@@ -51,9 +51,9 @@ exports.marketDataCalc = async function (cardId) {
             throw err;
         });
         let delParmas = {
-            time:{$lt:time-1209600},
+            time:{$lt:time-5184000},
         }
-        // 删除两周前的数据
+        // 删除两月前的数据
         await marketData.deletMarketLog(delParmas).catch ((err)=>{
             throw err;
         });

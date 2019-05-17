@@ -78,7 +78,7 @@ module.exports = async function(req, res, next){
         let sortType = isNaN(Math.round(req.body.sort))?0:Math.round(req.body.sort);
         let time = Math.round(new Date().getTime()/1000);
         let params = {
-            time:{$gt:time-604800},
+            time:{$gt:time-2592000},
             selled:false
         }
         let sort = {'cardId':-1,'price':1};
@@ -132,7 +132,7 @@ module.exports = async function(req, res, next){
         let time = Math.round(new Date().getTime()/1000);
         let filters = {
             _id:_id,
-            time:{$gt:time-604800}
+            time:{$gt:time-2592000}
         }
         let myData = await marketData.findMarketOne(filters).catch ((err)=>{
             res.send({

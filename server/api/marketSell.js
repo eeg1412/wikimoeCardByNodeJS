@@ -42,6 +42,7 @@ module.exports = async function(req, res, next){
     }
     if(!adminSK_ && type!=='search'){
         if(req.session.captcha!=captcha || !captcha){
+            let oldCaptcha = req.session.captcha;
             await req.session.destroy((err)=> {
                 if(err){
                     console.info(
@@ -54,7 +55,7 @@ module.exports = async function(req, res, next){
                 msg:'验证码有误，或者已经过期！'
             });
             console.info(
-                chalk.yellow('图形验证码有误。IP为：'+IP)
+                chalk.yellow('图形验证码有误。'+oldCaptcha+',结果为'+captcha+'。IP为：'+IP)
             );
             return false;
         }
@@ -250,6 +251,34 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green('email:'+email+'上架了卡牌：'+cardId+'，价格为：'+price+'。IP为：'+IP)
         );
+    }else if(type=='updateMany'){//一键更新
+        let filters = {
+            email:email,
+            selled:false
+        }
+        let time = Math.round(new Date().getTime()/1000);
+        let parmas = {
+            time:time
+        }
+        await marketData.updataMarketMany(filters,parmas).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误，更新失败！'
+            });
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            throw err;
+        });
+        res.send({
+            code:1,
+            price:price,
+            time:time,
+            msg:'更新成功！'
+        });
+        console.info(
+            chalk.green('email:'+email+'一键更新成功。IP为：'+IP)
+        );
     }else if(type=='update'){
         if(!utils.objectIDCheck(_id)){
             res.send({
@@ -443,6 +472,87 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green('email:'+email+'下架了卡牌，'+cardId+'。IP为：'+IP)
         );
+    }else if(type=='getstarMany'){
+        //筛选已卖出的卡牌
+        let filters = {
+            email:email,
+            selled:true,
+        }
+        let myData = await marketData.findMarketMany(filters).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误，更新失败！'
+            });
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            throw err;
+        });
+        //如果没有已卖出的卡牌
+        if(myData.length<=0){
+            res.send({
+                code:0,
+                msg:'您还没有已经卖出的卡牌！'
+            });
+            console.info(
+                chalk.yellow('email:'+email+'还没有已经卖出的卡牌。IP为：'+IP)
+            );
+            return false;
+        }
+        let getStar = 0;//获得的星星
+        for(let i=0;i<myData.length;i++){
+            getStar = getStar + Math.floor(myData[i].price*0.9);
+        }
+        if((result.star+getStar)>99999999){
+            res.send({
+                code:0,
+                msg:'您持有的星星太多啦，先消费掉一些吧！'
+            });
+            console.info(
+                chalk.yellow('email:'+email+'的星星太多了！IP为：'+IP)
+            );
+            return false;
+        }
+        // 删除数据库信息
+        await marketData.deletMarketMany(filters).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误，更新失败！'
+            });
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            throw err;
+        });
+        // 拿星星
+        let userFilters = {
+            email:email
+        }
+        let updataParams = {
+            $inc:{
+                star:getStar
+            },
+            ip:IP
+        }
+        await userData.updataUser(userFilters,updataParams).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            throw err;
+        })
+        res.send({
+            code:1,
+            star:getStar,
+            msg:'成功领取'+getStar+'颗星星！'
+        });
+        console.info(
+            chalk.green('email:'+email+'成功市场一键领星星，'+getStar+'颗星星。IP为：'+IP)
+        );
+
     }else if(type=='getstar'){
         if(!utils.objectIDCheck(_id)){
             res.send({
@@ -497,15 +607,8 @@ module.exports = async function(req, res, next){
             );
             return false;
         }
-        let params = { email: email }
-        // document查询
-        let userResult = await userData.findUser(params).catch ((err)=>{
-            console.error(
-                chalk.red('数据库查询错误！')
-            );
-            return false;
-        })
-        if((userResult.star+myData.price)>99999999){
+        let getStar = Math.floor(myData.price*0.9);
+        if((result.star+getStar)>99999999){
             res.send({
                 code:0,
                 msg:'您持有的星星太多啦，先消费掉一些吧！'
@@ -527,7 +630,6 @@ module.exports = async function(req, res, next){
             throw err;
         });
         // 拿星星
-        let getStar = Math.floor(myData.price*0.9);
         let userFilters = {
             email:email
         }
@@ -556,7 +658,7 @@ module.exports = async function(req, res, next){
         );
     }else{
         res.send({
-            code:1,
+            code:0,
             msg:'参数有误！'
         });
     }

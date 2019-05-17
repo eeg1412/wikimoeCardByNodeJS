@@ -7,12 +7,16 @@
                     <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in myMarket" v-bind:key="index+1" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">
                         <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg'">
                         <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
-                        <div class="wm_market_selling_tag" v-if="item.selled || serverTime-item.time>604800">
+                        <div class="wm_market_selling_tag" v-if="item.selled || serverTime-item.time>2592000">
                             <!-- 更新点击事件记得更新标签 -->
                             <el-tag type="success" v-if="item.selled" class="wm_market_selling_tag_item" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">可收取星星</el-tag>
-                            <el-tag type="danger" v-if="serverTime-item.time>604800" class="wm_market_selling_tag_item" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">过期请更新</el-tag>
+                            <el-tag type="danger" v-if="serverTime-item.time>2592000 && !item.selled" class="wm_market_selling_tag_item" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">过期请更新</el-tag>
                         </div>
                     </div>
+                </div>
+                <div class="wm_market_btn_body">
+                    <el-button type="primary" @click="updataMany('getstarMany')">一键领取</el-button>
+                    <el-button type="primary" @click="updataMany('updateMany')">一键更新</el-button>
                 </div>
             </div>
         </transition>
@@ -41,6 +45,7 @@
                 </el-pagination>
             </div>
         </div>
+        <captcha @captchaShow="captchaDigShow" @send="sendCaptcha" :codeDigShow="captchaShow" v-if="captchaShow" ref="captch"></captcha>
     </div>
 </template>
 
@@ -48,6 +53,7 @@
 import {md5Check,PrefixInteger} from "../../../utils/utils";
 import md5_ from 'js-md5';
 import {authApi} from "../../api";
+import captcha from "../../components/captcha"
 // 状态
 // 0:未上架
 // 1：可修改（可更新上架时间、价格、下架）
@@ -56,6 +62,8 @@ import {authApi} from "../../api";
 export default {
   data() {
     return {
+        oneKeyType:'',
+        captchaShow:false,
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         userCard:[],//用户当前页卡牌
         userCardCache:[],//用户卡牌
@@ -66,11 +74,44 @@ export default {
         pageChangeing:false,
     }
   },
+  components: {
+      captcha
+  },
   mounted() {
     this.getUserCard(); 
     this.getUserMarket();
   },
   methods: {
+    updataMany(type){
+        this.oneKeyType = type;
+        this.captchaShow = true;
+    },
+    sendCaptcha(v){
+        console.log(v);
+        let params = {
+            type:this.oneKeyType,
+            token:this.token,
+            captcha:v
+        }
+        authApi.marketsell(params).then(res => {
+            console.log(res);
+            this.$refs.captch.captchaUpdata();
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                this.captchaShow = false;
+                this.$message({
+                    message: res.data.msg,
+                    type: 'success'
+                });
+                this.getUserMarket();
+                this.$emit('updateUserinfo');
+            }
+        });
+    },
+    captchaDigShow(v){
+        this.captchaShow = v;
+    },
     editCard(cardId,time,selled,price,id){
         let stat = 1;
         if(selled){

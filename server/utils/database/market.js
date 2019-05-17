@@ -28,11 +28,18 @@ exports.updataMarket = async function (filters,parmas) {
     // document查询
     return await marketModel.updateOne(filters, parmas);
 }
+exports.updataMarketMany = async function (filters,parmas) {
+    // document查询
+    return await marketModel.updateMany(filters, parmas);
+}
 exports.deletMarket = async function (parmas) {
     // document查询
     return await marketModel.deleteOne(parmas);
 }
-
+exports.deletMarketMany = async function (parmas) {
+    // document查询
+    return await marketModel.deleteMany(parmas);
+}
 exports.saveMarketLog = async function (parmas) {
     // document作成
     var mrketLog = new marketLogsModel(parmas);

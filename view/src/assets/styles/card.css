@@ -1386,7 +1386,7 @@ img.wm_demining_img {
   background-color: rgba(0,0,0,0.75);
   border-radius: 3px;
   box-sizing: border-box;
-  padding-top: 85px;
+  padding-top: 100px;
   padding-left: 20px;
   padding-right: 20px;
 }
@@ -1433,6 +1433,10 @@ img.wm_demining_img {
   color: #ff5364;
   line-height: 16px;
 }
+.wm_market_btn_body{
+  text-align: center;
+  padding: 20px 0;
+}
 /* 图鉴 */
 .wm_handbook_cardlist .wm_mycard_list .wm_market_mycard_item{
   opacity: 0.3;
@@ -1478,7 +1482,7 @@ img.wm_demining_img {
   }
   .wm_market_selling_tag{
     height: 124px;
-    padding-top: 28px;
+    padding-top: 45px;
     padding-left: 0px;
     padding-right: 0px;
   }
