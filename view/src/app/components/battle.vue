@@ -233,13 +233,11 @@ export default {
                     sprites['mycard'][that.battleData.MyBattleCard[i]].height = 422;
                     sprites['mycard'][that.battleData.MyBattleCard[i]].anchor.set(0.5);
                     sprites['mycard'][that.battleData.MyBattleCard[i]].position.set(-180,922);
-                    sprites['mycard'][that.battleData.MyBattleCard[i]].rotation = randomNum(-30,30)/1000;
                     battleSence.addChild(sprites['mycard'][that.battleData.MyBattleCard[i]]);
                     sprites['emcard'][that.battleData.EmBattleCard[i]].width = 300;
                     sprites['emcard'][that.battleData.EmBattleCard[i]].height = 422;
                     sprites['emcard'][that.battleData.EmBattleCard[i]].anchor.set(0.5);
                     sprites['emcard'][that.battleData.EmBattleCard[i]].position.set(900,360);
-                    sprites['emcard'][that.battleData.EmBattleCard[i]].rotation = randomNum(-30,30)/1000;
                     battleSence.addChild(sprites['emcard'][that.battleData.EmBattleCard[i]]);
                 }
                 // 将容器插入场景
@@ -431,6 +429,11 @@ export default {
                     timerCount++
                     if(timerCount>30){
                         timerCount = 0;
+                        if(battleInfo.turn>=2){
+                            // 缓解精灵太多卡顿
+                            sprites['mycard'][that.battleData.MyBattleCard[battleInfo.turn-2]].destroy();
+                            sprites['emcard'][that.battleData.EmBattleCard[battleInfo.turn-2]].destroy();
+                        }
                         battleInfo.cardEnter=false;
                     }
                 }

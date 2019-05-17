@@ -248,8 +248,20 @@ function setADSHP(cardArr,starArr,starCount,cryArr){
     return [A,D,S,HP];
 }
 // 设置AI卡牌
-function creatAICard(starArr){
+function creatAICard(starArr_){
     let cardArr = []
+    let starArr = [...starArr_];
+    let randomOneTwo = utils.randomNum(1,100);
+    if(randomOneTwo<=50){
+        if(starArr[0]>0){
+            cardArr.push('2');
+            starArr[0] = starArr[0] -1;
+        }
+        if(starArr[1]>0){
+            cardArr.push('4');
+            starArr[1] = starArr[1] -1;
+        }
+    }
     for(let i=0;i<starArr.length;i++){
         for(let j=0;j<starArr[i];j++){
             if(i<=2){
