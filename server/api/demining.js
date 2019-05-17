@@ -360,6 +360,7 @@ exports.mine = async function(socket,data){
                     md5:result.md5,
                     nickName:result.nickName,
                     deminingStamp:result.deminingStamp,
+                    timeNow:timeNow
                 };
                 sendUserData(socket,userData);
                 return false;
