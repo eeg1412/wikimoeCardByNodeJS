@@ -51,6 +51,9 @@ export default function (api) {
     battlecard(data){
       return api.post('battlecard',data)
     },
+    decompose(data){
+      return api.post('decompose',data)
+    },
     rank(){
       return api.get('rank')
     },

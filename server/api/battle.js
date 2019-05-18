@@ -248,9 +248,27 @@ function setADSHP(cardArr,starArr,starCount,cryArr){
     return [A,D,S,HP];
 }
 // 设置AI卡牌
-function creatAICard(starArr_){
+function creatAICard(starArr_,level){
     let cardArr = []
     let starArr = [...starArr_];
+    if(starArr[5]<1 && level<=15){//如果没有六星卡的新手则弱化AI
+        console.info(
+            chalk.green('弱化对战AI我方卡牌星级统计:'+starArr)
+        )
+        if(starArr[4]>1){
+            starArr[4] = starArr[4]-2;
+            starArr[2] = starArr[2]+2;
+        }else if(starArr[3]>1){
+            starArr[3] = starArr[3]-2;
+            starArr[2] = starArr[2]+2;
+        }else if(starArr[4]>0){
+            starArr[4] = starArr[4]-1;
+            starArr[2] = starArr[2]+1;
+        }else if(starArr[3]>0){
+            starArr[3] = starArr[3]-1;
+            starArr[2] = starArr[2]+1;
+        }
+    }
     let randomOneTwo = utils.randomNum(1,100);
     if(randomOneTwo<=50){
         if(starArr[0]>0){
@@ -406,7 +424,7 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green(email+'无匹配的情况下给一个AI。IP为：'+IP)
         )
-        EmBattleCard = creatAICard(MyCardStarCount);
+        EmBattleCard = creatAICard(MyCardStarCount,result.level);
         EmBattleCard = EmBattleCard.sort(cardSort);
         EmName = '自动书记人偶'+ utils.randomNum(0,99) + '号';
     }else{

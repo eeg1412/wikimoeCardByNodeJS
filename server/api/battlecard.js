@@ -3,17 +3,6 @@ var userData = require('../utils/database/user');
 var md5 = require('md5-node');
 var chalk = require('chalk');
 
-// 数组去重
-function uniq(array){
-    var temp = []; //一个新的临时数组
-    for(var i = 0; i < array.length; i++){
-        if(temp.indexOf(array[i]) == -1){
-            temp.push(array[i]);
-        }
-    }
-    return temp;
-}
-
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let type = req.body.type;
@@ -71,7 +60,7 @@ module.exports = async function(req, res, next){
             return false;
         }
         // 去个重
-        card = uniq(card);
+        card = utils.unique(card);
         console.info(
             chalk.green(email+'上传的战斗卡组为'+card+'，IP为：'+IP)
         )

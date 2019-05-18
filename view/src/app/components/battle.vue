@@ -91,7 +91,7 @@ export default {
             if(this.battleData.EmMD5){
                 loader.add('emAvatar','/api/gravatar.png?md5='+this.battleData.EmMD5);
             }else{
-                loader.add('emAvatar','/api/gravatar.png?md5='+this.battleData.MyMD5);
+                loader.add('emAvatar','/static/robotTx/'+randomNum(0,29)+'.jpg');
             }
             loader.add('battle_bg','/static/img/battle_bg.jpg');
             // 资源加载完毕

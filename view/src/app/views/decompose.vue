@@ -2,7 +2,7 @@
 <div class="common_body">
     <userTop ref="userTop" />
     <div class="wm_market_content_body type_dec">
-        <h5 class="common_title type_shop type_dec">星星分解</h5>
+        <h5 class="common_title type_shop type_dec">卡牌分解</h5>
         <h6 class="common_title_tips type_dec">系统已自动保留一张卡牌</h6>
         <div>
             <transition name="el-fade-in-linear">
@@ -11,7 +11,10 @@
             <transition name="el-fade-in-linear">
                 <div class="wm_mycard_list type_dec" v-if="userCard.length>0">
                     <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box type_mobile">
-                        <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
+                        <div class="wm_dec_img_box">
+                            <div class="wm_dec_can_num">可解:{{item[1]-1}}张</div>
+                            <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
+                        </div>
                         <div class="wm_dec_input_body"><el-input-number :precision="0" :step="1" :max="item[1]-1" :min="0" size="mini" v-model="item[2]" class="wm_dec_input"></el-input-number></div>
                     </div>
                 </div>
@@ -28,7 +31,7 @@
                 </el-pagination>
             </div>
         </div>
-        <div class="wm_dec_btn_body">
+        <div class="wm_dec_btn_body" v-if="userCardCache.length>0">
             <el-button @click="clear">清空</el-button>
             <el-button @click="dec" type="primary">分解</el-button>
             <el-button @click="decAll" type="primary">全页</el-button>
@@ -88,9 +91,36 @@ export default {
           type: 'warning',
           dangerouslyUseHTMLString: true
         }).then(() => {
-          
+          this.goDecCard();
         }).catch(() => {
                    
+        });
+    },
+    goDecCard(){
+        let cardId = [];
+        let cardCount = [];
+        for(let i=0;i<this.userCard.length;i++){
+            if(this.userCard[i][2]>0){
+                cardId.push(this.userCard[i][0]);
+                cardCount.push(this.userCard[i][2]);
+            }
+        }
+        let params = {
+            token:this.token,
+            cardId:cardId,
+            cardCount:cardCount
+        }
+        authApi.decompose(params).then(res => {
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                this.$message({
+                    message: '成功分解出'+res.data.star+'颗星星。',
+                    type: 'success'
+                });
+                this.getUserCard();
+                this.$refs.userTop.getUserInfo();
+            }
         });
     },
     decAll(){
@@ -105,7 +135,7 @@ export default {
           type: 'warning',
           dangerouslyUseHTMLString: true
         }).then(() => {
-          
+          this.goDecCard();
         }).catch(() => {
                    
         });
@@ -178,6 +208,22 @@ export default {
 </script>
 
 <style scoped>
+.wm_dec_can_num{
+    position: absolute;
+    z-index: 2;
+    right: 5px;
+    bottom: 5px;
+    background-color: #fff;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #ff5364;
+    opacity: 0.8;
+}
+.wm_dec_img_box{
+    position: relative;
+    z-index: 1;
+}
 .wm_dec_input{
     width: 100%;
 }
@@ -187,6 +233,9 @@ export default {
 }
 .wm_mycard_list.type_dec .wm_getcard_box{
     height: 301px;
+}
+.wm_mycard_list.type_dec .wm_getcard_img{
+    cursor: url(/static/cur/default.cur),default;
 }
 .wm_dec_btn_body{
     padding: 20px 0;

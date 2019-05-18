@@ -138,6 +138,9 @@
               <span v-else-if="item.type=='battle'"
               >我在<span class="wm_card_get_list_card_link" @click="goMenu('/battle')">卡牌对战</span>中<span v-if="item.data.win===1">战胜了</span><span v-else-if="item.data.win===0">败给了</span><span v-else>打平了</span><span class="wm_card_get_list_card_link" @click="watchUserCard(item.data.EmMD5)" v-if="item.data.EmMD5">{{item.data.EmName}}</span><span v-else>{{item.data.EmName}}</span>，<span v-if="item.data.win===1||item.data.win===0"><span v-if="item.data.win===1">共获得了</span><span v-else-if="item.data.win===0">失去了</span>{{Math.abs(item.data.getScore)}}点竞技点<span v-if="item.data.win===1">和{{item.data.getExp}}点经验值</span>。</span><span v-else>什么也没有获得。</span><span v-if="item.data.win===1">谁来与我大战三百回合？</span><span v-else-if="item.data.win===0">什么? 此地叫麦城！？</span><span v-else>真可惜，就差一点，下次一定要打赢这位大佬！</span>
               </span>
+              <span v-else-if="item.type=='dec'"
+              >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/decompose')">卡牌分解</span>，用公式2NaAlO2+CO2+3H2O+{{item.data.cardNumCount}}张卡牌分解出了2Al(OH)3↓+Na2CO3+{{item.data.star}}颗星星！
+              </span>
             </p>
           </div>
         </div>
