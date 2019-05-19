@@ -17,7 +17,7 @@
 			"name":"键村叶月（崩）"
 		},
 		"0003": {
-			"star": 1,
+			"star": 2,
 			"leftType": 1,
 			"rightType": 5,
 			"cry": 5,
@@ -808,6 +808,46 @@
 			"title":"闪之轨迹",
 			"name":"莎朗·克鲁格"
 		},
+		"0102": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"贤惠仙狐小姐",
+			"name":"仙狐"
+		},
+		"0103": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"贤惠仙狐小姐",
+			"name":"小白"
+		},
+		"0104": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 5,
+			"title":"备长炭",
+			"name":"备长炭"
+		},
+		"0105": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 5,
+			"cry": 5,
+			"title":"笨拙之极的上野",
+			"name":"上野"
+		},
+		"0106": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 5,
+			"title":"川柳少女",
+			"name":"雪白七七子"
+		},
 		"1001": {
 			"star": 4,
 			"leftType": 1,
@@ -1496,6 +1536,46 @@
 			"title":"闪之轨迹",
 			"name":"托娃·赫歇尔"
 		},
+		"1087": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"Little Busters!",
+			"name":"神北小毬"
+		},
+		"1088": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"Kanon",
+			"name":"月宫亚由"
+		},
+		"1089": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 3,
+			"title":"约会大作战",
+			"name":"八舞夕弦&八舞耶俱矢"
+		},
+		"1090": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 2,
+			"title":"约会大作战",
+			"name":"村雨令音"
+		},
+		"1091": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 4,
+			"title":"约会大作战",
+			"name":"万由里"
+		},
 		"2001": {
 			"star": 5,
 			"leftType": 5,
@@ -2040,6 +2120,70 @@
 			"title":"辉夜大小姐想让我告白～天才们的恋爱头脑战～",
 			"name":"四宫辉夜"
 		},
+		"2069": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 5,
+			"title":"关于我转生变成史莱姆这档事",
+			"name":"利姆鲁·特恩佩斯特"
+		},
+		"2070": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"约会大作战",
+			"name":"夜刀神十香"
+		},
+		"2071": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 2,
+			"title":"约会大作战",
+			"name":"四糸乃"
+		},
+		"2072": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"约会大作战",
+			"name":"五河琴里"
+		},
+		"2073": {
+			"star": 5,
+			"leftType": 4,
+			"rightType": 2,
+			"cry": 3,
+			"title":"约会大作战",
+			"name":"七罪"
+		},
+		"2074": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"约会大作战",
+			"name":"诱宵美九"
+		},
+		"2075": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 5,
+			"title":"约会大作战",
+			"name":"鸢一折纸"
+		},
+		"2076": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"约会大作战",
+			"name":"星宫六喰"
+		},
 		"3001": {
 			"star": 6,
 			"leftType": 2,
@@ -2343,8 +2487,47 @@
 			"cry": 3,
 			"title":"刀剑神域",
 			"name":"朝田诗乃"
+		},
+		"3039": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 4,
+			"title":"路人女主的养成方法",
+			"name":"泽村·斯潘塞·英梨梨"
+		},
+		"3040": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"犬夜叉",
+			"name":"桔梗"
+		},
+		"3041": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 5,
+			"title":"蔷薇少女",
+			"name":"水银灯"
+		},
+		"3042": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 1,
+			"cry": 5,
+			"title":"约会大作战",
+			"name":"时崎狂三"
+		},
+		"3043": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 1,
+			"cry": 1,
+			"title":"龙与虎",
+			"name":"逢坂大河"
 		}
-		
 	},
 	"level":[40,82,130,180,276,860]
 }

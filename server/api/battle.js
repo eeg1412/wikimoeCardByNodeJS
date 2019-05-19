@@ -365,7 +365,14 @@ module.exports = async function(req, res, next){
     // 设一定概率遇到AI
     let AiP = utils.randomNum(1,100);//AI概率因子
     let emData = [];
-    if(AiP>40){//40%概率遇见AI
+    let seeAiP = 40;
+    if(result.level<=15){//新手大概率遇到AI
+        console.info(
+            chalk.green(email+'是新手，高概率遇到AI。IP为：'+IP)
+        )
+        seeAiP = 80;
+    }
+    if(AiP>seeAiP){//40%概率遇见AI
         let emMinScore = myScore-500<0?0:myScore-500;
         let emMaxScore = myScore+500;
         let emScore = {
