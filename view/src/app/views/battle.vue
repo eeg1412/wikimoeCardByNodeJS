@@ -39,8 +39,23 @@ export default {
           });
       },
       gameover(){
-          this.battleSence = false;
-          this.$refs.userTop.getUserInfo();
+        this.battleSence = false;
+        this.$refs.userTop.getUserInfo();
+        if(this.battleData.battleGetStar>0){
+            this.$notify.info({
+                title: '获得对战奖励！',
+                duration: 10000,
+                dangerouslyUseHTMLString: true,
+                message: '您已达成今日的对战获胜次数，获得了<span class="cOrange">'+this.battleData.battleGetStar+'</span>颗星星！'
+            });
+        }else if(!this.battleData.battleOverChance&&this.battleData.win===1){
+            this.$notify.info({
+                title: '恭喜获胜！',
+                duration: 10000,
+                dangerouslyUseHTMLString: true,
+                message: '今日已获胜<span class="cRed">'+this.battleData.myBattleTimes+'/'+this.battleData.battleOverTimes+'</span>次，再获胜<span class="cRed">'+(this.battleData.battleOverTimes-this.battleData.myBattleTimes)+'</span>次就可以获得星星奖励啦！'
+            });
+        }
       },
       battle(){
         let params = {

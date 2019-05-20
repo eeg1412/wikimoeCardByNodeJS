@@ -213,11 +213,12 @@ function cryCount(cardArr){
     return cryArr;
 }
 // 统计攻防速血
-function setADSHP(cardArr,starArr,starCount,cryArr){
+function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount){
     let x = starCount;//初始化x为星星的数量
     // 如果是1、2、3、4、5、6顺子排列的卡牌则攻击力和防御力和血的x+20
     let minStarCount = Math.min.apply(null, starArr);
-    x = x + minStarCount*20;
+    let cardCountPlus = Math.floor(cardIndexCount/50);//每50收集率x+1
+    x = x + minStarCount*20 + cardCountPlus;
     // 每三种同属性的卡牌攻击力和防御力和血的x+1
     for(let i=0;i<cryArr.length;i++){
         let cryPlusX = Math.floor(cryArr[i]/3);
@@ -271,13 +272,21 @@ function creatAICard(starArr_,level){
     }
     let randomOneTwo = utils.randomNum(1,100);
     if(randomOneTwo<=50){
-        if(starArr[0]>0){
+        if(starArr[0]===1){
             cardArr.push('2');
             starArr[0] = starArr[0] -1;
+        }else if(starArr[0]>1){
+            cardArr.push('2');
+            cardArr.push('1');
+            starArr[0] = starArr[0] -2;
         }
-        if(starArr[1]>0){
+        if(starArr[1]===1){
             cardArr.push('4');
             starArr[1] = starArr[1] -1;
+        }else if(starArr[1]>1){
+            cardArr.push('3');
+            cardArr.push('4');
+            starArr[1] = starArr[1] -2;
         }
     }
     for(let i=0;i<starArr.length;i++){
@@ -398,11 +407,13 @@ module.exports = async function(req, res, next){
     let MyStarAll = 0;//我的所以卡牌加起来的星级
     let MyCryCount = [0,0,0,0,0];//我的卡牌属性个数统计
     let MyADSHP = [0,0,0,0];//我的攻、防、速、血
+    let MyCardIndexCount = result.cardIndexCount;//卡牌收集率
     // 初始化对方属性
     let EmCardStarCount = [0,0,0,0,0,0];//对方卡牌星级个数统计
     let EmCryCount = [0,0,0,0,0];//对方卡牌属性个数统计
     let EmStarAll = 0;//对方所以卡牌加起来的星级
     let EmADSHP = [0,0,0,0];//对方的攻、防、速、血
+    let EmCardIndexCount = 0;
     // 初始化胜负
     let win = 2;
 
@@ -425,7 +436,7 @@ module.exports = async function(req, res, next){
     // 我的水晶统计
     MyCryCount = cryCount(MyBattleCard);
     // 我的攻防速血统计
-    MyADSHP = setADSHP(MyBattleCard,MyCardStarCount,MyStarAll,MyCryCount);
+    MyADSHP = setADSHP(MyBattleCard,MyCardStarCount,MyStarAll,MyCryCount,MyCardIndexCount);
     // 设置敌方卡牌
     if(AiMode){//无匹配的情况下给一个AI
         console.info(
@@ -434,12 +445,14 @@ module.exports = async function(req, res, next){
         EmBattleCard = creatAICard(MyCardStarCount,result.level);
         EmBattleCard = EmBattleCard.sort(cardSort);
         EmName = '自动书记人偶'+ utils.randomNum(0,99) + '号';
+        EmCardIndexCount = MyCardIndexCount;
     }else{
         // 有匹配设置对方的卡牌
         emData = emData[0];
         EmName = emData.nickName;
         EmMD5 = emData.md5;
         EmBattleCard = emData.battleCard;
+        EmCardIndexCount = emData.cardIndexCount;
         if(EmBattleCard.length!==20){
             // 对方并未设置对战卡牌
             console.info(
@@ -460,7 +473,7 @@ module.exports = async function(req, res, next){
     // 对方的水晶统计
     EmCryCount = cryCount(EmBattleCard);
     // 敌方攻防速血统计
-    EmADSHP = setADSHP(EmBattleCard,EmCardStarCount,EmStarAll,EmCryCount);
+    EmADSHP = setADSHP(EmBattleCard,EmCardStarCount,EmStarAll,EmCryCount,EmCardIndexCount);
     // 初始敌我数值
     EmADSHP_ = [...EmADSHP];
     MyADSHP_ = [...MyADSHP];
@@ -518,12 +531,13 @@ module.exports = async function(req, res, next){
         win = 2;
     }
     // 计算当天战斗次数
+    let battleOverTimes = 5;//每天最多可以赢几次
     let dailyBattleTime = Math.round(Number(result.battleStamp)*1000);
     let myBattleTimes = result.battleDailyCount;//战斗次数
     let battleOverChance = false;//是否超过当日对战次数
     let dailyIsToday = false;//对战次数数据是否是当日
     if(new Date().toDateString()===new Date(dailyBattleTime).toDateString()){//如果是同天
-        if(myBattleTimes>=5){//如果今日已经战斗五次
+        if(myBattleTimes>=battleOverTimes){//如果今日已经战斗五次
             battleOverChance = true;
         }
         dailyIsToday = true;
@@ -536,6 +550,7 @@ module.exports = async function(req, res, next){
     let EmScore = 0;//对方的竞技点
     let EmGetScore = 0;
     let levelUpStar = 0;
+    let battleGetStar = 0;
     let MyScore = result.score;//我的竞技点
     if(!battleOverChance){
         let userFilters = null;
@@ -559,6 +574,10 @@ module.exports = async function(req, res, next){
             }else{
                 myBattleTimes = 1;
             }
+            //如果今日挑战已经胜利5次则赠送50星星
+            if(myBattleTimes===battleOverTimes){
+                battleGetStar = 10*battleOverTimes;
+            }
             // 写入我方胜利数据
             let myLevle = result.level;
             let MyExp = result.exp+getExp;
@@ -569,7 +588,7 @@ module.exports = async function(req, res, next){
             }
             updataParams = {
                 $inc:{
-                    star:levelUpStar
+                    star:levelUpStar+battleGetStar
                 },
                 battleStamp:Math.round(new Date().getTime()/1000),
                 battleDailyCount:myBattleTimes,
@@ -693,6 +712,8 @@ module.exports = async function(req, res, next){
         getScore:getScore,
         getExp:getExp,
         levelUpStar:levelUpStar,
+        battleGetStar:battleGetStar,
+        battleOverTimes:battleOverTimes,
         msg:'获取成功'
     });
 }

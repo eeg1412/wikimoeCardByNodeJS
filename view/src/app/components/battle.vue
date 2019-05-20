@@ -1,5 +1,5 @@
 <template>
-    <div id="battleView" class="wm_battle_body" @click="closeBattle()">
+    <div id="battleView" class="wm_battle_body">
         <div class="wm_battle_box" @click="closeBattle()"></div>
     </div>
 </template>
@@ -27,6 +27,7 @@ export default {
       closeBattle(){
           if(this.canClose){
               this.$emit('gameover');
+              console.log('关闭战斗');
           }
       },
       MergeArray(arr1,arr2){
@@ -537,6 +538,7 @@ export default {
                     this.canClose = true;
                     timerCount++
                     if(timerCount>180){
+                        this.canClose = false;
                         this.$emit('gameover');
                         timerCount = 0;
                     }

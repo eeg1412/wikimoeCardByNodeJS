@@ -253,7 +253,11 @@ export default {
             let x = starCount;//初始化x为星星的数量
             // 如果是1、2、3、4、5、6顺子排列的卡牌则攻击力和防御力和血的x+20
             let minStarCount = Math.min.apply(null, starArr);
-            x = x + minStarCount*20;
+            let cardCountPlus = 0;
+            if(this.userCardCache){
+                cardCountPlus = Math.floor(this.userCardCache.length/50);//每50收集率x+1
+            }
+            x = x + minStarCount*20+cardCountPlus;
             // 每三种同属性的卡牌攻击力和防御力和血的x+1
             for(let i=0;i<cryArr.length;i++){
                 let cryPlusX = Math.floor(cryArr[i]/3);

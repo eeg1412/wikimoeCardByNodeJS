@@ -276,6 +276,20 @@ var openNode = function(socket,data,result_){
                         };
                         // 广播挖矿信息
                         if(close){
+                            deminingModel.deleteMany({close:1}, (err)=> {
+                                if(err){
+                                    socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
+                                    console.error(
+                                        chalk.red('数据库更新错误！')
+                                    );
+                                    console.error(
+                                        chalk.red(err)
+                                    );
+                                }
+                                console.info(
+                                    chalk.green('删除已关闭矿场')
+                                )
+                            });
                             getMineMap(socket,true);
                         }else{
                             socket.broadcast.emit('demining',{code:5,demNum:demNum,x:x,y:y,md5:md5Email});
