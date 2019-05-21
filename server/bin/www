@@ -26,12 +26,18 @@ var io = require('socket.io')(server);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-
+var userCount = 0;
 io.on('connection',  (socket) => {
+  userCount++;
+  io.sockets.emit('userCount', { userCount: userCount });
   socket.on('demining',  (data) => {
     // console.log('deminging');
     // console.log(data);
     demining.mine(socket,data);
+  });
+  socket.on('disconnect', function() {
+    userCount--;
+    io.sockets.emit('userCount', { userCount: userCount });
   });
 });
 /**

@@ -3,6 +3,7 @@
   <userTop ref="userTop" />
   <div class="common_body">
     <h5 class="common_title type_demining">星星矿场</h5>
+    <h6 class="common_title_tips type_dec type_demining">当前在线:{{onlineUser}}人</h6>
     <div class="wm_card_demining_tool_body" v-if="userData">
       <div @click="selPickChange(0)"><pickaxe :type="0" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[0])"></pickaxe></div>
       <div @click="selPickChange(1)"><pickaxe :type="1" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[1])"></pickaxe></div>
@@ -55,6 +56,7 @@ export default {
       openTime:null,
       selPick:0,
       loading:false,
+      onlineUser:0,
     }
   },
   components: {
@@ -67,6 +69,9 @@ export default {
     let port = window.location.port;
     this.socket = io.connect('//'+socketurl+':'+port);
     // this.socket = io.connect('//'+socketurl+':3000');
+    this.socket.on('userCount',(data)=>{
+      this.onlineUser = data.userCount;
+    });
     this.socket.on('demining',(data)=>{
       // this.socket.emit('demining',{time:new Date()});
       console.log(data);
@@ -244,4 +249,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.common_title_tips.type_demining{
+    padding-bottom: 5px;
+    margin-top: -10px;
+}
 </style>
