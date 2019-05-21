@@ -79,8 +79,26 @@ module.exports = async function(req, res, next){
             )
             return false;
         }
+        let starSix = 0;//统计抽到多少张六星卡
         for(let i=0;i<times;i++){
             let rareNum = utils.randomNum(1,100);
+            if(rareNum>97){
+                starSix++;
+            }
+            //50抽保底1张六星、100抽保底2张六星
+            if(i===49&&starSix===0){
+                starSix++;
+                rareNum = 98;
+                console.info(
+                    chalk.green(email+'50抽没抽到六星保底1张，IP为：'+IP)
+                )
+            }else if(i===99&&starSix<=1){
+                starSix++;
+                rareNum = 98;
+                console.info(
+                    chalk.green(email+'100抽没抽到六星保底2张，IP为：'+IP)
+                )
+            }
             let cardId = utils.wmCreatCardId(rareNum);
             card.push(cardId);
             if(databaseCard['card.'+cardId]){

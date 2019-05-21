@@ -36,11 +36,11 @@
         </div>
         <div class="wm_shop_item_list_box">
           <div class="wm_shop_item_list_ico" @click="buy(0,3)"></div>
-          <div class="wm_shop_item_list_text">五十连抽<br />需要1250星星</div>
+          <div class="wm_shop_item_list_text">五十连抽(保底1张六星)<br />需要1250星星</div>
         </div>
         <div class="wm_shop_item_list_box">
           <div class="wm_shop_item_list_ico" @click="buy(0,4)"></div>
-          <div class="wm_shop_item_list_text">一百连抽<br />需要2400星星</div>
+          <div class="wm_shop_item_list_text">一百连抽(保底2张六星)<br />需要2400星星</div>
         </div>
       </div>
     </el-collapse-transition>
