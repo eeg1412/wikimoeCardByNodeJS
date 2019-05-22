@@ -23,7 +23,7 @@
           <el-button type="primary" class="wm_market_card_datail_buy_btn" @click="buyCard()">购买</el-button>
         </div>
         <div class="wm_market_card_datail_set_body" v-if="type=='sell'">
-          <div class="wm_market_card_datail_tips" v-if="stat==1 || stat==0">tips:将会收取售价的10%作为手续费。卡牌上架后会在7天后过期。</div>
+          <div class="wm_market_card_datail_tips" v-if="stat==1 || stat==0">tips:将会收取售价的10%作为手续费。卡牌上架后会在30天后过期。</div>
           <div class="wm_market_card_datail_price_input" v-if="stat==1 || stat==0">
             <el-input-number  class="wm_market_card_datail_price_input_box" size="medium" v-model="price" :precision="0" :step="1" :max="99999999" :min="minPrice"></el-input-number>
           </div>

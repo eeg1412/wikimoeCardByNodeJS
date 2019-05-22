@@ -99,15 +99,44 @@ module.exports = async function(req, res, next){
             );
             return false;
         }
-        let content ={email:email}; // 要生成token的主题信息
-        let secretOrPrivateKey= global.myAppConfig.JWTSecret; // 这是加密的key（密钥）
-        let remTime = 60*60*24;
-        if(remPass){
-            remTime = 60*60*24*30;
+        let shouldNewToken = true;
+        if(result.token){
+            //如果有Token则解析
+            let tokenDecode = await utils.tokenCheck(result.token).catch ((err)=>{
+                console.info(
+                    chalk.yellow('登录信息已失效生成新的token！')
+                );
+            });
+            if(tokenDecode){
+                try{
+                    let timeNow = Math.round(new Date().getTime()/1000);
+                    let expiresIn = tokenDecode.exp;
+                    if(expiresIn - timeNow > 86400){
+                        //如果token还有效则不更新token
+                        console.info(
+                            chalk.green(email+'的token还有效则不更新token')
+                        );
+                        shouldNewToken = false;
+                    }
+                }catch(err){
+                    console.info(
+                        chalk.yellow('登录信息解析成功，但是信息却有误！')
+                    );
+                }
+            }
         }
-        let token = jwt.sign(content, secretOrPrivateKey, {
-            expiresIn: remTime
-        });
+        let token = result.token;
+        if(shouldNewToken){
+            let content ={email:email}; // 要生成token的主题信息
+            let secretOrPrivateKey= global.myAppConfig.JWTSecret; // 这是加密的key（密钥）
+            let remTime = 60*60*24;
+            if(remPass){
+                remTime = '365d';
+            }
+            token = jwt.sign(content, secretOrPrivateKey, {
+                expiresIn: remTime
+            });
+        }
         let filters = {
             email: email
         }

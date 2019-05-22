@@ -5,9 +5,9 @@
     <h5 class="common_title type_demining">星星矿场</h5>
     <h6 class="common_title_tips type_dec type_demining">当前在线:{{onlineUser}}人</h6>
     <div class="wm_card_demining_tool_body" v-if="userData">
-      <div @click="selPickChange(0)"><pickaxe :type="0" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[0])"></pickaxe></div>
-      <div @click="selPickChange(1)"><pickaxe :type="1" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[1])"></pickaxe></div>
-      <div @click="selPickChange(2)"><pickaxe :type="2" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[2])"></pickaxe></div>
+      <div @click="selPickChange(0)"><pickaxe :type="0" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[0])" ref="pick0"></pickaxe></div>
+      <div @click="selPickChange(1)"><pickaxe :type="1" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[1])" ref="pick1"></pickaxe></div>
+      <div @click="selPickChange(2)"><pickaxe :type="2" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[2])" ref="pick2"></pickaxe></div>
     </div>
     <div class="wm_card_demining_table_box">
       <div v-if="!mineInfo" class="wm_card_demining_table_loading">
@@ -57,6 +57,7 @@ export default {
       selPick:0,
       loading:false,
       onlineUser:0,
+      nextPickFlag:true
     }
   },
   components: {
@@ -124,6 +125,20 @@ export default {
         this.$message(data.msg);
       }else if(data.code==3){//用户信息
         this.userData = data.userData;
+        //自动选择可以使用的稿
+        setTimeout(()=>{
+          if(this.nextPickFlag){
+            for(let i=0;i<3;i++){
+              let refEl = this.$refs['pick'+i]
+              console.log(this.$refs);
+              if(refEl.min=='00'&&refEl.sec=='00'){
+                this.selPick = i;
+                break;
+              }
+            }
+            this.nextPickFlag = false;
+          }
+        },50);
       }else if(data.code==5){//别人挖矿
       console.log('别人挖矿');
         this.upDateMapData(data.x,data.y,data.md5,data.demNum)
@@ -207,6 +222,7 @@ export default {
         }
         showLoading();
         this.loading = true;
+        this.nextPickFlag = true;
         this.socket.emit('demining',parmas);
         this.selBlock = null;
       }else{
