@@ -274,13 +274,16 @@ export default {
                     sprites['mycard'][that.battleData.MyBattleCard[i]].height = 422;
                     sprites['mycard'][that.battleData.MyBattleCard[i]].anchor.set(0.5);
                     sprites['mycard'][that.battleData.MyBattleCard[i]].position.set(-180,922);
-                    battleSence.addChild(sprites['mycard'][that.battleData.MyBattleCard[i]]);
+                    // battleSence.addChild(sprites['mycard'][that.battleData.MyBattleCard[i]]);
                     sprites['emcard'][that.battleData.EmBattleCard[i]].width = 300;
                     sprites['emcard'][that.battleData.EmBattleCard[i]].height = 422;
                     sprites['emcard'][that.battleData.EmBattleCard[i]].anchor.set(0.5);
                     sprites['emcard'][that.battleData.EmBattleCard[i]].position.set(900,360);
-                    battleSence.addChild(sprites['emcard'][that.battleData.EmBattleCard[i]]);
+                    // battleSence.addChild(sprites['emcard'][that.battleData.EmBattleCard[i]]);
                 }
+                // 将第一张卡插入场景
+                battleSence.addChild(sprites['mycard'][that.battleData.MyBattleCard[0]]);
+                battleSence.addChild(sprites['emcard'][that.battleData.EmBattleCard[0]]);
                 // 将容器插入场景
                 battleSence.addChild(battleSenceItem.battleMyInfo);
                 battleSence.addChild(battleSenceItem.battleEmInfo);
@@ -343,14 +346,14 @@ export default {
                 }
                 return false;
             }
-            function creatEffAnime(id,x,y,w,h,z,who){
+            function creatEffAnime(id,x,y,w,h,z,who,speed=0.4){
                 sprites['animation'][who][id] = new PIXI.AnimatedSprite(animeSheetJson[id].animations[id]);
                 sprites['animation'][who][id].width = w;
                 sprites['animation'][who][id].height = h;
                 sprites['animation'][who][id].x = x;
                 sprites['animation'][who][id].y = y;
                 sprites['animation'][who][id].anchor.set(0.5);
-                sprites['animation'][who][id].animationSpeed = 0.36;
+                sprites['animation'][who][id].animationSpeed = speed;
                 sprites['animation'][who][id].loop = false;
                 sprites['animation'][who][id].onComplete= () => {
                     let id_ = id;
@@ -373,6 +376,7 @@ export default {
                 // 支6
                 // 妨5
                 if(battleInfo.battleUser==1){//我
+                    creatEffAnime('0',360,360,320,320,100,'em');
                     // { fontSize: 36, fill : 0xffffff, align : 'right'}
                     let AttackPow = that.battleData.MyBattleData[battleInfo.turn][0];
                     let DefendPow = that.battleData.MyBattleData[battleInfo.turn][2];
@@ -400,26 +404,27 @@ export default {
                     // 我方攻击前
                     if(emEffect!==5){
                         if(myEffect===1){
-                            creatEffAnime('4',70,70,140,140,100,'em');
+                            creatEffAnime('4',360,360,320,320,100,'em',0.65);
                         }else if(myEffect===7){
-                            creatEffAnime('4',70,70,140,140,100,'em');
+                            creatEffAnime('4',360,360,320,320,100,'em',0.65);
                         }else if(myEffect===4){
-                            creatEffAnime('6',70,1210,140,140,100,'my');
+                            creatEffAnime('6',70,1210,140,140,100,'my',0.3);
                         }
                     }
                     // 防守方接受攻击前
                     if(myEffect!==5){
                         if(emEffect===3){
-                            creatEffAnime('2',70,70,140,140,99,'em');
+                            creatEffAnime('2',360,360,320,320,99,'em');
                         }else if(emEffect===7){
-                            creatEffAnime('2',70,70,140,140,99,'em');
+                            creatEffAnime('2',360,360,320,320,99,'em');
                         }else if(emEffect===6){
-                            creatEffAnime('5',70,70,140,140,99,'em');
+                            creatEffAnime('5',360,360,320,320,99,'em',0.65);
                         }else if(emEffect===2){
-                            creatEffAnime('3',70,1210,140,140,99,'my');
+                            creatEffAnime('3',70,1210,140,140,99,'my',0.3);
                         }
                     }
                 }else{
+                    creatEffAnime('0',360,931,320,320,100,'my');
                     let AttackPow = that.battleData.EmBattleData[battleInfo.turn][0];
                     let DefendPow = that.battleData.EmBattleData[battleInfo.turn][2];
                     let AttackAddHP = that.battleData.EmBattleData[battleInfo.turn][4];
@@ -445,22 +450,22 @@ export default {
 
                     if(myEffect!==5){
                         if(emEffect===1){
-                            creatEffAnime('4',70,1210,140,140,100,'my');
+                            creatEffAnime('4',360,931,320,320,100,'my',0.65,0.3);
                         }else if(emEffect===7){
-                            creatEffAnime('4',70,1210,140,140,100,'my');
+                            creatEffAnime('4',360,931,320,320,100,'my',0.65);
                         }else if(emEffect===4){
                             creatEffAnime('6',70,70,140,140,100,'em');
                         }
                     }
                     if(emEffect!==5){
                         if(myEffect===3){
-                            creatEffAnime('2',70,1210,140,140,99,'my');
+                            creatEffAnime('2',360,931,320,320,99,'my');
                         }else if(myEffect===7){
-                            creatEffAnime('2',70,1210,140,140,99,'my');
+                            creatEffAnime('2',360,931,320,320,99,'my');
                         }else if(myEffect===6){
-                            creatEffAnime('5',70,1210,140,140,99,'my');
+                            creatEffAnime('5',360,931,320,320,99,'my',0.65);
                         }else if(myEffect===2){
-                            creatEffAnime('3',70,70,140,140,99,'em');
+                            creatEffAnime('3',70,70,140,140,99,'em',0.3);
                         }
                     }
                 }
@@ -471,7 +476,7 @@ export default {
                 //         }else if(myEffect===7){
                 //             creatEffAnime('4',360,360,192,192,100,'em');
                 //         }else if(myEffect===4){
-                //             creatEffAnime('6',360,931,192,192,100,'my');
+                //             creatEffAnime('6',70,1210,140,140,100,'my');
                 //         }
                 //     }
                 //     // 防守方接受攻击前
@@ -483,7 +488,7 @@ export default {
                 //         }else if(emEffect===6){
                 //             creatEffAnime('5',360,360,192,192,99,'em');
                 //         }else if(emEffect===2){
-                //             creatEffAnime('3',360,931,192,192,99,'my');
+                //             creatEffAnime('3',70,1210,140,140,99,'my');
                 //         }
                 //     }
                 // }else{
@@ -493,7 +498,7 @@ export default {
                 //         }else if(emEffect===7){
                 //             creatEffAnime('4',360,931,192,192,100,'my');
                 //         }else if(emEffect===4){
-                //             creatEffAnime('6',360,360,192,192,100,'em');
+                //             creatEffAnime('6',70,70,140,140,100,'em');
                 //         }
                 //     }
                 //     if(emEffect!==5){
@@ -504,7 +509,7 @@ export default {
                 //         }else if(myEffect===6){
                 //             creatEffAnime('5',360,931,192,192,99,'my');
                 //         }else if(myEffect===2){
-                //             creatEffAnime('3',360,360,192,192,99,'em');
+                //             creatEffAnime('3',70,70,140,140,99,'em');
                 //         }
                 //     }
                 // }
@@ -516,7 +521,6 @@ export default {
                 let hpFullWidth = 564;//血条长度;
                 setEffanime();
                 if(battleInfo.battleUser==1){
-                    creatEffAnime('0',360,360,192,192,100,'em');
                     battleSenceItem.mySAN.text = 'SAN:'+that.battleData.MyBattleData[battleInfo.turn][1];
                     battleSenceItem.emSAN.text = 'SAN:'+that.battleData.MyBattleData[battleInfo.turn][3];
 
@@ -541,7 +545,6 @@ export default {
                     battleSenceItem.emBgSanA.endFill();
 
                 }else{
-                    creatEffAnime('0',360,931,192,192,100,'my');
                     battleSenceItem.mySAN.text = 'SAN:'+that.battleData.EmBattleData[battleInfo.turn][3];
                     battleSenceItem.emSAN.text = 'SAN:'+that.battleData.EmBattleData[battleInfo.turn][1];
 
@@ -646,6 +649,11 @@ export default {
                             sprites['mycard'][that.battleData.MyBattleCard[battleInfo.turn-2]].destroy();
                             sprites['emcard'][that.battleData.EmBattleCard[battleInfo.turn-2]].destroy();
                         }
+                        if(battleInfo.turn<=20){
+                            // 准备下一回合的卡牌
+                            battleSence.addChild(sprites['mycard'][that.battleData.MyBattleCard[battleInfo.turn+1]]);
+                            battleSence.addChild(sprites['emcard'][that.battleData.EmBattleCard[battleInfo.turn+1]]);
+                        }
                         battleInfo.cardEnter=false;
                     }
                 }
@@ -662,6 +670,7 @@ export default {
                         b.alpha += 0.05;
                     }else{
                         a.visible = false;
+                        a.destroy();
                         senceChangeFlag = false;
                     }
                 }
