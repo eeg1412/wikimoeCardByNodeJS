@@ -103,6 +103,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
     let AttackHP = AttackADSHP[3];
     // let AttackShield = 0;//临时护盾
     let AttackStar = AttackCard.star;//攻击卡牌的星级
+    let AttackAddHP = 0;//加血多少
 
     let DefendRightType = DefendCard.rightType;
     // let DefendCry = DefendCard.cry;
@@ -119,7 +120,8 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
         }else if(AttackRightType===7){
             AttackA = AttackA+Math.floor(AttackA*0.06*AttackStar);
         }else if(AttackRightType===4){
-            AttackHP = AttackHP+Math.floor(AttackA*0.1*AttackStar);
+            AttackAddHP = Math.floor(AttackA*0.1*AttackStar);
+            AttackHP = AttackHP+AttackAddHP;
         }
     }
     // 攻击前结算属性相克
@@ -169,7 +171,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
     if(AttackHP<0){
         AttackHP = 0;
     }
-    return [AttackPow,AttackHP,DefendPow,DefendHP];
+    return [AttackPow,AttackHP,DefendPow,DefendHP,AttackAddHP];
 }
 // 寻找对手
 async function searchEm(parmas){

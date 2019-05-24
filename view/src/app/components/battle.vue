@@ -7,6 +7,7 @@
 <script>
 import * as PIXI from 'pixi.js'
 import {PrefixInteger,randomNum} from "../../utils/utils";
+import cardData from '../../utils/cardData.json';
 
 export default {
     props:{
@@ -78,11 +79,23 @@ export default {
             battleEndSence.alpha = 0;
             // 精灵们
             let sprites = {};
+            // 特效们
+            let animeSheetJson = {};
             // 绘制加载画面
             let loadingText = new PIXI.Text('资源读取中...',{fontFamily : 'Arial', fontSize: 36, fill : 0xffffff, align : 'center'});
             loadingText.anchor.set(0.5);
             loadingText.position.set(360, 640);
             loadingSence.addChild(loadingText);
+            // 卡牌属性
+            let myCardRightType = [];
+            let emCardRightType = [];
+            for(let i =0;i<this.battleData.MyBattleCard.length;i++){
+                let cardRightType = cardData['cardData'][PrefixInteger(this.battleData.MyBattleCard[i],4)].rightType;
+                myCardRightType.push(cardRightType);
+            }for(let i =0;i<this.battleData.EmBattleCard.length;i++){
+                let cardRightType = cardData['cardData'][PrefixInteger(this.battleData.EmBattleCard[i],4)].rightType;
+                emCardRightType.push(cardRightType);
+            }
             // 加载资源
             let cardList_ = this.MergeArray(this.battleData.MyBattleCard,this.battleData.EmBattleCard);
             for(let i=0;i<cardList_.length;i++){
@@ -95,12 +108,39 @@ export default {
                 loader.add('emAvatar','/static/robotTx/'+randomNum(0,29)+'.jpg');
             }
             loader.add('battle_bg','/static/img/battle_bg.jpg');
+            // 加载动画
+            loader.add('/static/otherImg/animation/0.json');
+            loader.add('/static/otherImg/animation/2.json');
+            loader.add('/static/otherImg/animation/3.json');
+            loader.add('/static/otherImg/animation/4.json');
+            loader.add('/static/otherImg/animation/5.json');
+            loader.add('/static/otherImg/animation/6.json');
             // 资源加载完毕
             loader.load((loader, resources) => {
                 let myCardList = this.battleData.MyBattleCard;
                 let emCardList = this.battleData.EmBattleCard;
+                sprites['animation'] = {};
+                sprites['animation']['em'] = {};
+                sprites['animation']['my'] = {};
+                // 扣血信息
+                sprites['myHPText'] = new PIXI.Text('0',{ fontSize: 36, fill : 0xffffff, align : 'right'});
+                sprites['emHPText'] = new PIXI.Text('0',{ fontSize: 36, fill : 0xffffff, align : 'right'});
+                sprites['emHPText'].anchor.set(1,0);
+                sprites['myHPText'].anchor.set(1,0);
+                sprites['emHPText'].alpha = 0;
+                sprites['myHPText'].alpha =0;
+                sprites['emHPText'].position.set(700, 48);
+                sprites['myHPText'].position.set(700, 1188);
+                // 卡组
                 sprites['mycard'] = {};
                 sprites['emcard'] = {};
+                // 特效动画
+                animeSheetJson['0'] = loader.resources["/static/otherImg/animation/0.json"].spritesheet;
+                animeSheetJson['2'] = loader.resources["/static/otherImg/animation/2.json"].spritesheet;
+                animeSheetJson['3'] = loader.resources["/static/otherImg/animation/3.json"].spritesheet;
+                animeSheetJson['4'] = loader.resources["/static/otherImg/animation/4.json"].spritesheet;
+                animeSheetJson['5'] = loader.resources["/static/otherImg/animation/5.json"].spritesheet;
+                animeSheetJson['6'] = loader.resources["/static/otherImg/animation/6.json"].spritesheet;
                 for(let i=0;i<myCardList.length;i++){
                     sprites['mycard'][myCardList[i]] = new PIXI.Sprite(resources[myCardList[i]]['texture']);
                 }
@@ -244,6 +284,8 @@ export default {
                 // 将容器插入场景
                 battleSence.addChild(battleSenceItem.battleMyInfo);
                 battleSence.addChild(battleSenceItem.battleEmInfo);
+                battleSence.addChild(sprites['emHPText']);
+                battleSence.addChild(sprites['myHPText']);
             }
             // 画战斗
             let battleInfo = {
@@ -301,12 +343,180 @@ export default {
                 }
                 return false;
             }
+            function creatEffAnime(id,x,y,w,h,z,who){
+                sprites['animation'][who][id] = new PIXI.AnimatedSprite(animeSheetJson[id].animations[id]);
+                sprites['animation'][who][id].width = w;
+                sprites['animation'][who][id].height = h;
+                sprites['animation'][who][id].x = x;
+                sprites['animation'][who][id].y = y;
+                sprites['animation'][who][id].anchor.set(0.5);
+                sprites['animation'][who][id].animationSpeed = 0.36;
+                sprites['animation'][who][id].loop = false;
+                sprites['animation'][who][id].onComplete= () => {
+                    let id_ = id;
+                    sprites['animation'][who][id_].alpha = 0;
+                    sprites['animation'][who][id_].destroy();
+                };
+                battleSence.addChild(sprites['animation'][who][id]);
+                sprites['animation'][who][id].zIndex = z;
+                sprites['animation'][who][id].alpha = 1;
+                sprites['animation'][who][id].play();
+            }
+            function setEffanime(){
+                let myEffect = myCardRightType[battleInfo.turn]
+                let emEffect = emCardRightType[battleInfo.turn]
+                // 特7
+                // 魔2
+                // 物1
+                // 防3
+                // 治4
+                // 支6
+                // 妨5
+                if(battleInfo.battleUser==1){//我
+                    // { fontSize: 36, fill : 0xffffff, align : 'right'}
+                    let AttackPow = that.battleData.MyBattleData[battleInfo.turn][0];
+                    let DefendPow = that.battleData.MyBattleData[battleInfo.turn][2];
+                    let AttackAddHP = that.battleData.MyBattleData[battleInfo.turn][4];
+                    if(DefendPow||AttackAddHP){
+                        let myText = AttackAddHP - DefendPow;
+                        let textColor = 0xff4c4c;
+                        if(myText>0){
+                            textColor = 0x14a774;
+                        }
+                        if(myText!==0){
+                            let fuhao = '';
+                            if(myText>0){
+                                fuhao = '+';
+                            }
+                            sprites['myHPText'].style = { fontSize: 36, fill : textColor, align : 'right'};
+                            sprites['myHPText'].text = fuhao+myText;
+                            sprites['myHPText'].alpha = 1;
+                        }
+                    }
+                    sprites['emHPText'].style = { fontSize: 36, fill : 0xff4c4c, align : 'right'};
+                    sprites['emHPText'].text = '-'+AttackPow;
+                    sprites['emHPText'].alpha = 1;
+
+                    // 我方攻击前
+                    if(emEffect!==5){
+                        if(myEffect===1){
+                            creatEffAnime('4',70,70,140,140,100,'em');
+                        }else if(myEffect===7){
+                            creatEffAnime('4',70,70,140,140,100,'em');
+                        }else if(myEffect===4){
+                            creatEffAnime('6',70,1210,140,140,100,'my');
+                        }
+                    }
+                    // 防守方接受攻击前
+                    if(myEffect!==5){
+                        if(emEffect===3){
+                            creatEffAnime('2',70,70,140,140,99,'em');
+                        }else if(emEffect===7){
+                            creatEffAnime('2',70,70,140,140,99,'em');
+                        }else if(emEffect===6){
+                            creatEffAnime('5',70,70,140,140,99,'em');
+                        }else if(emEffect===2){
+                            creatEffAnime('3',70,1210,140,140,99,'my');
+                        }
+                    }
+                }else{
+                    let AttackPow = that.battleData.EmBattleData[battleInfo.turn][0];
+                    let DefendPow = that.battleData.EmBattleData[battleInfo.turn][2];
+                    let AttackAddHP = that.battleData.EmBattleData[battleInfo.turn][4];
+                    if(DefendPow||AttackAddHP){
+                        let myText = AttackAddHP - DefendPow;
+                        let textColor = 0xff4c4c;
+                        if(myText>0){
+                            textColor = 0x14a774;
+                        }
+                        if(myText!==0){
+                            let fuhao = '';
+                            if(myText>0){
+                                fuhao = '+';
+                            }
+                            sprites['emHPText'].style = { fontSize: 36, fill : textColor, align : 'right'};
+                            sprites['emHPText'].text = fuhao+myText;
+                            sprites['emHPText'].alpha = 1;
+                        }
+                    }
+                    sprites['myHPText'].style = { fontSize: 36, fill : 0xff4c4c, align : 'right'};
+                    sprites['myHPText'].text = '-'+AttackPow;
+                    sprites['myHPText'].alpha = 1;
+
+                    if(myEffect!==5){
+                        if(emEffect===1){
+                            creatEffAnime('4',70,1210,140,140,100,'my');
+                        }else if(emEffect===7){
+                            creatEffAnime('4',70,1210,140,140,100,'my');
+                        }else if(emEffect===4){
+                            creatEffAnime('6',70,70,140,140,100,'em');
+                        }
+                    }
+                    if(emEffect!==5){
+                        if(myEffect===3){
+                            creatEffAnime('2',70,1210,140,140,99,'my');
+                        }else if(myEffect===7){
+                            creatEffAnime('2',70,1210,140,140,99,'my');
+                        }else if(myEffect===6){
+                            creatEffAnime('5',70,1210,140,140,99,'my');
+                        }else if(myEffect===2){
+                            creatEffAnime('3',70,70,140,140,99,'em');
+                        }
+                    }
+                }
+                // // 我方攻击前
+                //     if(emEffect!==5){
+                //         if(myEffect===1){
+                //             creatEffAnime('4',360,360,192,192,100,'em');
+                //         }else if(myEffect===7){
+                //             creatEffAnime('4',360,360,192,192,100,'em');
+                //         }else if(myEffect===4){
+                //             creatEffAnime('6',360,931,192,192,100,'my');
+                //         }
+                //     }
+                //     // 防守方接受攻击前
+                //     if(myEffect!==5){
+                //         if(emEffect===3){
+                //             creatEffAnime('2',360,360,192,192,99,'em');
+                //         }else if(emEffect===7){
+                //             creatEffAnime('2',360,360,192,192,99,'em');
+                //         }else if(emEffect===6){
+                //             creatEffAnime('5',360,360,192,192,99,'em');
+                //         }else if(emEffect===2){
+                //             creatEffAnime('3',360,931,192,192,99,'my');
+                //         }
+                //     }
+                // }else{
+                //     if(myEffect!==5){
+                //         if(emEffect===1){
+                //             creatEffAnime('4',360,931,192,192,100,'my');
+                //         }else if(emEffect===7){
+                //             creatEffAnime('4',360,931,192,192,100,'my');
+                //         }else if(emEffect===4){
+                //             creatEffAnime('6',360,360,192,192,100,'em');
+                //         }
+                //     }
+                //     if(emEffect!==5){
+                //         if(myEffect===3){
+                //             creatEffAnime('2',360,931,192,192,99,'my');
+                //         }else if(myEffect===7){
+                //             creatEffAnime('2',360,931,192,192,99,'my');
+                //         }else if(myEffect===6){
+                //             creatEffAnime('5',360,931,192,192,99,'my');
+                //         }else if(myEffect===2){
+                //             creatEffAnime('3',360,360,192,192,99,'em');
+                //         }
+                //     }
+                // }
+            }
             // 减SAN
             let mySANW = 1;
             let emSANW = 1;
             function SANCount(){
                 let hpFullWidth = 564;//血条长度;
+                setEffanime();
                 if(battleInfo.battleUser==1){
+                    creatEffAnime('0',360,360,192,192,100,'em');
                     battleSenceItem.mySAN.text = 'SAN:'+that.battleData.MyBattleData[battleInfo.turn][1];
                     battleSenceItem.emSAN.text = 'SAN:'+that.battleData.MyBattleData[battleInfo.turn][3];
 
@@ -331,6 +541,7 @@ export default {
                     battleSenceItem.emBgSanA.endFill();
 
                 }else{
+                    creatEffAnime('0',360,931,192,192,100,'my');
                     battleSenceItem.mySAN.text = 'SAN:'+that.battleData.EmBattleData[battleInfo.turn][3];
                     battleSenceItem.emSAN.text = 'SAN:'+that.battleData.EmBattleData[battleInfo.turn][1];
 
@@ -361,7 +572,7 @@ export default {
                 if(battleInfo.battleUser==1){
                     if(battleInfo.indexCache===null){
                         battleInfo.indexCache = myCard.zIndex;
-                        myCard.zIndex = 9999;
+                        myCard.zIndex = 99;
                     }
                     if(!battleInfo.turnStep.attacked){
                         let animed = cardAnime(myCard,'y',360,-50);
@@ -390,7 +601,7 @@ export default {
                 }else{
                     if(battleInfo.indexCache===null){
                         battleInfo.indexCache = emCard.zIndex;
-                        emCard.zIndex = 9999;
+                        emCard.zIndex = 99;
                     }
                     if(!battleInfo.turnStep.attacked){
                         let animed = cardAnime(emCard,'y',922,50);
