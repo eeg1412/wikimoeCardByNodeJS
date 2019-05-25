@@ -1,4 +1,4 @@
-import { Loading } from 'element-ui';
+import { Loading , Message } from 'element-ui';
 
 export const mailCheck = function(email){
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -59,6 +59,7 @@ export const loadingImg = function(imgSrcArr,resolve_,reject_){
 //接口加载
 let loadingCount = 0;
 let loading;
+let loadingTimer = null;
 
 const startLoading = () => {
   loading = Loading.service({
@@ -73,6 +74,15 @@ const endLoading = () => {
 };
 
 export const showLoading = () => {
+  clearTimeout(loadingTimer);
+  loadingTimer = setTimeout(()=>{
+    Message({
+        message:'加载时间过长，可能是因为网络原因，请刷新页面！',
+        type:'warning',
+        duration:0,
+        showClose:true
+    })
+  },30000);
   if (loadingCount === 0) {
     startLoading();
   }
@@ -85,6 +95,7 @@ export const hideLoading = () => {
   }
   loadingCount -= 1;
   if (loadingCount === 0) {
+    clearTimeout(loadingTimer);
     endLoading();
   }
 };

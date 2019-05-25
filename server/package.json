@@ -1,6 +1,6 @@
 {
   "name": "wikimoecard",
-  "version": "0.10.316",
+  "version": "0.11.332",
   "private": true,
   "scripts": {
     "start": "node ./bin/www"

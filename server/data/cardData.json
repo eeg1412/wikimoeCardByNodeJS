@@ -848,6 +848,54 @@
 			"title":"川柳少女",
 			"name":"雪白七七子"
 		},
+		"0107": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"艾斯卡与罗吉的工作室～黄昏天空的炼金术士～",
+			"name":"露希儿·耶鲁内拉"
+		},
+		"0108": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 6,
+			"cry": 4,
+			"title":"艾斯卡与罗吉的工作室～黄昏天空的炼金术士～",
+			"name":"卡朵拉·拉齐卡"
+		},
+		"0109": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 5,
+			"title":"艾斯卡与罗吉的工作室～黄昏天空的炼金术士～",
+			"name":"芙拉梅乌"
+		},
+		"0110": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 5,
+			"cry": 4,
+			"title":"ANNE HAPPY",
+			"name":"花小泉杏"
+		},
+		"0111": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 4,
+			"cry": 5,
+			"title":"ANNE HAPPY",
+			"name":"久米川牡丹"
+		},
+		"0112": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 5,
+			"cry": 1,
+			"title":"ANNE HAPPY",
+			"name":"萩生响"
+		},
 		"1001": {
 			"star": 4,
 			"leftType": 1,
@@ -1576,6 +1624,38 @@
 			"title":"约会大作战",
 			"name":"万由里"
 		},
+		"1092": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 7,
+			"cry": 4,
+			"title":"爱夏的工作室～黄昏大地的炼金术士～",
+			"name":"爱夏·奥托尔"
+		},
+		"1093": {
+			"star": 4,
+			"leftType": 4,
+			"rightType": 2,
+			"cry": 5,
+			"title":"爱夏的工作室～黄昏大地的炼金术士～",
+			"name":"薇尔贝儿·沃·耶斯礼特"
+		},
+		"1094": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 5,
+			"title":"索菲的工作室～不可思议之书的炼金术士～",
+			"name":"科尔涅莉雅"
+		},
+		"1095": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 7,
+			"cry": 4,
+			"title":"夏莉的工作室～黄昏之海的炼金术士～",
+			"name":"夏露罗蒂·艾尔米娜丝&夏莉丝堤菈·亚尔戈"
+		},
 		"2001": {
 			"star": 5,
 			"leftType": 5,
@@ -2184,6 +2264,38 @@
 			"title":"约会大作战",
 			"name":"星宫六喰"
 		},
+		"2077": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"魔法少女小圆",
+			"name":"佐仓杏子"
+		},
+		"2078": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 2,
+			"title":"魔法少女小圆",
+			"name":"美树沙耶加"
+		},
+		"2079": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"魔法少女小圆",
+			"name":"巴麻美"
+		},
+		"2080": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"艾斯卡与罗吉的工作室～黄昏天空的炼金术士～",
+			"name":"艾斯卡·梅莉耶"
+		},
 		"3001": {
 			"star": 6,
 			"leftType": 2,
@@ -2527,6 +2639,22 @@
 			"cry": 1,
 			"title":"龙与虎",
 			"name":"逢坂大河"
+		},
+		"3044": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"露露亚的工作室～阿兰德的炼金术士4～",
+			"name":"艾尔梅露莉亚·弗莉克希尔"
+		},
+		"3045": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 2,
+			"cry": 5,
+			"title":"魔法少女小圆",
+			"name":"晓美焰"
 		}
 	},
 	"level":[40,82,130,180,276,860]
