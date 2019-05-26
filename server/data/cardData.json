@@ -2655,6 +2655,22 @@
 			"cry": 5,
 			"title":"魔法少女小圆",
 			"name":"晓美焰"
+		},
+		"3046": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"刀剑神域",
+			"name":"绀野木棉季"
+		},
+		"3047": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 4,
+			"title":"刀剑神域",
+			"name":"结城明日奈"
 		}
 	},
 	"level":[40,82,130,180,276,860]

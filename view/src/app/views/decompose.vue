@@ -213,12 +213,11 @@ export default {
     z-index: 2;
     right: 5px;
     bottom: 5px;
-    background-color: #fff;
+    background-color: rgba(255,255,255,0.85);
     padding: 2px 5px;
     border-radius: 3px;
     font-size: 12px;
     color: #ff5364;
-    opacity: 0.8;
 }
 .wm_dec_img_box{
     position: relative;
