@@ -48,9 +48,42 @@
         </div>    
       </div>
     </div>
+    <h5 class="common_title type_shop">价格走势</h5>
     <div class="wm_market_card_datail_charts">
       <ve-line :data="chartData" :settings="chartSettings" :extend="extend" v-if="chartData.rows.length>0"></ve-line>
       <div class="wm_market_card_datail_charts_empty" v-else>暂无价格历史数据</div>
+    </div>
+    <div v-if="!(wantLog.length==0&&logPage==1)">
+      <h5 class="common_title type_shop">求购信息</h5>
+      <div class="wm_card_get_list_item" v-for="(item,index) in wantLog" v-bind:key="index+1">
+          <div class="wm_card_get_list_avatar">
+            <el-tooltip class="item" effect="dark" :content="'查看'+item.nickName+'的卡牌'" placement="top" :hide-after="3000">
+              <img class="wm_card_get_list_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" width="45" height="45" @click="watchUserCard(item.md5)">
+            </el-tooltip>
+          </div>
+          <div class="wm_card_get_list_comment">
+            <p>
+              <span class="wm_log_name">{{item.nickName}}</span>
+              <span class="wm_log_time">{{item.time|capitalize}}</span>
+            </p>
+            <p>
+              <span
+              >我愿意用<span class="cRed">{{item.wantPrice}}</span>颗左右的星星，去换购出自作品《{{item.title}}》的{{item.name}}。不知道有没有大佬愿意在市场上架这张卡牌！
+              </span>
+            </p>
+          </div>
+        </div>
+        <div class="log_page">
+          <el-pagination
+          small
+          layout="prev, pager, next"
+          :total="logListTotal"
+          @current-change="logPageChange"
+          :current-page.sync="logPage"
+          :page-size="5"
+          class="my_card_page">
+          </el-pagination>
+        </div>
     </div>
 </div>
 </template>
@@ -64,6 +97,10 @@ import VeLine from 'v-charts/lib/line.common'
 export default {
   data() {
     return {
+      txDays:new Date().getDate(),
+      logListTotal:0,
+      logPage:1,
+      wantLog:[],
       fromFullPath:'/',
       captchaSrc:'/api/captcha?time='+new Date().getTime(),
       cardData:cardData['cardData'],
@@ -138,8 +175,36 @@ export default {
       this.minPrice = 30;
     }
     this.getChart();
+    if(type=='sell'){
+      this.getWant();
+    }
   },
   methods: {
+    watchUserCard(md5){
+      this.$router.push({ 
+        path:'/',
+        query:{md5:md5}
+      });
+    },
+    getWant(){
+      let params = {
+        cardId:this.cardId,
+        page:this.logPage
+      }
+      authApi.searchwantcard(params).then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            this.wantLog = res.data.data;
+            this.logListTotal = res.data.total;
+          }
+      })
+    },
+    logPageChange(val){
+      this.logPage = val;
+      this.getWant();
+    },
     buyCard(){
       let params = {
         captcha:this.captcha,

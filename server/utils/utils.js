@@ -7,6 +7,30 @@ var fs = require('fs');
 var adminAccount = require('./database/adminAccount');
 var userData = require('./database/user');
 var marketData = require('./database/market');
+var cardData = require('../data/cardData');
+
+// 设置最低价格
+exports.checkMinPrice = function(cardId){
+    // 设置最低价格
+    let cardStar = 1;
+    try{
+        cardStar = cardData['cardData'][this.PrefixInteger(cardId,4)]['star'];
+    }
+    catch(err){
+        return false;
+    }
+    let minPrice = null;
+    if(cardStar==6){
+        minPrice = 600;
+    }else if(cardStar==5){
+        minPrice = 200;
+    }else if(cardStar==4){
+        minPrice = 90;
+    }else if(cardStar<=3){
+        minPrice = 30;
+    }
+    return minPrice;
+}
 // 统计交易市场
 exports.marketDataCalc = async function (cardId) {
     console.info(
@@ -14,7 +38,7 @@ exports.marketDataCalc = async function (cardId) {
     );
     let time = Math.round(new Date().getTime()/1000);
     let search = {
-        time:{$gt:time-2592000},
+        time:{$gte:time-2592000},
         cardId:cardId,
         selled:false
     };

@@ -42,7 +42,9 @@
     <div>
       <transition name="el-fade-in-linear">
         <div class="wm_market_card_datail_charts_empty" v-if="cardList.length<=0&&!pageChangeing">
-          市场空空如也
+          <span v-if="!loadingMarket">市场空空如也</span>
+          <span v-else>市场加载中</span>
+          <div class="wm_market_buy_want" v-if="want=='1'&&!loadingMarket"><el-button type="primary" @click="wantDialog=true">发布求购</el-button></div>
         </div>
       </transition>
       <transition name="el-fade-in-linear">
@@ -68,6 +70,34 @@
           </el-pagination>
       </div>
     </div>
+    <el-dialog
+      v-if="wantDialog"
+      title="发布求购"
+      :visible.sync="wantDialog"
+      :append-to-body="true"
+      :close-on-click-modal="false"
+      class="reg_code_dialog"
+      width="100%">
+      <div>
+        <div class="wm_market_card_datail_captcha">
+          <div class="tc mb15">Tip:求购信息有效期为7天。</div>
+          <el-form ref="form" label-width="80px">
+            <el-form-item label="验证码">
+              <el-input placeholder="请输入验证码" v-model="captcha" type="tel">
+                <template slot="append"><img class="reg_code_img" :src="captchaSrc" @click="captchaUpdata"></template>
+              </el-input>
+            </el-form-item>
+            <el-form-item label="期望星星" style="margin-bottom:0px">
+              <el-input-number  class="wm_market_card_datail_price_input_box" size="medium" v-model="price" :precision="0" :step="1" :max="99999999" :min="minPrice"></el-input-number>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="wantDialog = false">取消</el-button>
+        <el-button type="primary" @click="wantCard">求购</el-button>
+      </span>
+    </el-dialog>
 </div>
 </template>
 
@@ -79,6 +109,14 @@ import {authApi} from "../../api";
 export default {
   data() {
     return {
+      price:0,
+      minPrice:0,
+      captcha:'',
+      captchaSrc:'/api/captcha?time='+new Date().getTime(),
+      wantDialog:false,
+      wantId:this.$route.query.wantid,
+      want:this.$route.query.want,
+      wantStar:this.$route.query.wantstar || '1',
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       cardList:[],
       myCard:{},
@@ -90,13 +128,54 @@ export default {
         text:decodeURIComponent(this.$route.query.text||''),
         star:this.$route.query.star || '0',
         sort:this.$route.query.sort || '0'
-      }
+      },
+      loadingMarket:true,
     }
   },
   created() {
     this.getUserCard();
+    if(this.want=='1'){
+      this.calMinPrice();
+    }
   },
   methods: {
+    wantCard(){
+      let params = {
+            token:this.token,
+            price:this.price,
+            captcha:this.captcha,
+            cardId:this.wantId
+        }
+        authApi.wantcard(params).then(res => {
+          console.log(res);
+          this.captchaUpdata();
+          this.loadingMarket = false;
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            this.$message({
+              message: res.data.msg,
+              type: 'success'
+            });
+            this.wantDialog = false;
+          }
+        });
+    },
+    calMinPrice(){
+      // 计算最低售价
+      if(this.wantStar==6){
+        this.minPrice = 600;
+      }else if(this.wantStar==5){
+        this.minPrice = 200;
+      }else if(this.wantStar==4){
+        this.minPrice = 90;
+      }else{
+        this.minPrice = 30;
+      }
+    },
+    captchaUpdata(){
+      this.captchaSrc = '/api/captcha?time='+new Date().getTime();
+    },
     haveCardCheck(cardID){
       let cardHave = this.myCard[cardID]
       if(cardHave){
@@ -167,6 +246,7 @@ export default {
         }
         authApi.marketbuy(params).then(res => {
           console.log(res);
+          this.loadingMarket = false;
           if(res.data.code==0){
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
@@ -240,5 +320,8 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style>
+.wm_market_buy_want{
+  margin-top: 10px;
+}
 </style>

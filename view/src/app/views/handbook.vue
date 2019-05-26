@@ -51,11 +51,18 @@
                             <el-option label="特" value="7"></el-option>
                             </el-select>
                         </el-form-item>
+                        <el-form-item label="是否拥有">
+                            <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.have" placeholder="筛选是否已有">
+                            <el-option label="全部" value="0"></el-option>
+                            <el-option label="是" value="1"></el-option>
+                            <el-option label="否" value="2"></el-option>
+                            </el-select>
+                        </el-form-item>
                     </el-form>
                 </div>
                 <el-collapse-transition>
                     <div class="wm_mycard_list" v-if="userCard.length>0">
-                        <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg('/static/img/'+item.cardId+'.jpg',item.info.name)">
+                        <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg('/static/img/'+item.cardId+'.jpg',item.info.name,item.have,item.info.star,item.cardId)">
                             <img class="wm_getcard_img" :src="'/static/img/'+item.cardId+'.jpg'">
                         </div>
                     </div>
@@ -101,7 +108,8 @@ export default {
             star:this.$route.query.star || '0',
             cry:this.$route.query.cry ||'0',
             rightType:this.$route.query.rightType || '0',
-            leftType:this.$route.query.leftType || '0'
+            leftType:this.$route.query.leftType || '0',
+            have:this.$route.query.have || '0',
         },
         loading:true
     }
@@ -114,18 +122,25 @@ export default {
       this.getUserCard();
   },
   methods: {
-    openImg(imgsrc,name){
+    openImg(imgsrc,name,have,star,cardId){
         this.$confirm('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
             dangerouslyUseHTMLString: true,
             lockScroll:false,
             showCancelButton: false,
-            confirmButtonText: '去市场'
+            confirmButtonText: '购卡或求购',
         }).then(() => {
+            let want = 0;
+            if(!have){
+                want = 1
+            }
             this.$router.push({ 
                 name:'buyCard',
                 query: {
                     name:'name',
-                    text:encodeURIComponent(name)
+                    text:encodeURIComponent(name),
+                    want:want,
+                    wantstar:star,
+                    wantid:cardId
                 }
             });
         }).catch(() => {
@@ -211,8 +226,26 @@ export default {
             }
             return false;
         }
-        console.log(this.cardBook);
-        let userCardSearchRes = this.cardBook.filter(item => setStar(item.info.star) && setCry(item.info.cry) && setRightType(item.info.rightType) && setLeftType(item.info.leftType));
+        function setHave(item){
+            let p_ = that.searchForm.have;
+            if(p_==='0'){
+                return true;
+            }else if(p_==='1'){
+                if(item){
+                    return true;
+                }else{
+                    return false;
+                }
+            }else if(p_==='2'){
+                if(!item){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+            return true;
+        }
+        let userCardSearchRes = this.cardBook.filter(item => setStar(item.info.star) && setCry(item.info.cry) && setRightType(item.info.rightType) && setLeftType(item.info.leftType) && setHave(item.have));
         let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
         this.cardTotle = userCardSearchRes.length;
         if(userCard_.length<=0&&this.cardPage!=1){
@@ -248,6 +281,7 @@ export default {
                 cry:this.searchForm.cry,
                 rightType:this.searchForm.rightType,
                 leftType:this.searchForm.leftType,
+                have:this.searchForm.have,
             }
         });
     },

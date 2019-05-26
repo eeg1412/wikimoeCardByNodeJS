@@ -20,6 +20,8 @@ var apiBattle = require('../api/battle');
 var apiBattleCard = require('../api/battlecard');
 var apiRank = require('../api/rank');
 var apiDecompose = require('../api/decompose');
+var apiWantCard = require('../api/wantCard');
+var apiSearchWantCard = require('../api/searchWantCard');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -59,6 +61,8 @@ router.post('/marketchart', apiMarketChart);
 router.post('/battle', apiBattle);
 router.post('/battlecard', apiBattleCard);
 router.post('/decompose', apiDecompose);
+router.post('/wantcard', apiWantCard);
+router.post('/searchwantcard', apiSearchWantCard);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);

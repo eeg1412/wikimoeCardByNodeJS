@@ -54,6 +54,12 @@ export default function (api) {
     decompose(data){
       return api.post('decompose',data)
     },
+    wantcard(data){
+      return api.post('wantcard',data)
+    },
+    searchwantcard(data){
+      return api.post('searchwantcard',data)
+    },
     rank(){
       return api.get('rank')
     },

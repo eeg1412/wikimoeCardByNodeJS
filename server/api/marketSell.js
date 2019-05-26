@@ -4,28 +4,6 @@ var marketData = require('../utils/database/market');
 var chalk = require('chalk');
 var cardData = require('../data/cardData');
 
-function checkMinPrice(cardId){
-    // 设置最低价格
-    let cardStar = 1;
-    try{
-        cardStar = cardData['cardData'][utils.PrefixInteger(cardId,4)]['star'];
-    }
-    catch(err){
-        return false;
-    }
-    let minPrice = null;
-    if(cardStar==6){
-        minPrice = 600;
-    }else if(cardStar==5){
-        minPrice = 200;
-    }else if(cardStar==4){
-        minPrice = 90;
-    }else if(cardStar<=3){
-        minPrice = 30;
-    }
-    return minPrice;
-}
-
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let type = req.body.type;
@@ -179,7 +157,7 @@ module.exports = async function(req, res, next){
             );
             return false;
         }
-        let minPrice = checkMinPrice(cardId);
+        let minPrice = utils.checkMinPrice(cardId);
         if(!minPrice){
             res.send({
                 code:0,
@@ -333,7 +311,7 @@ module.exports = async function(req, res, next){
             );
             return false;
         }
-        let minPrice = checkMinPrice(myData.cardId);
+        let minPrice = utils.checkMinPrice(myData.cardId);
         if(!minPrice){
             res.send({
                 code:0,

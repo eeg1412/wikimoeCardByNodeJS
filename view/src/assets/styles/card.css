@@ -1375,9 +1375,9 @@ img.wm_demining_img {
   width: 100%;
   margin-bottom: 15px;
 }
-.wm_market_card_datail_charts{
+/* .wm_market_card_datail_charts{
   padding: 15px 0;
-}
+} */
 .wm_market_card_datail_captcha{
   padding: 0 0 10px 0;
 }
@@ -1410,8 +1410,10 @@ img.wm_demining_img {
   height: 253px;
 }
 .wm_market_card_datail_charts_empty{
-  padding: 150px 0;
+  padding: 100px 0;
   text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 0px 3px #e0e0e0;
 }
 .wm_market_buy_search_body{
   text-align: center;
