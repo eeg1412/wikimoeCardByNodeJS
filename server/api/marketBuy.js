@@ -74,12 +74,25 @@ module.exports = async function(req, res, next){
         page = Math.abs(page);
         let name = req.body.name || '';
         let text = req.body.text || '';
+        let have = req.body.have || '';
         let star = isNaN(Math.round(req.body.star))?0:Math.round(req.body.star);
         let sortType = isNaN(Math.round(req.body.sort))?0:Math.round(req.body.sort);
         let time = Math.round(new Date().getTime()/1000);
+        let haveCardId = [];
         let params = {
             time:{$gte:time-2592000},
             selled:false
+        }
+        if(have=='1'){
+            if(result.card){
+                haveCardId = Object.keys(result.card);
+            }
+            params['cardId']={$in:haveCardId};
+        }else if(have=='2'){
+            if(result.card){
+                haveCardId = Object.keys(result.card);
+            }
+            params['cardId']={$nin:haveCardId};
         }
         let sort = {'cardId':-1,'price':1};
         if(name==='name' || name==='title'){

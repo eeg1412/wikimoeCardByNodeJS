@@ -4,7 +4,7 @@
       <div class="wm_market_buy_search_box">
         <el-form :inline="true" :model="searchForm" class="demo-form-inline">
           <el-form-item label="关键词">
-            <el-select v-model="searchForm.name" placeholder="搜索名称">
+            <el-select v-model="searchForm.name" placeholder="关键词" class="wm_market_buy_search_select">
               <el-option label="角色名" value="name"></el-option>
               <el-option label="作品" value="title"></el-option>
             </el-select>
@@ -13,7 +13,7 @@
             <el-input v-model="searchForm.text" placeholder="请输入搜索内容"></el-input>
           </el-form-item>
           <el-form-item label="星级">
-            <el-select v-model="searchForm.star" placeholder="搜索星级">
+            <el-select v-model="searchForm.star" placeholder="星级" class="wm_market_buy_search_select">
               <el-option label="全部" value="0"></el-option>
               <el-option label="1星" value="1"></el-option>
               <el-option label="2星" value="2"></el-option>
@@ -24,12 +24,19 @@
             </el-select>
           </el-form-item>
           <el-form-item label="排序">
-            <el-select v-model="searchForm.sort" placeholder="排序">
+            <el-select v-model="searchForm.sort" placeholder="排序" class="wm_market_buy_search_select">
               <el-option label="默认" value="0"></el-option>
               <el-option label="价格从低到高" value="1"></el-option>
               <el-option label="价格从高到低" value="2"></el-option>
               <el-option label="星级从低到高" value="3"></el-option>
               <el-option label="星级从高到底" value="4"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="拥有">
+            <el-select v-model="searchForm.ihave" placeholder="拥有" class="wm_market_buy_search_select">
+              <el-option label="全部" value="0"></el-option>
+              <el-option label="拥有" value="1"></el-option>
+              <el-option label="未拥有" value="2"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item class="wm_market_buy_search_btn_body">
@@ -127,7 +134,8 @@ export default {
         name:this.$route.query.name || 'name',
         text:decodeURIComponent(this.$route.query.text||''),
         star:this.$route.query.star || '0',
-        sort:this.$route.query.sort || '0'
+        sort:this.$route.query.sort || '0',
+        ihave:this.$route.query.ihave || '0'
       },
       loadingMarket:true,
     }
@@ -243,6 +251,7 @@ export default {
             text:this.searchForm.text,
             star:this.searchForm.star,
             sort:this.searchForm.sort,
+            have:this.searchForm.ihave,
         }
         authApi.marketbuy(params).then(res => {
           console.log(res);
@@ -260,6 +269,7 @@ export default {
                   text:encodeURIComponent(this.searchForm.text),
                   star:this.searchForm.star,
                   sort:this.searchForm.sort,
+                  ihave:this.searchForm.ihave
                 }
               });
               this.getUserMarket();
@@ -289,6 +299,7 @@ export default {
           text:encodeURIComponent(this.searchForm.text),
           star:this.searchForm.star,
           sort:this.searchForm.sort,
+          ihave:this.searchForm.ihave
         }
       });
       this.getUserMarket();
@@ -323,5 +334,13 @@ export default {
 <style>
 .wm_market_buy_want{
   margin-top: 10px;
+}
+.wm_market_buy_search_select{
+  width: 120px;
+}
+@media screen and (max-width:410px) {
+  .wm_market_buy_search_select{
+    width: 100%;
+  }
 }
 </style>
