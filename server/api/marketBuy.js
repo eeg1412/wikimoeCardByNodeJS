@@ -85,12 +85,12 @@ module.exports = async function(req, res, next){
         }
         if(have=='1'){
             if(result.card){
-                haveCardId = Object.keys(result.card);
+                haveCardId = Object.keys(result.card).map(Number);
             }
             params['cardId']={$in:haveCardId};
         }else if(have=='2'){
             if(result.card){
-                haveCardId = Object.keys(result.card);
+                haveCardId = Object.keys(result.card).map(Number);
             }
             params['cardId']={$nin:haveCardId};
         }

@@ -189,7 +189,8 @@ export default {
     getWant(){
       let params = {
         cardId:this.cardId,
-        page:this.logPage
+        page:this.logPage,
+        token:this.token
       }
       authApi.searchwantcard(params).then(res => {
           console.log(res);

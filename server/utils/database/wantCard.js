@@ -21,3 +21,22 @@ exports.deletWantMany = async function (parmas) {
     // document查询
     return await wantCardModel.deleteMany(parmas);
 }
+exports.getGroup = async function(cardArr){
+    const group = await wantCardModel.aggregate([
+            {
+                $match:{
+                    cardId: {$in:cardArr}
+                }
+            },
+            {
+                $group : {
+                    _id : "$cardId", 
+                    count: {
+                        $sum : 1
+                    }
+                }
+            }
+        ]
+    );
+    return group;
+}

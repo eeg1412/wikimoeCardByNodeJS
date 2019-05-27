@@ -63,6 +63,7 @@
                 </div>
                 <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
             </div>
+            <div class="wm_market_buy_want" v-if="want=='1'&&!loadingMarket"><el-button type="primary" @click="wantDialog=true">发布求购</el-button></div>
         </div>
       </transition>
       <div class="wm_market_content_page" v-if="cardTotle">

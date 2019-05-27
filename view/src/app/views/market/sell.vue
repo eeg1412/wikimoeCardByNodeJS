@@ -27,9 +27,10 @@
             </transition>
             <el-collapse-transition>
                 <div class="wm_mycard_list" v-if="userCard.length>0">
-                    <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box type_mobile" @click="upCard(item[0])">
+                    <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box type_mobile wm_market_cansell_card" @click="upCard(item[0])">
                         <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
                         <div class="wm_card_nums">可卖{{item[1]-1}}张</div>
+                        <div class="wm_card_want_nums" v-if="wantList[item[0]]">{{wantList[item[0]]}}人想要</div>
                     </div>
                 </div>
             </el-collapse-transition>
@@ -72,6 +73,7 @@ export default {
         myMarket:[],//自己上架的卡牌
         serverTime:0,//服务器时间
         pageChangeing:false,
+        wantList:{},//想要列表
     }
   },
   components: {
@@ -80,8 +82,26 @@ export default {
   mounted() {
     this.getUserCard(); 
     this.getUserMarket();
+    this.getWant();
   },
   methods: {
+    getWant(){
+      let params = {
+          token:this.token
+      }
+      authApi.searchwantcard(params).then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+              let wantListObj = {};
+              for(let i=0;i<res.data.data.length;i++){
+                  wantListObj[res.data.data[i]['_id']] = res.data.data[i]['count'];
+              }
+              this.wantList = wantListObj;
+          }
+      })
+    },
     updataMany(type){
         this.oneKeyType = type;
         this.captchaShow = true;
@@ -193,10 +213,10 @@ export default {
                     this.cardTotle = this.userCardCache.length;
                     this.cardPageChange(1);
                     }else{
-                    this.$message({
-                        message: resData.nickName+'还没有获得过卡牌呢！',
-                        type: 'warning'
-                    });
+                        this.$message({
+                            message: resData.nickName+'还没有获得过卡牌呢！',
+                            type: 'warning'
+                        });
                 }
             }
         });
@@ -205,5 +225,20 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
+.wm_market_cansell_card{
+    position: relative;
+    z-index: 1;
+}
+.wm_card_want_nums{
+    position: absolute;
+    z-index: 1;
+    right: 10px;
+    bottom: 46px;
+    background-color: rgba(255,255,255,0.85);
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #ff5364;
+}
 </style>
