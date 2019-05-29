@@ -1375,6 +1375,14 @@ img.wm_demining_img {
   width: 100%;
   margin-bottom: 15px;
 }
+.wm_market_buy_search_select{
+  width: 120px;
+}
+@media screen and (max-width:410px) {
+  .wm_market_buy_search_select{
+    width: 100%;
+  }
+}
 /* .wm_market_card_datail_charts{
   padding: 15px 0;
 } */

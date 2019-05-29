@@ -5,6 +5,7 @@ var chalk = require('chalk');
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
+    let type = req.body.type;
     let cardId = req.body.cardId || null;
     let page = isNaN(Math.round(req.body.page))?1:Math.round(req.body.page);
     page = Math.abs(page);
@@ -51,7 +52,38 @@ module.exports = async function(req, res, next){
         );
         throw err;
     });
-    if(cardId){
+    if(type==='search'){
+        let star = isNaN(Math.round(req.body.star))?0:Math.round(req.body.star);
+        let isMy = isNaN(Math.round(req.body.my))?0:Math.round(req.body.my);
+        pageSize = 10;
+        //查询未过期的
+        let params = {
+            time:{$gte:time-604800}
+        };
+        if(star){
+            params['star'] = star;
+        }
+        if(isMy===1){
+            params['email'] = email;
+        }
+        let getParams ='-__v -_id -email'
+        let resault = await wantCardData.findWantCard(pageSize,page,params,getParams).catch((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库查询错误！')
+            );
+            throw err;
+        });
+        res.send({
+            code:1,
+            data:resault[0],
+            total:resault[1],
+            msg:'ok'
+        });
+    }else if(cardId){
         //查询未过期的
         let params = {
             cardId:cardId,

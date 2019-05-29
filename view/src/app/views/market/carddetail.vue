@@ -68,7 +68,7 @@
             </p>
             <p>
               <span
-              >我愿意用<span class="cRed">{{item.wantPrice}}</span>颗左右的星星，去换购出自作品《{{item.title}}》的{{item.name}}。不知道有没有大佬愿意在市场上架这张卡牌！
+              >我愿意用<span class="cOrange fb">{{item.wantPrice}}</span>颗左右的星星，去换购出自作品《{{item.title}}》的{{item.name}}。不知道有没有大佬愿意在市场上架这张卡牌！
               </span>
             </p>
           </div>

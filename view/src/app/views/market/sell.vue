@@ -22,8 +22,29 @@
         </transition>
         <div>
             <h5 class="common_title type_shop">可卖的卡牌</h5>
+            <div class="tc">
+                <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+                    <el-form-item label="星级">
+                    <el-select v-model="searchForm.star" class="wm_market_buy_search_select" @change="searchChanged">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="1星" value="1"></el-option>
+                        <el-option label="2星" value="2"></el-option>
+                        <el-option label="3星" value="3"></el-option>
+                        <el-option label="4星" value="4"></el-option>
+                        <el-option label="5星" value="5"></el-option>
+                        <el-option label="6星" value="6"></el-option>
+                    </el-select>
+                    </el-form-item>
+                    <el-form-item label="求购">
+                    <el-select v-model="searchForm.havewant" class="wm_market_buy_search_select" @change="searchChanged">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="有求购" value="1"></el-option>
+                    </el-select>
+                    </el-form-item>
+                </el-form>
+            </div>
             <transition name="el-fade-in-linear">
-                <div class="wm_market_tips" v-if="userCard.length<=0&&!pageChangeing">您暂时没有可以卖的卡牌！</div>
+                <div class="wm_market_tips" v-if="userCard.length<=0&&!pageChangeing">该条件下暂时没有可以卖的卡牌！</div>
             </transition>
             <el-collapse-transition>
                 <div class="wm_mycard_list" v-if="userCard.length>0">
@@ -55,6 +76,7 @@ import {md5Check,PrefixInteger} from "../../../utils/utils";
 import md5_ from 'js-md5';
 import {authApi} from "../../api";
 import captcha from "../../components/captcha"
+import cardData from "../../../utils/cardData"
 // 状态
 // 0:未上架
 // 1：可修改（可更新上架时间、价格、下架）
@@ -63,17 +85,22 @@ import captcha from "../../components/captcha"
 export default {
   data() {
     return {
+        cardData_:cardData['cardData'],
         oneKeyType:'',
         captchaShow:false,
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         userCard:[],//用户当前页卡牌
         userCardCache:[],//用户卡牌
-        cardPage:1,//当前卡牌页码
+        cardPage:Number(this.$route.query.page) || 1,//当前卡牌页码
         cardTotle:0,//一共多少
         myMarket:[],//自己上架的卡牌
         serverTime:0,//服务器时间
         pageChangeing:false,
         wantList:{},//想要列表
+        searchForm:{
+          star:this.$route.query.star || '0',
+          havewant:this.$route.query.havewant || '0',
+        }
     }
   },
   components: {
@@ -85,6 +112,10 @@ export default {
     this.getWant();
   },
   methods: {
+    searchChanged(){
+        this.cardPage = 1;
+        this.cardPageChange(1);
+    },
     getWant(){
       let params = {
           token:this.token
@@ -178,7 +209,29 @@ export default {
       return PrefixInteger(num,length);
     },
     cardPageChange(val){
-        let userCard_ = this.userCardCache.slice((val-1)*20,val*20);
+        let that = this;
+        // 筛选条件
+        function setStar(item){
+            let p_ = that.searchForm.star;
+            if(p_==='0'){
+                return true;
+            }else if(that.cardData_[PrefixInteger(item,4)].star==p_){
+                return true;
+            }
+            return false;
+        }
+        function setwant(item){
+            let p_ = that.searchForm.havewant;
+            if(p_==='0'){
+                return true;
+            }else if(that.wantList[item]>0){
+                return true;
+            }
+            return false;
+        }
+        let userCardSearchRes = this.userCardCache.filter(item => setStar(item[0]) && setwant(item[0]))
+        let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
+        this.cardTotle = userCardSearchRes.length;
         if(userCard_.length>0){
             this.pageChangeing = true;
         }
@@ -187,6 +240,14 @@ export default {
             this.pageChangeing = false;
             this.userCard = userCard_;
         },300)
+        this.$router.replace({ 
+            name:'sellCard',
+            query: {
+                page:this.cardPage,
+                star:this.searchForm.star,
+                havewant:this.searchForm.havewant,
+            }
+        });
     },
     checkCanBuy(item) {
         return item[1]>1;
@@ -209,9 +270,8 @@ export default {
                     this.userCardCache = Object.entries(res.data.card);
                     this.userCardCache.reverse();
                     this.userCardCache = this.userCardCache.filter(this.checkCanBuy);
-                    this.cardPage = 1;
                     this.cardTotle = this.userCardCache.length;
-                    this.cardPageChange(1);
+                    this.cardPageChange(this.cardPage);
                     }else{
                         this.$message({
                             message: resData.nickName+'还没有获得过卡牌呢！',

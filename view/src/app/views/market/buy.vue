@@ -336,12 +336,4 @@ export default {
 .wm_market_buy_want{
   margin-top: 10px;
 }
-.wm_market_buy_search_select{
-  width: 120px;
-}
-@media screen and (max-width:410px) {
-  .wm_market_buy_search_select{
-    width: 100%;
-  }
-}
 </style>
