@@ -5,6 +5,7 @@
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
         <el-menu-item index="buyCard">买卡</el-menu-item>
         <el-menu-item index="sellCard">卖卡</el-menu-item>
+        <el-menu-item index="wantCard">求卡</el-menu-item>
     </el-menu>
     <div>
         <router-view @updateUserinfo="updateUserinfo"></router-view>

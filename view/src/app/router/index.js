@@ -109,6 +109,15 @@ const router = new VueRouter({
             admin:false,
           },
         },
+        {//求卡
+          name: 'wantCard',
+          path: 'wantCard',
+          component: resolve => require(['../views/market/want.vue'], resolve),
+          meta:{
+            login:true,
+            admin:false,
+          },
+        },
         {//卡牌详情
           name: 'cardDetail',
           path: 'carddetail',
