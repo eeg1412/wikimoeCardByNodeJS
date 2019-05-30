@@ -93,6 +93,12 @@ export default {
     this.getWant();
   },
   methods: {
+    watchUserCard(md5){
+      this.$router.push({ 
+        path:'/',
+        query:{md5:md5}
+      });
+    },
     PrefixInteger_(num,length){
       return PrefixInteger(num,length);
     },
