@@ -136,8 +136,8 @@ export default {
             this.$router.push({ 
                 name:'buyCard',
                 query: {
-                    name:'name',
-                    text:encodeURIComponent(name),
+                    name:'cardId',
+                    text:cardId,
                     want:want,
                     wantstar:star,
                     wantid:cardId

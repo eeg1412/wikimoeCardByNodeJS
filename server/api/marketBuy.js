@@ -98,6 +98,8 @@ module.exports = async function(req, res, next){
         if(name==='name' || name==='title'){
             const reg=new RegExp(text,'i');
             params[name] = {$regex:reg};
+        }else if(name==='cardId'){
+            params[name] = isNaN(Math.floor(text))?0:Math.floor(text);
         }
         if(star){
             params['star'] = star;

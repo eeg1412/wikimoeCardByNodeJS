@@ -7,6 +7,7 @@
             <el-select v-model="searchForm.name" placeholder="关键词" class="wm_market_buy_search_select">
               <el-option label="角色名" value="name"></el-option>
               <el-option label="作品" value="title"></el-option>
+              <el-option label="卡牌ID" value="cardId"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>

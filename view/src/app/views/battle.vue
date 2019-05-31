@@ -6,6 +6,7 @@
             <battle :battleData="battleData" v-if="battleSence" @gameover="gameover"></battle>
         </transition>
         <div class="wm_battle_btn_body">
+            <div class="wm_battle_today_v">今日已获胜：{{myBattleTimes}}/{{battleOverTimes}}</div>
             <el-button type="primary" icon="el-icon-search" @click="battle">搜索对手</el-button>
             <el-button type="primary" icon="el-icon-star-off" @click="goBattleCard">组建卡牌</el-button>
         </div>
@@ -25,6 +26,8 @@ export default {
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         battleData:null,
         battleSence:false,
+        myBattleTimes:'--',
+        battleOverTimes:'--'
     }
   },
   components: {
@@ -32,7 +35,24 @@ export default {
     userTop,
     battle
   },
+  mounted() {
+      this.searchBattleInfo();
+  },
   methods: {
+      searchBattleInfo(){
+        let params = {
+            token:this.token
+        }
+        authApi.searchbattleinfo(params).then(res => {
+            console.log(res);
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                this.myBattleTimes = res.data.myBattleTimes;
+                this.battleOverTimes = res.data.battleOverTimes;
+            }
+        });
+      },
       goBattleCard(){
           this.$router.push({
                 path:'/battlecard'
@@ -41,6 +61,7 @@ export default {
       gameover(){
         this.battleSence = false;
         this.$refs.userTop.getUserInfo();
+        this.searchBattleInfo();
         if(this.battleData.battleGetStar>0){
             this.$notify.info({
                 title: '获得对战奖励！',
@@ -88,5 +109,9 @@ export default {
 .wm_battle_btn_body{
     text-align:center;
     padding: 100px 0;
+}
+.wm_battle_today_v{
+    padding:0 0 40px 0;
+    font-size: 16px;
 }
 </style>

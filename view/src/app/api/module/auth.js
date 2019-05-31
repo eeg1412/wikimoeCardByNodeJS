@@ -60,6 +60,9 @@ export default function (api) {
     searchwantcard(data){
       return api.post('searchwantcard',data)
     },
+    searchbattleinfo(data){
+      return api.post('searchbattleinfo',data)
+    },
     rank(){
       return api.get('rank')
     },
