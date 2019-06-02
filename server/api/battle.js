@@ -148,7 +148,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
         }else if(DefendRightType===7){
             DefendD = DefendD+Math.floor(DefendA*0.06*DefendStar);
         }else if(DefendRightType===6){
-            DefendShield = Math.floor(AttackA*0.1*DefendStar);
+            DefendShield = Math.floor(AttackA*0.085*DefendStar);
         }
     }
     // 开始攻击
@@ -219,7 +219,7 @@ function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount){
     let x = starCount;//初始化x为星星的数量
     // 如果是1、2、3、4、5、6顺子排列的卡牌则攻击力和防御力和血的x+20
     let minStarCount = Math.min.apply(null, starArr);
-    let cardCountPlus = Math.floor(cardIndexCount/50);//每50收集率x+1
+    let cardCountPlus = Math.floor(cardIndexCount/25);//每25收集率x+1
     x = x + minStarCount*20 + cardCountPlus;
     // 每三种同属性的卡牌攻击力和防御力和血的x+1
     for(let i=0;i<cryArr.length;i++){
@@ -251,7 +251,7 @@ function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount){
     return [A,D,S,HP];
 }
 // 设置AI卡牌
-function creatAICard(starArr_,level){
+function creatAICard(starArr_,level,advanced){
     let cardArr = []
     let starArr = [...starArr_];
     if(starArr[5]<1 && level<=15){//如果没有六星卡的新手则弱化AI
@@ -272,7 +272,12 @@ function creatAICard(starArr_,level){
             starArr[2] = starArr[2]+1;
         }
     }
-    let randomOneTwo = utils.randomNum(1,100);
+    let randomOneTwo = 0;
+    if(advanced){//如果是进阶AI不饶人
+        randomOneTwo = 1;
+    }else{
+        randomOneTwo = utils.randomNum(1,100);
+    }
     if(randomOneTwo<=50){
         if(starArr[0]===1){
             cardArr.push('2');
@@ -296,28 +301,28 @@ function creatAICard(starArr_,level){
             if(i<=2){
                 let cardId = utils.wmCreatCardId(1);
                 if(cardArr.indexOf(cardId) == -1){
-                    cardArr.push(cardId);
+                    cardArr.unshift(cardId);
                 }else{
                     j = j -1;
                 }
             }else if(i===3){
                 let cardId = utils.wmCreatCardId(65);
                 if(cardArr.indexOf(cardId) == -1){
-                    cardArr.push(cardId);
+                    cardArr.unshift(cardId);
                 }else{
                     j = j -1;
                 }
             }else if(i===4){
                 let cardId = utils.wmCreatCardId(87);
                 if(cardArr.indexOf(cardId) == -1){
-                    cardArr.push(cardId);
+                    cardArr.unshift(cardId);
                 }else{
                     j = j -1;
                 }
             }else if(i===5){
                 let cardId = utils.wmCreatCardId(98);
                 if(cardArr.indexOf(cardId) == -1){
-                    cardArr.push(cardId);
+                    cardArr.unshift(cardId);
                 }else{
                     j = j -1;
                 }
@@ -333,6 +338,7 @@ function cardSort(a,b){
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
+    let advanced = req.body.advanced;
     //解析token
     if(!token){
         console.info(
@@ -384,15 +390,25 @@ module.exports = async function(req, res, next){
         seeAiP = 80;
     }
     if(AiP>seeAiP){//40%概率遇见AI
-        let emMinScore = myScore-500<0?0:myScore-500;
-        let emMaxScore = myScore+500;
-        let emScore = {
-            score:{$gte:emMinScore,$lte:emMaxScore},
-            email:{$ne:email},
-            cardIndexCount:{$gte:20}
-        };
-        // 竞技点分数段内的
-        emData = await searchEm(emScore);
+        if(advanced){//如果是进阶匹配
+            let emScore = {
+                score:{$gte:myScore+500},
+                email:{$ne:email},
+                cardIndexCount:{$gte:20}
+            };
+            // 竞技点分数段内的
+            emData = await searchEm(emScore);
+        }else{
+            let emMinScore = myScore-500<0?0:myScore-500;
+            let emMaxScore = myScore+500;
+            let emScore = {
+                score:{$gte:emMinScore,$lte:emMaxScore},
+                email:{$ne:email},
+                cardIndexCount:{$gte:20}
+            };
+            // 竞技点分数段内的
+            emData = await searchEm(emScore);
+        }
     }
     // 初始化一些信息
     let AiMode = emData.length>0?false:true;//没有对手的话进入ai模式
@@ -444,10 +460,13 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green(email+'无匹配的情况下给一个AI。IP为：'+IP)
         )
-        EmBattleCard = creatAICard(MyCardStarCount,result.level);
-        EmBattleCard = EmBattleCard.sort(cardSort);
+        EmBattleCard = creatAICard(MyCardStarCount,result.level,advanced);
+        // EmBattleCard = EmBattleCard.sort(cardSort);
         EmName = '自动书记人偶'+ utils.randomNum(0,99) + '号';
         EmCardIndexCount = MyCardIndexCount;
+        if(advanced){
+            EmCardIndexCount = EmCardIndexCount+150;
+        }
     }else{
         // 有匹配设置对方的卡牌
         emData = emData[0];
@@ -561,6 +580,9 @@ module.exports = async function(req, res, next){
         let EmUpdataParams = null;
         if(AiMode){//如果是AI模式则竞技点与自己一样
             EmScore = MyScore;
+            if(advanced){
+                EmScore = EmScore+70;
+            }
         }else{
             EmScore = emData.score;
         }
@@ -568,8 +590,10 @@ module.exports = async function(req, res, next){
             getScore = Math.round((EmScore - MyScore)/2);
             if(getScore<10){
                 getScore = 10;
+            }else if(getScore>350){//最多获得250竞技点
+                getScore = 350;
             }
-            EmGetScore = -getScore;
+            EmGetScore = getScore>200?-200:-getScore;//对方最多扣200分
             getExp = getScore+10;
             if(dailyIsToday){
                 myBattleTimes = myBattleTimes+1;

@@ -255,7 +255,7 @@ export default {
             let minStarCount = Math.min.apply(null, starArr);
             let cardCountPlus = 0;
             if(this.userCardCache){
-                cardCountPlus = Math.floor(this.userCardCache.length/50);//每50收集率x+1
+                cardCountPlus = Math.floor(this.userCardCache.length/25);//每25收集率x+1
             }
             x = x + minStarCount*20+cardCountPlus;
             // 每三种同属性的卡牌攻击力和防御力和血的x+1

@@ -7,8 +7,21 @@
         </transition>
         <div class="wm_battle_btn_body">
             <div class="wm_battle_today_v">今日已获胜：{{myBattleTimes}}/{{battleOverTimes}}</div>
-            <el-button type="primary" icon="el-icon-search" @click="battle">搜索对手</el-button>
-            <el-button type="primary" icon="el-icon-star-off" @click="goBattleCard">组建卡牌</el-button>
+            <div class="wm_battle_btn_box">
+                <el-tooltip class="item" effect="dark" content="匹配与自己竞技点相近的对手。" placement="top" :enterable="false">
+                    <el-button type="primary" icon="el-icon-search" @click="battle(false)">匹配对手（普通）</el-button>
+                </el-tooltip>
+            </div>
+            <div class="wm_battle_btn_box">
+                <el-tooltip class="item" effect="dark" content="匹配竞技点比自己高一些的对手。" placement="top" :enterable="false">
+                    <el-button type="primary" icon="el-icon-search" @click="battle(true)">匹配对手（进阶）</el-button>
+                </el-tooltip>
+            </div>
+            <div class="wm_battle_btn_box">
+                <el-tooltip class="item" effect="dark" content="组建自己的对战卡牌。" placement="top" :enterable="false">
+                    <el-button type="primary" icon="el-icon-star-off" @click="goBattleCard">组建我的对战卡牌</el-button>
+                </el-tooltip>
+            </div>
         </div>
         <menuView></menuView>
     </div>
@@ -78,9 +91,10 @@ export default {
             });
         }
       },
-      battle(){
+      battle(advanced){
         let params = {
-            token:this.token
+            token:this.token,
+            advanced:advanced,
         }
         authApi.battle(params).then(res => {
             console.log(res);
@@ -89,8 +103,9 @@ export default {
             }else if(res.data.code==1){
                 if(res.data.levelUpStar>0){
                     this.$notify.info({
+                        dangerouslyUseHTMLString: true,
                         title: '升级啦！',
-                        message: '恭喜您升级啦，作为奖励获得'+res.data.levelUpStar+'颗星星！',
+                        message: '恭喜您升级啦，作为奖励获得<span class="cOrange">'+res.data.levelUpStar+'</span>颗星星！',
                         duration:3000,
                         customClass:'wm_battle_notify'
                     });
@@ -113,5 +128,8 @@ export default {
 .wm_battle_today_v{
     padding:0 0 40px 0;
     font-size: 16px;
+}
+.wm_battle_btn_box{
+    margin: 20px 0;
 }
 </style>
