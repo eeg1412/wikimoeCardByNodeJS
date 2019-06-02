@@ -49,7 +49,9 @@
                 <div class="wm_battlecard_list_body">
                     <draggable v-model="myCard" @change="change" handle=".handle">
                         <div class="wm_battlecard_list_box" v-for="(item,index) in myCard" v-bind:key="index+1" @click="selcard(index)">
-                            <div class="wm_battlecard_list_move handle"><i class="el-icon-s-grid"></i></div>
+                            <el-tooltip class="item" effect="dark" content="拖动改变卡牌发动顺序" placement="top">
+                                <div class="wm_battlecard_list_move handle"><i class="el-icon-rank cRed"></i></div>
+                            </el-tooltip>
                             <div class="wm_battlecard_list_number">{{index+1}}</div>
                             <div v-if="item!==null"><img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item,4)+'.jpg'"></div>
                         </div>
@@ -511,7 +513,7 @@ export default {
 }
 .wm_battlecard_list_move{
     position: absolute;
-    background: #fff;
+    background: rgba(255,255,255,0.9);
     width: 20px;
     height: 20px;
     line-height: 20px;
@@ -519,8 +521,8 @@ export default {
     bottom: 5px;
     border-radius: 3px;
     cursor: url(/static/cur/move.cur),move;
-    color: #4f4f4f;
     z-index: 3;
+    border: 1px solid rgba(255,83,100,0.6);
 }
 .wm_battlecard_table_fixed_body{
     position: fixed;

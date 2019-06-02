@@ -2,6 +2,7 @@
     <div class="common_body">
         <userTop ref="userTop" />
         <h5 class="common_title type_shop">卡牌对战</h5>
+        <div class="tc">Tip:进阶匹配将会匹配到更强大的对手，同时收益也会更高。</div>
         <transition name="el-fade-in-linear">
             <battle :battleData="battleData" v-if="battleSence" @gameover="gameover"></battle>
         </transition>

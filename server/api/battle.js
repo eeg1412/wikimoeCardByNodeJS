@@ -90,7 +90,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
     // 克：增伤10%*星级差(最多10%)
     // 被克：防御减少10%*星级差(最多10%)
     let cryKe = {
-        '1':[3],
+        '1':[3,4],
         '2':[1],
         '3':[2],
         '4':[5],
@@ -251,10 +251,10 @@ function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount){
     return [A,D,S,HP];
 }
 // 设置AI卡牌
-function creatAICard(starArr_,level,advanced){
+function creatAICard(starArr_,MyCardIndexCount,advanced){
     let cardArr = []
     let starArr = [...starArr_];
-    if(starArr[5]<1 && level<=15){//如果没有六星卡的新手则弱化AI
+    if(MyCardIndexCount<200&&!advanced){//卡牌种类低于200张则弱化AI
         console.info(
             chalk.green('弱化对战AI我方卡牌星级统计:'+starArr)
         )
@@ -272,29 +272,22 @@ function creatAICard(starArr_,level,advanced){
             starArr[2] = starArr[2]+1;
         }
     }
-    let randomOneTwo = 0;
-    if(advanced){//如果是进阶AI不饶人
-        randomOneTwo = 1;
-    }else{
-        randomOneTwo = utils.randomNum(1,100);
+    //如果有1、2星卡
+    if(starArr[0]===1){
+        cardArr.push('2');
+        starArr[0] = starArr[0] -1;
+    }else if(starArr[0]>1){
+        cardArr.push('2');
+        cardArr.push('1');
+        starArr[0] = starArr[0] -2;
     }
-    if(randomOneTwo<=50){
-        if(starArr[0]===1){
-            cardArr.push('2');
-            starArr[0] = starArr[0] -1;
-        }else if(starArr[0]>1){
-            cardArr.push('2');
-            cardArr.push('1');
-            starArr[0] = starArr[0] -2;
-        }
-        if(starArr[1]===1){
-            cardArr.push('4');
-            starArr[1] = starArr[1] -1;
-        }else if(starArr[1]>1){
-            cardArr.push('3');
-            cardArr.push('4');
-            starArr[1] = starArr[1] -2;
-        }
+    if(starArr[1]===1){
+        cardArr.push('4');
+        starArr[1] = starArr[1] -1;
+    }else if(starArr[1]>1){
+        cardArr.push('3');
+        cardArr.push('4');
+        starArr[1] = starArr[1] -2;
     }
     for(let i=0;i<starArr.length;i++){
         for(let j=0;j<starArr[i];j++){
@@ -460,12 +453,12 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green(email+'无匹配的情况下给一个AI。IP为：'+IP)
         )
-        EmBattleCard = creatAICard(MyCardStarCount,result.level,advanced);
+        EmBattleCard = creatAICard(MyCardStarCount,MyCardIndexCount,advanced);
         // EmBattleCard = EmBattleCard.sort(cardSort);
         EmName = '自动书记人偶'+ utils.randomNum(0,99) + '号';
         EmCardIndexCount = MyCardIndexCount;
         if(advanced){
-            EmCardIndexCount = EmCardIndexCount+150;
+            EmCardIndexCount = EmCardIndexCount+200;
         }
     }else{
         // 有匹配设置对方的卡牌
@@ -505,6 +498,8 @@ module.exports = async function(req, res, next){
     if(MyADSHP[2]<EmADSHP[2]){
         speed = 0;
     }else if(MyADSHP[2]===EmADSHP[2]){
+        speed = utils.randomNum(0,1);
+    }else if(AiMode){//如果进阶随机
         speed = utils.randomNum(0,1);
     }
     for(let i=0;i<20;i++){//最多不超过20局
