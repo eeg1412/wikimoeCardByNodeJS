@@ -68,8 +68,8 @@ export default {
   mounted() {
     let socketurl = window.location.hostname;
     let port = window.location.port;
-    this.socket = io.connect('//'+socketurl+':'+port);
-    // this.socket = io.connect('//'+socketurl+':3000');
+    // this.socket = io.connect('//'+socketurl+':'+port);
+    this.socket = io.connect('//'+socketurl+':3000');
     this.socket.on('userCount',(data)=>{
       this.onlineUser = data.userCount;
     });

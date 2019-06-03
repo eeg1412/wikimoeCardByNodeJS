@@ -2,7 +2,9 @@ var utils = require('../utils/utils');
 var deminingModel = require('../models/demining');
 var md5 = require('md5-node');
 var userData = require('../utils/database/user');
+var itemDatabase = require('../utils/database/item');
 var chalk = require('chalk');
+var mapData = require('../data/deminingMap.json');
 
 var mineSweepingMap = function (returnData) {
     //20,30
@@ -175,6 +177,8 @@ var openNode = function(socket,data,result_){
                 let close = result.close;
                 let starAdd = 0;
                 let useTool = data.tool;
+                let getItem = null;
+                let getItemNum = 0;
                 if(demNum===undefined||demNum===null){
                     socket.emit('demining',{code:1,msg:'矿场不正确，请刷新查看！',time:data.time});
                     console.info(chalk.yellow('错误的矿场坐标'))
@@ -196,6 +200,17 @@ var openNode = function(socket,data,result_){
                     }else if(useTool==2){
                         starAdd = utils.randomNum(20,30);
                     }
+                }else{
+                    let itemRare = utils.randomNum(1,100);//随机一个随机道具因子
+                    let mapType = result.mapType;
+                    if(itemRare>=80){//20%概率地图稀有道具
+                        let itemList = mapData[mapType].low;
+                        getItem = itemList[utils.randomNum(0,itemList.length-1)];
+                    }else{//80%概率地图常见道具
+                        let itemList = mapData[mapType].high;
+                        getItem = itemList[utils.randomNum(0,itemList.length-1)];
+                    }
+                    getItemNum = utils.randomNum(1,demNum+1);//获得道具数量
                 }
                 if(boomedNum>=boomNum){
                     close = 1;
@@ -245,6 +260,23 @@ var openNode = function(socket,data,result_){
                     );
                     throw err;
                 })
+                if(demNum<9){//如果没挖到星星则写入道具数据库
+                    let conditions = {
+                        email:data.email
+                    }
+                    let getItemObj = {};
+                    getItemObj['item.'+getItem] = getItemNum;
+                    let update_ = {
+                        $inc:getItemObj
+                    }
+                    await itemDatabase.findOneAndUpdate(conditions,update_).catch ((err)=>{
+                        socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
+                        console.error(
+                            chalk.red('数据库更新错误！')
+                        );
+                        throw err;
+                    })
+                }
                 console.info(
                     chalk.green(data.email+'用工具'+useTool+'挖掘了['+x+','+y+']，其结果为：'+demNum+'，共获得星星'+starAdd+'颗，'+'IP为：'+data.IP)
                 )
@@ -272,7 +304,7 @@ var openNode = function(socket,data,result_){
                             }
                             utils.writeLog(logObject);
                         }else{
-                            socket.emit('demining',{code:201,demNum:demNum,time:data.time,x:x,y:y,md5:md5Email,levelUpStar:levelUpStar});
+                            socket.emit('demining',{code:201,demNum:demNum,time:data.time,x:x,y:y,md5:md5Email,levelUpStar:levelUpStar,getItem:getItem,getItemNum:getItemNum});
                         };
                         // 广播挖矿信息
                         if(close){

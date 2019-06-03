@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var chalk = require('chalk');
 
-mongoose.connect(global.myAppConfig.url,{useNewUrlParser:true});
+mongoose.connect(global.myAppConfig.url,{useNewUrlParser:true,useFindAndModify: false});
 mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
