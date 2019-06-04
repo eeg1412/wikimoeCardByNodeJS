@@ -20,7 +20,12 @@
             </div>
             <div class="wm_battle_btn_box">
                 <el-tooltip class="item" effect="dark" content="组建自己的对战卡牌。" placement="top" :enterable="false">
-                    <el-button type="primary" icon="el-icon-star-off" @click="goBattleCard">组建我的对战卡牌</el-button>
+                    <el-button type="primary" icon="el-icon-star-off" @click="goBattleRoute('/battlecard')">组建我的对战卡牌</el-button>
+                </el-tooltip>
+            </div>
+            <div class="wm_battle_btn_box">
+                <el-tooltip class="item" effect="dark" content="升级自己的对战属性。" placement="top" :enterable="false">
+                    <el-button type="primary" icon="el-icon-star-off" @click="goBattleRoute('/battlecry')">升级我的对战属性</el-button>
                 </el-tooltip>
             </div>
         </div>
@@ -67,9 +72,9 @@ export default {
             }
         });
       },
-      goBattleCard(){
+      goBattleRoute(path){
           this.$router.push({
-                path:'/battlecard'
+                path:path
           });
       },
       gameover(){

@@ -15,6 +15,7 @@ const handbookView = () => import(/* webpackChunkName: "handbookView" */ '@/view
 const battleView = () => import(/* webpackChunkName: "battleView" */ '@/views/battle.vue')
 const battleCardView = () => import(/* webpackChunkName: "battleView" */ '@/views/battlecard.vue')
 const decomposeView = () => import(/* webpackChunkName: "decomposeView" */ '@/views/decompose.vue')
+const battleCryView = () => import(/* webpackChunkName: "battleCryView" */ '@/views/battlecry.vue')
 
 const adminLoginView = () => import(/* webpackChunkName: "adminLoginView" */ '@/views/admin/login-view.vue')
 const adminInstallView = () => import(/* webpackChunkName: "adminInstallView" */ '@/views/admin/install-view.vue')
@@ -155,6 +156,15 @@ const router = new VueRouter({
         admin:false,
       },
       component: battleCardView
+    },
+    {
+      name: 'battlecry',
+      path: '/battlecry',
+      meta:{
+        login:true,
+        admin:false,
+      },
+      component: battleCryView
     },
     {
       name: 'decompose',

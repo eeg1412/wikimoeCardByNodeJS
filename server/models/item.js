@@ -2,9 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 // Schema
-var items = new Schema({
+var useritems = new Schema({
   email:String,
   item:{},
 });
 
-module.exports = mongoose.model('items', items);
+module.exports = mongoose.model('useritems', useritems);

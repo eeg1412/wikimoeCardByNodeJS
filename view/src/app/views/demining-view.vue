@@ -41,6 +41,7 @@ import {showLoading,hideLoading} from "../../utils/utils";
 import menuView from '../components/menu.vue';
 import pickaxe from '../components/pickaxe.vue';
 import userTop from '../components/topUserInfo.vue';
+import itemData from '../../../../server/data/item';
 
 export default {
   data() {
@@ -119,7 +120,8 @@ export default {
           dangerouslyUseHTMLString: true,
           showClose: true,
           duration:10000,
-          message:'很可惜并没有挖到星星，探测器显示周围有<span class="cOrange">'+data.demNum+'</span>片星星矿！'
+          message:'您挖到了<span class="cOrange">'+itemData[data.getItem].name+'×'+data.getItemNum+'</span>，同时探测器显示周围有<span class="cOrange">'+data.demNum+'</span>片星星矿！',
+          type: 'success'
         });
       }else if(data.code==4){//您选择的工具还在制作中！
         this.$message(data.msg);
