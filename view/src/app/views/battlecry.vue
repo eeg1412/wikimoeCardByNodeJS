@@ -57,6 +57,10 @@
                     </el-card>
                 </el-col>
             </el-row>
+            <div class="mt20 tc">
+                <el-button>返回</el-button>
+                <el-button type="primary">组卡</el-button>
+            </div>
         </div>
         <menuView></menuView>
     </div>
@@ -157,7 +161,7 @@ export default {
 
 <style scoped>
 .wm_battle_cry_body{
-    padding: 100px 0;
+    padding: 50px 0;
 }
 @media (max-width: 768px){
     .wm_battle_cry_body{
