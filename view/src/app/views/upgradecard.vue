@@ -2,68 +2,110 @@
     <div class="common_body">
         <userTop ref="userTop" />
         <h5 class="common_title type_shop">升级对战卡牌</h5>
+        <div class="wm_cardlist_select_search_body">
+            <el-form :inline="true" :model="searchForm">
+                <el-form-item label="星星等级">
+                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.star" placeholder="筛选星级">
+                    <el-option label="全部" value="0"></el-option>
+                    <el-option label="1星" value="1"></el-option>
+                    <el-option label="2星" value="2"></el-option>
+                    <el-option label="3星" value="3"></el-option>
+                    <el-option label="4星" value="4"></el-option>
+                    <el-option label="5星" value="5"></el-option>
+                    <el-option label="6星" value="6"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="水晶属性">
+                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.cry" placeholder="筛选水晶属性">
+                    <el-option label="全部" value="0"></el-option>
+                    <el-option label="红火" value="1"></el-option>
+                    <el-option label="蓝水" value="2"></el-option>
+                    <el-option label="绿风" value="3"></el-option>
+                    <el-option label="光" value="4"></el-option>
+                    <el-option label="暗" value="5"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="被动属性">
+                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.leftType" placeholder="筛选被动属性">
+                    <el-option label="全部" value="0"></el-option>
+                    <el-option label="全能" value="1"></el-option>
+                    <el-option label="兵攻" value="2"></el-option>
+                    <el-option label="盾防" value="3"></el-option>
+                    <el-option label="速度" value="4"></el-option>
+                    <el-option label="爱心" value="5"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="主动技能">
+                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.rightType" placeholder="筛选主动技能">
+                    <el-option label="全部" value="0"></el-option>
+                    <el-option label="物" value="1"></el-option>
+                    <el-option label="魔" value="2"></el-option>
+                    <el-option label="防" value="3"></el-option>
+                    <el-option label="治" value="4"></el-option>
+                    <el-option label="妨" value="5"></el-option>
+                    <el-option label="支" value="6"></el-option>
+                    <el-option label="特" value="7"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="是否参战">
+                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.battle" placeholder="筛选是否参战">
+                    <el-option label="是" value="0"></el-option>
+                    <el-option label="否" value="1"></el-option>
+                    <el-option label="全部" value="2"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+        </div>
         <div class="wm_battle_cry_body">
-            <el-row :gutter="20">
-                <el-col :sm="12" class="tc mb20">
+            <transition name="el-fade-in-linear">
+            <el-row :gutter="20" v-if="userCard.length>0">
+                <el-col :sm="12" class="tc mb20" v-for="(item,index) in userCard" v-bind:key="index">
                     <el-card class="box-card" :body-style="{ padding: '4%' }">
                         <table class="wm_levle_card_table">
                             <tbody>
                                 <td>
                                     <div class="wm_level_card_img_body mb10">
-                                        <img src="/static/img/3033.jpg" class="w_10 wm_level_card_img">
+                                        <img :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'" class="w_10 wm_level_card_img">
                                     </div>
                                 </td>
                                 <td>
-                                    <h5 class="mb5 f18">Lv.1</h5>
+                                    <h5 class="mb5 f18">Lv.{{item[3]}}</h5>
                                     <p class="cRed mb20">
                                         <el-tooltip placement="top">
-                                            <div slot="content" class="tc">
-                                                <p class="mb5">每升一级攻击力+100、防御力+50</p>
-                                                <p class="mb5">当前攻击+5000</p>
-                                                <p class="mb5">当前防御+2500</p>
-                                                <p class="mb5">下一级攻击+5100</p>
-                                                <p class="mb5">下一级防御+2550</p>
+                                            <div slot="content" class="tc" v-if="item[4].leftType==1">
+                                                <p class="mb5">每升一级攻击力+50、防御力+25</p>
+                                                <p class="mb5">当前攻击+{{item[3]*50}}</p>
+                                                <p class="mb5">当前防御+{{item[3]*25}}</p>
+                                                <p class="mb5">下一级攻击+{{item[3]*50+50}}</p>
+                                                <p class="mb5">下一级防御+{{item[3]*25+25}}</p>
                                             </div>
-                                            <span class="wm_set_pointer">查看属性加成</span>
-                                        </el-tooltip>
-                                    </p>
-                                    <p class="mb10 f18">升级需要</p>
-                                    <p class="mb10"><el-tooltip content="需要100个火攻水晶，可通过抽卡挖矿获得。" placement="top"><img class="wm_level_card_item_img wm_set_pointer" src="/static/otherImg/item/12.png"/></el-tooltip>×100(100)</p>
-                                    <div class="mb20"><div class="wm_level_card_ico_img_body"><el-tooltip content="需要100张小木曾雪菜，可通过抽卡或者市场交易获得。" placement="top"><img class="wm_level_card_ico_img wm_set_pointer" src="/static/img/3033.jpg"/></el-tooltip></div><span>×1(1)</span></div>
-                                    <p class="mb10">成功率:100%</p>
-                                    <div class="mt20">
-                                        <el-button type="primary">升级</el-button>
-                                    </div>
-                                </td>
-                            </tbody>
-                        </table>
-                    </el-card>
-                </el-col>
-                <el-col :sm="12" class="tc mb20">
-                    <el-card class="box-card" :body-style="{ padding: '4%' }">
-                        <table class="wm_levle_card_table">
-                            <tbody>
-                                <td>
-                                    <div class="wm_level_card_img_body mb10">
-                                        <img src="/static/img/3033.jpg" class="w_10 wm_level_card_img">
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5 class="mb5 f18">Lv.1</h5>
-                                    <p class="cRed mb20">
-                                        <el-tooltip placement="top">
-                                            <div slot="content" class="tc">
+                                            <div slot="content" class="tc" v-else-if="item[4].leftType==2">
                                                 <p class="mb5">每升一级攻击力+100</p>
-                                                <p class="mb5">当前攻击+5000</p>
-                                                <p class="mb5">下一级攻击+5100</p>
+                                                <p class="mb5">当前攻击+{{item[3]*100}}</p>
+                                                <p class="mb5">下一级攻击+{{item[3]*100+100}}</p>
+                                            </div>
+                                            <div slot="content" class="tc" v-else-if="item[4].leftType==3">
+                                                <p class="mb5">每升一级防御力+50</p>
+                                                <p class="mb5">当前防御+{{item[3]*50}}</p>
+                                                <p class="mb5">下一级防御+{{item[3]*50+50}}</p>
+                                            </div>
+                                            <div slot="content" class="tc" v-else-if="item[4].leftType==4">
+                                                <p class="mb5">每升一级速度+1</p>
+                                                <p class="mb5">当前速度+{{item[3]*1}}</p>
+                                                <p class="mb5">下一级防御+{{item[3]*1+1}}</p>
+                                            </div>
+                                            <div slot="content" class="tc" v-else-if="item[4].leftType==5">
+                                                <p class="mb5">每升一级SAN+500</p>
+                                                <p class="mb5">当前SAN+{{item[3]*500}}</p>
+                                                <p class="mb5">下一级SAN+{{item[3]*500+500}}</p>
                                             </div>
                                             <span class="wm_set_pointer">查看属性加成</span>
                                         </el-tooltip>
                                     </p>
                                     <p class="mb10 f18">升级需要</p>
-                                    <p class="mb10"><el-tooltip content="需要100个火攻水晶，可通过抽卡挖矿获得。" placement="top"><img class="wm_level_card_item_img wm_set_pointer" src="/static/otherImg/item/12.png"/></el-tooltip>×100(100)</p>
-                                    <div class="mb20"><div class="wm_level_card_ico_img_body"><el-tooltip content="需要100张小木曾雪菜，可通过抽卡或者市场交易获得。" placement="top"><img class="wm_level_card_ico_img wm_set_pointer" src="/static/img/3033.jpg"/></el-tooltip></div><span>×1(1)</span></div>
-                                    <p class="mb10">成功率:100%</p>
+                                    <p class="mb10"><el-tooltip placement="top"><div slot="content">需要{{item[4].leftType | setItemShould}}个【{{itemData_[item[4].cry+''+item[4].leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer" :src="'/static/otherImg/item/'+item[4].cry+''+item[4].leftType+'.png'"/></el-tooltip>×{{item[4].leftType | setItemShould}}({{myItem[item[4].cry+''+item[4].leftType] || 0}})</p>
+                                    <div class="mb20"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content">需要{{item[4].star | setCardShould}}张【{{item[4].name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'"/></el-tooltip></div><span>×{{item[4].star | setCardShould}}({{item[1]}})</span></div>
+                                    <p class="mb10">成功率:{{item[3] | setChenggolv}}%</p>
                                     <div class="mt20">
                                         <el-button type="primary">升级</el-button>
                                     </div>
@@ -73,9 +115,21 @@
                     </el-card>
                 </el-col>
             </el-row>
+            </transition>
+            <div class="wm_market_content_page">
+                <el-pagination
+                    small
+                    layout="prev, pager, next"
+                    :total="cardTotle"
+                    @current-change="cardPageChange"
+                    :current-page.sync="cardPage"
+                    :page-size="20"
+                    class="my_card_page">
+                </el-pagination>
+            </div>
             <div class="mt20 tc">
-                <el-button>返回</el-button>
-                <el-button type="primary">组卡</el-button>
+                <el-button @click="goRouter('/battle')">返回</el-button>
+                <el-button type="primary" @click="goRouter('/battlecard')">组卡</el-button>
             </div>
         </div>
         <menuView></menuView>
@@ -89,6 +143,8 @@ import userTop from '../components/topUserInfo.vue';
 import battle from '../components/battle.vue';
 import itemData from '../../../../server/data/item';
 import cardData from '../../utils/cardData';
+import {PrefixInteger,md5Check} from "../../utils/utils";
+import md5_ from 'js-md5';
 
 export default {
   data() {
@@ -99,7 +155,23 @@ export default {
         myBattleTimes:'--',
         battleOverTimes:'--',
         itemData_:itemData,
-        cardDatas:cardData['cardData']
+        cardDatas:cardData['cardData'],
+        userCardCache:null,
+        cardPage:1,
+        cardTotle:0,
+        userCard:[],
+        pageChangeing:false,
+        searchForm:{
+            star:'0',
+            cry:'0',
+            rightType:'0',
+            leftType:'0',
+            battle:'0'
+        },
+        myBattleCard:[],
+        myCardLevel:{},
+        itemData_:itemData,
+        myItem:{}
     }
   },
   components: {
@@ -107,74 +179,237 @@ export default {
     userTop,
     battle
   },
+  filters: {
+      setChenggolv(v){
+          console.log(v);
+          let lv = v;
+          let n = 100;
+          if(lv<10){
+              return n;
+          }
+          n = 100 - (v + 1 - 10)*5;
+          if(n<1){
+              n = 1;
+          }
+          return n;
+      },
+      setItemShould(v){
+          if(v==1){
+              return 75;
+          }else if(v==2){
+              return 100;
+          }else if(v==3){
+              return 50;
+          }else if(v==4){
+              return 100;
+          }else if(v==5){
+              return 200;
+          }
+      },
+      setCardShould(v){
+          if(v<=3){
+              return 41;
+          }else if(v==4){
+              return 14;
+          }else if(v==5){
+              return 7;
+          }else if(v==6){
+              return 3;
+          }
+      }
+  },
   mounted() {
-      this.searchBattleInfo();
+        let level = new Promise((resolve, reject)=> {
+            this.searchcardlevel(resolve, reject);
+        });
+        let battlecard = new Promise((resolve, reject)=> {
+            this.getMyBattleCard(resolve, reject);
+        });
+        let mycard = new Promise((resolve, reject)=> {
+            this.getMycard(resolve, reject);
+        });
+        let myItem = new Promise((resolve, reject)=> {
+            this.searchuseritem(resolve, reject);
+        });
+        // 同时执行p1和p2，并在它们都完成后执行then:
+        Promise.all([level, battlecard, mycard, myItem]).then((results)=> {
+            this.initData();
+        })
   },
   methods: {
-      searchBattleInfo(){
-        let params = {
-            token:this.token
-        }
-        authApi.searchbattleinfo(params).then(res => {
-            console.log(res);
-            if(res.data.code==0){
-                this.$message.error(res.data.msg);
-            }else if(res.data.code==1){
-                this.myBattleTimes = res.data.myBattleTimes;
-                this.battleOverTimes = res.data.battleOverTimes;
-            }
-        });
-      },
-      goBattleCard(){
-          this.$router.push({
-                path:'/battlecard'
-          });
-      },
-      gameover(){
-        this.battleSence = false;
-        this.$refs.userTop.getUserInfo();
-        this.searchBattleInfo();
-        if(this.battleData.battleGetStar>0){
-            this.$notify.info({
-                title: '获得对战奖励！',
-                duration: 10000,
-                dangerouslyUseHTMLString: true,
-                message: '您已达成今日的对战获胜次数，获得了<span class="cOrange">'+this.battleData.battleGetStar+'</span>颗星星！'
-            });
-        }else if(!this.battleData.battleOverChance&&this.battleData.win===1){
-            this.$notify.info({
-                title: '恭喜获胜！',
-                duration: 10000,
-                dangerouslyUseHTMLString: true,
-                message: '今日已获胜<span class="cRed">'+this.battleData.myBattleTimes+'/'+this.battleData.battleOverTimes+'</span>次，再获胜<span class="cRed">'+(this.battleData.battleOverTimes-this.battleData.myBattleTimes)+'</span>次就可以获得星星奖励啦！'
-            });
-        }
-      },
-      battle(advanced){
-        let params = {
-            token:this.token,
-            advanced:advanced,
-        }
-        authApi.battle(params).then(res => {
-            console.log(res);
-            if(res.data.code==0){
-                this.$message.error(res.data.msg);
-            }else if(res.data.code==1){
-                if(res.data.levelUpStar>0){
-                    this.$notify.info({
-                        dangerouslyUseHTMLString: true,
-                        title: '升级啦！',
-                        message: '恭喜您升级啦，作为奖励获得<span class="cOrange">'+res.data.levelUpStar+'</span>颗星星！',
-                        duration:3000,
-                        customClass:'wm_battle_notify'
-                    });
-                    this.$refs.userTop.getUserInfo();
+        searchChanged(){
+            this.cardPage = 1;
+            this.cardPageChange(1);
+        },
+        PrefixInteger_(num,length){
+            return PrefixInteger(num,length);
+        },
+        initData(){//初始化数据
+            for(let i=0;i<this.userCardCache.length;i++){
+                this.userCardCache[i][2] = false;
+                // 筛选卡牌是否已经出战
+                for(let j=0;j<this.myBattleCard.length;j++){
+                    if(this.userCardCache[i][0]===this.myBattleCard[j]){
+                        this.userCardCache[i][2] = true;
+                    }
                 }
-                this.battleData = res.data;
-                this.battleSence = true;
+                let cardlv = this.myCardLevel[this.userCardCache[i][0]];
+                this.userCardCache[i][3] = 0;
+                if(cardlv){
+                    this.userCardCache[i][3] = cardlv;
+                }
+                let cardData_ = cardData['cardData'];//卡牌信息
+                this.userCardCache[i][4] = cardData_[PrefixInteger(this.userCardCache[i][0],4)];//输入卡牌信息
             }
-        });
-      }
+            // 0卡牌id、1卡牌数量、2卡牌是否出战、3卡牌等级、4卡牌信息
+            this.cardPageChange(1);
+        },
+        cardPageChange(val){
+            this.pageChangeing = true;
+            this.userCard = [];
+            let that = this;
+            // 筛选条件
+            function setStar(item){
+                let p_ = that.searchForm.star;
+                if(p_==='0'){
+                    return true;
+                }else if(item==p_){
+                    return true;
+                }
+                return false;
+            }
+            function setCry(item){
+                let p_ = that.searchForm.cry;
+                if(p_==='0'){
+                    return true;
+                }else if(item==p_){
+                    return true;
+                }
+                return false;
+            }
+            function setRightType(item){
+                let p_ = that.searchForm.rightType;
+                if(p_==='0'){
+                    return true;
+                }else if(item==p_){
+                    return true;
+                }
+                return false;
+            }
+            function setLeftType(item){
+                let p_ = that.searchForm.leftType;
+                if(p_==='0'){
+                    return true;
+                }else if(item==p_){
+                    return true;
+                }
+                return false;
+            }
+            function setBattle(item){
+                let p_ = that.searchForm.battle;
+                if(p_==='2'){
+                    return true;
+                }else if(p_==='0'){
+                    return item;
+                }else{
+                    return !item;
+                }
+                return false;
+            }
+            let userCardSearchRes = this.userCardCache.filter(item => setStar(item[4].star) && setCry(item[4].cry) && setRightType(item[4].rightType) && setLeftType(item[4].leftType) && setBattle(item[2]));
+            let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
+            this.cardTotle = userCardSearchRes.length;
+            setTimeout(()=>{
+                this.userCard = userCard_;
+                this.pageChangeing = false;
+            },300);
+        },
+        searchuseritem(resolve, reject){
+            let params = {
+                token:this.token
+            }
+            authApi.searchuseritem(params).then(res => {
+                console.log(res);
+                if(res.data.code==0){
+                    reject({msg:'error'});
+                    this.$message.error(res.data.msg);
+                }else if(res.data.code==1){
+                    if(res.data.data){
+                        this.myItem = res.data.data;
+                    }
+                    resolve('ok');
+                }
+            });
+        },
+        searchcardlevel(resolve, reject){
+            let params = {
+                token:this.token
+            }
+            authApi.searchcardlevel(params).then(res => {
+                console.log(res);
+                if(res.data.code==0){
+                    reject({msg:'error'});
+                    this.$message.error(res.data.msg);
+                }else if(res.data.code==1){
+                    if(res.data.data){
+                        this.myCardLevel = res.data.data;
+                    }
+                    resolve('ok');
+                }
+            });
+        },
+        getMyBattleCard(resolve, reject){
+            let params = {
+                token:this.token,
+                type:'search'
+            }
+            authApi.battlecard(params).then(res => {
+                console.log(res);
+                if(res.data.code==0){
+                    reject({msg:'error'});
+                    this.$message.error(res.data.msg);
+                }else if(res.data.code==1){
+                    this.myBattleCard = res.data.data;
+                    resolve('ok');
+                }
+            });
+        },
+        getMycard(resolve, reject){
+            if(!this.token){
+                this.$router.replace({ path:'/'});
+            }
+            let tokenUserInfo = this.token.split('.')[1];
+            let email = JSON.parse(atob(tokenUserInfo)).email;
+            let md5 = md5_(email);
+            if(!md5Check(md5)){
+                this.$message.error('用户信息有误！');
+                reject({msg:'error'});
+                return false;
+            }
+            authApi.searchcard({md5: md5}).then(res => {
+                if(res.data.code==0){
+                    reject({msg:'error'});
+                    this.$message.error(res.data.msg);
+                }else if(res.data.code==1){
+                    resolve('ok');
+                    let resData = res.data;
+                    if(res.data.card){
+                        this.userCardCache = Object.entries(res.data.card);
+                        this.userCardCache.reverse();
+                    }else{
+                        this.$message({
+                            message: resData.nickName+'还没有获得过卡牌呢！',
+                            type: 'warning'
+                        });
+                    }
+                }
+            });
+        },
+        goRouter(path){
+            this.$router.push({
+                    path:path
+            });
+        },
   }
 }
 </script>
@@ -208,15 +443,10 @@ export default {
     top: 0;
 }
 .wm_battle_cry_body{
-    padding: 50px 0;
+    padding: 10px 0;
 }
 .wm_level_card_item_img{
     width: 24px;
     height: 24px;
-}
-@media (max-width: 768px){
-    .wm_battle_cry_body{
-        padding: 30px 0;
-    }
 }
 </style>

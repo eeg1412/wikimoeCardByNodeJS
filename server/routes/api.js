@@ -23,6 +23,8 @@ var apiDecompose = require('../api/decompose');
 var apiWantCard = require('../api/wantCard');
 var apiSearchWantCard = require('../api/searchWantCard');
 var apiSearchBattleInfo = require('../api/searchBattleInfo');
+var apiSearchCardLevel = require('../api/searchCardLevel');
+var apiSearchUserItem = require('../api/searchUserItem');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -65,6 +67,8 @@ router.post('/decompose', apiDecompose);
 router.post('/wantcard', apiWantCard);
 router.post('/searchwantcard', apiSearchWantCard);
 router.post('/searchbattleinfo', apiSearchBattleInfo);
+router.post('/searchcardlevel', apiSearchCardLevel);
+router.post('/searchuseritem', apiSearchUserItem);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);

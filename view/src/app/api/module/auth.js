@@ -63,6 +63,12 @@ export default function (api) {
     searchbattleinfo(data){
       return api.post('searchbattleinfo',data)
     },
+    searchcardlevel(data){
+      return api.post('searchcardlevel',data)
+    },
+    searchuseritem(data){
+      return api.post('searchuseritem',data)
+    },
     rank(){
       return api.get('rank')
     },

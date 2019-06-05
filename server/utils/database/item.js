@@ -5,3 +5,6 @@ exports.findOneAndUpdate = async function(conditions, update){
     }
     return await itemModel.findOneAndUpdate(conditions,update,options);
 }
+exports.findOne = async function (parmas) {
+    return await itemModel.findOne(parmas);
+}
