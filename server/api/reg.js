@@ -139,7 +139,7 @@ module.exports = async function(req, res, next){
                 nickName:nickName,
                 password:md5(password),
                 md5:md5(email),
-                star:290,
+                star:780,
                 ip:IP
             }
             if(oldData){
@@ -150,7 +150,7 @@ module.exports = async function(req, res, next){
                         BouerseStar = BouerseStar + oldBouerse[i].have*35;//股票每股35转换为星星
                     }
                 }
-                creatAccountData['star'] = Number(oldData.starCount)+BouerseStar+600;//老账户送600星星
+                creatAccountData['star'] = Number(oldData.starCount)+BouerseStar+1250;//老账户送1250星星
                 creatAccountData['score'] = Number(oldData.score);
                 creatAccountData['level'] = Number(oldData.level);
                 creatAccountData['exp'] = Number(oldData.exp);

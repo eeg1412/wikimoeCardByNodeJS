@@ -61,7 +61,7 @@ body{
 input{
   cursor: url(/static/cur/text.cur),text;
 }
-button,a,.el-button,.el-dialog__headerbtn,.el-pager li,.el-input-number__decrease, .el-input-number__increase{
+button,a,.el-button,.el-dialog__headerbtn,.el-pager li,.el-input-number__decrease, .el-input-number__increase,.wm_set_pointer{
   cursor: url(/static/cur/pointer.cur),pointer;
 }
 .el-loading-mask{

@@ -51,6 +51,7 @@
 
 var utils = require('../utils/utils');
 var userData = require('../utils/database/user');
+var userbattleinfoData = require('../utils/database/userbattleinfo');
 var chalk = require('chalk');
 var cardData = require('../data/cardData');
 var usersModel = require('../models/users');
@@ -585,10 +586,13 @@ module.exports = async function(req, res, next){
             getScore = Math.round((EmScore - MyScore)/2);
             if(getScore<10){
                 getScore = 10;
-            }else if(getScore>350){//最多获得250竞技点
-                getScore = 350;
+            }else if(getScore>90){//最多获得90竞技点
+                getScore = 90;
             }
-            EmGetScore = getScore>200?-200:-getScore;//对方最多扣200分
+            if(advanced&&getScore>=90){
+                getScore = 120;
+            }
+            EmGetScore = -getScore;
             getExp = getScore+10;
             if(dailyIsToday){
                 myBattleTimes = myBattleTimes+1;
@@ -637,6 +641,11 @@ module.exports = async function(req, res, next){
             getScore = Math.round((EmScore - MyScore)/2);
             if(getScore>-10){//如果对方竞技点比我们高也要至少扣十点竞技点
                 getScore = -10;
+            }else if(getScore<-90){//最多扣90分
+                getScore = -90;
+            }
+            if(advanced&&getScore<=-90){
+                getScore = -120;
             }
             EmGetScore = Math.abs(getScore);
             let myNewScore = result.score + getScore;
@@ -674,9 +683,47 @@ module.exports = async function(req, res, next){
                 );
                 throw err;
             })
+            //写入用户战斗数据
+            let userbattleinfoDataUpdata = {};
+            if(win===1){
+                userbattleinfoDataUpdata = {$inc:{win:1}}
+            }else if(win===0){
+                userbattleinfoDataUpdata = {$inc:{lose:1}}
+            }else{
+                userbattleinfoDataUpdata = {$inc:{draw:1}}
+            }
+            await userbattleinfoData.findOneAndUpdate(userFilters,userbattleinfoDataUpdata).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
         }
         if(EmUserFilters){
             await userData.updataUser(EmUserFilters,EmUpdataParams).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+            //写入用户战斗数据
+            let userbattleinfoDataUpdata = {};
+            if(win===1){
+                userbattleinfoDataUpdata = {$inc:{lose:1}}
+            }else if(win===0){
+                userbattleinfoDataUpdata = {$inc:{win:1}}
+            }else{
+                userbattleinfoDataUpdata = {$inc:{draw:1}}
+            }
+            await userbattleinfoData.findOneAndUpdate(EmUserFilters,userbattleinfoDataUpdata).catch ((err)=>{
                 res.send({
                     code:0,
                     msg:'内部错误请联系管理员！'

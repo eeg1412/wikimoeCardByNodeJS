@@ -25,7 +25,7 @@
             </div>
             <div class="wm_battle_btn_box">
                 <el-tooltip class="item" effect="dark" content="升级自己的对战属性。" placement="top" :enterable="false">
-                    <el-button type="primary" icon="el-icon-star-off" @click="goBattleRoute('/battlecry')">升级我的对战属性</el-button>
+                    <el-button type="primary" icon="el-icon-star-off" @click="goBattleRoute('/upgradecard')">升级我的对战卡牌</el-button>
                 </el-tooltip>
             </div>
         </div>
@@ -129,7 +129,7 @@ export default {
 <style scoped>
 .wm_battle_btn_body{
     text-align:center;
-    padding: 100px 0;
+    padding: 50px 0;
 }
 .wm_battle_today_v{
     padding:0 0 40px 0;
