@@ -5,6 +5,6 @@ exports.findOneAndUpdate = async function(conditions, update){
     }
     return await userBattleInfoModel.findOneAndUpdate(conditions,update,options);
 }
-exports.findOne = async function (parmas) {
-    return await userBattleInfoModel.findOne(parmas);
+exports.findOne = async function (parmas,getInfo) {
+    return await userBattleInfoModel.findOne(parmas,getInfo);
 }
