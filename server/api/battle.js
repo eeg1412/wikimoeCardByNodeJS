@@ -123,6 +123,8 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
         }else if(AttackRightType===4){
             AttackAddHP = Math.floor(AttackA*0.1*AttackStar);
             AttackHP = AttackHP+AttackAddHP;
+        }else if(AttackRightType===5){
+            DefendD = DefendD-DefendD*Math.floor(0.07*AttackStar);
         }
     }
     // 攻击前结算属性相克
@@ -216,17 +218,18 @@ function cryCount(cardArr){
     return cryArr;
 }
 // 统计攻防速血
-function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount){
+function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount,cardLevel){
     let x = starCount;//初始化x为星星的数量
     // 如果是1、2、3、4、5、6顺子排列的卡牌则攻击力和防御力和血的x+20
     let minStarCount = Math.min.apply(null, starArr);
     let cardCountPlus = Math.floor(cardIndexCount/25);//每25收集率x+1
     x = x + minStarCount*20 + cardCountPlus;
     // 每三种同属性的卡牌攻击力和防御力和血的x+1
-    for(let i=0;i<cryArr.length;i++){
-        let cryPlusX = Math.floor(cryArr[i]/3);
-        x = x + cryPlusX;
-    }
+    // 同属性加成废止
+    // for(let i=0;i<cryArr.length;i++){
+    //     let cryPlusX = Math.floor(cryArr[i]/3);
+    //     x = x + cryPlusX;
+    // }
     // 攻击=x*100 防=x*50 血=x*200
     let A = x*100;
     let D = x*50;
@@ -236,43 +239,27 @@ function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount){
     for(let j =0;j<cardArr.length;j++){
         //速4
         let leftType = cardArr[j].leftType;
+        let level = cardLevel[cardArr[j].cardId] || 0;
+        console.log(level);
         if(leftType===4){
-            S = S+1;
+            S = S+1+level*1;
         }else if(leftType===1){//全1
-            A = A + 50;
-            D = D + 25;
+            A = A + 50 +level*50;
+            D = D + 25 +level*25;
         }else if(leftType===2){//兵2
-            A = A + 100;
+            A = A + 100 +level*100;
         }else if(leftType===3){//盾3
-            D = D + 50;
+            D = D + 50 +level*50;
         }else if(leftType===5){//爱5
-            HP = HP + 500;
+            HP = HP + 500 +level*500;
         }  
     }
     return [A,D,S,HP];
 }
 // 设置AI卡牌
-function creatAICard(starArr_,MyCardIndexCount,advanced){
+function creatAICard(starArr_){
     let cardArr = []
     let starArr = [...starArr_];
-    if(MyCardIndexCount<200&&!advanced){//卡牌种类低于200张则弱化AI
-        console.info(
-            chalk.green('弱化对战AI我方卡牌星级统计:'+starArr)
-        )
-        if(starArr[4]>1){
-            starArr[4] = starArr[4]-2;
-            starArr[2] = starArr[2]+2;
-        }else if(starArr[3]>1){
-            starArr[3] = starArr[3]-2;
-            starArr[2] = starArr[2]+2;
-        }else if(starArr[4]>0){
-            starArr[4] = starArr[4]-1;
-            starArr[2] = starArr[2]+1;
-        }else if(starArr[3]>0){
-            starArr[3] = starArr[3]-1;
-            starArr[2] = starArr[2]+1;
-        }
-    }
     //如果有1、2星卡
     if(starArr[0]===1){
         cardArr.push('2');
@@ -420,12 +407,14 @@ module.exports = async function(req, res, next){
     let MyCryCount = [0,0,0,0,0];//我的卡牌属性个数统计
     let MyADSHP = [0,0,0,0];//我的攻、防、速、血
     let MyCardIndexCount = result.cardIndexCount;//卡牌收集率
+    let myCardLevel = {};//卡牌等级
     // 初始化对方属性
     let EmCardStarCount = [0,0,0,0,0,0];//对方卡牌星级个数统计
     let EmCryCount = [0,0,0,0,0];//对方卡牌属性个数统计
     let EmStarAll = 0;//对方所以卡牌加起来的星级
     let EmADSHP = [0,0,0,0];//对方的攻、防、速、血
     let EmCardIndexCount = 0;
+    let emCardLevel = {};//卡牌等级
     // 初始化胜负
     let win = 2;
 
@@ -438,6 +427,23 @@ module.exports = async function(req, res, next){
         MyBattleCard = MyBattleCard.slice(MyBattleCard.length-20,MyBattleCard.length);
         MyBattleCard = MyBattleCard.sort(cardSort);
     }
+    // 获取我的卡牌等级
+    let myCardGetInfo = '-_id';
+    for(let i=0;i<MyBattleCard.length;i++){
+        myCardGetInfo = myCardGetInfo+' cardLevel.'+MyBattleCard[i];
+    }
+    myCardLevel = await userbattleinfoData.findOne({email:email},myCardGetInfo).catch ((err)=>{
+        res.send({
+            code:0,
+            msg:'内部错误请联系管理员！'
+        });
+        console.error(
+            chalk.red('数据库错误！')
+        );
+        throw err;
+    })|| {};
+    myCardLevel = myCardLevel['cardLevel'] || {};
+    console.log(myCardLevel);
     // 设置我的出战卡牌信息
     MyBattleCardArr_ = [...MyBattleCard]
     MyBattleCard = setBattleCardInfo(MyBattleCard);
@@ -448,18 +454,26 @@ module.exports = async function(req, res, next){
     // 我的水晶统计
     MyCryCount = cryCount(MyBattleCard);
     // 我的攻防速血统计
-    MyADSHP = setADSHP(MyBattleCard,MyCardStarCount,MyStarAll,MyCryCount,MyCardIndexCount);
+    MyADSHP = setADSHP(MyBattleCard,MyCardStarCount,MyStarAll,MyCryCount,MyCardIndexCount,myCardLevel);
     // 设置敌方卡牌
     if(AiMode){//无匹配的情况下给一个AI
         console.info(
             chalk.green(email+'无匹配的情况下给一个AI。IP为：'+IP)
         )
-        EmBattleCard = creatAICard(MyCardStarCount,MyCardIndexCount,advanced);
+        EmBattleCard = creatAICard(MyCardStarCount);
         // EmBattleCard = EmBattleCard.sort(cardSort);
         EmName = '自动书记人偶'+ utils.randomNum(0,99) + '号';
-        EmCardIndexCount = MyCardIndexCount;
-        if(advanced){
-            EmCardIndexCount = EmCardIndexCount+200;
+        if(MyCardIndexCount<200&&!advanced){
+            EmCardIndexCount = MyCardIndexCount+utils.randomNum(-550,0);
+        }else if(advanced){
+            EmCardIndexCount = MyCardIndexCount+utils.randomNum(-125,300);
+        }else{
+            EmCardIndexCount = MyCardIndexCount+utils.randomNum(-550,200);
+        }
+        //给AI设置等级
+        let myCardLevelArr = Object.entries(myCardLevel);
+        for(let i=0;i<myCardLevelArr.length;i++){
+            emCardLevel[EmBattleCard[i]] = myCardLevelArr[i][1];
         }
     }else{
         // 有匹配设置对方的卡牌
@@ -477,6 +491,22 @@ module.exports = async function(req, res, next){
             EmBattleCard = EmBattleCard.slice(EmBattleCard.length-20,EmBattleCard.length);
             EmBattleCard = EmBattleCard.sort(cardSort);
         }
+        let emCardGetInfo = '-_id';
+        for(let i=0;i<EmBattleCard.length;i++){
+            emCardGetInfo = emCardGetInfo+' cardLevel.'+EmBattleCard[i];
+        }
+        emCardLevel = await userbattleinfoData.findOne({email:emData.email},emCardGetInfo).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库错误！')
+            );
+            throw err;
+        }) || {};
+        console.log(emCardLevel);
+        emCardLevel = emCardLevel['cardLevel'] || {};
     }
     // 设置对方出战卡牌信息
     EmBattleCardArr_ = [...EmBattleCard]
@@ -488,7 +518,7 @@ module.exports = async function(req, res, next){
     // 对方的水晶统计
     EmCryCount = cryCount(EmBattleCard);
     // 敌方攻防速血统计
-    EmADSHP = setADSHP(EmBattleCard,EmCardStarCount,EmStarAll,EmCryCount,EmCardIndexCount);
+    EmADSHP = setADSHP(EmBattleCard,EmCardStarCount,EmStarAll,EmCryCount,EmCardIndexCount,emCardLevel);
     // 初始敌我数值
     EmADSHP_ = [...EmADSHP];
     MyADSHP_ = [...MyADSHP];
@@ -499,8 +529,6 @@ module.exports = async function(req, res, next){
     if(MyADSHP[2]<EmADSHP[2]){
         speed = 0;
     }else if(MyADSHP[2]===EmADSHP[2]){
-        speed = utils.randomNum(0,1);
-    }else if(AiMode){//如果进阶随机
         speed = utils.randomNum(0,1);
     }
     for(let i=0;i<20;i++){//最多不超过20局

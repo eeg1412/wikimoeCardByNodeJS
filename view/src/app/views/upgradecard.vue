@@ -67,6 +67,9 @@
         </div>
         <div class="wm_battle_cry_body">
             <transition name="el-fade-in-linear">
+                <div class="wm_market_tips" v-if="userCard.length<=0&&!pageChangeing">您暂时没有可升级的卡牌！</div>
+            </transition>
+            <transition name="el-fade-in-linear">
             <el-row :gutter="20" v-if="userCard.length>0">
                 <el-col :sm="12" class="tc mb20" v-for="(item,index) in userCard" v-bind:key="index">
                     <el-card class="box-card" :body-style="{ padding: '4%' }">

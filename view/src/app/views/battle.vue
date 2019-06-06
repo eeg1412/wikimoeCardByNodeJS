@@ -46,7 +46,8 @@ export default {
         battleData:null,
         battleSence:false,
         myBattleTimes:'--',
-        battleOverTimes:'--'
+        battleOverTimes:'--',
+        testWin:[0,0,0]
     }
   },
   components: {
@@ -56,6 +57,10 @@ export default {
   },
   mounted() {
       this.searchBattleInfo();
+      //测试胜率
+    //   for(let i=0;i<1000;i++){
+    //       this.battle(false)
+    //   }
   },
   methods: {
       searchBattleInfo(){
@@ -119,6 +124,10 @@ export default {
                 }
                 this.battleData = res.data;
                 this.battleSence = true;
+                //测试胜率
+                // let testWin = [0,0,0]
+                // this.testWin[res.data.win]++;
+                // console.log(this.testWin);
             }
         });
       }

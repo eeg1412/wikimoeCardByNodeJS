@@ -1,6 +1,6 @@
 <template>
     <div id="battleView" class="wm_battle_body">
-        <div class="wm_battle_box" @click="closeBattle()"></div>
+        <div class="wm_battle_box" @click="closeBattle()" v-show="canClose"></div>
     </div>
 </template>
 
@@ -25,6 +25,10 @@ export default {
       this.drawBattle();
   },
   methods: {
+      seeMyInfo(sprite,e){
+          console.log(sprite);
+          console.log(e.data.getLocalPosition(sprite.parent));
+      },
       closeBattle(){
           if(this.canClose){
               this.$emit('gameover');
@@ -221,6 +225,9 @@ export default {
                 // 我的信息
                 battleSenceItem.myNickname = new PIXI.Text(that.battleData.MyName,{ fontSize: 24, fill : 0xffffff, align : 'left'});//昵称
                 battleSenceItem.myAvatarSprite = new PIXI.Sprite(resources['myAvatar']['texture']);//我的头像
+                // Opt-in to interactivity
+                battleSenceItem.myAvatarSprite.interactive = true;
+                battleSenceItem.myAvatarSprite.on('pointermove', seeMyInfo_);
                 battleSenceItem.mySAN = new PIXI.Text('SAN:'+that.battleData.MyADSHP[3],{ fontSize: 36, fill : 0xffffff, align : 'left'});//SAN
                 // 画我的血条背景
                 battleSenceItem.myBgSanB = new PIXI.Graphics();
@@ -301,6 +308,10 @@ export default {
                     attacked:false
                 },
                 indexCache:null,
+            }
+            //显示我的信息弹框
+            function seeMyInfo_(e){
+                that.seeMyInfo(battleSenceItem.myAvatarSprite,e);
             }
             function drawBattle(){
                 if(battleInfo.gameOver){

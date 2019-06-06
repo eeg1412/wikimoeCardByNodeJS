@@ -261,10 +261,10 @@ export default {
             }
             x = x + minStarCount*20+cardCountPlus;
             // 每三种同属性的卡牌攻击力和防御力和血的x+1
-            for(let i=0;i<cryArr.length;i++){
-                let cryPlusX = Math.floor(cryArr[i]/3);
-                x = x + cryPlusX;
-            }
+            // for(let i=0;i<cryArr.length;i++){
+            //     let cryPlusX = Math.floor(cryArr[i]/3);
+            //     x = x + cryPlusX;
+            // }
             // 攻击=x*100 防=x*50 血=x*200
             let A = x*100;
             let D = x*50;
