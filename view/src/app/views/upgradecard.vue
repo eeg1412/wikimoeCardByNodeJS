@@ -54,6 +54,15 @@
                     <el-option label="全部" value="2"></el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="设置排序">
+                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.sort" placeholder="设置排序">
+                    <el-option label="默认" value="0"></el-option>
+                    <el-option label="等级从高到低" value="1"></el-option>
+                    <el-option label="等级从低到高" value="2"></el-option>
+                    <el-option label="星级从高到低" value="3"></el-option>
+                    <el-option label="星级从低到高" value="4"></el-option>
+                    </el-select>
+                </el-form-item>
             </el-form>
         </div>
         <div class="wm_battle_cry_body">
@@ -107,7 +116,7 @@
                                     <div class="mb20"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content">需要{{item[4].star | setCardShould}}张【{{item[4].name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'"/></el-tooltip></div><span>×{{item[4].star | setCardShould}}({{item[1]}})</span></div>
                                     <p class="mb10">成功率:{{item[3] | setChenggolv}}%</p>
                                     <div class="mt20">
-                                        <el-button type="primary">升级</el-button>
+                                        <el-button type="primary" @click="upgradecard(item[0],index)">升级</el-button>
                                     </div>
                                 </td>
                             </tbody>
@@ -166,7 +175,8 @@ export default {
             cry:'0',
             rightType:'0',
             leftType:'0',
-            battle:'0'
+            battle:'0',
+            sort:'0'
         },
         myBattleCard:[],
         myCardLevel:{},
@@ -181,7 +191,6 @@ export default {
   },
   filters: {
       setChenggolv(v){
-          console.log(v);
           let lv = v;
           let n = 100;
           if(lv<10){
@@ -237,6 +246,46 @@ export default {
         })
   },
   methods: {
+        upgradecard(cardId,index){
+            this.$confirm('升级将消耗卡牌和道具，是否继续?', '提示', {
+                confirmButtonText: '升级',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                let params = {
+                    token:this.token,
+                    cardId:cardId
+                }
+                authApi.upgradecard(params).then(res => {
+                    console.log(res);
+                    if(res.data.code==0){
+                        this.$message.error(res.data.msg);
+                    }else if(res.data.code==1){
+                        if(res.data.isSuccess){
+                            this.$message({
+                                message: '卡牌成功升级到'+res.data.myCardLevel+'级！',
+                                type: 'success'
+                            });
+                            
+                        }else{
+                            this.$message({
+                                dangerouslyUseHTMLString: true,
+                                message: '升级失败，卡牌化作了<span class="cOrange">'+res.data.getStar+'</span>颗星星！'
+                            });
+                            this.$refs.userTop.getUserInfo();
+                        }
+                        // 0卡牌id、1卡牌数量、2卡牌是否出战、3卡牌等级、4卡牌信息
+                        this.userCard[index][1] = res.data.cardNum;
+                        this.userCard[index][3] = res.data.myCardLevel;
+                        let cardLeftType = this.cardDatas[PrefixInteger(cardId,4)].leftType;
+                        let setItemShould = this.$options.filters['setItemShould'];
+                        let shouldItemNum = setItemShould(cardLeftType);
+                        this.myItem[this.cardDatas[PrefixInteger(cardId,4)].cry+''+cardLeftType] = res.data.itemNum;
+                    }
+                });
+            }).catch(() => {         
+            });
+        },
         searchChanged(){
             this.cardPage = 1;
             this.cardPageChange(1);
@@ -316,7 +365,49 @@ export default {
                 }
                 return false;
             }
+            function setSort(a,b){
+                let sort_ = that.searchForm.sort;
+                if(sort_ === '0'){
+                    if(a[3] === a[3]){
+                        if(a[4].star<b[4].star){
+                            return 1;
+                        }else if(a[4].star>b[4].star){
+                            return -1;
+                        }else{
+                            return 0;
+                        }
+                    }
+                    if(a[4].star<b[4].star){
+                        return 1;
+                    }else if(a[4].star>b[4].star){
+                        return -1;
+                    }else{
+                        return 0;
+                    }
+                }else if(sort_==='1'){
+                    if(a[3]<b[3]){
+                        return 1;
+                    }else if(a[3]>b[3]){
+                        return -1;
+                    }else{
+                        return 0;
+                    }
+                }else if(sort_==='2'){
+                    return a[3] - b[3];
+                }else if(sort_==='3'){
+                    if(a[4].star<b[4].star){
+                        return 1;
+                    }else if(a[4].star>b[4].star){
+                        return -1;
+                    }else{
+                        return 0;
+                    }
+                }else if(sort_==='4'){
+                    return a[4].star - b[4].star;
+                }
+            }
             let userCardSearchRes = this.userCardCache.filter(item => setStar(item[4].star) && setCry(item[4].cry) && setRightType(item[4].rightType) && setLeftType(item[4].leftType) && setBattle(item[2]));
+            userCardSearchRes = userCardSearchRes.sort(setSort);
             let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
             this.cardTotle = userCardSearchRes.length;
             setTimeout(()=>{

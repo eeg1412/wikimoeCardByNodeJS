@@ -72,6 +72,9 @@ export default function (api) {
     rank(){
       return api.get('rank')
     },
+    upgradecard(data){
+      return api.post('upgradecard',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },
