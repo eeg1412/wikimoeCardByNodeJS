@@ -9,8 +9,8 @@
                         <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
                         <div class="wm_market_selling_tag" v-if="item.selled || serverTime-item.time>2592000">
                             <!-- 更新点击事件记得更新标签 -->
-                            <el-tag type="success" v-if="item.selled" class="wm_market_selling_tag_item" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">可收取星星</el-tag>
-                            <el-tag type="danger" v-if="serverTime-item.time>2592000 && !item.selled" class="wm_market_selling_tag_item" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">过期请更新</el-tag>
+                            <el-tag type="success" v-if="item.selled" class="wm_market_selling_tag_item" @click.stop="editCard(item.cardId,item.time,item.selled,item.price,item._id)">可收取星星</el-tag>
+                            <el-tag type="danger" v-if="serverTime-item.time>2592000 && !item.selled" class="wm_market_selling_tag_item" @click.stop="editCard(item.cardId,item.time,item.selled,item.price,item._id)">过期请更新</el-tag>
                         </div>
                     </div>
                 </div>
