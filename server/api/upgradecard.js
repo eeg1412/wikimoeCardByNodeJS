@@ -225,7 +225,24 @@ module.exports = async function(req, res, next){
             chalk.red('数据库更新错误！')
         );
         throw err;
-    })
+    });
+    let timeNow = Math.round(new Date().getTime()/1000);
+    let logObject = {
+        email:email,
+        md5:result.md5,
+        nickName:result.nickName,
+        type:'upgradecard',
+        time:timeNow,
+        data:{
+            isSuccess:isSuccess,
+            getStar:getStar,
+            myCardLevel:myCardLevel,
+            cardName:myCardData.name,
+            cardId:cardId
+        },
+        ip:IP
+    }
+    utils.writeLog(logObject);
     res.send({
         code:1,
         isSuccess:isSuccess,

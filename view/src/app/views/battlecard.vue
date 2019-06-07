@@ -52,6 +52,7 @@
                             <el-tooltip class="item" effect="dark" content="拖动改变卡牌发动顺序" placement="top">
                                 <div class="wm_battlecard_list_move handle"><i class="el-icon-rank cRed"></i></div>
                             </el-tooltip>
+                            <div class="wm_battlecard_level cRed" v-if="item">Lv.{{myCardLevel[item] || 0}}</div>
                             <div class="wm_battlecard_list_number">{{index+1}}</div>
                             <div v-if="item!==null"><img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item,4)+'.jpg'"></div>
                         </div>
@@ -105,12 +106,22 @@
                         <el-option label="特" value="7"></el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="设置排序">
+                        <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.sort" placeholder="设置排序">
+                        <el-option label="默认" value="0"></el-option>
+                        <el-option label="等级从高到低" value="1"></el-option>
+                        <el-option label="等级从低到高" value="2"></el-option>
+                        <el-option label="星级从高到低" value="3"></el-option>
+                        <el-option label="星级从低到高" value="4"></el-option>
+                        </el-select>
+                    </el-form-item>
                 </el-form>
             </div>
             <el-collapse-transition>
                 <div class="wm_mycard_list" v-if="userCard.length>0">
                     <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="ifIndex===index?'card_sel_pikapika':''" @click="seledCard(index)">
                         <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
+                        <div class="wm_battlecard_level cRed">Lv.{{myCardLevel[item[0]] || 0}}</div>
                     </div>
                 </div>
                 <div class="wm_battlecard_nocard" v-if="userCard.length<=0&&!pageChangeing">您目前还没有这些卡牌呢！快去抽卡！</div>
@@ -130,7 +141,15 @@
         <div class="wm_battlecard_btn_body">
             <el-button @click="back();">返回</el-button>
             <el-button type="primary" v-show="selIndex===null" @click="saveCard">保存</el-button>
-            <el-button type="info" @click="openTips">说明</el-button>
+            <el-dropdown class="ml10" trigger="click" @command="moreBtn">
+                <el-button type="info">
+                    更多
+                </el-button>
+                <el-dropdown-menu slot="dropdown" placement="top" class="wm_battlecard_more">
+                    <el-dropdown-item command="shuoming">说明</el-dropdown-item>
+                    <el-dropdown-item command="clear">清空</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
         </div>
         <menuView></menuView>
     </div>
@@ -166,8 +185,10 @@ export default {
             star:'0',
             cry:'0',
             rightType:'0',
-            leftType:'0'
-        }
+            leftType:'0',
+            sort:'0'
+        },
+        myCardLevel:{},
     }
   },
   components: {
@@ -182,6 +203,22 @@ export default {
     window.addEventListener('scroll', this.tableFixed);
   },
   methods: {
+    moreBtn(command) {
+        if(command==='shuoming'){
+            this.openTips();
+        }else if(command==='clear'){
+            this.clearBattleCard();
+        }
+    },
+    clearBattleCard(){
+        for(let i=0;i<this.myCardIndex.length;i++){
+            if(this.myCardIndex[i]){
+                this.userCardCache[this.myCardIndex[i]][2] = true;
+            }
+        }
+        this.myCard = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+        this.myCardIndex = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+    },
     tableFixed(){
         let el = document.getElementById('battlecardTable');
         if(!el){
@@ -237,6 +274,7 @@ export default {
         for(let i=0;i<cardList.length;i++){
             if(cardList[i]!==null){
                 let cardInfo = cardData_[PrefixInteger(cardList[i],4)];
+                cardInfo['cardId'] = cardList[i];
                 myCardInfo.push(cardInfo);
             }
         }
@@ -269,23 +307,25 @@ export default {
             let A = x*100;
             let D = x*50;
             let HP = x*500;
+            console.log(cardCountPlus);
             // 设置速度
             let S = 0;
             for(let j =0;j<cardArr.length;j++){
                 //速4
                 let leftType = cardArr[j].leftType;
+                let level = this.myCardLevel[cardArr[j].cardId] || 0;
                 if(leftType===4){
-                    S = S+1;
+                    S = S+1+level*1;
                 }else if(leftType===1){//全1
-                    A = A + 50;
-                    D = D + 25;
+                    A = A + 50 +level*50;
+                    D = D + 25 +level*25;
                 }else if(leftType===2){//兵2
-                    A = A + 100;
+                    A = A + 100 +level*100;
                 }else if(leftType===3){//盾3
-                    D = D + 50;
+                    D = D + 50 +level*50;
                 }else if(leftType===5){//爱5
-                    HP = HP + 500;
-                }  
+                    HP = HP + 500 +level*500;
+                } 
             }
             return [A,D,S,HP];
         }else{
@@ -373,7 +413,46 @@ export default {
           }
           return false;
       }
+      function setSort(a,b){
+            let sort_ = that.searchForm.sort;
+            if(sort_ === '0'){
+                if(a[4].star<b[4].star){
+                    return 1;
+                }else if(a[4].star>b[4].star){
+                    return -1;
+                }else{
+                    if(a[5]<a[5]){
+                        return 1;
+                    }else if(a[5]>b[5]){
+                        return -1;
+                    }else{
+                        return 0;
+                    }
+                }
+            }else if(sort_==='1'){
+                if(a[5]<b[5]){
+                    return 1;
+                }else if(a[5]>b[5]){
+                    return -1;
+                }else{
+                    return 0;
+                }
+            }else if(sort_==='2'){
+                return a[5] - b[5];
+            }else if(sort_==='3'){
+                if(a[4].star<b[4].star){
+                    return 1;
+                }else if(a[4].star>b[4].star){
+                    return -1;
+                }else{
+                    return 0;
+                }
+            }else if(sort_==='4'){
+                return a[4].star - b[4].star;
+            }
+        }
       let userCardSearchRes = this.userCardCache.filter(item => item[2] && setStar(item[4].star) && setCry(item[4].cry) && setRightType(item[4].rightType) && setLeftType(item[4].leftType));
+      userCardSearchRes = userCardSearchRes.sort(setSort);
       let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
       this.cardTotle = userCardSearchRes.length;
       setTimeout(()=>{
@@ -393,6 +472,22 @@ export default {
             }else if(res.data.code==1){
                 if(res.data.data.length===20){
                     this.myCard = res.data.data;
+                }
+                this.searchcardlevel();
+            }
+        });
+    },
+    searchcardlevel(){
+        let params = {
+            token:this.token
+        }
+        authApi.searchcardlevel(params).then(res => {
+            console.log(res);
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                if(res.data.data){
+                    this.myCardLevel = res.data.data;
                 }
                 this.getMycard();
             }
@@ -433,8 +528,9 @@ export default {
                         this.userCardCache[i][3] = i;
                         let cardData_ = cardData['cardData'];//卡牌信息
                         this.userCardCache[i][4] = cardData_[PrefixInteger(this.userCardCache[i][0],4)];//输入卡牌信息
+                        this.userCardCache[i][5] = this.myCardLevel[this.userCardCache[i][0]] || 0;
                     }
-                    // 0卡牌id、1卡牌数量、2卡牌是否已选、3卡牌index、4卡牌信息
+                    // 0卡牌id、1卡牌数量、2卡牌是否已选、3卡牌index、4卡牌信息、5卡牌等级
                     this.cardPage = 1;
                     this.ADSHP = this.sumADSHP(this.myCard);
                     this.cardPageChange(1);
@@ -454,6 +550,7 @@ export default {
             });
         }else{
             this.selIndex = null;
+            this.restIf();
         }
     },
   },
@@ -524,6 +621,18 @@ export default {
     z-index: 3;
     border: 1px solid rgba(255,83,100,0.6);
 }
+.wm_battlecard_level{
+    position: absolute;
+    background: rgba(255,255,255,0.9);
+    padding: 0 5px;
+    height: 20px;
+    line-height: 20px;
+    left: 5px;
+    bottom: 5px;
+    border-radius: 3px;
+    z-index: 3;
+    border: 1px solid rgba(255,83,100,0.6);
+}
 .wm_battlecard_table_fixed_body{
     position: fixed;
     left: 0;
@@ -547,5 +656,10 @@ export default {
     .wm_battlecard_list_number{
         line-height: 124px;
     }
+}
+</style>
+<style>
+.wm_battlecard_more .popper__arrow{
+    display: none;
 }
 </style>

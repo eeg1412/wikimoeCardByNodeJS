@@ -174,7 +174,7 @@ export default {
                 if(myScore<0){
                     myScore= 0;
                 }
-                let getScore= new PIXI.Text('我的竞技点：'+myScore,{ fontSize: 36, fill : 0xffffff, align : 'center'});//竞技点
+                let getScore= new PIXI.Text('我的竞技点：'+myScore + '（'+(that.battleData.getScore>=0?'+'+that.battleData.getScore:that.battleData.getScore)+'）',{ fontSize: 36, fill : 0xffffff, align : 'center'});//竞技点
                 let getExp = new PIXI.Text('获得经验值：'+that.battleData.getExp,{ fontSize: 36, fill : 0xffffff, align : 'center'});//经验
                 let tips = new PIXI.Text('点击画面可立即关闭战斗窗口！',{ fontSize: 22, fill : 0xffffff, align : 'center'});//经验
                 // 提示
@@ -226,8 +226,8 @@ export default {
                 battleSenceItem.myNickname = new PIXI.Text(that.battleData.MyName,{ fontSize: 24, fill : 0xffffff, align : 'left'});//昵称
                 battleSenceItem.myAvatarSprite = new PIXI.Sprite(resources['myAvatar']['texture']);//我的头像
                 // Opt-in to interactivity
-                battleSenceItem.myAvatarSprite.interactive = true;
-                battleSenceItem.myAvatarSprite.on('pointermove', seeMyInfo_);
+                // battleSenceItem.myAvatarSprite.interactive = true;
+                // battleSenceItem.myAvatarSprite.on('pointermove', seeMyInfo_);
                 battleSenceItem.mySAN = new PIXI.Text('SAN:'+that.battleData.MyADSHP[3],{ fontSize: 36, fill : 0xffffff, align : 'left'});//SAN
                 // 画我的血条背景
                 battleSenceItem.myBgSanB = new PIXI.Graphics();
@@ -660,7 +660,7 @@ export default {
                             sprites['mycard'][that.battleData.MyBattleCard[battleInfo.turn-2]].destroy();
                             sprites['emcard'][that.battleData.EmBattleCard[battleInfo.turn-2]].destroy();
                         }
-                        if(battleInfo.turn<=20){
+                        if(battleInfo.turn<19){
                             // 准备下一回合的卡牌
                             battleSence.addChild(sprites['mycard'][that.battleData.MyBattleCard[battleInfo.turn+1]]);
                             battleSence.addChild(sprites['emcard'][that.battleData.EmBattleCard[battleInfo.turn+1]]);

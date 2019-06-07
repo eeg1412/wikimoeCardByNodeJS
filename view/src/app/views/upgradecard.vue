@@ -284,6 +284,7 @@ export default {
                         let setItemShould = this.$options.filters['setItemShould'];
                         let shouldItemNum = setItemShould(cardLeftType);
                         this.myItem[this.cardDatas[PrefixInteger(cardId,4)].cry+''+cardLeftType] = res.data.itemNum;
+                        this.$forceUpdate();
                     }
                 });
             }).catch(() => {         
@@ -371,21 +372,18 @@ export default {
             function setSort(a,b){
                 let sort_ = that.searchForm.sort;
                 if(sort_ === '0'){
-                    if(a[3] === a[3]){
-                        if(a[4].star<b[4].star){
-                            return 1;
-                        }else if(a[4].star>b[4].star){
-                            return -1;
-                        }else{
-                            return 0;
-                        }
-                    }
                     if(a[4].star<b[4].star){
                         return 1;
                     }else if(a[4].star>b[4].star){
                         return -1;
                     }else{
-                        return 0;
+                        if(a[3]<b[3]){
+                            return 1;
+                        }else if(a[3]>b[3]){
+                            return -1;
+                        }else{
+                            return 0;
+                        }
                     }
                 }else if(sort_==='1'){
                     if(a[3]<b[3]){

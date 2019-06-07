@@ -240,7 +240,6 @@ function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount,cardLevel){
         //速4
         let leftType = cardArr[j].leftType;
         let level = cardLevel[cardArr[j].cardId] || 0;
-        console.log(level);
         if(leftType===4){
             S = S+1+level*1;
         }else if(leftType===1){//全1
@@ -417,6 +416,7 @@ module.exports = async function(req, res, next){
     let emCardLevel = {};//卡牌等级
     // 初始化胜负
     let win = 2;
+    let noDieWin = false;//血没扣完的胜负
 
     // 如果没有设置对战卡牌则系统抽选卡牌
     if(MyBattleCard.length!==20){
@@ -443,7 +443,6 @@ module.exports = async function(req, res, next){
         throw err;
     })|| {};
     myCardLevel = myCardLevel['cardLevel'] || {};
-    console.log(myCardLevel);
     // 设置我的出战卡牌信息
     MyBattleCardArr_ = [...MyBattleCard]
     MyBattleCard = setBattleCardInfo(MyBattleCard);
@@ -505,7 +504,6 @@ module.exports = async function(req, res, next){
             );
             throw err;
         }) || {};
-        console.log(emCardLevel);
         emCardLevel = emCardLevel['cardLevel'] || {};
     }
     // 设置对方出战卡牌信息
@@ -572,8 +570,16 @@ module.exports = async function(req, res, next){
             }
         }
     }
-    if(win===3){//打完还是3说明是平局
-        win = 2;
+    if(win===3){//打完还是3需要根据HP扣血情况判断
+        if(MyADSHP[3]>EmADSHP[3] && (EmADSHP[3]/EmADSHP_[3])<0.8){
+            win = 1;
+            noDieWin = true;
+        }else if(MyADSHP[3]<EmADSHP[3] && (MyADSHP[3]/MyADSHP_[3])<0.8){
+            win = 0;
+            noDieWin = true;
+        }else{
+            win = 2;
+        }
     }
     // 计算当天战斗次数
     let battleOverTimes = 5;//每天最多可以赢几次
@@ -619,6 +625,9 @@ module.exports = async function(req, res, next){
             }
             if(advanced&&getScore>=90){
                 getScore = 120;
+            }
+            if(noDieWin){//如果没打死对方按比例加成
+                getScore = Math.round(getScore * (1-EmADSHP[3]/EmADSHP_[3]))
             }
             EmGetScore = -getScore;
             getExp = getScore+10;
@@ -674,6 +683,9 @@ module.exports = async function(req, res, next){
             }
             if(advanced&&getScore<=-90){
                 getScore = -120;
+            }
+            if(noDieWin){//如果没打死对方按比例加成
+                getScore = Math.round(getScore * (1-MyADSHP[3]/MyADSHP_[3]))
             }
             EmGetScore = Math.abs(getScore);
             let myNewScore = result.score + getScore;
