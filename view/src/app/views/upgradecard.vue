@@ -81,7 +81,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <h5 class="mb5 f18">Lv.{{item[3]}}</h5>
+                                    <h5 class="mb5 f18">Lv.{{item[3]+1}}</h5>
                                     <p class="cRed mb20">
                                         <el-tooltip placement="top">
                                             <div slot="content" class="tc" v-if="item[4].leftType==1">

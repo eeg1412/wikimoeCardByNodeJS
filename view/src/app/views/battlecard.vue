@@ -52,7 +52,7 @@
                             <el-tooltip class="item" effect="dark" content="拖动改变卡牌发动顺序" placement="top">
                                 <div class="wm_battlecard_list_move handle"><i class="el-icon-rank cRed"></i></div>
                             </el-tooltip>
-                            <div class="wm_battlecard_level cRed" v-if="item">Lv.{{myCardLevel[item] || 0}}</div>
+                            <div class="wm_battlecard_level cRed" v-if="item">Lv.{{myCardLevel[item]?myCardLevel[item]+1:1}}</div>
                             <div class="wm_battlecard_list_number">{{index+1}}</div>
                             <div v-if="item!==null"><img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item,4)+'.jpg'"></div>
                         </div>
@@ -121,7 +121,7 @@
                 <div class="wm_mycard_list" v-if="userCard.length>0">
                     <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="ifIndex===index?'card_sel_pikapika':''" @click="seledCard(index)">
                         <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
-                        <div class="wm_battlecard_level cRed">Lv.{{myCardLevel[item[0]] || 0}}</div>
+                        <div class="wm_battlecard_level cRed">Lv.{{myCardLevel[item[0]]?myCardLevel[item[0]]+1:1}}</div>
                     </div>
                 </div>
                 <div class="wm_battlecard_nocard" v-if="userCard.length<=0&&!pageChangeing">您目前还没有这些卡牌呢！快去抽卡！</div>
@@ -212,7 +212,7 @@ export default {
     },
     clearBattleCard(){
         for(let i=0;i<this.myCardIndex.length;i++){
-            if(this.myCardIndex[i]){
+            if(this.myCardIndex[i]!==null){
                 this.userCardCache[this.myCardIndex[i]][2] = true;
             }
         }
