@@ -139,7 +139,7 @@
                     class="my_card_page">
                 </el-pagination>
             </div>
-            <div class="mt20 tc">
+            <div class="mt20 tc wm_upgradecard_bt_btn_body">
                 <el-button @click="goRouter('/battle')">返回</el-button>
                 <el-button type="primary" @click="goRouter('/battlecard')">组卡</el-button>
             </div>
@@ -206,17 +206,17 @@ export default {
           return n;
       },
       setItemShould(v){
-          if(v==1){
-              return 75;
-          }else if(v==2){
-              return 100;
-          }else if(v==3){
-              return 50;
-          }else if(v==4){
-              return 100;
-          }else if(v==5){
-              return 200;
-          }
+            if(v==1){
+                return 45;
+            }else if(v==2){
+                return 60;
+            }else if(v==3){
+                return 30;
+            }else if(v==4){
+                return 60;
+            }else if(v==5){
+                return 150;
+            }
       },
       setCardShould(v){
           if(v<=3){
@@ -540,5 +540,16 @@ export default {
 .wm_level_card_item_img{
     width: 24px;
     height: 24px;
+}
+.wm_upgradecard_bt_btn_body{
+    padding: 15px 0;
+    text-align: center;
+    background-color: rgba(255,255,255,0.95);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    z-index: 999;
 }
 </style>

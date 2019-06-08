@@ -297,11 +297,11 @@ exports.wmCreatCardId = function($randomCardRate){
         $randomCardID = '1'+this.PrefixInteger($randomCardR_,3);
     }else if($randomCardRate>=87&&$randomCardRate<=97){
         //SR
-        $randomCardSR_ = this.randomNum(1, 80);
+        $randomCardSR_ = this.randomNum(1, 81);
         $randomCardID = '2'+this.PrefixInteger($randomCardSR_,3);
     }else if($randomCardRate>97){
         //SSR
-        $randomCardSSR_ = this.randomNum(1, 48);
+        $randomCardSSR_ = this.randomNum(1, 49);
         $randomCardID = '3'+this.PrefixInteger( $randomCardSSR_,3);
     }
     return $randomCardID;

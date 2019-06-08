@@ -1,6 +1,7 @@
 <template>
 <div class="common_body">
     <userTop ref="userTop" />
+    <decomposehead />
     <div class="wm_market_content_body type_dec">
         <h5 class="common_title type_shop type_dec">卡牌分解</h5>
         <h6 class="common_title_tips type_dec">系统已自动保留一张卡牌</h6>
@@ -47,7 +48,8 @@ import md5_ from 'js-md5';
 import menuView from '../components/menu.vue';
 import {authApi} from "../api";
 import userTop from '../components/topUserInfo.vue';
-import cardData from "../../utils/cardData"
+import cardData from "../../utils/cardData";
+import decomposehead from "../components/decomposehead";
 
 export default {
   data() {
@@ -67,7 +69,8 @@ export default {
   },
   components: {
     menuView,
-    userTop
+    userTop,
+    decomposehead
   },
   created() {
       this.getUserCard();
@@ -245,19 +248,5 @@ export default {
     left: 0;
     width: 100%;
     z-index: 999;
-}
-.common_title.type_dec{
-    padding-bottom: 10px;
-}
-.common_title_tips.type_dec{
-    padding-bottom: 10px;
-}
-.wm_market_content_body.type_dec{
-    margin-top: 0px;
-}
-@media ( max-width : 768px) {
-    .wm_mycard_list.type_dec .wm_getcard_box{
-        height: 172px;
-    }
 }
 </style>

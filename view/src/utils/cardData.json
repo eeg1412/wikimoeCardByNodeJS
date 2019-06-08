@@ -2296,6 +2296,14 @@
 			"title":"艾斯卡与罗吉的工作室～黄昏天空的炼金术士～",
 			"name":"艾斯卡·梅莉耶"
 		},
+		"2081": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"VOCALOID",
+			"name":"IA"
+		},
 		"3001": {
 			"star": 6,
 			"leftType": 2,
@@ -2679,6 +2687,14 @@
 			"cry": 5,
 			"title":"游戏人生",
 			"name":"白"
+		},
+		"3049": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 4,
+			"title":"冰菓",
+			"name":"千反田爱瑠"
 		}
 	},
 	"level":[40,82,130,180,276,860]

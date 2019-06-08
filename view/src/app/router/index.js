@@ -15,6 +15,7 @@ const handbookView = () => import(/* webpackChunkName: "handbookView" */ '@/view
 const battleView = () => import(/* webpackChunkName: "battleView" */ '@/views/battle.vue')
 const battleCardView = () => import(/* webpackChunkName: "battleView" */ '@/views/battlecard.vue')
 const decomposeView = () => import(/* webpackChunkName: "decomposeView" */ '@/views/decompose.vue')
+const decomposeitemView = () => import(/* webpackChunkName: "decomposeitemView" */ '@/views/decomposeitem.vue')
 const upgradecardView = () => import(/* webpackChunkName: "battleCryView" */ '@/views/upgradecard.vue')
 
 const adminLoginView = () => import(/* webpackChunkName: "adminLoginView" */ '@/views/admin/login-view.vue')
@@ -174,6 +175,15 @@ const router = new VueRouter({
         admin:false,
       },
       component: decomposeView
+    },
+    {
+      name: 'decomposeitem',
+      path: '/decomposeitem',
+      meta:{
+        login:true,
+        admin:false,
+      },
+      component: decomposeitemView
     },
     {
       name: 'adminLogin',

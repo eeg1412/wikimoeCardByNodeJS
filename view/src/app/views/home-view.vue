@@ -141,6 +141,9 @@
               <span v-else-if="item.type=='dec'"
               >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/decompose')">卡牌分解</span>，用公式2NaAlO2+CO2+3H2O+{{item.data.cardNumCount}}张卡牌分解出了2Al(OH)3↓+Na2CO3+{{item.data.star}}颗星星！
               </span>
+              <span v-else-if="item.type=='decItem'"
+              >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/decomposeitem')">道具分解</span>，用公式Cl2+2KI+{{item.data.shouldItemNum}}{{item.data.itemName}}分解出了2KCl+I2+{{item.data.getStar}}颗星星！
+              </span>
               <span v-else-if="item.type=='upgradecard' && item.data.isSuccess"
               >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌升级</span>，成功将卡牌<span class="wm_card_get_list_card_link" @click="openImg('/static/img/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.cardName}}</span>升级到了{{item.data.myCardLevel}}级。我感觉我已经天下无敌里呀！
               </span>

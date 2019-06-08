@@ -148,6 +148,7 @@
                 <el-dropdown-menu slot="dropdown" placement="top" class="wm_battlecard_more">
                     <el-dropdown-item command="shuoming">说明</el-dropdown-item>
                     <el-dropdown-item command="clear">清空</el-dropdown-item>
+                    <el-dropdown-item command="goup">升级</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
         </div>
@@ -208,6 +209,10 @@ export default {
             this.openTips();
         }else if(command==='clear'){
             this.clearBattleCard();
+        }else if(command==='goup'){
+            this.$router.push({
+                path:'/upgradecard'
+            });
         }
     },
     clearBattleCard(){

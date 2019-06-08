@@ -19,15 +19,15 @@ function setChenggolv(v){
 }
 function setItemShould(v){
     if(v==1){
-        return 75;
+        return 45;
     }else if(v==2){
-        return 100;
+        return 60;
     }else if(v==3){
-        return 50;
+        return 30;
     }else if(v==4){
-        return 100;
+        return 60;
     }else if(v==5){
-        return 200;
+        return 150;
     }
 }
 function setCardShould(v){

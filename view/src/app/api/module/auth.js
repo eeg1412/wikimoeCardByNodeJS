@@ -54,6 +54,9 @@ export default function (api) {
     decompose(data){
       return api.post('decompose',data)
     },
+    decomposeitem(data){
+      return api.post('decomposeitem',data)
+    },
     wantcard(data){
       return api.post('wantcard',data)
     },

@@ -7,6 +7,24 @@
             <battle :battleData="battleData" v-if="battleSence" @gameover="gameover"></battle>
         </transition>
         <div class="wm_battle_btn_body">
+            <div class="wm_battle_ueseinfo_body">
+                <table class="wm_user_info_table">
+                    <thead>
+                        <tr>
+                        <th>胜利</th>
+                        <th>战败</th>
+                        <th>平局</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                        <td class="wm_user_level">{{userbattleinfoData.win}}</td>
+                        <td class="wm_user_score">{{userbattleinfoData.lose}}</td>
+                        <td class="wm_user_getcard_count">{{userbattleinfoData.draw}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="wm_battle_today_v">今日已获胜：{{myBattleTimes}}/{{battleOverTimes}}</div>
             <div class="wm_battle_btn_box">
                 <el-tooltip class="item" effect="dark" content="匹配与自己竞技点相近的对手。" placement="top" :enterable="false">
@@ -47,7 +65,8 @@ export default {
         battleSence:false,
         myBattleTimes:'--',
         battleOverTimes:'--',
-        testWin:[0,0,0]
+        testWin:[0,0,0],
+        userbattleinfoData:{win:0,lose:0,draw:0}
     }
   },
   components: {
@@ -74,6 +93,9 @@ export default {
             }else if(res.data.code==1){
                 this.myBattleTimes = res.data.myBattleTimes;
                 this.battleOverTimes = res.data.battleOverTimes;
+                if(res.data.userbattleinfoData){
+                    this.userbattleinfoData = res.data.userbattleinfoData;
+                }
             }
         });
       },
@@ -141,10 +163,14 @@ export default {
     padding: 50px 0;
 }
 .wm_battle_today_v{
-    padding:0 0 40px 0;
+    padding:20px 0;
     font-size: 16px;
 }
 .wm_battle_btn_box{
     margin: 20px 0;
+}
+.wm_battle_ueseinfo_body{
+    max-width: 400px;
+    margin: 0 auto;
 }
 </style>

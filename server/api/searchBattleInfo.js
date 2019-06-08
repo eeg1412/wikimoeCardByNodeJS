@@ -1,5 +1,6 @@
 var utils = require('../utils/utils');
 var chalk = require('chalk');
+var userbattleinfoData = require('../utils/database/userbattleinfo');
 
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
@@ -42,9 +43,21 @@ module.exports = async function(req, res, next){
     if(!(new Date().toDateString()===new Date(dailyBattleTime).toDateString())){//如果不是同天
         myBattleTimes = 0;
     }
+    //查询胜负信息
+    let userbattleinfoData_ = await userbattleinfoData.findOne({email:email},'-_id lose win draw').catch ((err)=>{
+        res.send({
+            code:0,
+            msg:'内部错误请联系管理员！'
+        });
+        console.error(
+            chalk.red('数据库错误！')
+        );
+        throw err;
+    });
     res.send({
         code:1,
         battleOverTimes:battleOverTimes,
-        myBattleTimes:myBattleTimes
+        myBattleTimes:myBattleTimes,
+        userbattleinfoData:userbattleinfoData_
     });
 }
