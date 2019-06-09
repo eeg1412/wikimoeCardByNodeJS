@@ -17,7 +17,6 @@ import 'vue-sequential-entrance/vue-sequential-entrance.css'
 import VueClipboard from 'vue-clipboard2'
 
 Vue.prototype.$wikimoecard = siteSetting;
-document.getElementById('wikimoecardFooter').innerHTML = Vue.prototype.$wikimoecard.footerInfo;
 
 Vue.use(VueClipboard)
 Vue.use(SequentialEntrance);
