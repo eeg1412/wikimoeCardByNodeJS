@@ -5,7 +5,7 @@
                 <h5 class="common_title type_shop">贩卖中的卡牌({{myMarket.length}}/20)</h5>
                 <div class="wm_mycard_list">
                     <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in myMarket" v-bind:key="index+1" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">
-                        <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg'">
+                        <img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item.cardId,4)+'.jpg'">
                         <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
                         <div class="wm_market_selling_tag" v-if="item.selled || serverTime-item.time>2592000">
                             <!-- 更新点击事件记得更新标签 -->
@@ -49,7 +49,7 @@
             <el-collapse-transition>
                 <div class="wm_mycard_list" v-if="userCard.length>0">
                     <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box type_mobile wm_market_cansell_card" @click="upCard(item[0])">
-                        <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
+                        <img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'">
                         <div class="wm_card_nums">可卖{{item[1]-1}}张</div>
                         <div class="wm_card_want_nums" v-if="wantList[item[0]]">{{wantList[item[0]]}}人想要</div>
                     </div>

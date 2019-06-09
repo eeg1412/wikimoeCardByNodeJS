@@ -72,7 +72,7 @@
         </table>
         <sequential-entrance delay="100" tag="div">
           <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box">
-            <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'" @click="openImg('/static/img/'+PrefixInteger_(item[0],4)+'.jpg')">
+            <img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'" @click="openImg($wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg')">
             <br>
             <span class="wm_card_nums">×{{item[1]}}</span>
           </div>
@@ -123,7 +123,7 @@
               >大家好，我是萌新{{item.nickName}}。初来乍到对什么都还很陌生，还恳请大家能够多多指导我怎么抽出六星卡！
               </span>
               <span v-else-if="item.type=='dailyCard'"
-              >我抽中了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" :class="item.data.star>=6?'wm_six_star_card_shake':''" @click="openImg('/static/img/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
+              >我抽中了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" :class="item.data.star>=6?'wm_six_star_card_shake':''" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
                 {{item.data.star|cardStarText}}
               </span>
               <span v-else-if="item.type=='demining'"
@@ -133,7 +133,7 @@
               >我用{{item.data.star}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/shop')">星星商店</span>购买了{{item.data.times}}次抽卡机会，共抽中了<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card6)">{{item.data.card6.length}}</span>张六星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card5)">{{item.data.card5.length}}</span>张五星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card4)">{{item.data.card4.length}}</span>张四星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card3)">{{item.data.card3.length}}</span>张三星及其以下的卡。
               </span>
               <span v-else-if="item.type=='marketBuy'"
-              >我用{{item.data.price}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/market/buycard')">星星交易市场</span>购买了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" @click="openImg('/static/img/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
+              >我用{{item.data.price}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/market/buycard')">星星交易市场</span>购买了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
               </span>
               <span v-else-if="item.type=='battle'"
               >我在<span class="wm_card_get_list_card_link" @click="goMenu('/battle')">卡牌对战</span>中<span v-if="item.data.win===1">战胜了</span><span v-else-if="item.data.win===0">败给了</span><span v-else>打平了</span><span class="wm_card_get_list_card_link" @click="watchUserCard(item.data.EmMD5)" v-if="item.data.EmMD5">{{item.data.EmName}}</span><span v-else>{{item.data.EmName}}</span>，<span v-if="item.data.win===1||item.data.win===0"><span v-if="item.data.win===1">共获得了</span><span v-else-if="item.data.win===0">失去了</span>{{Math.abs(item.data.getScore)}}点竞技点<span v-if="item.data.win===1">和{{item.data.getExp}}点经验值</span>。</span><span v-else>什么也没有获得。</span><span v-if="item.data.win===1">谁来与我大战三百回合？</span><span v-else-if="item.data.win===0">什么? 此地叫麦城！？</span><span v-else>真可惜，就差一点，下次一定要打赢这位大佬！</span>
@@ -145,10 +145,10 @@
               >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/decomposeitem')">道具分解</span>，用公式Cl2+2KI+{{item.data.shouldItemNum}}{{item.data.itemName}}分解出了2KCl+I2+{{item.data.getStar}}颗星星！
               </span>
               <span v-else-if="item.type=='upgradecard' && item.data.isSuccess"
-              >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌升级</span>，成功将卡牌<span class="wm_card_get_list_card_link" @click="openImg('/static/img/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.cardName}}</span>升级到了{{item.data.myCardLevel}}级。我感觉我已经天下无敌里呀！
+              >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌升级</span>，成功将卡牌<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.cardName}}</span>升级到了{{item.data.myCardLevel}}级。我感觉我已经天下无敌里呀！
               </span>
               <span v-else-if="item.type=='upgradecard' && !item.data.isSuccess"
-              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌升级</span>中升级<span class="wm_card_get_list_card_link" @click="openImg('/static/img/'+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.cardName}}</span>的时候，升级失败了……我的卡牌和升级材料全部化作了{{item.data.getStar}}颗星星……
+              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌升级</span>中升级<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.cardName}}</span>的时候，升级失败了……我的卡牌和升级材料全部化作了{{item.data.getStar}}颗星星……
               </span>
             </p>
           </div>
@@ -275,7 +275,7 @@ export default {
       }
       let shopImgHTML = '';
       for(let i=0;i<cardArr.length;i++){
-        shopImgHTML = shopImgHTML+'<div class="watch_shop_img"><img src="'+'/static/img/'+PrefixInteger(cardArr[i],4)+'.jpg'+'" /></div>';
+        shopImgHTML = shopImgHTML+'<div class="watch_shop_img"><img src="'+this.$wikimoecard.url+PrefixInteger(cardArr[i],4)+'.jpg'+'" /></div>';
       }
       this.$alert('<div class="watch_shop_body">'+shopImgHTML+'</div>', '查看卡牌', {
         dangerouslyUseHTMLString: true,
@@ -367,7 +367,7 @@ export default {
       let userCard_ = this.userCardCache.slice((val-1)*20,val*20);
       let userCardSrc = [];
       for(let i = 0;i<userCard_.length;i++){
-        let userCardSrcItem = '/static/img/'+PrefixInteger(userCard_[i][0],4)+'.jpg';
+        let userCardSrcItem = this.$wikimoecard.url+PrefixInteger(userCard_[i][0],4)+'.jpg';
         userCardSrc.push(userCardSrcItem);
       }
       showLoading();
@@ -494,7 +494,7 @@ export default {
           }else if(res.data.code==1){
             this.rememberEmail();
             let resData = res.data;
-            let getCardSrcArr = ['/static/img/'+PrefixInteger(resData.cardChoiseList[0],4)+'.jpg','/static/img/'+PrefixInteger(resData.cardChoiseList[1],4)+'.jpg','/static/img/'+PrefixInteger(resData.cardChoiseList[2],4)+'.jpg'];
+            let getCardSrcArr = [this.$wikimoecard.url+PrefixInteger(resData.cardChoiseList[0],4)+'.jpg',this.$wikimoecard.url+PrefixInteger(resData.cardChoiseList[1],4)+'.jpg',this.$wikimoecard.url+PrefixInteger(resData.cardChoiseList[2],4)+'.jpg'];
             showLoading();
             new Promise((resolve, reject)=>{
                 loadingImg(getCardSrcArr,resolve, reject);

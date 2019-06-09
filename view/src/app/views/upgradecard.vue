@@ -77,7 +77,7 @@
                             <tbody>
                                 <td>
                                     <div class="wm_level_card_img_body mb10">
-                                        <img :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'" class="w_10 wm_level_card_img">
+                                        <img :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'" class="w_10 wm_level_card_img">
                                     </div>
                                 </td>
                                 <td>
@@ -116,7 +116,7 @@
                                     </p>
                                     <p class="mb10 f18">升级需要</p>
                                     <p class="mb10"><el-tooltip placement="top"><div slot="content">需要{{item[4].leftType | setItemShould}}个【{{itemData_[item[4].cry+''+item[4].leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer" :src="'/static/otherImg/item/'+item[4].cry+''+item[4].leftType+'.png'"/></el-tooltip>×{{item[4].leftType | setItemShould}}({{myItem[item[4].cry+''+item[4].leftType] || 0}})</p>
-                                    <div class="mb20"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content">需要{{item[4].star | setCardShould}}张【{{item[4].name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'"/></el-tooltip></div><span>×{{item[4].star | setCardShould}}({{item[1]}})</span></div>
+                                    <div class="mb20"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content">需要{{item[4].star | setCardShould}}张【{{item[4].name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'"/></el-tooltip></div><span>×{{item[4].star | setCardShould}}({{item[1]}})</span></div>
                                     <p class="mb10">成功率:{{item[3] | setChenggolv}}%</p>
                                     <div class="mt20">
                                         <el-button type="primary" @click="upgradecard(item[0],index)">升级</el-button>
@@ -220,13 +220,13 @@ export default {
       },
       setCardShould(v){
           if(v<=3){
-              return 41;
+              return 21;
           }else if(v==4){
-              return 14;
-          }else if(v==5){
               return 7;
+          }else if(v==5){
+              return 4;
           }else if(v==6){
-              return 3;
+              return 2;
           }
       }
   },

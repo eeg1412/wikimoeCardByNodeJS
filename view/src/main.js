@@ -2,6 +2,8 @@
 import 'element-ui/lib/theme-chalk/base.css';
 import Vue from 'vue'
 
+import siteSetting from './utils/setting';
+
 import vuexStore from '@/store'
 import router from '@/router'
 import httpPlugin from '@/service/httpPlugin'
@@ -13,6 +15,9 @@ import './assets/styles/card.css';
 import SequentialEntrance from 'vue-sequential-entrance'
 import 'vue-sequential-entrance/vue-sequential-entrance.css'
 import VueClipboard from 'vue-clipboard2'
+
+Vue.prototype.$wikimoecard = siteSetting;
+document.getElementById('wikimoecardFooter').innerHTML = Vue.prototype.$wikimoecard.footerInfo;
 
 Vue.use(VueClipboard)
 Vue.use(SequentialEntrance);

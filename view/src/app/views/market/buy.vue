@@ -60,7 +60,7 @@
             <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in cardList" v-bind:key="index+1" @click="buyCard(item.cardId,item.time,item.price,item._id)">
                 <div class="wm_getcard_img_box">
                   <div class="wm_getcard_img_checked" v-if="haveCardCheck(item.cardId)>0"><i class="el-icon-check"></i></div>
-                  <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg'">
+                  <img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item.cardId,4)+'.jpg'">
                 </div>
                 <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
             </div>

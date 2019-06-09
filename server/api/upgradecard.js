@@ -32,13 +32,13 @@ function setItemShould(v){
 }
 function setCardShould(v){
     if(v<=3){
-        return 40;
+        return 20;
     }else if(v==4){
-        return 13;
-    }else if(v==5){
         return 6;
+    }else if(v==5){
+        return 3;
     }else if(v==6){
-        return 2;
+        return 1;
     }
 }
 

@@ -12,7 +12,7 @@
         </div>
         <sequential-entrance delay="100" tag="div">
           <div v-for="(item,index) in cardList" v-bind:key="index+1" class="shop_card_list_box" :class="item.seled?'selectedcard':''" @click="openCard(index)">
-            <rotate3DCard trigger="custom" v-model="item.seled" direction="row" :cardSrc="'/static/img/'+PrefixInteger_(item.id,4)+'.jpg'">
+            <rotate3DCard trigger="custom" v-model="item.seled" direction="row" :cardSrc="$wikimoecard.url+PrefixInteger_(item.id,4)+'.jpg'">
               <slot name="cz"></slot>
               <slot name="cf"></slot>
             </rotate3DCard>
@@ -121,7 +121,7 @@ export default {
                 let cardData = [];
                 let cardSrc = [];
                 for(let i = 0;i<cardResData.length;i++){
-                  let CardSrcItem = '/static/img/'+PrefixInteger(cardResData[i][0],4)+'.jpg';
+                  let CardSrcItem = this.$wikimoecard.url+PrefixInteger(cardResData[i][0],4)+'.jpg';
                   cardSrc.push(CardSrcItem);
                 }
                 for(let i=0;i<cardResData.length;i++){

@@ -2,7 +2,7 @@
 <div class="wm_market_content_body">
     <div class="wm_market_card_datail_body">
       <div class="wm_market_card_datail_img_body">
-        <img class="wm_market_card_detail_img" :src="'/static/img/'+cardIdFormat+'.jpg'">
+        <img class="wm_market_card_detail_img" :src="$wikimoecard.url+cardIdFormat+'.jpg'">
       </div>
       <div class="wm_market_card_datail_info_body">
         <div class="wm_market_card_datail_price" v-if="sellPrice">售价：{{sellPrice}}星星</div>

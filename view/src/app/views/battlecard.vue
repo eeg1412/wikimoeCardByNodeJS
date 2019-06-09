@@ -54,7 +54,7 @@
                             </el-tooltip>
                             <div class="wm_battlecard_level cRed" v-if="item">Lv.{{myCardLevel[item]?myCardLevel[item]+1:1}}</div>
                             <div class="wm_battlecard_list_number">{{index+1}}</div>
-                            <div v-if="item!==null"><img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item,4)+'.jpg'"></div>
+                            <div v-if="item!==null"><img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item,4)+'.jpg'"></div>
                         </div>
                     </draggable>
                 </div>
@@ -120,7 +120,7 @@
             <el-collapse-transition>
                 <div class="wm_mycard_list" v-if="userCard.length>0">
                     <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="ifIndex===index?'card_sel_pikapika':''" @click="seledCard(index)">
-                        <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
+                        <img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'">
                         <div class="wm_battlecard_level cRed">Lv.{{myCardLevel[item[0]]?myCardLevel[item[0]]+1:1}}</div>
                     </div>
                 </div>

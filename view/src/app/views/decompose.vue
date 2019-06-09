@@ -14,7 +14,7 @@
                     <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box type_mobile">
                         <div class="wm_dec_img_box">
                             <div class="wm_dec_can_num">可解:{{item[1]-1}}张</div>
-                            <img class="wm_getcard_img" :src="'/static/img/'+PrefixInteger_(item[0],4)+'.jpg'">
+                            <img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'">
                         </div>
                         <div class="wm_dec_input_body"><el-input-number :precision="0" :step="1" :max="item[1]-1" :min="0" size="mini" v-model="item[2]" class="wm_dec_input"></el-input-number></div>
                     </div>

@@ -41,7 +41,7 @@
         </p>
         <p>
             <span
-            >我愿意用<span class="cOrange fb">{{item.wantPrice}}</span>颗左右的星星，去换购出自作品《{{item.title}}》的{{item.star}}星卡<span class="wm_card_get_list_card_link" @click="openImg('/static/img/'+PrefixInteger_(item.cardId,4)+'.jpg')">{{item.name}}</span>。不知道有没有大佬愿意在市场上架这张卡牌！
+            >我愿意用<span class="cOrange fb">{{item.wantPrice}}</span>颗左右的星星，去换购出自作品《{{item.title}}》的{{item.star}}星卡<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.cardId,4)+'.jpg')">{{item.name}}</span>。不知道有没有大佬愿意在市场上架这张卡牌！
             </span>
         </p>
         </div>
