@@ -20,6 +20,11 @@ exports.updataUser = async function (filters,parmas,updateIndex) {
     }
     return upRes
 }
+exports.updataUserMany = async function (filters,parmas) {
+    // document查询
+    let upRes = await usersModel.updateMany(filters, parmas);
+    return upRes
+}
 exports.findUserInPage = async function (parmas = {},pageSize_ = 5,page_ = 1,getParams = '',sortData = {'_id':-1}) {
     // document查询
     let pageSize = pageSize_;

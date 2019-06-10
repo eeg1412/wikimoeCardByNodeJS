@@ -249,4 +249,9 @@ export default {
     width: 100%;
     z-index: 999;
 }
+@media (max-width: 768px){
+    .wm_mycard_list.type_dec .wm_getcard_box {
+        height: 172px;
+    }
+}
 </style>
