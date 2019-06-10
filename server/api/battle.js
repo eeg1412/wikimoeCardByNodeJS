@@ -253,7 +253,7 @@ function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount,cardLevel){
             HP = HP + 500 +level*500;
         }  
     }
-    return [A,D,S,HP];
+    return [A,D,S,50000000];
 }
 // 设置AI卡牌
 function creatAICard(starArr_){
@@ -712,8 +712,32 @@ module.exports = async function(req, res, next){
                 chalk.green(email+'战败。IP为：'+IP)
             )
         }
-        if(userFilters){
-            await userData.updataUser(userFilters,updataParams).catch ((err)=>{
+        //胜负统计
+        let userbattleinfoDataUpdata = {};
+        let emuserbattleinfoDataUpdata = {};
+        if(win===1){
+            userbattleinfoDataUpdata = {$inc:{win:1}};
+            emuserbattleinfoDataUpdata = {$inc:{lose:1}};
+        }else if(win===0){
+            userbattleinfoDataUpdata = {$inc:{lose:1}};
+            emuserbattleinfoDataUpdata = {$inc:{win:1}};
+        }else{
+            userbattleinfoDataUpdata = {$inc:{draw:1}};
+            emuserbattleinfoDataUpdata = {$inc:{draw:1}};
+        }
+        await userbattleinfoData.findOneAndUpdate({email:email},userbattleinfoDataUpdata).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            throw err;
+        })
+        //写入对方用户战斗数据
+        if(!AiMode){
+            await userbattleinfoData.findOneAndUpdate({email:emData.email},emuserbattleinfoDataUpdata).catch ((err)=>{
                 res.send({
                     code:0,
                     msg:'内部错误请联系管理员！'
@@ -723,16 +747,9 @@ module.exports = async function(req, res, next){
                 );
                 throw err;
             })
-            //写入用户战斗数据
-            let userbattleinfoDataUpdata = {};
-            if(win===1){
-                userbattleinfoDataUpdata = {$inc:{win:1}}
-            }else if(win===0){
-                userbattleinfoDataUpdata = {$inc:{lose:1}}
-            }else{
-                userbattleinfoDataUpdata = {$inc:{draw:1}}
-            }
-            await userbattleinfoData.findOneAndUpdate(userFilters,userbattleinfoDataUpdata).catch ((err)=>{
+        }
+        if(userFilters){
+            await userData.updataUser(userFilters,updataParams).catch ((err)=>{
                 res.send({
                     code:0,
                     msg:'内部错误请联系管理员！'
@@ -745,25 +762,6 @@ module.exports = async function(req, res, next){
         }
         if(EmUserFilters){
             await userData.updataUser(EmUserFilters,EmUpdataParams).catch ((err)=>{
-                res.send({
-                    code:0,
-                    msg:'内部错误请联系管理员！'
-                });
-                console.error(
-                    chalk.red('数据库更新错误！')
-                );
-                throw err;
-            })
-            //写入用户战斗数据
-            let userbattleinfoDataUpdata = {};
-            if(win===1){
-                userbattleinfoDataUpdata = {$inc:{lose:1}}
-            }else if(win===0){
-                userbattleinfoDataUpdata = {$inc:{win:1}}
-            }else{
-                userbattleinfoDataUpdata = {$inc:{draw:1}}
-            }
-            await userbattleinfoData.findOneAndUpdate(EmUserFilters,userbattleinfoDataUpdata).catch ((err)=>{
                 res.send({
                     code:0,
                     msg:'内部错误请联系管理员！'

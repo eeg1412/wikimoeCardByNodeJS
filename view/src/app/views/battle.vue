@@ -25,6 +25,7 @@
                     </tbody>
                 </table>
             </div>
+            <div class="wm_battle_today_v">竞技点：{{myScore}}</div>
             <div class="wm_battle_today_v">今日已获胜：{{myBattleTimes}}/{{battleOverTimes}}</div>
             <div class="wm_battle_btn_box">
                 <el-tooltip class="item" effect="dark" content="匹配与自己竞技点相近的对手。" placement="top" :enterable="false">
@@ -66,7 +67,8 @@ export default {
         myBattleTimes:'--',
         battleOverTimes:'--',
         testWin:[0,0,0],
-        userbattleinfoData:{win:0,lose:0,draw:0}
+        userbattleinfoData:{win:0,lose:0,draw:0},
+        myScore:'--'
     }
   },
   components: {
@@ -93,6 +95,7 @@ export default {
             }else if(res.data.code==1){
                 this.myBattleTimes = res.data.myBattleTimes;
                 this.battleOverTimes = res.data.battleOverTimes;
+                this.myScore = res.data.score;
                 if(res.data.userbattleinfoData){
                     this.userbattleinfoData = res.data.userbattleinfoData;
                 }
@@ -160,10 +163,10 @@ export default {
 <style scoped>
 .wm_battle_btn_body{
     text-align:center;
-    padding: 50px 0;
+    padding: 35px 0;
 }
 .wm_battle_today_v{
-    padding:20px 0;
+    padding:10px 0;
     font-size: 16px;
 }
 .wm_battle_btn_box{

@@ -58,6 +58,7 @@ module.exports = async function(req, res, next){
         code:1,
         battleOverTimes:battleOverTimes,
         myBattleTimes:myBattleTimes,
-        userbattleinfoData:userbattleinfoData_
+        userbattleinfoData:userbattleinfoData_,
+        score:result.score
     });
 }

@@ -104,7 +104,7 @@
                                             <div slot="content" class="tc" v-else-if="item[4].leftType==4">
                                                 <p class="mb5">每升一级速度+1</p>
                                                 <p class="mb5">当前速度+{{item[3]*1}}</p>
-                                                <p class="mb5">下一级防御+{{item[3]*1+1}}</p>
+                                                <p class="mb5">下一级速度+{{item[3]*1+1}}</p>
                                             </div>
                                             <div slot="content" class="tc" v-else-if="item[4].leftType==5">
                                                 <p class="mb5">每升一级SAN+500</p>
