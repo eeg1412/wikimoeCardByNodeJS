@@ -253,7 +253,7 @@ function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount,cardLevel){
             HP = HP + 500 +level*500;
         }  
     }
-    return [A,D,S,50000000];
+    return [A,D,S,HP];
 }
 // 设置AI卡牌
 function creatAICard(starArr_){
