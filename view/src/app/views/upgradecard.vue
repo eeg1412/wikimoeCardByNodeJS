@@ -266,7 +266,7 @@ export default {
                     }else if(res.data.code==1){
                         if(res.data.isSuccess){
                             this.$message({
-                                message: '卡牌成功升级到'+res.data.myCardLevel+'级！',
+                                message: '卡牌成功升级到'+(res.data.myCardLevel+1)+'级！',
                                 type: 'success'
                             });
                             
