@@ -12,7 +12,7 @@
       <el-input v-model="form.nickName" placeholder="昵称格式为2-8位中英日数字下划线"></el-input>
     </el-form-item>
     <el-form-item label="邮箱验证">
-      <el-input v-model="form.code" placeholder="请输入邮箱验证码">
+      <el-input v-model="form.code" placeholder="请输入邮箱验证码" type="tel">
         <el-button slot="append" @click="openEmailDialog">发送验证码</el-button>
       </el-input>
     </el-form-item>
@@ -26,7 +26,7 @@
     :visible.sync="codeShow"
     class="reg_code_dialog"
     width="100%">
-    <el-input placeholder="请输入验证码" v-model="form.captcha">
+    <el-input placeholder="请输入验证码" v-model="form.captcha" type="tel">
       <template slot="append"><img class="reg_code_img" :src="captchaSrc" @click="captchaUpdata"></template>
     </el-input>
     <span slot="footer" class="dialog-footer">

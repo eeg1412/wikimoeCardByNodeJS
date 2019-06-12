@@ -27,6 +27,7 @@
             </div>
             <div class="wm_battle_today_v">竞技点：{{myScore}}</div>
             <div class="wm_battle_today_v">今日已获胜：{{myBattleTimes}}/{{battleOverTimes}}</div>
+            <div class="mt10"><el-checkbox v-model="skipBattle" @change="changeSkipBattle">跳过战斗动画</el-checkbox></div>
             <div class="wm_battle_btn_box">
                 <el-tooltip class="item" effect="dark" content="匹配与自己竞技点相近的对手。" placement="top" :enterable="false">
                     <el-button type="primary" icon="el-icon-search" @click="battle(false)">匹配对手（普通）</el-button>
@@ -68,7 +69,8 @@ export default {
         battleOverTimes:'--',
         testWin:[0,0,0],
         userbattleinfoData:{win:0,lose:0,draw:0},
-        myScore:'--'
+        myScore:'--',
+        skipBattle:localStorage.getItem("skipBattle")==='true'
     }
   },
   components: {
@@ -84,6 +86,9 @@ export default {
     //   }
   },
   methods: {
+      changeSkipBattle(val){
+          localStorage.setItem("skipBattle",val);
+      },
       searchBattleInfo(){
         let params = {
             token:this.token
@@ -127,6 +132,15 @@ export default {
             });
         }
       },
+      winCheck(w){
+          if(w==1){
+              return '战胜了'
+          }else if(w==0){
+              return '败给了'
+          }else{
+              return '打平了'
+          }
+      },
       battle(advanced){
         let params = {
             token:this.token,
@@ -148,7 +162,19 @@ export default {
                     this.$refs.userTop.getUserInfo();
                 }
                 this.battleData = res.data;
-                this.battleSence = true;
+                if(this.skipBattle){
+                    let battleText = '您'+this.winCheck(this.battleData.win)+this.battleData.EmName+'，'+'获得了'+Math.abs(this.battleData.getScore)+'点竞技点和'+this.battleData.getExp+'点经验值。';
+                    if(this.battleData.win===0){
+                        battleText = '您'+this.winCheck(this.battleData.win)+this.battleData.EmName+'，'+'失去了'+Math.abs(this.battleData.getScore)+'点竞技点。';
+                    }
+                    this.$alert(battleText+(this.battleData.battleOverChance?'（由于已经超过今日最大胜利次数，此次战斗不结算竞技点和经验值。）':''), '战斗结果').then(() => {
+                        this.gameover();
+                    }).catch(action => {
+                        this.gameover();
+                    });
+                }else{
+                    this.battleSence = true;
+                }
                 //测试胜率
                 // let testWin = [0,0,0]
                 // this.testWin[res.data.win]++;

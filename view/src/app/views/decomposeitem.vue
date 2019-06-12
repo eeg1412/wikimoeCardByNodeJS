@@ -11,8 +11,8 @@
                         <el-card class="box-card">
                             <div class="mb10"><img :src="'/static/otherImg/item/'+item[0]+'.png'" height="32px" width="32px" /></div>
                             <div class="mb20">{{itemData_[item[0]].name}}</div>
-                            <div>需要：1000</div>
-                            <div>持有：{{item[1]}}</div>
+                            <div class="mb5">需要：1000</div>
+                            <div class="mb5">持有：{{item[1]}}</div>
                             <div class="mb20">满足条件可分解成270颗星星</div>
                             <el-button type="primary" @click="decomposeitem(item[0])" :disabled="item[1]<1000">分解</el-button>
                         </el-card>

@@ -118,7 +118,7 @@
       <el-input v-model="form.password" show-password placeholder="请输入密码"></el-input>
     </el-form-item>
     <el-form-item label="验证码">
-      <el-input placeholder="请输入验证码" v-model="form.captcha">
+      <el-input placeholder="请输入验证码" v-model="form.captcha" type="tel">
         <template slot="append"><img class="reg_code_img" :src="captchaSrc" @click="captchaUpdata"></template>
       </el-input>
     </el-form-item>
