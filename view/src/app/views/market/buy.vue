@@ -89,7 +89,7 @@
       width="100%">
       <div>
         <div class="wm_market_card_datail_captcha">
-          <div class="tc mb15">Tip:求购信息有效期为7天。</div>
+          <div class="tc mb15">Tip:求购信息有效期为3天。</div>
           <el-form ref="form" label-width="80px">
             <el-form-item label="验证码">
               <el-input placeholder="请输入验证码" v-model="captcha" type="tel">
