@@ -132,16 +132,12 @@ export default {
             showCancelButton: false,
             confirmButtonText: '购卡或求购',
         }).then(() => {
-            let want = 0;
-            if(!have){
-                want = 1
-            }
             this.$router.push({ 
                 name:'buyCard',
                 query: {
                     name:'cardId',
                     text:cardId,
-                    want:want,
+                    want:1,
                     wantstar:star,
                     wantid:cardId
                 }

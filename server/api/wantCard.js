@@ -103,16 +103,16 @@ module.exports = async function(req, res, next){
         return false;
     }
     //验证卡牌是否没有拥有
-    if(result.card[cardId]){
-        res.send({
-            code:0,
-            msg:'你已经拥有这张卡，不能发布求购信息！'
-        });
-        console.info(
-            chalk.yellow('email:'+email+'求购已经拥有的卡牌：'+cardId+'。IP为：'+IP)
-        );
-        return false;
-    }
+    // if(result.card[cardId]){
+    //     res.send({
+    //         code:0,
+    //         msg:'你已经拥有这张卡，不能发布求购信息！'
+    //     });
+    //     console.info(
+    //         chalk.yellow('email:'+email+'求购已经拥有的卡牌：'+cardId+'。IP为：'+IP)
+    //     );
+    //     return false;
+    // }
     //发布信息
     let timeNow = Math.round(new Date().getTime()/1000);
     let params = {

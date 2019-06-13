@@ -20,19 +20,19 @@
   </transition>
   <div class="cardList" ref="cardListParents">
     <div class="cardList_body" ref="cardListBody">
-      <div class="card_list" :class="seled?'selectedcard':''" @click="getDailyCard(0)" @mouseover="remTips(cardIsRotate[0]?'不知道这张卡你喜不喜欢。':'不知道能抽到什么卡呀！雷姆好期待呢！')">
+      <div class="card_list" :class="seled?'selectedcard':''" @click="getDailyCard(0)" @mouseover="$wikimoecard.l2dMassage(cardIsRotate[0]?'不知道这张卡你喜不喜欢。':'不知道能抽到什么卡呀！雷姆好期待呢！')">
         <rotate3DCard trigger="custom" v-model="cardIsRotate[0]" direction="row" :cardSrc="getCardList[0]">
           <slot name="cz"></slot>
           <slot name="cf"></slot>
         </rotate3DCard>
       </div>
-      <div class="card_list" :class="seled?'selectedcard':''" @click="getDailyCard(1)" @mouseover="remTips(cardIsRotate[1]?'不知道这张卡你喜不喜欢。':'不知道能抽到什么卡呀！雷姆好期待呢！')">
+      <div class="card_list" :class="seled?'selectedcard':''" @click="getDailyCard(1)" @mouseover="$wikimoecard.l2dMassage(cardIsRotate[1]?'不知道这张卡你喜不喜欢。':'不知道能抽到什么卡呀！雷姆好期待呢！')">
         <rotate3DCard trigger="custom" v-model="cardIsRotate[1]" direction="row" :cardSrc="getCardList[1]">
           <slot name="cz"></slot>
           <slot name="cf"></slot>
         </rotate3DCard>
       </div>
-      <div class="card_list" :class="seled?'selectedcard':''" @click="getDailyCard(2)" @mouseover="remTips(cardIsRotate[2]?'不知道这张卡你喜不喜欢。':'不知道能抽到什么卡呀！雷姆好期待呢！')">
+      <div class="card_list" :class="seled?'selectedcard':''" @click="getDailyCard(2)" @mouseover="$wikimoecard.l2dMassage(cardIsRotate[2]?'不知道这张卡你喜不喜欢。':'不知道能抽到什么卡呀！雷姆好期待呢！')">
         <rotate3DCard trigger="custom" v-model="cardIsRotate[2]" direction="row" :cardSrc="getCardList[2]">
           <slot name="cz"></slot>
           <slot name="cf"></slot>
@@ -113,7 +113,7 @@
               <img class="wm_card_get_list_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" width="45" height="45">
             </el-tooltip>
           </div>
-          <div class="wm_card_get_list_comment">
+          <div class="wm_card_get_list_comment" @mouseover="$wikimoecard.l2dMassage('快来瞧瞧大家的动态吧！')">
             <p>
               <span class="wm_log_name">{{item.nickName}}</span>
               <span class="wm_log_time">{{item.time|capitalize}}</span>
@@ -262,9 +262,6 @@ export default {
     this.urlUserInfo();
   },
   methods: {
-    remTips(text){
-      $l2dMassage(text);
-    },
     watchRank(md5){
       this.watchUserCard(md5);
     },

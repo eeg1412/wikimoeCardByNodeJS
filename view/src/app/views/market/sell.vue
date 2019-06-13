@@ -2,7 +2,7 @@
     <div class="wm_market_content_body">
         <transition name="el-fade-in-linear">
             <div class="wm_market_selling_body" v-if="myMarket.length>0">
-                <h5 class="common_title type_shop">贩卖中的卡牌({{myMarket.length}}/20)</h5>
+                <h5 class="common_title type_shop">贩卖中的卡牌</h5>
                 <div class="wm_mycard_list">
                     <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in myMarket" v-bind:key="index+1" @click="editCard(item.cardId,item.time,item.selled,item.price,item._id)">
                         <img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item.cardId,4)+'.jpg'">
@@ -13,6 +13,17 @@
                             <el-tag type="danger" v-if="serverTime-item.time>2592000 && !item.selled" class="wm_market_selling_tag_item" @click.stop="editCard(item.cardId,item.time,item.selled,item.price,item._id)">过期请更新</el-tag>
                         </div>
                     </div>
+                </div>
+                <div class="wm_market_content_page">
+                <el-pagination
+                    small
+                    layout="prev, pager, next"
+                    :total="sellCardTotle"
+                    @current-change="sellCardPageChange"
+                    :current-page.sync="sellCardPage"
+                    :page-size="20"
+                    class="my_card_page">
+                    </el-pagination>
                 </div>
                 <div class="wm_market_btn_body">
                     <el-button type="primary" @click="updataMany('getstarMany')">一键领取</el-button>
@@ -72,7 +83,7 @@
 </template>
 
 <script>
-import {md5Check,PrefixInteger} from "../../../utils/utils";
+import {md5Check,PrefixInteger,scrollToTop} from "../../../utils/utils";
 import md5_ from 'js-md5';
 import {authApi} from "../../api";
 import captcha from "../../components/captcha"
@@ -100,7 +111,9 @@ export default {
         searchForm:{
           star:this.$route.query.star || '0',
           havewant:this.$route.query.havewant || '0',
-        }
+        },
+        sellCardTotle:0,
+        sellCardPage:Number(this.$route.query.sellPage) || 1,
     }
   },
   components: {
@@ -109,10 +122,14 @@ export default {
   mounted() {
     this.$emit('l2dMassage','这里可以寄售多余的卡牌来换取星星。');
     this.getUserCard(); 
-    this.getUserMarket();
+    this.getUserMarket(this.sellCardPage);
     this.getWant();
   },
   methods: {
+    sellCardPageChange(p){
+        this.getUserMarket(p);
+        scrollToTop(180,200)
+    },
     searchChanged(){
         this.cardPage = 1;
         this.cardPageChange(1);
@@ -181,18 +198,46 @@ export default {
             }
         });
     },
-    getUserMarket(){
+    getUserMarket(page){
         let params = {
             type:'search',
-            token:this.token
+            token:this.token,
+            page:page
         }
         authApi.marketsell(params).then(res => {
           console.log(res);
           if(res.data.code==0){
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
-            this.myMarket = res.data.data;
+            if(res.data.data.length<=0&&this.sellCardPage>1){
+                this.sellCardPage = 1;
+                this.getUserMarket(1);
+                this.$router.replace({ 
+                    name:'sellCard',
+                    query: {
+                        page:this.cardPage,
+                        star:this.searchForm.star,
+                        havewant:this.searchForm.havewant,
+                        sellPage:this.sellCardPage
+                    }
+                });
+                return false;
+            }
+            this.myMarket = [];
+            setTimeout(()=>{
+                this.myMarket = res.data.data;
+            },200)
             this.serverTime = res.data.time;
+            this.sellCardTotle = res.data.totle;
+            this.$router.replace({ 
+                name:'sellCard',
+                query: {
+                    page:this.cardPage,
+                    star:this.searchForm.star,
+                    havewant:this.searchForm.havewant,
+                    sellPage:this.sellCardPage
+                }
+            });
           }
         });
     },
@@ -247,6 +292,7 @@ export default {
                 page:this.cardPage,
                 star:this.searchForm.star,
                 havewant:this.searchForm.havewant,
+                sellPage:this.sellCardPage
             }
         });
     },

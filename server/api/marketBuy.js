@@ -72,6 +72,9 @@ module.exports = async function(req, res, next){
     if(type=='search'){
         let page = isNaN(Math.round(req.body.page))?1:Math.round(req.body.page);
         page = Math.abs(page);
+        if(page<=0){
+            page = 1;
+        }
         let name = req.body.name || '';
         let text = req.body.text || '';
         let have = req.body.have || '';

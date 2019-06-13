@@ -9,6 +9,9 @@ module.exports = async function(req, res, next){
     let cardId = req.body.cardId || null;
     let page = isNaN(Math.round(req.body.page))?1:Math.round(req.body.page);
     page = Math.abs(page);
+    if(page<=0){
+        page = 1;
+    }
     let pageSize = 5;
     console.info(
         chalk.green('开始查询求购,IP为：'+IP)
@@ -44,7 +47,7 @@ module.exports = async function(req, res, next){
     let time = Math.round(new Date().getTime()/1000);
     //删除过期的
     let delParams = {
-        time:{$lt:time-604800}
+        time:{$lt:time-259200}
     };
     wantCardData.deletWantMany(delParams).catch((err)=>{
         console.error(
@@ -58,7 +61,7 @@ module.exports = async function(req, res, next){
         pageSize = 10;
         //查询未过期的
         let params = {
-            time:{$gte:time-604800}
+            time:{$gte:time-259200}
         };
         if(star){
             params['star'] = star;

@@ -33,7 +33,7 @@ export default {
     }
   },
   mounted() {
-      window.$l2dMassage = this.showMessage
+      this.$wikimoecard.l2dMassage = this.showMessage;
       let pcW = window.screen.width;
       if(pcW>1366){
           this.canShowL2d = true;

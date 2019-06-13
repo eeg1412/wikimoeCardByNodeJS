@@ -84,10 +84,16 @@ module.exports = async function(req, res, next){
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
     if(type=='search'){
+        let page = isNaN(Math.round(req.body.page))?1:Math.round(req.body.page);
+        page = Math.abs(page);
+        if(page<=0){
+            page = 1;
+        }
+        let sort = {'time':1};
         let params = {
             email:email
         }
-        let data = await marketData.findMarketMany(params).catch ((err)=>{
+        let data = await marketData.findMarket(20,page,params,sort,'-__v -email').catch ((err)=>{
             res.send({
                 code:0,
                 msg:'内部错误，更新失败！'
@@ -100,7 +106,8 @@ module.exports = async function(req, res, next){
         let time = Math.round(new Date().getTime()/1000);
         res.send({
             code:1,
-            data:data,
+            data:data[0],
+            totle:data[1],
             time:time,
             msg:'ok'
         });
@@ -134,29 +141,29 @@ module.exports = async function(req, res, next){
             return false;
         }
         // 检查上架数量是否超过3
-        let marketP = {
-            email:email
-        }
-        let myMarket = await marketData.findMarketMany(marketP).catch ((err)=>{
-            res.send({
-                code:0,
-                msg:'内部错误，更新失败！'
-            });
-            console.error(
-                chalk.red('数据库更新错误！')
-            );
-            throw err;
-        });
-        if(myMarket.length>=20){
-            res.send({
-                code:0,
-                msg:'同时只能上架20张卡牌！'
-            });
-            console.info(
-                chalk.yellow('email:'+email+'上架卡牌过多：'+cardId+'。IP为：'+IP)
-            );
-            return false;
-        }
+        // let marketP = {
+        //     email:email
+        // }
+        // let myMarket = await marketData.findMarketMany(marketP).catch ((err)=>{
+        //     res.send({
+        //         code:0,
+        //         msg:'内部错误，更新失败！'
+        //     });
+        //     console.error(
+        //         chalk.red('数据库更新错误！')
+        //     );
+        //     throw err;
+        // });
+        // if(myMarket.length>=20){
+        //     res.send({
+        //         code:0,
+        //         msg:'同时只能上架20张卡牌！'
+        //     });
+        //     console.info(
+        //         chalk.yellow('email:'+email+'上架卡牌过多：'+cardId+'。IP为：'+IP)
+        //     );
+        //     return false;
+        // }
         let minPrice = utils.checkMinPrice(cardId);
         if(!minPrice){
             res.send({

@@ -1,5 +1,5 @@
 <template>
-  <div class="wm_card_rank_body" id="wmCardRankBody" v-if="changed && rankData">
+  <div class="wm_card_rank_body" id="wmCardRankBody" v-if="changed && rankData" @mouseover="$wikimoecard.l2dMassage('这些排行榜中的大佬们真是太厉害了呢！')">
     <el-carousel :interval="4000" :type="card" height="420px" :indicator-position="'outside'" :arrow="'never'" :trigger="'click'" v-if="rankData.cardIndexCount.length>=5">
       <el-carousel-item>
         <div class="wm_card_rank_item_box" id="wmCardRankBox">
