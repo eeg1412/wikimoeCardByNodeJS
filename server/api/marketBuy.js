@@ -146,6 +146,16 @@ module.exports = async function(req, res, next){
             );
             return false;
         }
+        if(result.cardIndexCount<50){
+            res.send({
+                code:0,
+                msg:'您的卡牌不满50种，暂时还不能买卡呢！'
+            });
+            console.info(
+                chalk.yellow('email:'+email+'卡牌不满50种，暂时还不能买卡。IP为：'+IP)
+            );
+            return false;
+        }
         // 查询未过期卡牌交易
         let time = Math.round(new Date().getTime()/1000);
         let filters = {
