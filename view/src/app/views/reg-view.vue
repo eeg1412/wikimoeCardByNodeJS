@@ -3,7 +3,7 @@
   <h5 class="common_title">注册账号</h5>
   <el-form ref="form" :model="form" label-width="80px">
     <el-form-item label="邮箱地址">
-      <el-input v-model="form.email" @input="emailToLowerCase" placeholder="请输入邮箱地址"></el-input>
+      <el-input v-model="form.email" @input="emailToLowerCase" @blur="emailToLowerCase" placeholder="请输入邮箱地址"></el-input>
     </el-form-item>
     <el-form-item label="密码">
       <el-input v-model="form.password" show-password placeholder="请输入4-8位纯数字"></el-input>

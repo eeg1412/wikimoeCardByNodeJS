@@ -9,7 +9,7 @@ module.exports = async function(req, res, next){
         chalk.green(req.body.email+'开始日常抽卡。IP为：'+IP)
     );
     if(req.body.email){
-        var userEmail = req.body.email.toLowerCase();
+        var userEmail = req.body.email;
         var sel = Math.floor(req.body.sel);
         //判断选择的卡牌编号是否有误
         if(isNaN(sel)||sel<0||sel>2){

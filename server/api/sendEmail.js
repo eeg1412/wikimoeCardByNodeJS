@@ -33,6 +33,7 @@ module.exports = async function(req, res, next){
             );
             return false;
         }
+        email = email.toLowerCase();
         if(req.session.captcha!=captcha || !captcha){
             req.session.destroy((err)=> {
                 if(err){

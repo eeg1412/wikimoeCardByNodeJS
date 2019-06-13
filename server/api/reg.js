@@ -30,6 +30,7 @@ module.exports = async function(req, res, next){
             )
             return false;
         }
+        email = email.toLowerCase();
         if(!utils.passwordCheck(password)){
             res.send({
                 code:0,
