@@ -148,6 +148,9 @@ export default {
       this.calMinPrice();
     }
   },
+  mounted() {
+    this.$emit('l2dMassage','这里可以购买由玩家贩卖的卡牌，不知道有没有你心仪的卡呀！');
+  },
   methods: {
     wantCard(){
       let params = {

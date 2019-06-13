@@ -48,6 +48,9 @@ export default {
   created() {
       this.searchuseritem();
   },
+  mounted() {
+      this.$emit('l2dMassage','这里可以分解多余的道具，但是感觉很不值得。');
+  },
   methods: {
     decomposeitem(itemId){
         this.$confirm('分解将会消耗道具，是否继续?', '提示', {

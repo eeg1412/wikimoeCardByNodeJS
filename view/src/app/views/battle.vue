@@ -79,6 +79,7 @@ export default {
     battle
   },
   mounted() {
+      this.$emit('l2dMassage','这里可以挑战大佬并获取竞技点！同时还可以组建自己的对战卡组和升级自己的卡牌！');
       this.searchBattleInfo();
       //测试胜率
     //   for(let i=0;i<1000;i++){

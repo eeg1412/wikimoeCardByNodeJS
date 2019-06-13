@@ -92,6 +92,9 @@ export default {
   created() {
     this.getWant();
   },
+  mounted() {
+    this.$emit('l2dMassage','这里可以查看大家的求卡信息，请注意求卡时间，如果过去太长时间，可能对方已经获得了这张卡！');
+  },
   methods: {
     watchUserCard(md5){
       this.$router.push({ 

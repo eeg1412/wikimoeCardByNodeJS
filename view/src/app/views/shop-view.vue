@@ -71,6 +71,7 @@ export default {
     userTop
   },
   mounted() {
+    this.$emit('l2dMassage','这里可以购买额外的抽卡机会，希望你能抽到心仪的卡。');
     window.addEventListener('scroll', this.menuTop);
   },
   methods: {

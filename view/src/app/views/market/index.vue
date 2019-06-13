@@ -8,7 +8,7 @@
         <el-menu-item index="wantCard">求卡</el-menu-item>
     </el-menu>
     <div>
-        <router-view @updateUserinfo="updateUserinfo"></router-view>
+        <router-view @updateUserinfo="updateUserinfo" @l2dMassage="l2dMassage"></router-view>
     </div>
     <menuView></menuView>
 </div>
@@ -37,6 +37,9 @@ export default {
     this.setMenuActive();
   },
   methods: {
+    l2dMassage(text){
+      this.$emit('l2dMassage',text);
+    },
     setMenuActive(){
       this.activeIndex = this.$route.name
       if(this.activeIndex=='cardDetail'){

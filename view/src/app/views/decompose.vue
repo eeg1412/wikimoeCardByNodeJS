@@ -75,6 +75,9 @@ export default {
   created() {
       this.getUserCard();
   },
+  mounted() {
+      this.$emit('l2dMassage','这里可以分解多余的卡牌，但是感觉很不值得，推荐还是将卡牌寄售市场比较好！');
+  },
   methods: {
     clear(){
         for(let i=0;i<this.userCard.length;i++){

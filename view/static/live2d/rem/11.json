@@ -1,0 +1,165 @@
+{
+	"version": "Live2D MoePet v1.1",
+	"name": "remu",
+	"model": "remu.moc",
+	"textures": [
+		"remu2048/texture_00.png"
+	],
+	"physics": "remu.physics.json",
+	"pose": "remu.pose.json",
+	"lip_sync": "false",
+	"layout": {
+		"width": 2.6,
+		"center_x": 0,
+		"center_y": -0.29
+	},
+	"hit_areas": [{
+			"name": "head",
+			"id": "D_REF.PT_HEAD"
+		},
+		{
+			"name": "body",
+			"id": "D_REF.PT_BODY"
+		}
+	],
+
+	"motions": {
+		"start": [{
+			"file": "motions/Live2D_remu26.mtn",
+			"msg_id": "26"
+		}],
+		"idle": [{
+			"file": "motions/Live2D_remu_idle.mtn"
+		}],
+		"tap_head": [{
+				"file": "motions/Live2D_remu01.mtn",
+				"msg_id": "1"
+			},
+			{
+				"file": "motions/Live2D_remu02.mtn",
+				"msg_id": "2"
+			},
+			{
+				"file": "motions/Live2D_remu03.mtn",
+				"msg_id": "3"
+			},
+			{
+				"file": "motions/Live2D_remu04.mtn",
+				"msg_id": "4"
+			},
+			{
+				"file": "motions/Live2D_remu05.mtn",
+				"msg_id": "5"
+			},
+			{
+				"file": "motions/Live2D_remu21.mtn",
+				"msg_id": "21"
+			},
+			{
+				"file": "motions/Live2D_remu22.mtn",
+				"msg_id": "22"
+			},
+			{
+				"file": "motions/Live2D_remu23.mtn",
+				"msg_id": "23"
+			},
+			{
+				"file": "motions/Live2D_remu24.mtn",
+				"msg_id": "24"
+			},
+			{
+				"file": "motions/Live2D_remu25.mtn",
+				"msg_id": "25"
+			}
+		],
+		"tap_body": [
+			{
+				"file": "motions/Live2D_remu06.mtn",
+                "msg_id": "6"
+			},
+			{
+				"file": "motions/Live2D_remu07.mtn",
+                "msg_id": "7"
+			},
+			{
+				"file": "motions/Live2D_remu08.mtn",
+				"msg_id": "8"
+			},
+			{
+				"file": "motions/Live2D_remu09.mtn",
+				"msg_id": "9"
+			},
+			{
+				"file": "motions/Live2D_remu10.mtn",
+				"msg_id": "10"
+			},
+			{
+				"file": "motions/Live2D_remu11.mtn",
+				"msg_id": "11"
+			},
+			{
+				"file": "motions/Live2D_remu12.mtn",
+				"msg_id": "12"
+			},
+			{
+				"file": "motions/Live2D_remu13.mtn",
+				"msg_id": "13"
+			},
+			{
+				"file": "motions/Live2D_remu14.mtn",
+				"msg_id": "14"
+			},
+			{
+				"file": "motions/Live2D_remu15.mtn",
+				"msg_id": "15"
+			},
+			{
+				"file": "motions/Live2D_remu16.mtn",
+				"msg_id": "16"
+			},
+			{
+				"file": "motions/Live2D_remu17.mtn",
+				"msg_id": "17"
+			},
+			{
+				"file": "motions/Live2D_remu18.mtn",
+				"msg_id": "18"
+			},
+			{
+				"file": "motions/Live2D_remu19.mtn",
+				"msg_id": "19"
+			},
+			{
+				"file": "motions/Live2D_remu20.mtn",
+				"msg_id": "20"
+			}
+		],
+		"random": [{
+				"file": "motions/Live2D_remu01.mtn",
+				"msg_id": "1"
+			},
+			{
+				"file": "motions/Live2D_remu02.mtn",
+				"msg_id": "2"
+			},
+			{
+				"file": "motions/Live2D_remu03.mtn",
+				"msg_id": "3"
+			},
+			{
+				"file": "motions/Live2D_remu04.mtn",
+				"msg_id": "4"
+			},
+			{
+				"file": "motions/Live2D_remu05.mtn",
+				"msg_id": "5"
+			}
+        ],
+		"new_msg": [
+			{
+				"file": "motions/Live2D_remu24.mtn",
+				"msg_id": "24"
+			}
+		]
+	}
+}

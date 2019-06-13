@@ -52,6 +52,7 @@ export default {
     }
   },
   mounted() {
+    this.$emit('l2dMassage','是不是忘记密码了呀？没关系这里可以找回密码！');
   },
   methods: {
     captchaUpdata(){

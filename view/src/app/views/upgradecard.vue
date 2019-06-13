@@ -231,6 +231,7 @@ export default {
       }
   },
   mounted() {
+        this.$emit('l2dMassage','这里可以升级自己的卡牌，所需材料可以在挖矿中获得，卡牌则可以通过抽卡获得。');
         let level = new Promise((resolve, reject)=> {
             this.searchcardlevel(resolve, reject);
         });

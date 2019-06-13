@@ -107,6 +107,7 @@ export default {
       captcha
   },
   mounted() {
+    this.$emit('l2dMassage','这里可以寄售多余的卡牌来换取星星。');
     this.getUserCard(); 
     this.getUserMarket();
     this.getWant();

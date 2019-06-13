@@ -56,6 +56,7 @@ export default {
     }
   },
   mounted() {
+    this.$emit('l2dMassage','注册账号，享受抽卡吧！');
     if(this.$route.query.adr){
       this.form.email = atob(this.$route.query.adr);
     }

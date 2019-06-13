@@ -121,6 +121,9 @@ export default {
   created() {
       this.getUserCard();
   },
+  mounted() {
+      this.$emit('l2dMassage','这里可以查看自己已经收集到的卡牌。');
+  },
   methods: {
     openImg(imgsrc,name,have,star,cardId){
         this.$confirm('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {

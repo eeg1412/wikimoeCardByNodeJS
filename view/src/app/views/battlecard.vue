@@ -201,6 +201,7 @@ export default {
     this.getMyBattleCard();
   },
   mounted() {
+    this.$emit('l2dMassage','这里可以组建自己的对战卡牌，只有拥有了20张卡牌才可以组建哦！推荐第一次的玩家点击【更多→说明】来查看对战规则哦！');
     window.addEventListener('scroll', this.tableFixed);
   },
   methods: {
