@@ -120,8 +120,7 @@ export default {
       captcha
   },
   mounted() {
-    this.$emit('l2dMassage','这里可以寄售多余的卡牌来换取星星。');
-    this.getUserCard(); 
+    this.$emit('l2dMassage','这里可以寄售多余的卡牌来换取星星。'); 
     this.getUserMarket(this.sellCardPage);
     this.getWant();
   },
@@ -148,6 +147,7 @@ export default {
                   wantListObj[res.data.data[i]['_id']] = res.data.data[i]['count'];
               }
               this.wantList = wantListObj;
+              this.getUserCard();
           }
       })
     },

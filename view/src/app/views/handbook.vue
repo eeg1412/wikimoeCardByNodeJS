@@ -62,7 +62,7 @@
                 </div>
                 <el-collapse-transition>
                     <div class="wm_mycard_list" v-if="userCard.length>0">
-                        <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg($wikimoecard.url+item.cardId+'.jpg',item.info.name,item.have,item.info.star,item.cardId)">
+                        <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg($wikimoecard.url+item.cardId+'.jpg',item.info.name,item.have,item.info.star,item.cardId)" @mouseover="$wikimoecard.l2dMassage('点击卡牌可以查看卡牌并且发起求购哦！')">
                             <img class="wm_getcard_img" :src="$wikimoecard.url+item.cardId+'.jpg'">
                         </div>
                     </div>

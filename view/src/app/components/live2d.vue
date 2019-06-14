@@ -34,6 +34,7 @@ export default {
   },
   mounted() {
       this.$wikimoecard.l2dMassage = this.showMessage;
+      this.$wikimoecard.l2dMassageClose = this.closeMassage;
       let pcW = window.screen.width;
       if(pcW>1366){
           this.canShowL2d = true;
@@ -57,19 +58,24 @@ export default {
           this.showMessage('暂时隐藏雷姆，希望不久能再见面呢！')
       },
       closeMassage(){
-          this.messageDivShow = false;
           clearTimeout(this.messageTimer);
+          if(this.showL2d){
+            this.messageDivShow = false;
+            this.l2dSprite.startRandomMotionOnce('idle');
+          }
       },
       showMessage(text,noMotion){
           clearTimeout(this.messageTimer);
-          this.messageDivShow = true;
-          if(!noMotion){
-              this.l2dSprite.startRandomMotionOnce('random');
+          if(this.showL2d){
+            this.messageDivShow = true;
+            if(!noMotion){
+                this.l2dSprite.startRandomMotionOnce('random');
+            }
+            this.message = text;
+            this.messageTimer = setTimeout(()=>{
+                this.messageDivShow = false;
+            },8000)
           }
-          this.message = text;
-          this.messageTimer = setTimeout(()=>{
-              this.messageDivShow = false;
-          },8000)
       },
       init(){
           localStorage.setItem("closeL2d",'false');

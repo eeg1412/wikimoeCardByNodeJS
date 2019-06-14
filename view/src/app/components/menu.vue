@@ -1,73 +1,73 @@
 <template>
 <div>
   <div class="wm_card_menu_body">
-    <div class="wm_card_menu_box" @click="goHome()" v-if="$route.path!='/'" @mouseover="$wikimoecard.l2dMassage('回到首页')">
+    <div class="wm_card_menu_box" @click="goHome()" v-if="$route.path!='/'" @mouseover="$wikimoecard.l2dMassage('回到首页')" @mouseout="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/home.jpg" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">首页</div>
     </div>
-    <div class="wm_card_menu_box" @click="goCouse()" @mouseover="$wikimoecard.l2dMassage('查看游戏教程，推荐新手玩家必读！')">
+    <div class="wm_card_menu_box" @click="goCouse()" @mouseover="$wikimoecard.l2dMassage('查看游戏教程，推荐新手玩家必读！')" @mouseout="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/course.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">教程</div>
     </div>
     <router-link tag="div" to="/reg" class="wm_card_menu_box" v-if="$route.path!='/reg' && !token">
-      <div class="wm_card_menu_ico" @mouseover="remTips('注册了账号才能抽卡哦！')">
+      <div class="wm_card_menu_ico" @mouseover="remTips('注册了账号才能抽卡哦！')" @mouseout="$wikimoecard.l2dMassageClose">
         <img src="../../assets/images/menu/reg.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">注册</div>
     </router-link>
-    <div class="wm_card_menu_box" @click="login('/demining')" v-if="$route.path!='/demining'" @mouseover="$wikimoecard.l2dMassage('矿场可以挖到商店抽卡用到的星星和升级卡牌所需要的材料哦！')">
+    <div class="wm_card_menu_box" @click="login('/demining')" v-if="$route.path!='/demining'" @mouseover="$wikimoecard.l2dMassage('矿场可以挖到商店抽卡用到的星星和升级卡牌所需要的材料哦！')" @mouseout="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/kuangchang.jpg" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">矿场</div>
     </div>
-    <div class="wm_card_menu_box" @click="login('/battle')" v-if="$route.path!='/battle'" @mouseover="$wikimoecard.l2dMassage('通过对战来增加每日抽卡的机会吧！')">
+    <div class="wm_card_menu_box" @click="login('/battle')" v-if="$route.path!='/battle'" @mouseover="$wikimoecard.l2dMassage('通过对战来增加每日抽卡的机会吧！')" @mouseout="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/battle.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">对战</div>
     </div>
-    <div class="wm_card_menu_box" @click="login('/star/shop')" v-if="$route.path!='/star/shop'" @mouseover="$wikimoecard.l2dMassage('商店可以增加额外的抽卡机会，推荐新手玩家务必来逛逛！')">
+    <div class="wm_card_menu_box" @click="login('/star/shop')" v-if="$route.path!='/star/shop'" @mouseover="$wikimoecard.l2dMassage('商店可以增加额外的抽卡机会，推荐新手玩家务必来逛逛！')" @mouseout="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/shop.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">商店</div>
     </div>
-    <div class="wm_card_menu_box" @click="login('/star/market')" v-if="$route.path.indexOf('/star/market')==-1" @mouseover="$wikimoecard.l2dMassage('市场可以自由买卖卡牌哦！')">
+    <div class="wm_card_menu_box" @click="login('/star/market')" v-if="$route.path.indexOf('/star/market')==-1" @mouseover="$wikimoecard.l2dMassage('市场可以自由买卖卡牌哦！')" @mouseout="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/market.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">市场</div>
     </div>
-    <div class="wm_card_menu_box" @click="login('/decompose')" v-if="$route.path.indexOf('/decompose')==-1" @mouseover="$wikimoecard.l2dMassage('可以分解各种不需要的卡牌和道具！')">
+    <div class="wm_card_menu_box" @click="login('/decompose')" v-if="$route.path.indexOf('/decompose')==-1" @mouseover="$wikimoecard.l2dMassage('可以分解各种不需要的卡牌和道具！')" @mouseout="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/decompose.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">分解</div>
     </div>
-    <div class="wm_card_menu_box" @click="openNews" @mouseover="$wikimoecard.l2dMassage('可以查看游戏内的公告！')">
+    <div class="wm_card_menu_box" @click="openNews" @mouseover="$wikimoecard.l2dMassage('可以查看游戏内的公告！')" @mouseout="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/news.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">公告</div>
     </div>
-    <div class="wm_card_menu_box" @click="login('/handbook')" v-if="$route.path.indexOf('/handbook')==-1" @mouseover="$wikimoecard.l2dMassage('可以查看自己的卡牌收集情况！')">
+    <div class="wm_card_menu_box" @click="login('/handbook')" v-if="$route.path.indexOf('/handbook')==-1" @mouseover="$wikimoecard.l2dMassage('可以查看自己的卡牌收集情况！')" @mouseout="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/handbook.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">图鉴</div>
     </div>
-    <div class="wm_card_menu_box" @click="watchMyCard()" v-if="token" @mouseover="$wikimoecard.l2dMassage('点击可以查看自己的卡牌信息。')">
+    <div class="wm_card_menu_box" @click="watchMyCard()" v-if="token" @mouseover="$wikimoecard.l2dMassage('点击可以查看自己的卡牌信息。')" @mouseout="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img :src="'https://cdn.v2ex.com/gravatar/'+getCardMd5()+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" class="wm_card_menu_ico_my" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">我的</div>
     </div>
-    <div class="wm_card_menu_box" @click="openDonate" @mouseover="$wikimoecard.l2dMassage('呜呜呜，开发者现在穷的没饭吃了，求捐赠！')">
+    <div class="wm_card_menu_box" @click="openDonate" @mouseover="$wikimoecard.l2dMassage('呜呜呜，开发者现在穷的没饭吃了，求捐赠！')" @mouseout="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/zanzhu.png" width="100%" height="100%" />
       </div>

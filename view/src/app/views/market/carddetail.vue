@@ -50,7 +50,7 @@
     </div>
     <h5 class="common_title type_shop">价格走势</h5>
     <div class="wm_market_card_datail_charts">
-      <ve-line :data="chartData" :settings="chartSettings" :extend="extend" v-if="chartData.rows.length>0"></ve-line>
+      <ve-line :data="chartData" :settings="chartSettings" :extend="extend" v-if="chartData.rows.length>0" :colors="colors"></ve-line>
       <div class="wm_market_card_datail_charts_empty" v-else>暂无价格历史数据</div>
     </div>
     <div v-if="!(wantLog.length==0&&logPage==1)">
@@ -129,7 +129,8 @@ export default {
         columns: ['time' ,'highPrice' , 'lowPrice'],
         rows: [
         ]
-      }
+      },
+      colors: ['#FF4C4C','#1E90FF']
     }
   },
   components: {
