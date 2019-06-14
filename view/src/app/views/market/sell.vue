@@ -173,7 +173,8 @@ export default {
                     message: res.data.msg,
                     type: 'success'
                 });
-                this.getUserMarket();
+                this.sellCardPage = 1;
+                this.getUserMarket(this.sellCardPage);
                 this.$emit('updateUserinfo');
             }
         });
