@@ -2,7 +2,22 @@
 <div>
   <userTop ref="userTop" />
   <div class="common_body">
-    <h5 class="common_title type_demining">星星矿场</h5>
+    <h5 class="common_title type_demining">
+      <el-tooltip placement="bottom">
+        <div slot="content">
+          <div v-if="!mineInfo">
+            <div class="wm_demining_hight_item_list_body tc">数据加载中...</div>
+          </div>
+          <div v-else>
+            <div class="f14 tc">本矿场高产出宝石</div>
+            <div class="mt10 tc wm_demining_hight_item_list_body">
+              <img v-for="(item,index) in mapData_[mineInfo.data.mapType].high" v-bind:key="index" :src="'/static/otherImg/item/'+item+'.png'" width="24px" height="24px" class="wm_demining_hight_item_list_img" />
+            </div>
+          </div>
+        </div>
+        <span class="wm_set_pointer">星星矿场</span>
+      </el-tooltip>
+    </h5>
     <h6 class="common_title_tips type_dec type_demining">当前在线:{{onlineUser}}人</h6>
     <div class="wm_card_demining_tool_body" v-if="userData">
       <div @click="selPickChange(0)"><pickaxe :type="0" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[0])" ref="pick0"></pickaxe></div>
@@ -42,10 +57,13 @@ import menuView from '../components/menu.vue';
 import pickaxe from '../components/pickaxe.vue';
 import userTop from '../components/topUserInfo.vue';
 import itemData from '../../../../server/data/item';
+import mapData from '../../../../server/data/deminingMap';
 
 export default {
   data() {
     return {
+      itemData_:itemData,
+      mapData_:mapData,
       txDays:new Date().getDate(),
       backFlag:false,
       socket:null,
@@ -166,7 +184,8 @@ export default {
       }
       this.$message({
         message: '已连接服务器！',
-        type: 'success'
+        type: 'success',
+        showClose: true,
       });
       let parmas = {
         type:'get',
@@ -267,9 +286,15 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .common_title_tips.type_demining{
     padding-bottom: 5px;
     margin-top: -10px;
+}
+.wm_demining_hight_item_list_body{
+  width:150px;
+}
+.wm_demining_hight_item_list_img{
+  margin: 2px;
 }
 </style>

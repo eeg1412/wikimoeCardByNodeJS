@@ -142,9 +142,26 @@
             <div class="mt20 tc wm_upgradecard_bt_btn_body">
                 <el-button @click="goRouter('/battle')">返回</el-button>
                 <el-button type="primary" @click="goRouter('/battlecard')">组卡</el-button>
+                <el-button type="info" @click="openItemBag">材料</el-button>
             </div>
         </div>
         <menuView></menuView>
+        <el-dialog
+            title="我的材料"
+            :visible.sync="itemDialog"
+            class="reg_code_dialog"
+            width="100%">
+            <div class="tc">
+                <el-tooltip v-for="(item,index) in myItem" v-bind:key="index" :enterable="false" effect="dark" :content="itemData_[index].name" placement="top" v-show="myItem[index]>0">
+                    <div class="wm_upcard_get_item wm_set_pointer">
+                        <img :src="'/static/otherImg/item/'+index+'.png'" width="24px" height="24px" />×{{myItem[index]}}
+                    </div>
+                </el-tooltip>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="itemDialog = false">关闭</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -161,6 +178,7 @@ import md5_ from 'js-md5';
 export default {
   data() {
     return {
+        itemDialog:false,
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         battleData:null,
         battleSence:false,
@@ -263,6 +281,18 @@ export default {
         })
   },
   methods: {
+        openItemBag(){
+            //查看有没有道具
+            let MyItemArr = Object.values(this.myItem);
+            MyItemArr = MyItemArr.filter(function (item) {
+                return item>0;
+            });
+            if(MyItemArr.length<=0){
+                this.$message('您的仓库空空如也，快去挖矿吧！');
+            }else{
+                this.itemDialog = true;
+            }
+        },
         upgradecard(cardId,index){
             this.$confirm('升级将消耗卡牌和道具，是否继续?', '提示', {
                 confirmButtonText: '升级',
@@ -565,5 +595,13 @@ export default {
     width: 100%;
     box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
     z-index: 999;
+}
+.wm_upcard_get_item{
+    display: inline-block;
+    white-space: nowrap;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 4px 7px;
 }
 </style>

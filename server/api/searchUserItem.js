@@ -36,7 +36,7 @@ module.exports = async function(req, res, next){
     console.info(
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
-    //查询卡牌等级
+    //查询道具
     let params = {
         email:email
     }
