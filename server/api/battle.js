@@ -142,7 +142,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
         if(starCha<1){
             starCha = 1;
         }
-        DefendD = DefendD+Math.floor(DefendA*0.1*starCha);
+        DefendD = DefendD+Math.floor(DefendD*0.1*starCha);
     }
     // 防守方接受攻击前
     if(AttackRightType!==5){
