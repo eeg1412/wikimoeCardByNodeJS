@@ -100,7 +100,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
     let AttackRightType = AttackCard.rightType;
     // let AttackCry = AttackCard.cry;
     let AttackA = AttackADSHP[0];
-    // let AttackD = AttackADSHP[1];
+    let AttackD = AttackADSHP[1];
     let AttackHP = AttackADSHP[3];
     // let AttackShield = 0;//临时护盾
     let AttackStar = AttackCard.star;//攻击卡牌的星级
@@ -121,7 +121,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
         }else if(AttackRightType===7){
             AttackA = AttackA+Math.floor(AttackA*0.06*AttackStar);
         }else if(AttackRightType===4){
-            AttackAddHP = Math.floor(AttackA*0.1*AttackStar);
+            AttackAddHP = Math.floor(AttackA*0.05*AttackStar+AttackD*0.06*AttackStar);//治 SAN+攻*5%*星级 + 防*6%*星级
             AttackHP = AttackHP+AttackAddHP;
         }else if(AttackRightType===5){
             DefendD = DefendD-DefendD*Math.floor(0.07*AttackStar);
@@ -147,11 +147,11 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
     // 防守方接受攻击前
     if(AttackRightType!==5){
         if(DefendRightType===3){
-            DefendD = DefendD+Math.floor(DefendA*0.1*DefendStar);
+            DefendD = DefendD+Math.floor(DefendD*0.16*DefendStar);//防 +防*16%*星级
         }else if(DefendRightType===7){
-            DefendD = DefendD+Math.floor(DefendA*0.06*DefendStar);
+            DefendD = DefendD+Math.floor(DefendD*0.12*DefendStar);//特 +防*12%*星级
         }else if(DefendRightType===6){
-            DefendShield = Math.floor(AttackA*0.085*DefendStar);
+            DefendShield = Math.floor(AttackA*0.065*DefendStar+DefendD*0.03*DefendStar);//支 敌方攻击力*6.5%*星级 + 防*3%*星级
         }
     }
     // 开始攻击
