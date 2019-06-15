@@ -31,15 +31,28 @@ function setItemShould(v){
     }
 }
 function setCardShould(v){
-    if(v<=3){
-        return 20;
-    }else if(v==4){
-        return 6;
-    }else if(v==5){
-        return 3;
-    }else if(v==6){
-        return 1;
+    let shouldCard = 0;
+        switch(v) {
+        case 1:
+            shouldCard = 3;
+            break;
+        case 2:
+            shouldCard = 3;
+            break;
+        case 3:
+            shouldCard = 10;
+            break;
+        case 4:
+            shouldCard = 5;
+            break;
+        case 5:
+            shouldCard = 3;
+            break;
+        case 6:
+            shouldCard = 1;
+            break;
     }
+    return shouldCard;
 }
 
 module.exports = async function(req, res, next){

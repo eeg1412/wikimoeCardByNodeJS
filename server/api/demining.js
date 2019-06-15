@@ -210,7 +210,7 @@ var openNode = function(socket,data,result_){
                         let itemList = mapData[mapType].high;
                         getItem = itemList[utils.randomNum(0,itemList.length-1)];
                     }
-                    getItemNum = utils.randomNum(1,demNum+1);//获得道具数量
+                    getItemNum = demNum+1;//获得道具数量
                     //根据不同的镐 增加获取数量
                     if(useTool==1){
                         getItemNum = getItemNum*3;
