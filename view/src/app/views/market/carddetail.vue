@@ -27,7 +27,7 @@
           <div class="wm_market_card_datail_price_input" v-if="stat==1 || stat==0">
             <el-input-number  class="wm_market_card_datail_price_input_box" size="medium" v-model="price" :precision="0" :step="1" :max="99999999" :min="minPrice"></el-input-number>
           </div>
-          <div class="wm_market_card_datail_tips" v-if="stat==1 || stat==0">您将获得：{{Math.floor(price*0.9)}} 星星</div>
+          <div class="wm_market_card_datail_tips" v-if="stat==1 || stat==0">您将获得：{{price | getPrice}} 星星</div>
           <div class="wm_market_card_datail_captcha">
             <el-input placeholder="请输入验证码" v-model="captcha" type="tel">
               <template slot="append"><img class="reg_code_img" :src="captchaSrc" @click="captchaUpdata"></template>
@@ -146,6 +146,13 @@ export default {
       var date = new Date(parseInt(value*1000));
       var tt = [date.getFullYear(), ((date.getMonth()+1)<10?'0'+(date.getMonth()+1):date.getMonth()+1), (date.getDate()<10?'0'+date.getDate():date.getDate())].join('-') + '  ' +[(date.getHours()<10?'0'+date.getHours():date.getHours()), (date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes()), (date.getSeconds()<10?'0'+date.getSeconds():date.getSeconds())].join(':');
       return tt;
+    },
+    getPrice(value){
+      let getPriceNum = Math.floor(value*0.9);
+      if(isNaN(getPriceNum)){
+        getPriceNum = 0;
+      }
+      return getPriceNum;
     }
   },
   created() {
