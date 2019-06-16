@@ -86,7 +86,7 @@ export default {
             // 特效们
             let animeSheetJson = {};
             // 绘制加载画面
-            let loadingText = new PIXI.Text('资源读取中...',{fontFamily : 'Arial', fontSize: 36, fill : 0xffffff, align : 'center'});
+            let loadingText = new PIXI.Text('少女祈祷中...',{fontFamily : 'Arial', fontSize: 36, fill : 0xffffff, align : 'center'});
             loadingText.anchor.set(0.5);
             loadingText.position.set(360, 640);
             loadingSence.addChild(loadingText);

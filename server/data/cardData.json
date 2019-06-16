@@ -896,6 +896,46 @@
 			"title":"ANNE HAPPY",
 			"name":"萩生响"
 		},
+		"0113": {
+			"star": 3,
+			"leftType": 5,
+			"rightType": 1,
+			"cry": 4,
+			"title":"魔法飞球",
+			"name":"娜娜"
+		},
+		"0114": {
+			"star": 3,
+			"leftType": 4,
+			"rightType": 6,
+			"cry": 4,
+			"title":"魔法飞球",
+			"name":"洛洛"
+		},
+		"0115": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 2,
+			"cry": 5,
+			"title":"魔法飞球",
+			"name":"凯蒂"
+		},
+		"0116": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 5,
+			"title":"魔法飞球",
+			"name":"拉鲁"
+		},
+		"0117": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"魔法飞球",
+			"name":"安莉"
+		},
 		"1001": {
 			"star": 4,
 			"leftType": 1,
@@ -1656,6 +1696,14 @@
 			"title":"夏莉的工作室～黄昏之海的炼金术士～",
 			"name":"夏露罗蒂·艾尔米娜丝&夏莉丝堤菈·亚尔戈"
 		},
+		"1096": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"VOCALOID",
+			"name":"镜音铃"
+		},
 		"2001": {
 			"star": 5,
 			"leftType": 5,
@@ -2304,6 +2352,38 @@
 			"title":"VOCALOID",
 			"name":"IA"
 		},
+		"2082": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"闪之轨迹IV",
+			"name":"玲·布莱特"
+		},
+		"2083": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 2,
+			"title":"闪之轨迹IV",
+			"name":"缇欧·普拉托"
+		},
+		"2084": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 4,
+			"title":"干物妹！小埋",
+			"name":"土间埋"
+		},
+		"2085": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 5,
+			"title":"埃罗芒阿老师",
+			"name":"梅园花"
+		},
 		"3001": {
 			"star": 6,
 			"leftType": 2,
@@ -2695,6 +2775,30 @@
 			"cry": 4,
 			"title":"冰菓",
 			"name":"千反田爱瑠"
+		},
+		"3050": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 7,
+			"cry": 4,
+			"title":"AIR",
+			"name":"神尾观铃"
+		},
+		"3051": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 5,
+			"cry": 5,
+			"title":"仰望半月的夜空",
+			"name":"秋庭里香"
+		},
+		"3052": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 3,
+			"cry": 5,
+			"title":"凉宫春日的忧郁",
+			"name":"长门有希"
 		}
 	},
 	"level":[40,82,130,180,276,860]
