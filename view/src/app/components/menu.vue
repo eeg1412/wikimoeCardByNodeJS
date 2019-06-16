@@ -14,7 +14,7 @@
       <div class="wm_card_menu_text">教程</div>
     </div>
     <router-link tag="div" to="/reg" class="wm_card_menu_box" v-if="$route.path!='/reg' && !token">
-      <div class="wm_card_menu_ico" @mouseover="remTips('注册了账号才能抽卡哦！')" @mouseout="$wikimoecard.l2dMassageClose">
+      <div class="wm_card_menu_ico" @mouseover="$wikimoecard.l2dMassage('注册了账号才能抽卡哦！')" @mouseout="$wikimoecard.l2dMassageClose">
         <img src="../../assets/images/menu/reg.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">注册</div>

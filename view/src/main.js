@@ -17,6 +17,12 @@ import 'vue-sequential-entrance/vue-sequential-entrance.css'
 import VueClipboard from 'vue-clipboard2'
 
 Vue.prototype.$wikimoecard = siteSetting;
+Vue.prototype.$wikimoecard.l2dMassage = function(){
+  console.log('live2d还在加载...');
+};
+Vue.prototype.$wikimoecard.l2dMassageClose = function(){
+  console.log('live2d还在加载...');
+};
 
 Vue.use(VueClipboard)
 Vue.use(SequentialEntrance);
