@@ -8,9 +8,13 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 
 一款通过日常抽卡的卡牌收集游戏。
 
+### 关于更新
+
+如果是更新的话，请注意不要覆盖/server/config/config.json，如果覆盖将会导致配置失效。
+
 ### 使用方法
 
-1. 将项目克隆下来（记得事先安装MongoDB）。
+1. 在[releases](https://github.com/eeg1412/wikimoeCardByNodeJS/releases)下载最新版（记得事先安装MongoDB）。
 2. `cd server`切换至服务端。
 3. `npm install`下载依赖。
 4. 确认端口和mongodb地址：server/config/default.js
