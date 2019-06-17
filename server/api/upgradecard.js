@@ -8,10 +8,10 @@ var userData = require('../utils/database/user');
 function setChenggolv(v){
     let lv = v;
     let n = 100;
-    if(lv<10){
+    if(lv<5){
         return n;
     }
-    n = 100 - (v + 1 - 10)*5;
+    n = 100 - (v + 1 - 5)*5;
     if(n<1){
         n = 1;
     }
