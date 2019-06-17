@@ -115,8 +115,12 @@
                                         </el-tooltip>
                                     </p>
                                     <p class="mb10 f18">升级需要</p>
-                                    <p class="mb10"><el-tooltip placement="top"><div slot="content">需要{{item[4].leftType | setItemShould}}个【{{itemData_[item[4].cry+''+item[4].leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer" :src="'/static/otherImg/item/'+item[4].cry+''+item[4].leftType+'.png'"/></el-tooltip>×{{item[4].leftType | setItemShould}}({{myItem[item[4].cry+''+item[4].leftType] || 0}})</p>
-                                    <div class="mb20"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content">需要{{item[4].star | setCardShould}}张【{{item[4].name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'"/></el-tooltip></div><span>×{{item[4].star | setCardShould}}({{item[1]}})</span></div>
+                                    <div class="mb20">
+                                        <p class="mb10"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item[4].leftType | setItemShould}}个【{{itemData_[item[4].cry+''+item[4].leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer" :src="'/static/otherImg/item/'+item[4].cry+''+item[4].leftType+'.png'"/></el-tooltip>×{{item[4].leftType | setItemShould}}({{myItem[item[4].cry+''+item[4].leftType] || 0}})</p>
+                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item[4].star | setCardShould}}张【{{item[4].name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'"/></el-tooltip></div><span>×{{item[4].star | setCardShould}}({{item[1]}})</span></div>
+                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">您未使用碎片，升级将不会消耗【{{itemData_['1'+PrefixInteger_(item[4].star,2)].name}}】，<br />如果您需要使用碎片来替代缺少的卡牌可以勾选【使用碎片】。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/otherImg/item/'+'1'+PrefixInteger_(item[4].star,2)+'.png'"/></el-tooltip></div><span>×0({{myItem['1'+PrefixInteger_(item[4].star,2)] || 0}})</span></div>
+                                    </div>
+                                    <div class="mb20"><el-checkbox v-model="item[5]">使用碎片</el-checkbox></div>
                                     <p class="mb10">成功率:{{item[3] | setChenggolv}}%</p>
                                     <div class="mt20">
                                         <el-button type="primary" @click="upgradecard(item[0],index)">升级</el-button>
@@ -321,7 +325,7 @@ export default {
                             });
                             this.$refs.userTop.getUserInfo();
                         }
-                        // 0卡牌id、1卡牌数量、2卡牌是否出战、3卡牌等级、4卡牌信息
+                        // 0卡牌id、1卡牌数量、2卡牌是否出战、3卡牌等级、4卡牌信息、5是否使用碎片
                         this.userCard[index][1] = res.data.cardNum;
                         this.userCard[index][3] = res.data.myCardLevel;
                         let cardLeftType = this.cardDatas[PrefixInteger(cardId,4)].leftType;
@@ -343,6 +347,7 @@ export default {
         },
         initData(){//初始化数据
             for(let i=0;i<this.userCardCache.length;i++){
+                this.userCardCache[i][5] = false;
                 this.userCardCache[i][2] = false;
                 // 筛选卡牌是否已经出战
                 for(let j=0;j<this.myBattleCard.length;j++){
@@ -358,7 +363,7 @@ export default {
                 let cardData_ = cardData['cardData'];//卡牌信息
                 this.userCardCache[i][4] = cardData_[PrefixInteger(this.userCardCache[i][0],4)];//输入卡牌信息
             }
-            // 0卡牌id、1卡牌数量、2卡牌是否出战、3卡牌等级、4卡牌信息
+            // 0卡牌id、1卡牌数量、2卡牌是否出战、3卡牌等级、4卡牌信息、5是否使用碎片
             this.cardPageChange(1);
         },
         cardPageChange(val){
@@ -603,5 +608,9 @@ export default {
     border-radius: 5px;
     border: 1px solid #ccc;
     padding: 4px 7px;
+}
+.wm_upcard_tooltips{
+    line-height: 140%;
+    max-width: 90vw;
 }
 </style>
