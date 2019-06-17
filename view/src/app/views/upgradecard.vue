@@ -115,15 +115,22 @@
                                         </el-tooltip>
                                     </p>
                                     <p class="mb10 f18">升级需要</p>
-                                    <div class="mb20">
+                                    <!-- 未勾选使用碎片 -->
+                                    <div class="mb20" v-show="!item[5]">
                                         <p class="mb10"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item[4].leftType | setItemShould}}个【{{itemData_[item[4].cry+''+item[4].leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer" :src="'/static/otherImg/item/'+item[4].cry+''+item[4].leftType+'.png'"/></el-tooltip>×{{item[4].leftType | setItemShould}}({{myItem[item[4].cry+''+item[4].leftType] || 0}})</p>
-                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item[4].star | setCardShould}}张【{{item[4].name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'"/></el-tooltip></div><span>×{{item[4].star | setCardShould}}({{item[1]}})</span></div>
-                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">您未使用碎片，升级将不会消耗【{{itemData_['1'+PrefixInteger_(item[4].star,2)].name}}】，<br />如果您需要使用碎片来替代缺少的卡牌可以勾选【使用碎片】。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/otherImg/item/'+'1'+PrefixInteger_(item[4].star,2)+'.png'"/></el-tooltip></div><span>×0({{myItem['1'+PrefixInteger_(item[4].star,2)] || 0}})</span></div>
+                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{setCardShould(item[4].star)}}张【{{item[4].name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'"/></el-tooltip></div><span>×{{setCardShould(item[4].star)}}({{item[1]}})</span></div>
+                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">您未使用碎片，升级将不会消耗【{{itemData_['1'+PrefixInteger_(item[4].star,2)].name}}】，<br />如果您需要使用碎片来替代缺少的卡牌可以勾选【使用碎片】。<br />碎片可以从【卡牌分解】中获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/otherImg/item/'+'1'+PrefixInteger_(item[4].star,2)+'.png'"/></el-tooltip></div><span>×0({{myItem['1'+PrefixInteger_(item[4].star,2)] || 0}})</span></div>
+                                    </div>
+                                    <!-- 勾选使用碎片 -->
+                                    <div class="mb20" v-show="item[5]">
+                                        <p class="mb10"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item[4].leftType | setItemShould}}个【{{itemData_[item[4].cry+''+item[4].leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer" :src="'/static/otherImg/item/'+item[4].cry+''+item[4].leftType+'.png'"/></el-tooltip>×{{item[4].leftType | setItemShould}}({{myItem[item[4].cry+''+item[4].leftType] || 0}})</p>
+                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item[1]>setCardShould(item[4].star)?setCardShould(item[4].star):item[1]}}张【{{item[4].name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'"/></el-tooltip></div><span>×{{item[1]>setCardShould(item[4].star)?setCardShould(item[4].star):item[1]}}({{item[1]}})</span></div>
+                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item[1]>setCardShould(item[4].star)?0:(setCardShould(item[4].star)-item[1])*3}}个【{{itemData_['1'+PrefixInteger_(item[4].star,2)].name}}】，<br />碎片可以从【卡牌分解】中获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/otherImg/item/'+'1'+PrefixInteger_(item[4].star,2)+'.png'"/></el-tooltip></div><span>×{{item[1]>setCardShould(item[4].star)?0:(setCardShould(item[4].star)-item[1])*3}}({{myItem['1'+PrefixInteger_(item[4].star,2)] || 0}})</span></div>
                                     </div>
                                     <div class="mb20"><el-checkbox v-model="item[5]">使用碎片</el-checkbox></div>
                                     <p class="mb10">成功率:{{item[3] | setChenggolv}}%</p>
                                     <div class="mt20">
-                                        <el-button type="primary" @click="upgradecard(item[0],index)">升级</el-button>
+                                        <el-button type="primary" size="medium" @click="upgradecard(item[0],index)">升级</el-button>
                                     </div>
                                 </td>
                             </tbody>
@@ -239,30 +246,6 @@ export default {
             }else if(v==5){
                 return 150;
             }
-      },
-      setCardShould(v){
-        let shouldCard = 0;
-        switch(v) {
-            case 1:
-                shouldCard = 4;
-                break;
-            case 2:
-                shouldCard = 4;
-                break;
-            case 3:
-                shouldCard = 11;
-                break;
-            case 4:
-                shouldCard = 6;
-                break;
-            case 5:
-                shouldCard = 4;
-                break;
-            case 6:
-                shouldCard = 2;
-                break;
-        }
-        return shouldCard;
       }
   },
   mounted() {
@@ -285,6 +268,30 @@ export default {
         })
   },
   methods: {
+        setCardShould(v){
+            let shouldCard = 0;
+            switch(v) {
+                case 1:
+                    shouldCard = 4;
+                    break;
+                case 2:
+                    shouldCard = 4;
+                    break;
+                case 3:
+                    shouldCard = 16;
+                    break;
+                case 4:
+                    shouldCard = 6;
+                    break;
+                case 5:
+                    shouldCard = 4;
+                    break;
+                case 6:
+                    shouldCard = 2;
+                    break;
+            }
+            return shouldCard;
+        },
         openItemBag(){
             //查看有没有道具
             let MyItemArr = Object.values(this.myItem);

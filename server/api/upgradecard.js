@@ -40,7 +40,7 @@ function setCardShould(v){
             shouldCard = 3;
             break;
         case 3:
-            shouldCard = 10;
+            shouldCard = 15;
             break;
         case 4:
             shouldCard = 5;
