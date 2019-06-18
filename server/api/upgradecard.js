@@ -59,6 +59,7 @@ module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
     let cardId = req.body.cardId;
+    let usePieces = req.body.usePieces;
     console.info(
         chalk.green('开始查询卡牌等级,IP为：'+IP)
     )
@@ -116,7 +117,18 @@ module.exports = async function(req, res, next){
     //检查卡牌是否拥有
     let shouldCardNum = setCardShould(myCardData.star);
     let myCardCount = result.card[cardId] || 0;
-    if(myCardCount<=shouldCardNum){
+    if(result.card[cardId]<=0){
+        res.send({
+            code:0,
+            msg:'您没有这张卡！'
+        });
+        console.info(
+            chalk.yellow(email+'查询了自己没拥有的卡,IP为：'+IP)
+        );
+        return false;
+    }
+    //是否有足够数量的卡
+    if((myCardCount<=shouldCardNum)&&!usePieces){
         res.send({
             code:0,
             msg:'您的卡牌不足,快去抽卡吧！'
@@ -147,12 +159,47 @@ module.exports = async function(req, res, next){
     if(myItemNum<shouldItemNum){
         res.send({
             code:0,
-            msg:'您的升级道具储量不足,快去挖矿吧！'
+            msg:'您的升级材料储量不足,快去挖矿吧！'
         });
         console.info(
             chalk.yellow(email+'想升级卡牌，但是升级道具不足,IP为：'+IP)
         );
         return false;
+    }
+    // 卡牌所需碎片ID
+    const ItemList = {
+        "1":"101",
+        "2":"102",
+        "3":"103",
+        "4":"104",
+        "5":"105",
+        "6":"106"
+    };
+    //删卡数据库
+    let cardDataBase = {};
+    cardDataBase['card.'+cardId] = -shouldCardNum;
+    let shouldPieces = 0;//需要多少碎片
+    let pieceId = ItemList[myCardData.star];//碎片ID
+    let myPieces = userItemData[pieceId] || 0;//碎片数量
+    let itemDataBase = {};//删除的道具
+    if(usePieces){
+        let cardCha = shouldCardNum-myCardCount+1;//还差多少张卡
+        if(cardCha>0){
+            shouldPieces = cardCha*3;
+            if(myPieces<shouldPieces){//如果碎片不够
+                res.send({
+                    code:0,
+                    msg:'您的卡牌碎片不足,可以从分解卡牌中获得！'
+                });
+                console.info(
+                    chalk.yellow(email+'想升级卡牌，但是碎片不足,IP为：'+IP)
+                );
+                return false;
+            }
+            itemDataBase['item.'+pieceId] = -shouldPieces;
+            cardDataBase['card.'+cardId] = -(shouldCardNum - cardCha);
+        }
+
     }
     //查询卡牌等级
     let cardLevelData = await userbattleinfoData.findOne(params).catch ((err)=>{
@@ -165,12 +212,22 @@ module.exports = async function(req, res, next){
         );
         throw err;
     }) || {};
+    //安全起见再对比下卡牌是否超过了拥有的卡牌数量
+    if(myCardCount<=Math.abs(cardDataBase['card.'+cardId])){
+        res.send({
+            code:0,
+            msg:'您的升级卡牌不足,快去挖矿吧！'
+        });
+        console.info(
+            chalk.yellow(email+'想升级卡牌，但是升级卡牌不足,IP为：'+IP)
+        );
+        return false;
+    }
     let cardLevel = cardLevelData['cardLevel']||{};//获取卡牌等级
     let myCardLevel = cardLevel[cardId] || 0;
     let chenggongyinzi = utils.randomNum(1,100)//成功率因子
     let chenggonglv = setChenggolv(myCardLevel);//计算成功率
-    //删道具
-    let itemDataBase = {};
+    //删道具数据库操作
     itemDataBase['item.'+shouldItemId] = -shouldItemNum;
     let updataItemParams = {
         $inc:itemDataBase,
@@ -214,14 +271,12 @@ module.exports = async function(req, res, next){
         )
     }else{
         //如果失败
-        getStar = myCardData.star * shouldCardNum;
+        getStar = myCardData.star * Math.abs(cardDataBase['card.'+cardId]);
         console.info(
             chalk.green(email+'升级失败，卡牌'+cardId+'化作了'+getStar+'颗星星')
         )
     }
-    //删卡
-    let cardDataBase = {};
-    cardDataBase['card.'+cardId] = -shouldCardNum;
+    //操作删卡
     if(getStar>0){
         cardDataBase['star'] = getStar;
     }
@@ -261,8 +316,10 @@ module.exports = async function(req, res, next){
         isSuccess:isSuccess,
         getStar:getStar,
         myCardLevel:myCardLevel,
-        cardNum:myCardCount-shouldCardNum,
+        cardNum:myCardCount+cardDataBase['card.'+cardId],
         itemNum:myItemNum-shouldItemNum,
+        myPieces:myPieces+itemDataBase['item.'+pieceId],
+        pieceId:pieceId,
         msg:'ok'
     });
 }

@@ -2,6 +2,7 @@ var utils = require('../utils/utils');
 var userData = require('../utils/database/user');
 var chalk = require('chalk');
 var cardData = require('../data/cardData');
+var itemDatabase = require('../utils/database/item');
 
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
@@ -86,6 +87,16 @@ module.exports = async function(req, res, next){
     let star  = 0;
     let cardNumCount = 0;
     let databaseCard = {};
+    let getItem = {};
+    let getItemDataBase = {};
+    let ItemList = {
+        "1":"101",
+        "2":"102",
+        "3":"103",
+        "4":"104",
+        "5":"105",
+        "6":"106"
+    };
     for(let i=0;i<cardId.length;i++){
         let num = Math.floor(Number(cardCount[i]));
         num = Math.abs(num);
@@ -123,6 +134,9 @@ module.exports = async function(req, res, next){
             });
             return false;
         }
+        let itemId = ItemList[dataStar];
+        getItem[itemId] = (getItem[itemId]||0) + num;
+        getItemDataBase['item.'+itemId] = (getItemDataBase['item.'+itemId]||0) + num;
         star = star + dataStar*num;
         cardNumCount = cardNumCount + num;
         databaseCard['card.'+cardId[i]] = -num;
@@ -140,6 +154,17 @@ module.exports = async function(req, res, next){
             code:0,
             msg:'内部错误请联系管理员！'
         });
+        console.error(
+            chalk.red('数据库更新错误！')
+        );
+        throw err;
+    })
+    // 写入道具
+    let update_ = {
+        $inc:getItemDataBase
+    }
+    await itemDatabase.findOneAndUpdate(filters,update_).catch ((err)=>{
+        socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
         console.error(
             chalk.red('数据库更新错误！')
         );
@@ -166,6 +191,7 @@ module.exports = async function(req, res, next){
     res.send({
         code:1,
         star:star,
+        getItem:getItem,
         msg:'ok'
     });
 }

@@ -50,6 +50,7 @@ import {authApi} from "../api";
 import userTop from '../components/topUserInfo.vue';
 import cardData from "../../utils/cardData";
 import decomposehead from "../components/decomposehead";
+import itemData from '../../../../server/data/item';
 
 export default {
   data() {
@@ -91,7 +92,7 @@ export default {
             this.$message.error('请设置要分解的卡牌数量！');
             return false;
         }
-        this.$confirm('分解卡牌后将会获得<span class="cOrange">'+this.starCount+'</span>颗星星，是否分解？', '提示', {
+        this.$confirm('分解卡牌后将会获得<span class="cOrange">'+this.starCount+'</span>颗星星和对应的碎片，是否要继续分解？', '提示', {
           confirmButtonText: '分解',
           cancelButtonText: '取消',
           type: 'warning',
@@ -120,9 +121,15 @@ export default {
             if(res.data.code==0){
                 this.$message.error(res.data.msg);
             }else if(res.data.code==1){
+                let getItemArr = Object.entries(res.data.getItem);
+                let geitItemHtml = '';
+                for(let i=0;i<getItemArr.length;i++){
+                    geitItemHtml = geitItemHtml + '、<span class="cOrange">'+itemData[getItemArr[i][0]].name+'×'+getItemArr[i][1]+'</span>'
+                }
                 this.$message({
-                    message: '成功分解出'+res.data.star+'颗星星。',
-                    type: 'success'
+                    message: '成功分解出<span class="cOrange">星星×'+res.data.star+'</span>'+geitItemHtml+'。',
+                    type: 'success',
+                    dangerouslyUseHTMLString: true
                 });
                 this.getUserCard();
                 this.$refs.userTop.getUserInfo();
@@ -135,7 +142,7 @@ export default {
         }
         this.$forceUpdate();
         this.countCardStar();
-        this.$confirm('分解卡牌后将会获得<span class="cOrange">'+this.starCount+'</span>颗星星，是否分解？', '提示', {
+        this.$confirm('分解卡牌后将会获得<span class="cOrange">'+this.starCount+'</span>颗星星和对应的碎片，是否要继续分解？', '提示', {
           confirmButtonText: '分解',
           cancelButtonText: '取消',
           type: 'warning',

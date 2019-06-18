@@ -130,7 +130,7 @@
                                     <div class="mb20"><el-checkbox v-model="item[5]">使用碎片</el-checkbox></div>
                                     <p class="mb10">成功率:{{item[3] | setChenggolv}}%</p>
                                     <div class="mt20">
-                                        <el-button type="primary" size="medium" @click="upgradecard(item[0],index)">升级</el-button>
+                                        <el-button type="primary" size="medium" @click="upgradecard(item[0],index,item[5])">升级</el-button>
                                     </div>
                                 </td>
                             </tbody>
@@ -249,7 +249,7 @@ export default {
       }
   },
   mounted() {
-        this.$emit('l2dMassage','这里可以升级自己的卡牌，所需材料可以在挖矿中获得，卡牌则可以通过抽卡或者市场购买获得。');
+        this.$emit('l2dMassage','这里可以升级自己的卡牌，所需材料可以在挖矿中获得，卡牌可以通过抽卡或者市场购买获得。如果卡牌不足可以通过卡牌碎片来替代卡牌，卡牌碎片可以通过分解卡牌获得。');
         let level = new Promise((resolve, reject)=> {
             this.searchcardlevel(resolve, reject);
         });
@@ -304,7 +304,7 @@ export default {
                 this.itemDialog = true;
             }
         },
-        upgradecard(cardId,index){
+        upgradecard(cardId,index,usePieces){
             this.$confirm('升级将消耗卡牌和道具，是否继续?', '提示', {
                 confirmButtonText: '升级',
                 cancelButtonText: '取消',
@@ -312,7 +312,8 @@ export default {
             }).then(() => {
                 let params = {
                     token:this.token,
-                    cardId:cardId
+                    cardId:cardId,
+                    usePieces:usePieces
                 }
                 authApi.upgradecard(params).then(res => {
                     console.log(res);
@@ -328,7 +329,7 @@ export default {
                         }else{
                             this.$message({
                                 dangerouslyUseHTMLString: true,
-                                message: '升级失败，卡牌化作了<span class="cOrange">'+res.data.getStar+'</span>颗星星！'
+                                message: '升级失败，您获得了<span class="cOrange">'+res.data.getStar+'</span>颗星星！'
                             });
                             this.$refs.userTop.getUserInfo();
                         }
@@ -339,6 +340,9 @@ export default {
                         let setItemShould = this.$options.filters['setItemShould'];
                         let shouldItemNum = setItemShould(cardLeftType);
                         this.myItem[this.cardDatas[PrefixInteger(cardId,4)].cry+''+cardLeftType] = res.data.itemNum;
+                        if(usePieces){
+                            this.myItem[res.data.pieceId] = res.data.myPieces;
+                        }
                         this.$forceUpdate();
                     }
                 });
