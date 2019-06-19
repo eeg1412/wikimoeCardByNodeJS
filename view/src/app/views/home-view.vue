@@ -150,6 +150,9 @@
               <span v-else-if="item.type=='upgradecard' && !item.data.isSuccess"
               >我在<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌升级</span>中升级<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.cardName}}</span>的时候，升级失败了……我的卡牌和升级材料全部化作了{{item.data.getStar}}颗星星……
               </span>
+              <span v-else-if="item.type=='dailyGetItem'"
+              >{{item.data.msg}}。大家每天也不要忘记在<span class="wm_card_get_list_card_link" @click="goMenu('/dailygetitem')">签到系统</span>里白嫖……不对领取奖励哦！
+              </span>
             </p>
           </div>
         </div>

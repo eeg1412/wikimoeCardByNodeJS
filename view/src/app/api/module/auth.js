@@ -78,6 +78,9 @@ export default function (api) {
     upgradecard(data){
       return api.post('upgradecard',data)
     },
+    dailygetitem(data){
+      return api.post('dailygetitem',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },
