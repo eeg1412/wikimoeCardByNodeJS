@@ -240,11 +240,6 @@ module.exports = async function(req, res, next){
             ip:IP
         }
         utils.writeLog(logObject);
-        res.send({
-            code:1,
-            getStar:canGetStar,
-            msg:'ok'
-        });
         console.info(
             chalk.green('email:'+email+'签到成功！。IP为：'+IP)
         );
