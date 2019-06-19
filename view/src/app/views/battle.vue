@@ -143,6 +143,9 @@ export default {
           }
       },
       battle(advanced){
+        if(this.battleSence){
+            return false;
+        }
         let params = {
             token:this.token,
             advanced:advanced,
