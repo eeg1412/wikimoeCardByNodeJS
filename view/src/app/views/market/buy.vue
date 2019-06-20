@@ -11,7 +11,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="searchForm.text" placeholder="请输入搜索内容"></el-input>
+            <el-input v-model="searchForm.text" placeholder="请输入搜索内容" @keyup.enter.native="search"></el-input>
           </el-form-item>
           <el-form-item label="星级">
             <el-select v-model="searchForm.star" placeholder="星级" class="wm_market_buy_search_select">

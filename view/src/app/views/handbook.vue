@@ -8,6 +8,17 @@
             <div class="wm_handbook_cardlist">
                 <div class="wm_cardlist_select_search_body">
                     <el-form :inline="true" :model="searchForm">
+                        <el-form-item label="出自作品">
+                            <el-input v-model="searchForm.title" placeholder="请输入作品名" class="wm_cardlist_search_input" @keyup.enter.native="searchChanged" clearable @clear="searchChanged">
+                                <el-button slot="append" icon="el-icon-search" @click="searchChanged"></el-button>
+                            </el-input>
+                        </el-form-item>
+                        <el-form-item label="角色名字">
+                            <el-input v-model="searchForm.name" placeholder="请输入角色名" class="wm_cardlist_search_input" @keyup.enter.native="searchChanged" clearable @clear="searchChanged">
+                                <el-button slot="append" icon="el-icon-search" @click="searchChanged"></el-button>
+                            </el-input>
+                        </el-form-item>
+                        <div></div>
                         <el-form-item label="星星等级">
                             <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.star" placeholder="筛选星级">
                             <el-option label="全部" value="0"></el-option>
@@ -110,6 +121,8 @@ export default {
             rightType:this.$route.query.rightType || '0',
             leftType:this.$route.query.leftType || '0',
             have:this.$route.query.have || '0',
+            title:decodeURIComponent(this.$route.query.title || ''),
+            name:decodeURIComponent(this.$route.query.name || ''),
         },
         loading:true
     }
@@ -119,6 +132,7 @@ export default {
     userTop
   },
   created() {
+      console.log(this.searchForm.title);
       this.getUserCard();
   },
   mounted() {
@@ -244,7 +258,27 @@ export default {
             }
             return true;
         }
-        let userCardSearchRes = this.cardBook.filter(item => setStar(item.info.star) && setCry(item.info.cry) && setRightType(item.info.rightType) && setLeftType(item.info.leftType) && setHave(item.have));
+        function setTitle(item){
+            let p_ = that.searchForm.title.toLowerCase();
+            if(p_==''){
+                return true;
+            }else if(item.indexOf(p_)===-1){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        function setName(item){
+            let p_ = that.searchForm.name.toLowerCase();
+            if(p_==''){
+                return true;
+            }else if(item.indexOf(p_)===-1){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        let userCardSearchRes = this.cardBook.filter(item => setStar(item.info.star) && setCry(item.info.cry) && setRightType(item.info.rightType) && setLeftType(item.info.leftType) && setHave(item.have) && setTitle(item.info.title.toLowerCase()) && setName(item.info.name.toLowerCase()));
         let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
         this.cardTotle = userCardSearchRes.length;
         if(userCard_.length<=0&&this.cardPage!=1){
@@ -281,6 +315,8 @@ export default {
                 rightType:this.searchForm.rightType,
                 leftType:this.searchForm.leftType,
                 have:this.searchForm.have,
+                title:encodeURIComponent(this.searchForm.title),
+                name:encodeURIComponent(this.searchForm.name),
             }
         });
     },

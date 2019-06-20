@@ -1458,6 +1458,9 @@ img.wm_demining_img {
 .wm_handbook_cardlist .wm_mycard_list .wm_market_mycard_item.have{
   opacity: 1;
 }
+.wm_cardlist_search_input{
+  width: 200px;
+}
 /* 分解 */
 .wm_mycard_list.type_dec .el-input-number--mini .el-input-number__decrease, .wm_mycard_list.type_dec .el-input-number--mini .el-input-number__increase{
   width: 22px;
