@@ -129,8 +129,13 @@
                                     </div>
                                     <div class="mb20"><el-checkbox v-model="item[5]">使用碎片</el-checkbox></div>
                                     <p class="mb10">成功率:{{item[3] | setChenggolv}}%</p>
-                                    <div class="mt20">
-                                        <el-button type="primary" size="medium" @click="upgradecard(item[0],index,item[5])">升级</el-button>
+                                    <div class="mt20 pb10">
+                                        <el-dropdown split-button type="primary" size="medium" trigger="click" @click="upgradecard(item[0],index,item[5])" @command="goChangeLevel">
+                                            升级
+                                            <el-dropdown-menu slot="dropdown">
+                                                <el-dropdown-item :command="item">转移等级</el-dropdown-item>
+                                            </el-dropdown-menu>
+                                        </el-dropdown>
                                     </div>
                                 </td>
                             </tbody>
@@ -268,6 +273,25 @@ export default {
         })
   },
   methods: {
+        goChangeLevel(c){
+            let changeCardLvel = c[3];
+            if(changeCardLvel<=0){
+                this.$message('卡牌等级必须大于1才能转移！');
+                return false;
+            }
+            let changeItem = this.myItem['200'];
+            if(changeItem>0){
+                this.$router.push({
+                path:'/cardlevelchange',
+                    query: {
+                        from:c[0],
+                        item:changeItem
+                    }
+                });
+            }else{
+                this.$message('您的等级转移道具不足！');
+            }
+        },
         setCardShould(v){
             let shouldCard = 0;
             switch(v) {

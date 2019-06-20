@@ -28,6 +28,7 @@ var apiSearchCardLevel = require('../api/searchCardLevel');
 var apiSearchUserItem = require('../api/searchUserItem');
 var apiUpgradecard = require('../api/upgradecard');
 var apiDailyGetItem = require('../api/dailyGetItem');
+var apiCardLevelChange = require('../api/cardLevelChange');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -75,6 +76,7 @@ router.post('/searchcardlevel', apiSearchCardLevel);
 router.post('/searchuseritem', apiSearchUserItem);
 router.post('/upgradecard', apiUpgradecard);
 router.post('/dailygetitem', apiDailyGetItem);
+router.post('/cardlevelchange', apiCardLevelChange);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);

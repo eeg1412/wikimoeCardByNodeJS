@@ -18,6 +18,7 @@ const decomposeView = () => import(/* webpackChunkName: "decomposeView" */ '@/vi
 const decomposeitemView = () => import(/* webpackChunkName: "decomposeitemView" */ '@/views/decomposeitem.vue')
 const upgradecardView = () => import(/* webpackChunkName: "battleCryView" */ '@/views/upgradecard.vue')
 const dailyGetItemView = () => import(/* webpackChunkName: "dailyGetItemView" */ '@/views/userDaliyGetItem.vue')
+const cardlevelchangeView = () => import(/* webpackChunkName: "dailyGetItemView" */ '@/views/cardlevelchange.vue')
 
 const adminLoginView = () => import(/* webpackChunkName: "adminLoginView" */ '@/views/admin/login-view.vue')
 const adminInstallView = () => import(/* webpackChunkName: "adminInstallView" */ '@/views/admin/install-view.vue')
@@ -194,6 +195,15 @@ const router = new VueRouter({
         admin:false,
       },
       component: dailyGetItemView
+    },
+    {
+      name: 'cardlevelchange',
+      path: '/cardlevelchange',
+      meta:{
+        login:true,
+        admin:false,
+      },
+      component: cardlevelchangeView
     },
     {
       name: 'adminLogin',

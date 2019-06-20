@@ -44,6 +44,7 @@ export default {
   },
   mounted() {
     this.dailygetitem();
+    this.$wikimoecard.l2dMassage('这里每天可以进行一次签到，签到后可以获得奖励喔！')
   },
   methods: {
     captchaDigShow(v){

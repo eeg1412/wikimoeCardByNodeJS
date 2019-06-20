@@ -81,6 +81,9 @@ export default function (api) {
     dailygetitem(data){
       return api.post('dailygetitem',data)
     },
+    cardlevelchange(data){
+      return api.post('cardlevelchange',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },

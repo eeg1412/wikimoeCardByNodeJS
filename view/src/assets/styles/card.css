@@ -301,7 +301,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     perspective: 800px;
     cursor: url(/static/cur/pointer.cur),pointer;
 }
-.card_list.selectedcard{
+.card_list.selectedcard,.wm_cursor_default{
     cursor: url(/static/cur/default.cur),default;
 }
 .no-selectedcard{
