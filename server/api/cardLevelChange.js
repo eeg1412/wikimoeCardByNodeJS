@@ -11,7 +11,7 @@ module.exports = async function(req, res, next){
     let fromCardId = req.body.fromCardId || 0;
     let toCardId = req.body.toCardId || 0;
     console.info(
-        chalk.green('开始转移卡牌等级,IP为：'+IP)
+        chalk.green('开始转换卡牌等级,IP为：'+IP)
     )
     //解析token
     if(!token){
@@ -58,20 +58,20 @@ module.exports = async function(req, res, next){
     if(fromCardData.star!==toCardData.star){//检查星级
         res.send({
             code:0,
-            msg:'转移必须两张卡的星级一样！'
+            msg:'转换必须两张卡的星级一样！'
         });
         console.info(
-            chalk.yellow(email+'想转移星级不一样的卡,IP为：'+IP)
+            chalk.yellow(email+'想转换星级不一样的卡,IP为：'+IP)
         );
         return false;
     }
     if(fromCardData.leftType!==toCardData.leftType){//检查属性
         res.send({
             code:0,
-            msg:'转移必须两张卡的被动属性一样！'
+            msg:'转换必须两张卡的被动属性一样！'
         });
         console.info(
-            chalk.yellow(email+'想转移被动属性不一样的卡,IP为：'+IP)
+            chalk.yellow(email+'想转换被动属性不一样的卡,IP为：'+IP)
         );
         return false;
     }
@@ -82,7 +82,7 @@ module.exports = async function(req, res, next){
             msg:'您还没有卡牌！'
         });
         console.info(
-            chalk.yellow(email+'想转移卡牌等级但是没有卡牌,IP为：'+IP)
+            chalk.yellow(email+'想转换卡牌等级但是没有卡牌,IP为：'+IP)
         );
         return false;
     }
@@ -105,10 +105,10 @@ module.exports = async function(req, res, next){
     if(myItemNum<=0){
         res.send({
             code:0,
-            msg:'转移道具不足！'
+            msg:'转换道具不足！'
         });
         console.info(
-            chalk.yellow(email+'想转移卡牌等级没道具,IP为：'+IP)
+            chalk.yellow(email+'想转换卡牌等级没道具,IP为：'+IP)
         );
         return false;
     }
@@ -126,22 +126,22 @@ module.exports = async function(req, res, next){
     myCardLevel = myCardLevel['cardLevel'] || {};
     let fromCardLevel = myCardLevel[fromCardId]||0;
     let toCardLevel = myCardLevel[toCardId]||0;
-    if(fromCardLevel<=toCardLevel){
+    if(fromCardLevel===toCardLevel){
         res.send({
             code:0,
-            msg:'转移的卡牌的等级必须超过接收卡牌的等级！'
+            msg:'两边卡牌等级不能一样！'
         });
         console.info(
-            chalk.yellow(email+'想转移卡牌但是等级不对,IP为：'+IP)
+            chalk.yellow(email+'想转换卡牌但是等级一样,IP为：'+IP)
         );
         return false;
     }
-    //开始转移
+    //开始转换
     //升级
     let update = {
         
     };
-    update['cardLevel.'+fromCardId] = 0;
+    update['cardLevel.'+fromCardId] = toCardLevel;
     update['cardLevel.'+toCardId] = fromCardLevel;
     await userbattleinfoData.findOneAndUpdate(params,update).catch ((err)=>{
         res.send({
@@ -168,11 +168,29 @@ module.exports = async function(req, res, next){
         );
         throw err;
     })
+    let timeNow = Math.round(new Date().getTime()/1000);
+    let logObject = {
+        email:email,
+        md5:result.md5,
+        nickName:result.nickName,
+        type:'levelChange',
+        time:timeNow,
+        data:{
+            fromCardId:fromCardId,
+            fromCardName:fromCardData.name,
+            toCardId:toCardId,
+            toCardName:toCardData.name,
+            toCardLevel:fromCardLevel,
+            fromCardLevel:toCardLevel
+        },
+        ip:IP
+    }
+    utils.writeLog(logObject);
     res.send({
         code:1,
-        msg:'卡牌等级转移成功！'
+        msg:'卡牌等级转换成功！'
     });
     console.info(
-        chalk.green(email+'卡牌等级转移成功！')
+        chalk.green(email+'卡牌等级转换成功！')
     )
 }

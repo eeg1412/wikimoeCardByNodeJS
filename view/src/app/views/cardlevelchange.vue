@@ -1,8 +1,8 @@
 <template>
 <div class="common_body">
     <userTop ref="userTop" />
-    <h5 class="common_title type_shop">等级转移</h5>
-    <div class="tc mb20">注意：转移等级将会覆盖右侧卡牌的等级！</div>
+    <h5 class="common_title type_shop">转换等级</h5>
+    <div class="tc mb20">注意：只有被动属性和星级一样的卡牌才能相互转换！</div>
     <div class="clearfix tc wm_cardlvchange_top_body">
         <div class="wm_cardlvchange_body">
             <div class="wm_market_mycard_item type_mobile wm_cursor_default">
@@ -10,7 +10,7 @@
                 <div>Lv.{{myCardLevel[from]?myCardLevel[from]+1:1}}</div>
             </div>
         </div>
-        <i class="el-icon-d-arrow-right f18"></i>
+        <i class="el-icon-sort f18 wm_cardlvchange_changeico"></i>
         <div class="wm_cardlvchange_body" v-if="!to">
             <div class="wm_market_mycard_item type_mobile wm_cursor_default">
                 <div class="wm_cardlvchange_nocard">
@@ -27,12 +27,12 @@
         </div>
         <div class="tc mt10 pb10">
             <el-button type="primary" size="medium" @click="goChange">
-                <div>使用<img :src="'/static/otherImg/item/200.png'" width="24px" height="24px"/>×1({{item}})转移等级</div>
+                <div>使用 <img :src="'/static/otherImg/item/200.png'" width="24px" height="24px"/>×1 转换等级</div>
             </el-button>
         </div>
     </div>
     <div>
-        <h5 class="common_title type_shop">点击接收等级的卡牌</h5>
+        <h5 class="common_title type_shop">点击选择卡牌</h5>
         <div class="wm_cardlist_select_search_body">
             <el-form :inline="true" :model="searchForm">
                 <el-form-item label="水晶属性">
@@ -77,7 +77,9 @@
             </div>
         </el-collapse-transition>
         <el-collapse-transition>
-            <div class="common_nocard_tips" v-show="userCard.length<=0&&!pageChangeing">该条件下暂无卡牌！</div>
+            <div v-show="userCard.length<=0&&!pageChangeing">
+                <div class="common_nocard_tips">该条件下暂无卡牌！</div>
+            </div>
         </el-collapse-transition>
         <div class="wm_market_content_page" v-if="userCard.length>0">
             <el-pagination
@@ -133,6 +135,7 @@ export default {
     userTop,
   },
   mounted() {
+    this.$wikimoecard.l2dMassage('请选择您想要转换的卡牌，只有被动属性和星级一样的卡牌才能相互转换！')
     let cardId = PrefixInteger(this.from,4);
     this.searchForm.leftType = this.cardDatas[cardId].leftType;
     this.searchForm.star = this.cardDatas[cardId].star;
@@ -154,8 +157,8 @@ export default {
             this.$message.error('请设置接收的卡牌！');
             return false;
         }
-        this.$confirm('转移等级后转移等级的卡等级会降到1，同时会覆盖接收卡的等级，是否继续?', '提示', {
-            confirmButtonText: '转移',
+        this.$confirm('转换将会互换两张卡的等级，是否继续?', '提示', {
+            confirmButtonText: '转换',
             cancelButtonText: '取消',
             type: 'warning'
         }).then(() => {
@@ -271,7 +274,7 @@ export default {
                 return a[3].star - b[3].star;
             }
         }
-        let userCardSearchRes = this.userCardCache.filter(item => setStar(item[3].star) && setCry(item[3].cry) && setRightType(item[3].rightType) && setLeftType(item[3].leftType) && item[0]!=this.from && item[2]<(this.myCardLevel[this.from]||0));
+        let userCardSearchRes = this.userCardCache.filter(item => setStar(item[3].star) && setCry(item[3].cry) && setRightType(item[3].rightType) && setLeftType(item[3].leftType) && item[0]!=this.from && item[2]!=(this.myCardLevel[this.from]||0));
         userCardSearchRes = userCardSearchRes.sort(setSort);
         let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
         this.cardTotle = userCardSearchRes.length;
@@ -362,6 +365,9 @@ export default {
 .wm_cardlvchange_top_body{
     padding-bottom: 20px;
     border-bottom: 1px dashed #ccc;
+}
+.wm_cardlvchange_changeico{
+    transform: rotate(90deg);
 }
 @media ( max-width : 768px) {
     .wm_cardlvchange_nocard{

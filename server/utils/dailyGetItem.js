@@ -33,7 +33,7 @@ exports.creatNewItemList = function(month,year) {
             getItem = {
                 item:"200",
                 num:1,
-                text:"等级转移卷轴×1"
+                text:"等级转换卷轴×1"
             }
         }else{
             getItem = {

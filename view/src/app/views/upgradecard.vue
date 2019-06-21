@@ -76,9 +76,11 @@
                         <table class="wm_levle_card_table">
                             <tbody>
                                 <td>
-                                    <div class="wm_level_card_img_body mb10">
-                                        <img :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'" class="w_10 wm_level_card_img">
-                                    </div>
+                                    <el-tooltip class="item" effect="dark" content="点击去市场查找此卡！" placement="top">
+                                        <div class="wm_level_card_img_body mb10 wm_set_pointer" @click="goMarket(item[0],item[4].star)">
+                                            <img :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'" class="w_10 wm_level_card_img">
+                                        </div>
+                                    </el-tooltip>
                                 </td>
                                 <td>
                                     <h5 class="mb5 f18">Lv.{{item[3]+1}}</h5>
@@ -133,7 +135,7 @@
                                         <el-dropdown split-button type="primary" size="medium" trigger="click" @click="upgradecard(item[0],index,item[5])" @command="goChangeLevel">
                                             升级
                                             <el-dropdown-menu slot="dropdown">
-                                                <el-dropdown-item :command="item">转移等级</el-dropdown-item>
+                                                <el-dropdown-item :command="item">转换等级</el-dropdown-item>
                                             </el-dropdown-menu>
                                         </el-dropdown>
                                     </div>
@@ -158,12 +160,12 @@
             <div class="mt20 tc wm_upgradecard_bt_btn_body">
                 <el-button @click="goRouter('/battle')">返回</el-button>
                 <el-button type="primary" @click="goRouter('/battlecard')">组卡</el-button>
-                <el-button type="info" @click="openItemBag">材料</el-button>
+                <el-button type="info" @click="openItemBag">物品</el-button>
             </div>
         </div>
         <menuView></menuView>
         <el-dialog
-            title="我的材料"
+            title="我的物品"
             :visible.sync="itemDialog"
             class="reg_code_dialog"
             width="100%">
@@ -273,12 +275,20 @@ export default {
         })
   },
   methods: {
+        goMarket(cardId,star){
+            this.$router.push({ 
+                name:'buyCard',
+                query: {
+                    name:'cardId',
+                    text:cardId,
+                    want:1,
+                    wantstar:star,
+                    wantid:cardId
+                }
+            });
+        },
         goChangeLevel(c){
             let changeCardLvel = c[3];
-            if(changeCardLvel<=0){
-                this.$message('卡牌等级必须大于1才能转移！');
-                return false;
-            }
             let changeItem = this.myItem['200'];
             if(changeItem>0){
                 this.$router.push({
@@ -289,7 +299,7 @@ export default {
                     }
                 });
             }else{
-                this.$message('您的等级转移道具不足！');
+                this.$message('您的等级转换道具不足！');
             }
         },
         setCardShould(v){

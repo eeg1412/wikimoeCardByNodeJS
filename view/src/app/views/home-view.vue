@@ -103,7 +103,7 @@
   </el-dialog>
   <menuView ref="menu"></menuView>
   <rank @watchInfo="watchRank"></rank>
-  <div class="wm_card_get_list_body" v-if="logList.length>0">
+  <div class="wm_card_get_list_body" v-if="logList.length>0" @mouseenter="$wikimoecard.l2dMassage('快来瞧瞧大家的动态吧！')">
     <h5 class="wm_card_chiose_title">最新动态</h5>
     <div class="wm_card_get_list_item_body">
       <transition-group name="el-fade-in-linear">
@@ -113,7 +113,7 @@
               <img class="wm_card_get_list_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" width="45" height="45">
             </el-tooltip>
           </div>
-          <div class="wm_card_get_list_comment" @mouseover="$wikimoecard.l2dMassage('快来瞧瞧大家的动态吧！')">
+          <div class="wm_card_get_list_comment">
             <p>
               <span class="wm_log_name">{{item.nickName}}</span>
               <span class="wm_log_time">{{item.time|capitalize}}</span>
@@ -152,6 +152,9 @@
               </span>
               <span v-else-if="item.type=='dailyGetItem'"
               >{{item.data.msg}}。大家每天也不要忘记在<span class="wm_card_get_list_card_link" @click="goMenu('/dailygetitem')">签到系统</span>里白嫖……不对领取奖励哦！
+              </span>
+              <span v-else-if="item.type=='levelChange'"
+              >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌等级转换</span>将<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.fromCardId,4)+'.jpg')">{{item.data.fromCardName}}</span>和<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.toCardId,4)+'.jpg')">{{item.data.toCardName}}</span>的等级进行了对换。现在我的<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.fromCardId,4)+'.jpg')">{{item.data.fromCardName}}</span>变成了{{item.data.fromCardLevel+1}}级，<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.toCardId,4)+'.jpg')">{{item.data.toCardName}}</span>变成了{{item.data.toCardLevel+1}}级。
               </span>
             </p>
           </div>
