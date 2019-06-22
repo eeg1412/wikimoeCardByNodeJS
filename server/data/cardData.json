@@ -190,7 +190,7 @@
 			"rightType": 6,
 			"cry": 4,
 			"title":"轻音少女",
-			"name":"琴吹䌷"
+			"name":"真锅和"
 		},
 		"0025": {
 			"star": 3,
@@ -935,6 +935,30 @@
 			"cry": 1,
 			"title":"魔法飞球",
 			"name":"安莉"
+		},
+		"0118": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"魔界战记 Disgaea",
+			"name":"艾多娜"
+		},
+		"0119": {
+			"star": 3,
+			"leftType": 3,
+			"rightType": 3,
+			"cry": 1,
+			"title":"娇蛮猫娘大横行！",
+			"name":"芹泽文乃"
+		},
+		"0120": {
+			"star": 3,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"爱杀宝贝",
+			"name":"索妮娅&折部安奈"
 		},
 		"1001": {
 			"star": 4,
@@ -1704,6 +1728,54 @@
 			"title":"VOCALOID",
 			"name":"镜音铃"
 		},
+		"1097": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"魔界战记 Disgaea",
+			"name":"芙蓉"
+		},
+		"1098": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"K",
+			"name":"栉名安娜"
+		},
+		"1099": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 6,
+			"cry": 1,
+			"title":"未确认进行式",
+			"name":"夜之森小红"
+		},
+		"1100": {
+			"star": 4,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 4,
+			"title":"GJ部",
+			"name":"天使真央"
+		},
+		"1101": {
+			"star": 4,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 2,
+			"title":"天降之物",
+			"name":"妮姆芙"
+		},
+		"1102": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"斩·赤紅之瞳！",
+			"name":"赤瞳"
+		},
 		"2001": {
 			"star": 5,
 			"leftType": 5,
@@ -2384,6 +2456,94 @@
 			"title":"埃罗芒阿老师",
 			"name":"梅园花"
 		},
+		"2086": {
+			"star": 5,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 5,
+			"title":"Fate/stay night",
+			"name":"间桐樱"
+		},
+		"2087": {
+			"star": 5,
+			"leftType": 1,
+			"rightType": 1,
+			"cry": 5,
+			"title":"机巧少女不会受伤",
+			"name":"夜夜"
+		},
+		"2088": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 5,
+			"title":"未确认进行式",
+			"name":"三峰真白"
+		},
+		"2089": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 4,
+			"cry": 4,
+			"title":"LoveLive!",
+			"name":"星空凛"
+		},
+		"2090": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 1,
+			"cry": 2,
+			"title":"LoveLive!",
+			"name":"园田海未"
+		},
+		"2091": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 3,
+			"title":"北熙宝宝",
+			"name":"北熙"
+		},
+		"2092": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 3,
+			"cry": 2,
+			"title":"轻音少女",
+			"name":"琴吹䌷"
+		},
+		"2093": {
+			"star": 5,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 3,
+			"title":"轻音少女",
+			"name":"田井中律"
+		},
+		"2094": {
+			"star": 5,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 1,
+			"title":"天使降临到了我身边",
+			"name":"星野日向"
+		},
+		"2095": {
+			"star": 5,
+			"leftType": 5,
+			"rightType": 2,
+			"cry": 4,
+			"title":"天使降临到了我身边",
+			"name":"姬坂乃爱"
+		},
+		"2096": {
+			"star": 5,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 5,
+			"title":"天使降临到了我身边",
+			"name":"星野宫子"
+		},
 		"3001": {
 			"star": 6,
 			"leftType": 2,
@@ -2799,6 +2959,62 @@
 			"cry": 5,
 			"title":"凉宫春日的忧郁",
 			"name":"长门有希"
+		},
+		"3053": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 3,
+			"cry": 1,
+			"title":"LoveLive!",
+			"name":"西木野真姬"
+		},
+		"3054": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 1,
+			"cry": 1,
+			"title":"LoveLive!",
+			"name":"矢泽妮可"
+		},
+		"3055": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 3,
+			"cry": 4,
+			"title":"LoveLive!",
+			"name":"南小鸟"
+		},
+		"3056": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 2,
+			"title":"Charlotte",
+			"name":"友利奈绪"
+		},
+		"3057": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 7,
+			"cry": 5,
+			"title":"轻音少女",
+			"name":"秋山澪"
+		},
+		"3058": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 6,
+			"cry": 1,
+			"title":"轻音少女",
+			"name":"中野梓"
+		},
+		"3059": {
+			"star": 6,
+			"leftType": 5,
+			"rightType": 5,
+			"cry": 4,
+			"title":"轻音少女",
+			"name":"平泽唯"
 		}
 	},
 	"level":[40,82,130,180,276,860]
