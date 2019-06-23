@@ -204,7 +204,7 @@ export default {
     position: fixed;
     left: 5px;
     bottom: 5px;
-    z-index: 10000;
+    z-index: 999;
     cursor: url(/static/cur/pointer.cur),pointer;
 }
 </style>

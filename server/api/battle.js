@@ -124,7 +124,7 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
             AttackAddHP = Math.floor(AttackA*0.05*AttackStar+AttackD*0.06*AttackStar);//治 SAN+攻*5%*星级 + 防*6%*星级
             AttackHP = AttackHP+AttackAddHP;
         }else if(AttackRightType===5){
-            DefendD = DefendD-DefendD*Math.floor(0.07*AttackStar);
+            DefendD = DefendD-Math.floor(DefendD*0.01*AttackStar);
         }
     }
     // 攻击前结算属性相克
