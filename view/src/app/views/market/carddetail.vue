@@ -58,7 +58,7 @@
       <div class="wm_card_get_list_item" v-for="(item,index) in wantLog" v-bind:key="index+1">
           <div class="wm_card_get_list_avatar">
             <el-tooltip class="item" effect="dark" :content="'查看'+item.nickName+'的卡牌'" placement="top" :hide-after="3000">
-              <img class="wm_card_get_list_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" width="45" height="45" @click="watchUserCard(item.md5)">
+              <img class="wm_card_get_list_avatar_pic" :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" width="45" height="45" @click="watchUserCard(item.md5)">
             </el-tooltip>
           </div>
           <div class="wm_card_get_list_comment">

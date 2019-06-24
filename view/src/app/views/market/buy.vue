@@ -244,6 +244,7 @@ export default {
           text:encodeURIComponent(this.searchForm.text),
           star:this.searchForm.star,
           sort:this.searchForm.sort,
+          have:this.searchForm.ihave,
         }
       });
     },

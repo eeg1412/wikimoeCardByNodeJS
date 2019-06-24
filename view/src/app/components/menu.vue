@@ -69,7 +69,7 @@
     </div>
     <div class="wm_card_menu_box" @click="watchMyCard()" v-if="token" @mouseenter="$wikimoecard.l2dMassage('点击可以查看自己的卡牌信息。')" @mouseleave="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
-        <img :src="'https://cdn.v2ex.com/gravatar/'+getCardMd5()+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" class="wm_card_menu_ico_my" width="100%" height="100%" />
+        <img :src="'https://gravatar.loli.net/avatar/'+getCardMd5()+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" class="wm_card_menu_ico_my" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">我的</div>
     </div>

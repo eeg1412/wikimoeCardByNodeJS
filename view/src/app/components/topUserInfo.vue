@@ -1,7 +1,7 @@
 <template>
 <div class="wm_card_top_userinfo_body clearfix">
     <div class="fl">
-        <img class="wm_top_info_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+userData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" @click="openMore()">
+        <img class="wm_top_info_avatar_pic" :src="'https://gravatar.loli.net/avatar/'+userData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" @click="openMore()">
     </div>
     <div class="fl">
         <div>
@@ -18,7 +18,7 @@
         width="95%"
         >
         <div class="wm_top_info_more_body" v-if="userData.level!==undefined">
-            <div><img class="wm_top_moreinfo_avatar_pic" :src="'https://cdn.v2ex.com/gravatar/'+userData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"></div>
+            <div><img class="wm_top_moreinfo_avatar_pic" :src="'https://gravatar.loli.net/avatar/'+userData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"></div>
             <div class="wm_top_moreinfo_name">{{userData.nickName}}</div>
             <div class="wm_top_moreinfo_body clearfix">
                 <div class="wm_top_moreinfo_box">
