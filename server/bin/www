@@ -6,24 +6,39 @@
 let app = require('../app');
 let debug = require('debug')('wikimoecard:server');
 let http = require('http');
+let https = require("https");
 let demining = require('../api/demining');
+let fs = require("fs");
+
 /**
  * Get port from environment and store in Express.
  */
-var port = normalizePort(global.myAppConfig.port || '3000');
-app.set('port', port);
+// var port = normalizePort(global.myAppConfig.port || '3000');
+// app.set('port', port);
 /**
  * Create HTTP server.
  */
-
-var server = http.createServer(app);
+var server = null;
+if(global.myAppConfig.https){
+  const httpsOption = {
+    key : fs.readFileSync(global.myAppConfig.keyFileSrc),
+    cert: fs.readFileSync(global.myAppConfig.certFileSrc)
+  }
+  server = https.createServer(httpsOption,app).listen(global.myAppConfig.sslPort,'0.0.0.0');
+  http.createServer(function (req,res) {
+    res.writeHead(301,{'Location':global.myAppConfig.site})
+    res.end();
+  }).listen(global.myAppConfig.port,'0.0.0.0');
+}else{
+  server = http.createServer(app).listen(global.myAppConfig.port,'0.0.0.0');
+}
 var io = require('socket.io')(server);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+// server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 var userCount = 0;

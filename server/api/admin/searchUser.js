@@ -35,7 +35,8 @@ module.exports = async function(req, res, next){
     }
     let parmas = {};
     if((type==='md5'||type==='nickName'||type==='email'||type==='ip')&&searchText){
-        parmas[type] = searchText;
+        const reg=new RegExp(searchText,'i');
+        parmas[type] = {$regex:reg};
     }
     let pageSize_ = 20;
     let getParams = '_id email md5 nickName star score level exp deminingStarCount ip ban cardIndexCount';
