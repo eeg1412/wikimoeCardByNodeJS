@@ -12,6 +12,13 @@
     <el-form-item label="内容">
       <el-input v-model="searchForm.text" placeholder="请输入搜索内容"></el-input>
     </el-form-item>
+    <el-form-item label="是否封号">
+      <el-select v-model="searchForm.ban" placeholder="是否封号">
+        <el-option label="全部" value="all"></el-option>
+        <el-option label="未封号" value="0"></el-option>
+        <el-option label="封号" value="1"></el-option>
+      </el-select>
+    </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="search">查询</el-button>
       <el-button @click="clearSearch">取消</el-button>
@@ -103,7 +110,8 @@ export default {
       cardTotle:0,
       searchForm:{
         type:'email',
-        text:''
+        text:'',
+        ban:'all'
       },
       searchParams:{},
       searchSort:{
@@ -136,9 +144,6 @@ export default {
       this.getuserInfo();
     },
     search(){
-      if(this.searchForm.text==''){
-        this.$message.error('请输入搜索内容！');
-      }
       this.page = 1;
       let fift = this.searchForm;
       this.getuserInfo(fift);
@@ -189,7 +194,7 @@ export default {
             message: res.data.msg,
             type: 'success'
           });
-          this.getuserInfo();
+          this.getuserInfo(this.searchForm);
         }else{
           this.$message.error(res.data.msg);
         }

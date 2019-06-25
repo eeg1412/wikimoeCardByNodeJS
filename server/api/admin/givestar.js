@@ -90,7 +90,7 @@ module.exports = async function(req, res, next){
             throw err;
         })
     }else{
-        await userData.updataUserMany({},updateParams).catch ((err)=>{
+        await userData.updataUserMany({ban:0},updateParams).catch ((err)=>{
             res.send({
                 code:0,
                 msg:'内部错误，更新失败！'

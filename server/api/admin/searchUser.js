@@ -9,6 +9,7 @@ module.exports = async function(req, res, next){
     let type = req.body.type;
     let searchText = req.body.text;
     let sort = req.body.sort;
+    let ban = req.body.ban;
     console.info(
         chalk.green('开始查询用户列表,IP为：'+IP)
     )
@@ -37,6 +38,11 @@ module.exports = async function(req, res, next){
     if((type==='md5'||type==='nickName'||type==='email'||type==='ip')&&searchText){
         const reg=new RegExp(searchText,'i');
         parmas[type] = {$regex:reg};
+    }
+    if(ban=='0'){
+        parmas['ban'] = Number(ban);
+    }else if(ban=='1'){
+        parmas['ban'] = Number(ban);
     }
     let pageSize_ = 20;
     let getParams = '_id email md5 nickName star score level exp deminingStarCount ip ban cardIndexCount';
