@@ -33,6 +33,7 @@
               <el-option label="星级从高到底" value="4"></el-option>
             </el-select>
           </el-form-item>
+          <el-tooltip class="item" effect="dark" content="如果指定卡牌ID搜索，此筛选条件将失效。" placement="top">
           <el-form-item label="拥有">
             <el-select v-model="searchForm.ihave" placeholder="拥有" class="wm_market_buy_search_select">
               <el-option label="全部" value="0"></el-option>
@@ -40,6 +41,7 @@
               <el-option label="未拥有" value="2"></el-option>
             </el-select>
           </el-form-item>
+          </el-tooltip>
           <el-form-item class="wm_market_buy_search_btn_body">
             <el-button type="primary" @click="search">查询</el-button>
             <el-button @click="clearSearch">取消</el-button>
