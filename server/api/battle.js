@@ -52,6 +52,7 @@
 var utils = require('../utils/utils');
 var userData = require('../utils/database/user');
 var userbattleinfoData = require('../utils/database/userbattleinfo');
+var battleLogsData = require('../utils/database/battleLogs');
 var chalk = require('chalk');
 var cardData = require('../data/cardData');
 var usersModel = require('../models/users');
@@ -773,6 +774,39 @@ module.exports = async function(req, res, next){
             })
         }
         let timeNow = Math.round(new Date().getTime()/1000);
+        // 写入战斗记录
+        let battleLogsParams = {
+            aEmail:email,
+            dEmail:emData.email,
+            time:timeNow,
+            data:{
+                MyBattleCard:MyBattleCardArr_,
+                myCardLevel:myCardLevel,
+                MyADSHP:MyADSHP_,
+                MyName:MyName,
+                MyMD5:MyMD5,
+                EmBattleCard:EmBattleCardArr_,
+                emCardLevel:emCardLevel,
+                EmADSHP:EmADSHP_,
+                EmName:EmName,
+                EmMD5:EmMD5,
+                MyBattleData:MyBattleData,
+                EmBattleData:EmBattleData,
+                win:win,
+                speed:speed,
+                score:myScore,
+                getScore:getScore,
+                getExp:getExp,
+                EmGetScore:EmGetScore,
+
+            }
+        }
+        battleLogsData.saveBattleLog(battleLogsParams).catch ((err)=>{
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            throw err;
+        });
         let logObject = {
             email:email,
             md5:result.md5,

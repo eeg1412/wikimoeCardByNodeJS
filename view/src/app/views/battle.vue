@@ -49,6 +49,50 @@
                 </el-tooltip>
             </div>
         </div>
+        <div class="wm_battle_logs_body">
+            <h5 class="common_title type_shop">对战记录</h5>
+            <div class="tc">Tip:仅记录最近一个月的对战记录。</div>
+            <div class="mb20 mt20 tc">
+                <div class="dib wm_battle_logs_item">
+                    <el-card shadow="always">
+                        <div class="tc">
+                            <div class="mb15">2019-06-21 14:44:02</div>
+                            <div>
+                                <el-tooltip class="item" effect="dark" content="查看广树的对战信息" placement="top">
+                                    <div class="dib">
+                                        <div class="mb5">
+                                            <img class="radius5" src="https://gravatar.loli.net/avatar/fbb31d99a24cf9a56c48b44dd0797d22?s=100&amp;d=mm&amp;r=g&amp;d=robohash&amp;days=26" width="45" height="45">
+                                        </div>
+                                        <div>胜(+120)</div>
+                                    </div>
+                                </el-tooltip>
+                                <div class="f24 dib ml10 mr10">VS</div>
+                                <el-tooltip class="item" effect="dark" content="查看广树的对战信息" placement="top">
+                                    <div class="dib">
+                                        <div class="mb5">
+                                            <img class="radius5" src="https://gravatar.loli.net/avatar/fbb31d99a24cf9a56c48b44dd0797d22?s=100&amp;d=mm&amp;r=g&amp;d=robohash&amp;days=26" width="45" height="45">
+                                        </div>
+                                        <div>负(-120)</div>
+                                    </div>
+                                </el-tooltip>
+                            </div>
+                            <div class="mt15"><el-button type="primary" icon="el-icon-video-play" size="mini">点击播放回放</el-button></div>
+                        </div>
+                    </el-card>
+                </div>
+            </div>
+            <div class="tc mb15">
+                <el-pagination
+                small
+                layout="prev, pager, next"
+                :total="logTotle"
+                @current-change="logPageChange"
+                :current-page.sync="logPage"
+                :page-size="20"
+                class="my_card_page">
+                </el-pagination>
+            </div>
+        </div>
         <menuView></menuView>
     </div>
 </template>
@@ -62,6 +106,8 @@ import battle from '../components/battle.vue';
 export default {
   data() {
     return {
+        logTotle:0,
+        logPage:1,
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         battleData:null,
         battleSence:false,
@@ -87,6 +133,9 @@ export default {
     //   }
   },
   methods: {
+      logPageChange(){
+
+      },
       changeSkipBattle(val){
           localStorage.setItem("skipBattle",val);
       },
@@ -205,5 +254,9 @@ export default {
 .wm_battle_ueseinfo_body{
     max-width: 400px;
     margin: 0 auto;
+}
+.wm_battle_logs_item{
+    margin: 10px;
+    width: 220px;
 }
 </style>

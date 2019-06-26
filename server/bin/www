@@ -13,7 +13,7 @@ let fs = require("fs");
 /**
  * Get port from environment and store in Express.
  */
-// var port = normalizePort(global.myAppConfig.port || '3000');
+var port = normalizePort(global.myAppConfig.port || '3000');
 // app.set('port', port);
 /**
  * Create HTTP server.
