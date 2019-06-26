@@ -109,7 +109,7 @@ export default {
             if(this.battleData.EmMD5){
                 loader.add('emAvatar','/api/gravatar.png?md5='+this.battleData.EmMD5);
             }else{
-                loader.add('emAvatar','/static/robotTx/'+randomNum(0,29)+'.jpg');
+                loader.add('emAvatar','/static/robotTx/'+Number(this.battleData.EmName.replace(/[^0-9]/ig,''))%29+'.jpg');
             }
             loader.add('battle_bg','/static/img/battle_bg.jpg');
             // 加载动画

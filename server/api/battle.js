@@ -785,6 +785,7 @@ module.exports = async function(req, res, next){
                 MyADSHP:MyADSHP_,
                 MyName:MyName,
                 MyMD5:MyMD5,
+                MyCardIndexCount:MyCardIndexCount,
                 EmBattleCard:EmBattleCardArr_,
                 emCardLevel:emCardLevel,
                 EmADSHP:EmADSHP_,
@@ -798,6 +799,7 @@ module.exports = async function(req, res, next){
                 getScore:getScore,
                 getExp:getExp,
                 EmGetScore:EmGetScore,
+                EmCardIndexCount:EmCardIndexCount,
 
             }
         }

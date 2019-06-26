@@ -84,6 +84,9 @@ export default function (api) {
     cardlevelchange(data){
       return api.post('cardlevelchange',data)
     },
+    searchbattlelogs(data){
+      return api.post('searchbattlelogs',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },

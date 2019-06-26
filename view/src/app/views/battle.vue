@@ -49,38 +49,40 @@
                 </el-tooltip>
             </div>
         </div>
-        <div class="wm_battle_logs_body">
+        <div class="wm_battle_logs_body" v-if="battleLogs.length>0">
             <h5 class="common_title type_shop">对战记录</h5>
             <div class="tc">Tip:仅记录最近一个月的对战记录。</div>
-            <div class="mb20 mt20 tc">
-                <div class="dib wm_battle_logs_item">
+            <transition name="el-fade-in-linear">
+            <div class="mb20 mt20 tc" v-if="logLoading">
+                <div class="dib wm_battle_logs_item" v-for="(item,index) in battleLogs" v-bind:key="index">
                     <el-card shadow="always">
                         <div class="tc">
-                            <div class="mb15">2019-06-21 14:44:02</div>
+                            <div class="mb15">{{item.time | capitalize}}</div>
                             <div>
-                                <el-tooltip class="item" effect="dark" content="查看广树的对战信息" placement="top">
-                                    <div class="dib">
+                                <el-tooltip class="item" effect="dark" :content="'查看【'+item.data.MyName+'】的对战信息'" placement="top">
+                                    <div class="dib wm_set_pointer" @click="watchUserInfo(true,index)">
                                         <div class="mb5">
-                                            <img class="radius5" src="https://gravatar.loli.net/avatar/fbb31d99a24cf9a56c48b44dd0797d22?s=100&amp;d=mm&amp;r=g&amp;d=robohash&amp;days=26" width="45" height="45">
+                                            <img class="radius5" :src="'https://gravatar.loli.net/avatar/'+item.data.MyMD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" width="45" height="45">
                                         </div>
-                                        <div>胜(+120)</div>
+                                        <div :class="{'cRed':item.data.win==1,'cGreen1A7':item.data.win==0}">{{item.data.win | myWin}}({{item.data.getScore | setScore}})</div>
                                     </div>
                                 </el-tooltip>
                                 <div class="f24 dib ml10 mr10">VS</div>
-                                <el-tooltip class="item" effect="dark" content="查看广树的对战信息" placement="top">
-                                    <div class="dib">
+                                <el-tooltip class="item" effect="dark" :content="'查看【'+item.data.EmName+'】的对战信息'" placement="top">
+                                    <div class="dib wm_set_pointer" @click="watchUserInfo(false,index)">
                                         <div class="mb5">
-                                            <img class="radius5" src="https://gravatar.loli.net/avatar/fbb31d99a24cf9a56c48b44dd0797d22?s=100&amp;d=mm&amp;r=g&amp;d=robohash&amp;days=26" width="45" height="45">
+                                            <img class="radius5" :src="item.data.EmMD5?'https://gravatar.loli.net/avatar/'+item.data.EmMD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(item.data.EmName.replace(/[^0-9]/ig,''))%29+'.jpg'" width="45" height="45">
                                         </div>
-                                        <div>负(-120)</div>
+                                        <div :class="{'cRed':item.data.win==0,'cGreen1A7':item.data.win==1}">{{item.data.win | emWin}}({{item.data.EmGetScore | setScore}})</div>
                                     </div>
                                 </el-tooltip>
                             </div>
-                            <div class="mt15"><el-button type="primary" icon="el-icon-video-play" size="mini">点击播放回放</el-button></div>
+                            <div class="mt15"><el-button type="primary" icon="el-icon-video-play" size="mini" @click="replay(index)">点击播放回放</el-button></div>
                         </div>
                     </el-card>
                 </div>
             </div>
+            </transition>
             <div class="tc mb15">
                 <el-pagination
                 small
@@ -88,11 +90,52 @@
                 :total="logTotle"
                 @current-change="logPageChange"
                 :current-page.sync="logPage"
-                :page-size="20"
+                :page-size="8"
                 class="my_card_page">
                 </el-pagination>
             </div>
         </div>
+        <el-dialog
+            :title="userBattleLogInfo.name+'的信息'"
+            :visible.sync="dialogVisible"
+            class="reg_code_dialog"
+            :append-to-body="true"
+            :lock-scroll="false"
+            @closed="closeUserInfoDig"
+            width="95%"
+            >
+            <div class="wm_top_info_more_body" v-show="!cardMode">
+                <div><img class="wm_top_moreinfo_avatar_pic" :src="userBattleLogInfo.MD5?'https://gravatar.loli.net/avatar/'+userBattleLogInfo.MD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(userBattleLogInfo.name.replace(/[^0-9]/ig,''))%29+'.jpg'"></div>
+                <div class="wm_top_moreinfo_name mt5">{{userBattleLogInfo.name}}</div>
+                <div class="wm_top_moreinfo_body clearfix">
+                    <div class="wm_top_moreinfo_box">
+                        <div class="wm_top_moreinfo_label">攻：{{userBattleLogInfo.ADSHP[0]}}</div>
+                    </div>
+                    <div class="wm_top_moreinfo_box">
+                        <div class="wm_top_moreinfo_label">防：{{userBattleLogInfo.ADSHP[1]}}</div>
+                    </div>
+                    <div class="wm_top_moreinfo_box">
+                        <div class="wm_top_moreinfo_label">速：{{userBattleLogInfo.ADSHP[2]}}</div>
+                    </div>
+                    <div class="wm_top_moreinfo_box">
+                        <div class="wm_top_moreinfo_label">SAN：{{userBattleLogInfo.ADSHP[3]}}</div>
+                    </div>
+                    <div class="wm_top_moreinfo_box">
+                        <div class="wm_top_moreinfo_label">收集率：{{userBattleLogInfo.MD5? userBattleLogInfo.cardIndex:'--'}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="wm_top_info_more_body clearfix" v-show="cardMode">
+                <div class="wm_battle_user_card_item wm_set_pointer" v-for="(item,index) in userBattleLogInfo.cardArr" v-bind:key="index" @click="openImg($wikimoecard.url+PrefixInteger_(item,4)+'.jpg')">
+                    <img :src="$wikimoecard.url+PrefixInteger_(item,4)+'.jpg'">
+                    <div class="f12 mt5">Lv.{{userBattleLogInfo.cardLevel[item]?userBattleLogInfo.cardLevel[item]+1:1}}</div>
+                </div>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="cardMode=!cardMode">{{cardMode?'查看属性':'查看卡牌'}}</el-button>
+                <el-button @click="dialogVisible = false">关闭</el-button>
+            </span>
+        </el-dialog>
         <menuView></menuView>
     </div>
 </template>
@@ -102,10 +145,25 @@ import menuView from '../components/menu.vue';
 import {authApi} from "../api";
 import userTop from '../components/topUserInfo.vue';
 import battle from '../components/battle.vue';
+import {PrefixInteger} from "../../utils/utils";
 
 export default {
   data() {
     return {
+        cardMode:false,
+        txDays:new Date().getDate(),
+        dialogVisible:false,
+        userBattleLogInfo:{
+            name:'123',
+            MD5:'',
+            ADSHP:[0,0,0,0],
+            cardIndex:0,
+            cardArr:[],
+            cardLevel:[],
+        },
+        logLoading:true,
+        replayMode:false,
+        battleLogs:[],
         logTotle:0,
         logPage:1,
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
@@ -124,17 +182,119 @@ export default {
     userTop,
     battle
   },
+  filters: {
+      capitalize(value) {
+        var date = new Date(parseInt(value*1000));
+        var tt = [date.getFullYear(), ((date.getMonth()+1)<10?'0'+(date.getMonth()+1):date.getMonth()+1), (date.getDate()<10?'0'+date.getDate():date.getDate())].join('-') + '  ' +[(date.getHours()<10?'0'+date.getHours():date.getHours()), (date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes()), (date.getSeconds()<10?'0'+date.getSeconds():date.getSeconds())].join(':');
+        return tt;
+      },
+      myWin(v){
+          if(v==1){
+              return '胜'
+          }else if(v==0){
+              return '负'
+          }else{
+              return '平'
+          }
+      },
+      emWin(v){
+          if(v==1){
+              return '负'
+          }else if(v==0){
+              return '胜'
+          }else{
+              return '平'
+          }
+      },
+      setScore(v){
+          if(v>0){
+              return '+'+v;
+          }else{
+              return v;
+          }
+      }
+  },
   mounted() {
       this.$emit('l2dMassage','这里可以挑战大佬并获取竞技点！同时还可以组建自己的对战卡组和升级自己的卡牌！');
       this.searchBattleInfo();
+      this.searchbattlelogs(1);
       //测试胜率
     //   for(let i=0;i<1000;i++){
     //       this.battle(false)
     //   }
   },
   methods: {
+      closeUserInfoDig(){
+          this.cardMode = false;
+          this.userBattleLogInfo = {
+            name:'123',
+            MD5:'',
+            ADSHP:[0,0,0,0],
+            cardIndex:0,
+            cardArr:[],
+            cardLevel:[],
+        }
+      },
+      openImg(imgsrc){
+        this.$alert('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
+            dangerouslyUseHTMLString: true,
+            lockScroll:false
+        });
+      },
+      PrefixInteger_(num,length){
+        return PrefixInteger(num,length);
+      },
+      watchUserInfo(a,index){
+          if(a){
+              this.userBattleLogInfo={
+                    name:this.battleLogs[index].data.MyName,
+                    MD5:this.battleLogs[index].data.MyMD5,
+                    ADSHP:this.battleLogs[index].data.MyADSHP,
+                    cardIndex:this.battleLogs[index].data.MyCardIndexCount,
+                    cardArr:this.battleLogs[index].data.MyBattleCard,
+                    cardLevel:this.battleLogs[index].data.myCardLevel || {},
+                }
+          }else{
+              this.userBattleLogInfo={
+                    name:this.battleLogs[index].data.EmName,
+                    MD5:this.battleLogs[index].data.EmMD5,
+                    ADSHP:this.battleLogs[index].data.EmADSHP,
+                    cardIndex:this.battleLogs[index].data.EmCardIndexCount,
+                    cardArr:this.battleLogs[index].data.EmBattleCard,
+                    cardLevel:this.battleLogs[index].data.emCardLevel || {},
+                }
+          }
+          this.dialogVisible = true;
+      },
+      replay(index){
+          if(this.replayMode){
+              return false;
+          }
+          this.battleData = this.battleLogs[index].data;
+          this.battleSence = true;
+          this.replayMode = true;
+      },
+      searchbattlelogs(page){
+          let params = {
+              token:this.token,
+              page:page
+          }
+          authApi.searchbattlelogs(params).then(res => {
+                console.log(res);
+                if(res.data.code==0){
+                    this.$message.error(res.data.msg);
+                }else if(res.data.code==1){
+                    this.logLoading = false;
+                    this.battleLogs = res.data.data;
+                    this.logTotle = res.data.total;
+                    setTimeout(()=>{
+                        this.logLoading = true;
+                    },200)
+                }
+          });
+      },
       logPageChange(){
-
+          this.searchbattlelogs(this.logPage);
       },
       changeSkipBattle(val){
           localStorage.setItem("skipBattle",val);
@@ -164,8 +324,16 @@ export default {
       },
       gameover(){
         this.battleSence = false;
-        this.$refs.userTop.getUserInfo();
-        this.searchBattleInfo();
+        if(this.replayMode){
+            this.battleData = null;
+            this.replayMode = false;
+            return false;
+        }
+        if(!this.battleData.battleOverChance){
+            this.searchbattlelogs(1);
+            this.$refs.userTop.getUserInfo();
+            this.searchBattleInfo();
+        }
         if(this.battleData.battleGetStar>0){
             this.$notify.info({
                 title: '获得对战奖励！',
@@ -258,5 +426,15 @@ export default {
 .wm_battle_logs_item{
     margin: 10px;
     width: 220px;
+}
+.wm_battle_user_card_item{
+    width: 20%;
+    float: left;
+    padding: 5px;
+    box-sizing: border-box;
+}
+.wm_battle_user_card_item img{
+    width: 100%;
+    height: auto;
 }
 </style>
