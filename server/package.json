@@ -3,7 +3,7 @@
   "version": "0.20.377",
   "private": true,
   "scripts": {
-    "start": "nodemon -e pem,key --watch bin ./bin/www"
+    "start": "nodemon --delay 60 -e pem,key --watch bin ./bin/www"
   },
   "dependencies": {
     "chalk": "^2.4.2",
