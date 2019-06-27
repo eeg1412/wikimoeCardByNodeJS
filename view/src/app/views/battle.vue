@@ -60,24 +60,24 @@
                             <div class="mb15">{{item.time | capitalize}}</div>
                             <div>
                                 <el-tooltip class="item" effect="dark" :content="'查看【'+item.data.MyName+'】的对战信息'" placement="top">
-                                    <div class="dib wm_set_pointer" @click="watchUserInfo(true,index)">
+                                    <div class="dib wm_set_pointer wm_battlelogs_content" @click="watchUserInfo(true,index)">
                                         <div class="mb5">
                                             <img class="radius5" :src="'https://gravatar.loli.net/avatar/'+item.data.MyMD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" width="45" height="45">
                                         </div>
-                                        <div :class="{'cRed':item.data.win==1,'cGreen1A7':item.data.win==0}">{{item.data.win | myWin}}({{item.data.getScore | setScore}})</div>
+                                        <div :class="{'cRed':item.data.win==1,'cGreen1A7':item.data.win==0}">{{item.data.win | myWin}}<span v-if="item.data.getScore!=0">({{item.data.getScore | setScore}})</span></div>
                                     </div>
                                 </el-tooltip>
-                                <div class="f24 dib ml10 mr10">VS</div>
+                                <div class="f24 dib ml10 mr10 wm_battlelogs_content">VS</div>
                                 <el-tooltip class="item" effect="dark" :content="'查看【'+item.data.EmName+'】的对战信息'" placement="top">
-                                    <div class="dib wm_set_pointer" @click="watchUserInfo(false,index)">
+                                    <div class="dib wm_set_pointer wm_battlelogs_content" @click="watchUserInfo(false,index)">
                                         <div class="mb5">
                                             <img class="radius5" :src="item.data.EmMD5?'https://gravatar.loli.net/avatar/'+item.data.EmMD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(item.data.EmName.replace(/[^0-9]/ig,''))%29+'.jpg'" width="45" height="45">
                                         </div>
-                                        <div :class="{'cRed':item.data.win==0,'cGreen1A7':item.data.win==1}">{{item.data.win | emWin}}({{item.data.EmGetScore | setScore}})</div>
+                                        <div :class="{'cRed':item.data.win==0,'cGreen1A7':item.data.win==1}">{{item.data.win | emWin}}<span v-if="item.data.EmGetScore!=0">({{item.data.EmGetScore | setScore}})</span></div>
                                     </div>
                                 </el-tooltip>
                             </div>
-                            <div class="mt15"><el-button type="primary" icon="el-icon-video-play" size="mini" @click="replay(index)">点击播放回放</el-button></div>
+                            <div class="mt15"><el-button type="primary" icon="el-icon-video-play" size="mini" @click="replay(index)">播放回放</el-button></div>
                         </div>
                     </el-card>
                 </div>
@@ -436,5 +436,22 @@ export default {
 .wm_battle_user_card_item img{
     width: 100%;
     height: auto;
+}
+@media ( max-width : 768px) {
+    .wm_battlelogs_content{
+        display: block;
+    }
+    .wm_battle_logs_item{
+        width: 150px;
+    }
+}
+@media ( max-width : 370px) {
+    .wm_battlelogs_content{
+        display:inline-block;
+    }
+    .wm_battle_logs_item{
+        width: 100%;
+        margin: 0 0 10px 0;
+    }
 }
 </style>

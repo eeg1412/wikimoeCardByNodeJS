@@ -472,8 +472,11 @@ module.exports = async function(req, res, next){
         }
         //给AI设置等级
         let myCardLevelArr = Object.entries(myCardLevel);
+        //打乱卡牌数组
+        EmBattleCardRadomArr = [...EmBattleCard]
+        EmBattleCardRadomArr.sort(function(){return Math.random()>0.5?-1:1;});
         for(let i=0;i<myCardLevelArr.length;i++){
-            emCardLevel[EmBattleCard[i]] = myCardLevelArr[i][1];
+            emCardLevel[EmBattleCardRadomArr[i]] = myCardLevelArr[i][1];
         }
     }else{
         // 有匹配设置对方的卡牌
@@ -809,22 +812,24 @@ module.exports = async function(req, res, next){
             );
             throw err;
         });
-        let logObject = {
-            email:email,
-            md5:result.md5,
-            nickName:result.nickName,
-            type:'battle',
-            time:timeNow,
-            data:{
-                win:win,
-                EmName:EmName,
-                EmMD5:EmMD5,
-                getScore:getScore,
-                getExp:getExp
-            },
-            ip:IP
+        if(win===1){//如果是赢写入公共动态
+            let logObject = {
+                email:email,
+                md5:result.md5,
+                nickName:result.nickName,
+                type:'battle',
+                time:timeNow,
+                data:{
+                    win:win,
+                    EmName:EmName,
+                    EmMD5:EmMD5,
+                    getScore:getScore,
+                    getExp:getExp
+                },
+                ip:IP
+            }
+            utils.writeLog(logObject);
         }
-        utils.writeLog(logObject);
     }
     // 记得赢了才更新对战时间和次数
     
