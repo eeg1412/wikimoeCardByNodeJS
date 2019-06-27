@@ -785,10 +785,8 @@ module.exports = async function(req, res, next){
         let EmbattledCardLevel = {};
         MyBattleCardArr_ = MyBattleCardArr_.slice(0,biggerCount);
         EmBattleCardArr_ = EmBattleCardArr_.slice(0,biggerCount);
-        for(let i=0;i<MyBattleCardArr_.length;i++){
+        for(let i=0;i<biggerCount;i++){
             MybattledCardLevel[MyBattleCardArr_[i]] = myCardLevel[MyBattleCardArr_[i]] || 0;
-        }
-        for(let i=0;i<EmBattleCardArr_.length;i++){
             EmbattledCardLevel[EmBattleCardArr_[i]] = emCardLevel [EmBattleCardArr_[i]] || 0;
         }
         // 写入战斗记录
