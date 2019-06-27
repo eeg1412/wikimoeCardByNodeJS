@@ -777,6 +777,20 @@ module.exports = async function(req, res, next){
             })
         }
         let timeNow = Math.round(new Date().getTime()/1000);
+        // 只获取已经战斗过卡牌的等级
+        let MyBattleDataCount = MyBattleData.length;
+        let EmBattleDataCount = EmBattleData.length;
+        let biggerCount = MyBattleDataCount>=EmBattleDataCount?MyBattleDataCount:EmBattleDataCount
+        let MybattledCardLevel = {};
+        let EmbattledCardLevel = {};
+        MyBattleCardArr_ = MyBattleCardArr_.slice(0,biggerCount);
+        EmBattleCardArr_ = EmBattleCardArr_.slice(0,biggerCount);
+        for(let i=0;i<MyBattleCardArr_.length;i++){
+            MybattledCardLevel[MyBattleCardArr_[i]] = myCardLevel[MyBattleCardArr_[i]] || 0;
+        }
+        for(let i=0;i<EmBattleCardArr_.length;i++){
+            EmbattledCardLevel[EmBattleCardArr_[i]] = emCardLevel [EmBattleCardArr_[i]] || 0;
+        }
         // 写入战斗记录
         let battleLogsParams = {
             aEmail:email,
@@ -784,13 +798,13 @@ module.exports = async function(req, res, next){
             time:timeNow,
             data:{
                 MyBattleCard:MyBattleCardArr_,
-                myCardLevel:myCardLevel,
+                myCardLevel:MybattledCardLevel,
                 MyADSHP:MyADSHP_,
                 MyName:MyName,
                 MyMD5:MyMD5,
                 MyCardIndexCount:MyCardIndexCount,
                 EmBattleCard:EmBattleCardArr_,
-                emCardLevel:emCardLevel,
+                emCardLevel:EmbattledCardLevel,
                 EmADSHP:EmADSHP_,
                 EmName:EmName,
                 EmMD5:EmMD5,

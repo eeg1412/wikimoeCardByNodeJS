@@ -276,12 +276,14 @@ export default {
                 battleSenceItem.battleEmInfo.addChild(battleSenceItem.emBgSanB);
                 battleSenceItem.battleEmInfo.addChild(battleSenceItem.emBgSanA);
                 // 将卡牌插入到场景
-                for(let i=0;i<20;i++){
+                for(let i=0;i<that.battleData.MyBattleCard.length;i++){
                     sprites['mycard'][that.battleData.MyBattleCard[i]].width = 300;
                     sprites['mycard'][that.battleData.MyBattleCard[i]].height = 422;
                     sprites['mycard'][that.battleData.MyBattleCard[i]].anchor.set(0.5);
                     sprites['mycard'][that.battleData.MyBattleCard[i]].position.set(-180,922);
                     // battleSence.addChild(sprites['mycard'][that.battleData.MyBattleCard[i]]);
+                }
+                for(let i=0;i<that.battleData.EmBattleCard.length;i++){
                     sprites['emcard'][that.battleData.EmBattleCard[i]].width = 300;
                     sprites['emcard'][that.battleData.EmBattleCard[i]].height = 422;
                     sprites['emcard'][that.battleData.EmBattleCard[i]].anchor.set(0.5);
@@ -660,7 +662,7 @@ export default {
                             sprites['mycard'][that.battleData.MyBattleCard[battleInfo.turn-2]].destroy();
                             sprites['emcard'][that.battleData.EmBattleCard[battleInfo.turn-2]].destroy();
                         }
-                        if(battleInfo.turn<19){
+                        if(battleInfo.turn<(that.battleData.MyBattleCard.length-1) || battleInfo.turn<(that.battleData.EmBattleCard.length-1)){
                             // 准备下一回合的卡牌
                             battleSence.addChild(sprites['mycard'][that.battleData.MyBattleCard[battleInfo.turn+1]]);
                             battleSence.addChild(sprites['emcard'][that.battleData.EmBattleCard[battleInfo.turn+1]]);

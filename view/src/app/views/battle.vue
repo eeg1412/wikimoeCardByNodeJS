@@ -120,15 +120,15 @@
                     <div class="wm_top_moreinfo_box">
                         <div class="wm_top_moreinfo_label">SAN：{{userBattleLogInfo.ADSHP[3]}}</div>
                     </div>
-                    <div class="wm_top_moreinfo_box">
-                        <div class="wm_top_moreinfo_label">收集率：{{userBattleLogInfo.MD5? userBattleLogInfo.cardIndex:'--'}}</div>
+                    <div class="wm_top_moreinfo_box" v-if="userBattleLogInfo.MD5">
+                        <div class="wm_top_moreinfo_label">收集率：{{userBattleLogInfo.cardIndex}}</div>
                     </div>
                 </div>
             </div>
             <div class="wm_top_info_more_body clearfix" v-show="cardMode">
                 <div class="wm_battle_user_card_item wm_set_pointer" v-for="(item,index) in userBattleLogInfo.cardArr" v-bind:key="index" @click="openImg($wikimoecard.url+PrefixInteger_(item,4)+'.jpg')">
                     <img :src="$wikimoecard.url+PrefixInteger_(item,4)+'.jpg'">
-                    <div class="f12 mt5">Lv.{{userBattleLogInfo.cardLevel[item]?userBattleLogInfo.cardLevel[item]+1:1}}</div>
+                    <div class="f12 mt5">Lv.{{userBattleLogInfo.cardLevel[item]+1}}</div>
                 </div>
             </div>
             <span slot="footer" class="dialog-footer">
@@ -436,6 +436,9 @@ export default {
 .wm_battle_user_card_item img{
     width: 100%;
     height: auto;
+}
+.wm_battle_usercard_no_fight{
+    opacity: 0.4;
 }
 @media ( max-width : 768px) {
     .wm_battlelogs_content{
