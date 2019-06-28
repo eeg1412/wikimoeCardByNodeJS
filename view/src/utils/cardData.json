@@ -85,7 +85,7 @@
 			"leftType": 3,
 			"rightType": 3,
 			"cry": 2,
-			"title":"舰娘",
+			"title":"舰队collection",
 			"name":"金刚"
 		},
 		"0012": {
@@ -960,6 +960,22 @@
 			"title":"爱杀宝贝",
 			"name":"索妮娅&折部安奈"
 		},
+		"0121": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 7,
+			"cry": 1,
+			"title":"魔法禁书目录",
+			"name":"月咏小萌"
+		},
+		"0122": {
+			"star": 3,
+			"leftType": 1,
+			"rightType": 6,
+			"cry": 1,
+			"title":"迷茫管家与懦弱的我",
+			"name":"近卫昴"
+		},
 		"1001": {
 			"star": 4,
 			"leftType": 1,
@@ -1775,6 +1791,14 @@
 			"cry": 1,
 			"title":"斩·赤紅之瞳！",
 			"name":"赤瞳"
+		},
+		"1103": {
+			"star": 4,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 5,
+			"title":"C³-魔方少女-",
+			"name":"菲娅·库布里克"
 		},
 		"2001": {
 			"star": 5,
@@ -3015,6 +3039,30 @@
 			"cry": 4,
 			"title":"轻音少女",
 			"name":"平泽唯"
+		},
+		"3060": {
+			"star": 6,
+			"leftType": 2,
+			"rightType": 1,
+			"cry": 3,
+			"title":"舰队collection",
+			"name":"岛风"
+		},
+		"3061": {
+			"star": 6,
+			"leftType": 1,
+			"rightType": 4,
+			"cry": 5,
+			"title":"寒蝉鸣泣之时解",
+			"name":"羽入"
+		},
+		"3062": {
+			"star": 6,
+			"leftType": 3,
+			"rightType": 3,
+			"cry": 5,
+			"title":"寒蝉鸣泣之时",
+			"name":"古手梨花"
 		}
 	},
 	"level":[40,82,130,180,276,860]

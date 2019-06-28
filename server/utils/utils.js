@@ -289,11 +289,11 @@ exports.wmCreatCardId = function($randomCardRate){
     $randomCardID = null;
     if($randomCardRate>=1&&$randomCardRate<=64){
         //N
-        $randomCardN_ = this.randomNum(1, 120);
+        $randomCardN_ = this.randomNum(1, 122);
         $randomCardID = $randomCardN_+'';
     }else if($randomCardRate>=65&&$randomCardRate<=86){
         //R
-        $randomCardR_ = this.randomNum(1, 102);
+        $randomCardR_ = this.randomNum(1, 103);
         $randomCardID = '1'+this.PrefixInteger($randomCardR_,3);
     }else if($randomCardRate>=87&&$randomCardRate<=97){
         //SR
@@ -301,7 +301,7 @@ exports.wmCreatCardId = function($randomCardRate){
         $randomCardID = '2'+this.PrefixInteger($randomCardSR_,3);
     }else if($randomCardRate>97){
         //SSR
-        $randomCardSSR_ = this.randomNum(1, 59);
+        $randomCardSSR_ = this.randomNum(1, 62);
         $randomCardID = '3'+this.PrefixInteger( $randomCardSSR_,3);
     }
     return $randomCardID;
