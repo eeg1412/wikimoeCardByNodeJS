@@ -129,6 +129,7 @@ export default {
         this.sprite.titleSprite.alpha = 0;
         this.sprite.nameSprite.alpha = 0;
         setTimeout(()=>{
+            // let cardUrl = this.app.view.toDataURL('image/jpeg', 0.9);
             let cardUrl = this.app.view.toDataURL("image/png");
             this.$alert('<div class="watch_img"><img src="'+cardUrl+'" /></div><div class="tc mt10">PC用户可以右键另存为，手机用户请长按保存。<br />可以加群或联系站长进行投稿。</div>', '查看卡牌', {
                 dangerouslyUseHTMLString: true,
