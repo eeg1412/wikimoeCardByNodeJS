@@ -187,8 +187,8 @@ export default {
             });
             this.app = app;
             document.getElementById('wmCreatCard').appendChild(app.view);
-            const hoverIcon = "url('/static/cur/pointer.cur'),pointer";
-            app.renderer.plugins.interaction.cursorStyles.hover = hoverIcon;
+            const moveIco = "url('/static/cur/move.cur'),move";
+            app.renderer.plugins.interaction.cursorStyles.move = moveIco;
             const container = new PIXI.Container();
             container.sortableChildren = true;
             app.stage.addChild(container);
@@ -215,7 +215,7 @@ export default {
             this.sprite.CGSprite.zIndex = 1;
             this.sprite.CGSprite.interactive = true;
             this.sprite.CGSprite.buttonMode = true;
-            this.sprite.CGSprite.cursor = 'hover';
+            this.sprite.CGSprite.cursor = 'move';
             this.sprite.CGSprite.anchor.set(0.5);
             this.sprite.CGSprite
                 .on('pointerdown', onDragStart)
