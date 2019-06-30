@@ -1096,6 +1096,8 @@ img.wm_demining_img {
   display: inline-block;
   margin: 10px;
   cursor: url(/static/cur/pointer.cur),pointer;
+  vertical-align: middle;
+  color: initial;
 }
 .wm_card_menu_ico{
   height: 42px;

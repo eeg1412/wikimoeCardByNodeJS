@@ -73,6 +73,18 @@
       </div>
       <div class="wm_card_menu_text">我的</div>
     </div>
+    <router-link tag="div" class="wm_card_menu_box" to="/creatcard" v-if="$route.path.indexOf('/creatcard')==-1" @mouseenter="$wikimoecard.l2dMassage('可以制作属于自己的卡牌哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/creatcard.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">制卡</div>
+    </router-link>
+    <a class="wm_card_menu_box" :href="$wikimoecard.qunUrl" v-if="$wikimoecard.qunUrl" target="_blank" @mouseenter="$wikimoecard.l2dMassage('加入官方QQ群，和大佬们一起开心抽卡吧！')" @mouseleave="$wikimoecard.l2dMassageClose">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/qun.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">Q群</div>
+    </a>
     <div class="wm_card_menu_box" @click="openDonate" @mouseenter="$wikimoecard.l2dMassage('呜呜呜，开发者现在穷的没饭吃了，求捐赠！')" @mouseleave="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/zanzhu.png" width="100%" height="100%" />
