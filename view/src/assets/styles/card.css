@@ -326,8 +326,14 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     top: 0;
     bottom: 0;
 }
+.wm_card_package_sel{
+  width: 120px;
+}
+.wm_card_email .el-input-group__prepend{
+  background-color: #fff;
+}
 .wm_card_email {
-    width: 200px;
+    width: 280px;
     text-align: center;
     font-size: 12px;
 }

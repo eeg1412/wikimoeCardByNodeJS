@@ -30,6 +30,7 @@ var apiUpgradecard = require('../api/upgradecard');
 var apiDailyGetItem = require('../api/dailyGetItem');
 var apiCardLevelChange = require('../api/cardLevelChange');
 var apiSearchBattleLogs = require('../api/searchBattleLogs');
+var apiSearchCardPackage = require('../api/searchCardPackage');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -50,6 +51,7 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 router.get('/captcha', apiCaptcha);
+router.get('/searchcardpackage', apiSearchCardPackage);
 router.get('/gravatar.png', apiGravatar);
 router.get('/rank', apiRank);
 router.post('/dailycard', apiDailycard);

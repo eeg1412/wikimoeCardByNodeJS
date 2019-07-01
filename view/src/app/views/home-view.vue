@@ -4,7 +4,16 @@
   <div class="wm_card_email_body">
     <transition name="el-fade-in-linear">
       <div class="wm_card_email_input_body" v-show="!seled">
-        <el-input v-model="email" placeholder="请先输入邮箱地址再点击卡片" class="wm_card_email"></el-input>
+        <el-input v-model="email" placeholder="输入邮箱地址抽卡" class="wm_card_email">
+            <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_card_package_sel" slot="prepend">
+            <el-option
+              v-for="item in cardPackage"
+              :key="item.packageId"
+              :label="item.name"
+              :value="item.packageId">
+            </el-option>
+          </el-select>
+        </el-input>
       </div>
     </transition>
     <transition name="el-fade-in-linear">
@@ -188,6 +197,8 @@ import md5 from 'js-md5';
 export default {
   data() {
     return {
+      seledCardPackage:'0',
+      cardPackage:[],
       txDays:new Date().getDate(),
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       shareDialog:false,
@@ -266,8 +277,19 @@ export default {
     this.getLog(1);
     this.setCardScroll();
     this.urlUserInfo();
+    this.getCardPackage();
   },
   methods: {
+    getCardPackage(){
+      authApi.searchcardpackage().then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            this.cardPackage = res.data.data;
+          }
+      });
+    },
     watchRank(md5){
       this.watchUserCard(md5);
     },

@@ -8,6 +8,9 @@ exports.saveCardPackage = async function (parmas) {
 exports.findCardPackageOne = async function (parmas) {
     return await cardPackageModel.findOne(parmas);
 }
+exports.findCardPackageMany = async function (parmas,getInfo = '-__v') {
+    return await cardPackageModel.find(parmas,getInfo);
+}
 exports.findCardPackage = async function (pageSize_,page_,parmas) {
     // document查询
     let pageSize = pageSize_;

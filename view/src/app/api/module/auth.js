@@ -75,6 +75,9 @@ export default function (api) {
     rank(){
       return api.get('rank')
     },
+    searchcardpackage(){
+      return api.get('searchcardpackage')
+    },
     upgradecard(data){
       return api.post('upgradecard',data)
     },
