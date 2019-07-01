@@ -1,6 +1,9 @@
 var utils = require('../../../utils/utils');
 var adminUtils = require('../../../utils/admin/adminUtils');
 var adminUtilsDatabase = require('../../../utils/database/adminAccount');
+var cardPackageDatabase = require('../../../utils/database/cardPackage');
+var cardDataDatabase = require('../../../utils/database/cardData');
+var cardData = require('../../../data/cardData.json');
 var chalk = require('chalk');
 var md5 = require('md5-node');
 
@@ -78,6 +81,51 @@ module.exports = async function(req, res, next){
             };
             adminUtilsDatabase.saveAdminAccount(adminParams);
             adminUtils.writeGlobalOpt(opt);
+            // 创建初始卡包
+            let packageParams = {
+                name:'维基萌卡包',
+                packageId:'0',
+                open:true
+            }
+            await cardPackageDatabase.saveCardPackage(packageParams).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+            // 创建初始卡牌
+            // 获取卡牌数据
+            let cardData_ = cardData['cardData']
+            for (var index in cardData_){
+                let thisCard = cardData_[index]
+                let cardDataParams = {
+                    cardId:Number(index),
+                    star: thisCard.star,
+                    leftType: thisCard.leftType,
+                    rightType: thisCard.rightType,
+                    cry: thisCard.cry,
+                    title:thisCard.title,
+                    name:thisCard.name,
+                    packageId:'0'
+                }
+                await cardDataDatabase.saveCardData(cardDataParams).catch ((err)=>{
+                    res.send({
+                        code:0,
+                        msg:'内部错误请联系管理员！'
+                    });
+                    console.error(
+                        chalk.red('数据库更新错误！')
+                    );
+                    throw err;
+                })
+                console.info(
+                    chalk.green('写入卡牌：'+index+'成功！')
+                );
+            }
             res.send({
                 code:1,
                 msg:'安装成功'

@@ -162,7 +162,8 @@ module.exports = async function(req, res, next){
                 for(let i = 0;i<oldCardId.length;i++){
                     oldCard[Number(oldCardId[i])] = Number(oldCardCount[i])
                 }
-                creatAccountData['card'] = oldCard;
+                creatAccountData['card'] = {};
+                creatAccountData['card']['0'] = oldCard;
                 let userCardCache = Object.entries(oldCard);
                 let cardTotle = userCardCache.length;
                 creatAccountData['cardIndexCount'] = cardTotle;
