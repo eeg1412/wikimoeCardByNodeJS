@@ -81,25 +81,15 @@ module.exports = async function(req, res, next){
             };
             adminUtilsDatabase.saveAdminAccount(adminParams);
             adminUtils.writeGlobalOpt(opt);
-            // 创建初始卡包
-            let packageParams = {
-                name:'维基萌卡包',
-                packageId:'0',
-                open:true
-            }
-            await cardPackageDatabase.saveCardPackage(packageParams).catch ((err)=>{
-                res.send({
-                    code:0,
-                    msg:'内部错误请联系管理员！'
-                });
-                console.error(
-                    chalk.red('数据库更新错误！')
-                );
-                throw err;
-            })
             // 创建初始卡牌
             // 获取卡牌数据
             let cardData_ = cardData['cardData']
+            let one = 0;
+            let two = 0;
+            let three = 0;
+            let four = 0;
+            let five = 0;
+            let six = 0;
             for (var index in cardData_){
                 let thisCard = cardData_[index]
                 let cardDataParams = {
@@ -111,6 +101,19 @@ module.exports = async function(req, res, next){
                     title:thisCard.title,
                     name:thisCard.name,
                     packageId:'0'
+                }
+                if(thisCard.star==1){
+                    one++
+                }else if(thisCard.star==2){
+                    two++
+                }else if(thisCard.star==3){
+                    three++
+                }else if(thisCard.star==4){
+                    four++
+                }else if(thisCard.star==5){
+                    five++
+                }else if(thisCard.star==6){
+                    six++
                 }
                 await cardDataDatabase.saveCardData(cardDataParams).catch ((err)=>{
                     res.send({
@@ -126,6 +129,28 @@ module.exports = async function(req, res, next){
                     chalk.green('写入卡牌：'+index+'成功！')
                 );
             }
+            // 创建初始卡包
+            let packageParams = {
+                name:'维基萌卡包',
+                packageId:'0',
+                open:true,
+                oneStar:one,
+                twoStar:two,
+                threeStar:three,
+                fourStar:four,
+                fiveStar:five,
+                sixStar:six,
+            }
+            await cardPackageDatabase.saveCardPackage(packageParams).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
             res.send({
                 code:1,
                 msg:'安装成功'

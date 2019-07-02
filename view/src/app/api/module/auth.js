@@ -75,9 +75,6 @@ export default function (api) {
     rank(){
       return api.get('rank')
     },
-    searchcardpackage(){
-      return api.get('searchcardpackage')
-    },
     upgradecard(data){
       return api.post('upgradecard',data)
     },
@@ -92,6 +89,9 @@ export default function (api) {
     },
     uploadcard(data){
       return api.post('uploadcard',data)
+    },
+    searchcardpackage(data){
+      return api.post('searchcardpackage',data)
     },
     admincheckinstall(){
       return api.get('admin/checkinstall')
@@ -128,6 +128,9 @@ export default function (api) {
     },
     adminNews(data){
       return api.post('admin/news',data)
+    },
+    renamecardpackage(data){
+      return api.post('admin/renamecardpackage',data)
     },
   }
 }

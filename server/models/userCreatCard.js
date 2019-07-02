@@ -11,6 +11,7 @@ var usercreatcard = new Schema({
     cry: Number,
     title:String,
     name:String,
+    pass:{type: Number, default: 3},
     time:{type: SchemaTypes.Long, default: 0},
 });
 

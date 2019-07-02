@@ -1,7 +1,11 @@
 var cardPackageDatabase = require('../utils/database/cardPackage.js');
 module.exports = async function(req, res, next){
+    let all = req.body.all;
     let params = {open:true}
-    let cardPackage = await cardPackageDatabase.findCardPackageMany(params,'-_id').catch ((err)=>{
+    if(all){
+        params = {};
+    }
+    let cardPackage = await cardPackageDatabase.findCardPackageMany(params).catch ((err)=>{
         res.send({
             code:0,
             msg:'内部错误请联系管理员！'

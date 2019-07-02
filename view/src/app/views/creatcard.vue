@@ -145,6 +145,7 @@ export default {
         }
         authApi.uploadcard(params).then(res => {
             console.log(res);
+            this.$refs.captch.captchaUpdata();
             if(res.data.code==0){
                 this.$message.error(res.data.msg);
             }else if(res.data.code==1){
@@ -175,6 +176,7 @@ export default {
                 dangerouslyUseHTMLString: true,
                 lockScroll:false,
                 falsedistinguishCancelAndClose: true,
+                customClass:'wm_crearchcard_watch',
                 confirmButtonText: '上传',
                 cancelButtonText: '关闭'
             })
@@ -343,5 +345,8 @@ export default {
     height: auto;
     display: inline-block;
     margin-bottom: 10px;
+}
+.wm_crearchcard_watch{
+    width: 426px;
 }
 </style>

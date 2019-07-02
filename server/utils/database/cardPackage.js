@@ -11,6 +11,11 @@ exports.findCardPackageOne = async function (parmas) {
 exports.findCardPackageMany = async function (parmas,getInfo = '-__v') {
     return await cardPackageModel.find(parmas,getInfo);
 }
+exports.findCardPackageCount = async function (parmas) {
+    let query = cardPackageModel.find(parmas);
+    let total = await query.countDocuments();
+    return total;
+}
 exports.findCardPackage = async function (pageSize_,page_,parmas) {
     // document查询
     let pageSize = pageSize_;

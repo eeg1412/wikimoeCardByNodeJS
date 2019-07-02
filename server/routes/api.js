@@ -45,6 +45,7 @@ var adminApiLogout = require('../api/admin/logout');
 var adminsecretkey = require('../api/admin/secretkey');
 var adminApiSearchLog = require('../api/admin/searchLog');
 var adminApiNews = require('../api/admin/news');
+var adminApiRenameCardPackage = require('../api/admin/cardPackage');
 
 
 /* GET users listing. */
@@ -52,7 +53,6 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 router.get('/captcha', apiCaptcha);
-router.get('/searchcardpackage', apiSearchCardPackage);
 router.get('/gravatar.png', apiGravatar);
 router.get('/rank', apiRank);
 router.post('/dailycard', apiDailycard);
@@ -83,6 +83,7 @@ router.post('/dailygetitem', apiDailyGetItem);
 router.post('/cardlevelchange', apiCardLevelChange);
 router.post('/searchbattlelogs', apiSearchBattleLogs);
 router.post('/uploadcard', apiUploadcard);
+router.post('/searchcardpackage', apiSearchCardPackage);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);
@@ -96,5 +97,6 @@ router.post('/admin/logout', adminApiLogout);
 router.post('/admin/secretkey', adminsecretkey);
 router.post('/admin/searchlog', adminApiSearchLog);
 router.post('/admin/news', adminApiNews);
+router.post('/admin/renamecardpackage', adminApiRenameCardPackage);
 
 module.exports = router;
