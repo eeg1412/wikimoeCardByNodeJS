@@ -5,6 +5,7 @@
 /view/tmp
 /view/out-tsc
 /view/public
+/server/public/userCreatCard/*
 
 # dependencies
 /view/node_modules

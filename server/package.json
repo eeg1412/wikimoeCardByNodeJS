@@ -6,6 +6,7 @@
     "start": "nodemon --delay 60 -e pem,key --watch bin ./bin/www"
   },
   "dependencies": {
+    "base64-img": "^1.0.4",
     "chalk": "^2.4.2",
     "config-lite": "^2.1.0",
     "connect-history-api-fallback": "^1.6.0",

@@ -210,7 +210,7 @@ const router = new VueRouter({
       name: 'creatcard',
       path: '/creatcard',
       meta:{
-        login:false,
+        login:true,
         admin:false,
       },
       component: creatcardView
@@ -308,6 +308,15 @@ const router = new VueRouter({
           name: 'newseditor',
           path: 'newseditor',
           component: resolve => require(['../views/admin/center/newseditor.vue'], resolve),
+          meta:{
+            login:true,
+            admin:true,
+          },
+        },
+        {//卡包管理
+          name: 'adminpackage',
+          path: 'adminpackage',
+          component: resolve => require(['../views/admin/center/package.vue'], resolve),
           meta:{
             login:true,
             admin:true,

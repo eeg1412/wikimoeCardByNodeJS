@@ -11,8 +11,8 @@ var apiRouter = require('./routes/api');
 var app = express();
 
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({limit: '1mb'}));
+app.use(express.urlencoded({ extended: false,limit: '1mb' }));
 app.use(cookieParser());
 app.use(session({
     secret: global.myAppConfig.sessionSecret,

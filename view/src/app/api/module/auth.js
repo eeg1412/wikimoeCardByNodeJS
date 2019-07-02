@@ -90,6 +90,9 @@ export default function (api) {
     searchbattlelogs(data){
       return api.post('searchbattlelogs',data)
     },
+    uploadcard(data){
+      return api.post('uploadcard',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },

@@ -1,5 +1,6 @@
 <template>
-<div class="common_body type_creatcard">
+<div class="common_body">
+    <userTop ref="userTop" />
     <h5 class="common_title type_shop type_dec">卡牌生成器</h5>
     <h6 class="common_title_tips type_dec">Tip:可能会因为系统字体缺失导致文字错位，当前使用字体为【Arial】。</h6>
     <div class="mt20">
@@ -9,12 +10,7 @@
                     <div id="wmCreatCard" class="tc"></div>
                 </div>
                 <div class="wm_creatcard_btn_body">
-                    <el-tooltip class="item" effect="dark" content="生成完整的卡牌，可以用于分享" placement="top">
-                        <el-button size="mini" type="primary" @click="creatCard">生成分享卡牌</el-button>
-                    </el-tooltip>
-                    <el-tooltip class="item" effect="dark" content="生成不包含出自和名字的卡牌，生成后可以用于投稿" placement="top">
-                        <el-button size="mini" type="primary" @click="creatCardNoText">生成投稿卡牌</el-button>
-                    </el-tooltip>
+                    <el-button size="mini" type="primary" @click="creatCardNoText">生成并投稿</el-button>
                 </div>
             </el-col>
             <el-col :sm="12">
@@ -83,6 +79,7 @@
         </el-row>
     </div>
     <menuView></menuView>
+    <captcha @captchaShow="captchaDigShow" @send="sendCaptcha" :codeDigShow="captchaShow" v-if="captchaShow" ref="captch"></captcha>
 </div>
 </template>
 
@@ -90,10 +87,15 @@
 import * as PIXI from 'pixi.js'
 import menuView from '../components/menu.vue';
 import userTop from '../components/topUserInfo.vue';
+import captcha from "../components/captcha"
+import {authApi} from "../api";
 
 export default {
   data() {
     return {
+        uploadCardUrl:'',
+        captchaShow:false,
+        token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         app:null,
         cardSet:{
             title:'',
@@ -120,31 +122,66 @@ export default {
   components: {
     menuView,
     userTop,
+    captcha
   },
   mounted() {
       this.drawCard();
   },
   methods: {
-      creatCardNoText(){
-        this.sprite.titleSprite.alpha = 0;
-        this.sprite.nameSprite.alpha = 0;
-        setTimeout(()=>{
-            // let cardUrl = this.app.view.toDataURL('image/jpeg', 0.9);
-            let cardUrl = this.app.view.toDataURL("image/png");
-            this.$alert('<div class="watch_img"><img src="'+cardUrl+'" /></div><div class="tc mt10">PC用户可以右键另存为，手机用户请长按保存。<br />可以加群或联系站长进行投稿。</div>', '查看卡牌', {
-                dangerouslyUseHTMLString: true,
-                lockScroll:false
-            });
-            this.sprite.titleSprite.alpha  = 1;
-            this.sprite.nameSprite.alpha = 1;
-        },100)
+      captchaDigShow(v){
+        this.captchaShow = v;
       },
-      creatCard(){
-        let cardUrl = this.app.view.toDataURL("image/png");
-        this.$alert('<div class="watch_img"><img src="'+cardUrl+'" /></div><div class="tc mt10">PC用户可以右键另存为，手机用户请长按保存。</div>', '查看卡牌', {
-            dangerouslyUseHTMLString: true,
-            lockScroll:false
+      sendCaptcha(v){
+        let params = {
+            star: this.cardSet.star,
+            leftType: this.cardSet.leftType,
+            rightType: this.cardSet.rightType,
+            cry: this.cardSet.cry,
+            title:this.cardSet.title,
+            name:this.cardSet.name,
+            token:this.token,
+            imgBase64:this.uploadCardUrl,
+            captcha:v
+        }
+        authApi.uploadcard(params).then(res => {
+            console.log(res);
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                this.$message({
+                    message: res.data.msg,
+                    type: 'success'
+                });
+                this.captchaShow = false;
+            }
         });
+      },
+      creatCardNoText(){
+            if(!this.cardSet.title){
+                this.$message.error('请输入出自作品');
+                return false;
+            }
+            if(!this.cardSet.name){
+                this.$message.error('请输入角色名字');
+                return false;
+            }
+            if(!this.imageUrl){
+                this.$message.error('请导入立绘');
+                return false;
+            }
+            this.uploadCardUrl = this.app.view.toDataURL('image/jpeg', 0.9);
+            // let cardUrl = this.app.view.toDataURL("image/png");
+            this.$confirm('<div class="watch_img"><img src="'+this.uploadCardUrl+'" /></div><div class="tc mt10">确认无误后点击上传按钮上传作品吧！</div>', '查看卡牌', {
+                dangerouslyUseHTMLString: true,
+                lockScroll:false,
+                falsedistinguishCancelAndClose: true,
+                confirmButtonText: '上传',
+                cancelButtonText: '关闭'
+            })
+            .then(() => {
+                this.captchaShow = true;
+            })
+            .catch(action => {});
       },
       handleAvatarSuccess(file, fileList) {
         this.imageUrl = URL.createObjectURL(file.raw);

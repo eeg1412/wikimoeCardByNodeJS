@@ -6,13 +6,13 @@
       <div class="wm_card_email_input_body" v-show="!seled">
         <el-input v-model="email" placeholder="输入邮箱地址抽卡" class="wm_card_email">
             <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_card_package_sel" slot="prepend">
-            <el-option
-              v-for="item in cardPackage"
-              :key="item.packageId"
-              :label="item.name"
-              :value="item.packageId">
-            </el-option>
-          </el-select>
+              <el-option
+                v-for="item in cardPackage"
+                :key="item.packageId"
+                :label="item.name"
+                :value="item.packageId">
+              </el-option>
+            </el-select>
         </el-input>
       </div>
     </transition>
@@ -197,7 +197,7 @@ import md5 from 'js-md5';
 export default {
   data() {
     return {
-      seledCardPackage:'0',
+      seledCardPackage:'加载中',
       cardPackage:[],
       txDays:new Date().getDate(),
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
@@ -287,6 +287,7 @@ export default {
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
             this.cardPackage = res.data.data;
+            this.seledCardPackage = '0';
           }
       });
     },
