@@ -1,5 +1,7 @@
 var utils = require('../utils/utils');
 var userData = require('../utils/database/user');
+var cardPackageData = require('../../utils/database/cardPackage');
+var cardData = require('../../utils/database/cardData');
 var md5 = require('md5-node');
 var fs = require('fs');
 var chalk = require('chalk');
@@ -74,6 +76,45 @@ module.exports = async function(req, res, next){
                 }else{
                     dailyCard = 0;
                 }
+                let packageId = req.body.packageId || 0;
+                // 判断卡包是否存在
+                let resaultPackage = await cardPackageData.findCardPackageOne(params).catch((err)=>{
+                    res.send({
+                        code:0,
+                        msg:'内部错误或者卡包ID有误！'
+                    });
+                    console.error(
+                        chalk.red(err)
+                    );
+                    return false;
+                });
+                if(!resaultPackage){
+                    res.send({
+                        code:0,
+                        msg:'无该卡包！'
+                    });
+                    return false;
+                }
+                if(!resaultPackage.open){
+                    res.send({
+                        code:0,
+                        msg:'无该卡包！'
+                    });
+                    return false;
+                }
+                // 引入卡组数据
+                let cardDataArr = await cardData.findCardDataMany({packageId:packageId}).catch((err)=>{
+                    res.send({
+                        code:0,
+                        msg:'内部错误或者卡包ID有误！'
+                    });
+                    console.error(
+                        chalk.red(err)
+                    );
+                    return false;
+                });
+                // 
+
                 //循环三张牌
                 let cardIdArr = [];
                 while (cardIdArr.length<3){

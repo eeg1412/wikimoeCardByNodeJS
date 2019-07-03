@@ -129,7 +129,7 @@ module.exports = async function(req, res, next){
         throw err;
     })
     //检查是否超过5张卡牌
-    if(uploadData.length>=5){
+    if(uploadData.length>=20){
         res.send({
             code:0,
             msg:'待审核的卡牌过多，等管理员审核一些卡牌后再来上传吧！'

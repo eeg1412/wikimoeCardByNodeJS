@@ -188,7 +188,7 @@ module.exports = async function(req, res, next){
             return false;
         }
         if(open){
-            if((resault.oneStar+resault.twoStar+resault.threeStar)<=10 || resault.fourStar<=10 || resault.fiveStar<=10 || resault.sixStar<=10){
+            if((resault.oneStar+resault.twoStar+resault.threeStar)<3 || resault.fourStar<3 || resault.fiveStar<3 || resault.sixStar<3){
                 res.send({
                     code:0,
                     msg:'卡包卡牌数量不足，无法开启！'
