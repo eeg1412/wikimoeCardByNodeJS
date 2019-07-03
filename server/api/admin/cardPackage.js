@@ -1,8 +1,10 @@
 var chalk = require('chalk');
 var utils = require('../../utils/utils');
 var cardPackageData = require('../../utils/database/cardPackage');
-var cardData = require('../../utils/database/cardData');
+// var cardData = require('../../utils/database/cardData');
 var adminUtils = require('../../utils/admin/adminUtils');
+var fs = require('fs');
+
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
@@ -62,10 +64,11 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green('当前有'+cardpackageCount+'种卡包。')
         )
+        let newPackageId = cardpackageCount+1;
         let params = {
             name:name,
             open:false,
-            packageId:cardpackageCount+1
+            packageId:newPackageId
         }
         await cardPackageData.saveCardPackage(params).catch((err)=>{
             res.send({
@@ -77,6 +80,7 @@ module.exports = async function(req, res, next){
             );
             throw err;
         });
+        fs.mkdir('./public/card/'+newPackageId)
         res.send({
             code:1,
             msg:'增加卡包成功！'

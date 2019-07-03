@@ -132,5 +132,8 @@ export default function (api) {
     renamecardpackage(data){
       return api.post('admin/renamecardpackage',data)
     },
+    adminCreatcard(data){
+      return api.post('admin/creatcard',data)
+    },
   }
 }

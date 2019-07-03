@@ -99,10 +99,10 @@ module.exports = async function(req, res, next){
         return false;
     }
     //卡牌收集大于50
-    if(result.cardIndexCount<=50){
+    if(result.cardIndexCount<=20){
         res.send({
             code:0,
-            msg:'只有收集50种卡牌以上才能申请添加卡牌！'
+            msg:'只有收集20种卡牌以上才能申请添加卡牌！'
         });
         console.error(
             chalk.yellow(email+'卡牌收集率不够还不能上传卡牌')
@@ -115,7 +115,8 @@ module.exports = async function(req, res, next){
     )
     // 检查用户已经上传多少张卡牌
     let params = {
-        email:email
+        email:email,
+        check:0
     }
     let uploadData = await userCreatCard.findUserCreatCardMany(params).catch ((err)=>{
         res.send({

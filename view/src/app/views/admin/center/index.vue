@@ -18,27 +18,31 @@
             <i class="el-icon-tickets"></i>
             <span slot="title">用户列表</span>
           </el-menu-item>
-          <el-menu-item index="10" @click="goLink('/cardadmin/center/adminpackage')">
+          <el-menu-item index="4" @click="goLink('/cardadmin/center/adminpackage')">
             <i class="el-icon-copy-document"></i>
             <span slot="title">卡包管理</span>
           </el-menu-item>
-          <el-menu-item index="5" @click="goLink('/cardadmin/center/newslist')">
+          <el-menu-item index="5" @click="goLink('/cardadmin/center/cardpass')">
+            <i class="el-icon-money"></i>
+            <span slot="title">卡牌审核</span>
+          </el-menu-item>
+          <el-menu-item index="6" @click="goLink('/cardadmin/center/newslist')">
             <i class="el-icon-news"></i>
             <span slot="title">新闻</span>
           </el-menu-item>
-          <el-menu-item index="6" @click="goLink('/cardadmin/center/secretkey')">
+          <el-menu-item index="7" @click="goLink('/cardadmin/center/secretkey')">
             <i class="el-icon-key"></i>
             <span slot="title">设置Key</span>
           </el-menu-item>
-          <el-menu-item index="7" @click="goLink('/cardadmin/center/adminlogs')">
+          <el-menu-item index="8" @click="goLink('/cardadmin/center/adminlogs')">
             <i class="el-icon-notebook-2"></i>
             <span slot="title">系统日志</span>
           </el-menu-item>
-          <el-menu-item index="8" @click="goLink('/cardadmin/center/passwordchange')">
+          <el-menu-item index="9" @click="goLink('/cardadmin/center/passwordchange')">
             <i class="el-icon-edit-outline"></i>
             <span slot="title">密码修改</span>
           </el-menu-item>
-          <el-menu-item index="9" @click="logout()">
+          <el-menu-item index="10" @click="logout()">
             <i class="el-icon-upload2"></i>
             <span slot="title">登出</span>
           </el-menu-item>

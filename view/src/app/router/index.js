@@ -322,6 +322,15 @@ const router = new VueRouter({
             admin:true,
           },
         },
+        {//卡牌审核
+          name: 'cardpass',
+          path: 'cardpass',
+          component: resolve => require(['../views/admin/center/cardPss.vue'], resolve),
+          meta:{
+            login:true,
+            admin:true,
+          },
+        },
       ]
     },
     {

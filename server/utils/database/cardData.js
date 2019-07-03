@@ -23,6 +23,11 @@ exports.findCardData = async function (pageSize_,page_,parmas) {
         .limit(pageSize);
     return [data,total];
 }
+exports.findCardCount = async function (parmas) {
+    let query = cardDataModel.find(parmas);
+    let total = await query.countDocuments();
+    return total;
+}
 exports.updataCardData = async function (filters,parmas) {
     // document查询
     return await cardDataModel.updateOne(filters, parmas);

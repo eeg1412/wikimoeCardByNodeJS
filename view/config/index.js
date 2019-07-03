@@ -16,7 +16,21 @@ module.exports = {
         changeOrigin: true,
         pathRewrite: {
             '/api': ""
-        },
+        }
+      },
+      '/userCreatCard': {
+        target: 'http://127.0.0.1:3000/userCreatCard',
+        changeOrigin: true,
+        pathRewrite: {
+            '/userCreatCard': ""
+        }
+      },
+      '/card/': {
+        target: 'http://127.0.0.1:3000/card/',
+        changeOrigin: true,
+        pathRewrite: {
+            '/card/': ""
+        }
       }
     },
 

@@ -46,6 +46,7 @@ var adminsecretkey = require('../api/admin/secretkey');
 var adminApiSearchLog = require('../api/admin/searchLog');
 var adminApiNews = require('../api/admin/news');
 var adminApiRenameCardPackage = require('../api/admin/cardPackage');
+var adminApiCreatCard = require('../api/admin/creatcard');
 
 
 /* GET users listing. */
@@ -98,5 +99,6 @@ router.post('/admin/secretkey', adminsecretkey);
 router.post('/admin/searchlog', adminApiSearchLog);
 router.post('/admin/news', adminApiNews);
 router.post('/admin/renamecardpackage', adminApiRenameCardPackage);
+router.post('/admin/creatcard', adminApiCreatCard);
 
 module.exports = router;

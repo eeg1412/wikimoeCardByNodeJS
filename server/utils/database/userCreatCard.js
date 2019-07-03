@@ -11,11 +11,12 @@ exports.findUserCreatCardOne = async function (parmas) {
 exports.findUserCreatCardMany = async function (parmas,getInfo = '-__v') {
     return await userCreatCardModel.find(parmas,getInfo);
 }
-exports.findUserCreatCard = async function (pageSize_,page_,parmas) {
+exports.findUserCreatCard = async function (pageSize_,page_,parmas,sort,getInfo = '-__v') {
     // document查询
     let pageSize = pageSize_;
     let page = isNaN(Math.round(page_))?1:Math.round(page_);
-    let query = userCreatCardModel.find(parmas).sort({'time':-1});
+    page = Math.abs(page);
+    let query = userCreatCardModel.find(parmas,getInfo).sort(sort);
     let total = await query.countDocuments();
     let data = await query
         .find()
