@@ -12,7 +12,7 @@
         </div>
         <sequential-entrance delay="100" tag="div">
           <div v-for="(item,index) in cardList" v-bind:key="index+1" class="shop_card_list_box" :class="item.seled?'selectedcard':''" @click="openCard(index)">
-            <rotate3DCard trigger="custom" v-model="item.seled" direction="row" :cardSrc="$wikimoecard.url+PrefixInteger_(item.id,4)+'.jpg'">
+            <rotate3DCard trigger="custom" v-model="item.seled" direction="row" :cardSrc="$wikimoecard.url+packageId+'/'+item.id+'.jpg'">
               <slot name="cz"></slot>
               <slot name="cf"></slot>
             </rotate3DCard>
@@ -62,7 +62,8 @@ export default {
       cardList:[],
       userData:null,
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
-      shopCardListBtnBodyFixed:false
+      shopCardListBtnBodyFixed:false,
+      packageId:0,
     }
   },
   components: {
@@ -118,14 +119,14 @@ export default {
               if(res.data.code==0){
                 this.$message.error(res.data.msg);
               }else if(res.data.code==1){
+                this.packageId = res.data.packageId;
                 let cardResData = res.data.data;
                 let cardData = [];
                 let cardSrc = [];
                 for(let i = 0;i<cardResData.length;i++){
-                  let CardSrcItem = this.$wikimoecard.url+PrefixInteger(cardResData[i][0],4)+'.jpg';
-                  cardSrc.push(CardSrcItem);
-                }
-                for(let i=0;i<cardResData.length;i++){
+                  // let CardSrcItem = this.$wikimoecard.url+res.data.packageId+'/'+cardResData[0]+'.jpg';
+                  // cardSrc.push(CardSrcItem);
+
                   let cardId = cardResData[i];
                   let cardDataItem = {
                     id:cardId,

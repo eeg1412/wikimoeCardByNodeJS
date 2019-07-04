@@ -2,11 +2,14 @@ var utils = require('../utils/utils');
 var userData = require('../utils/database/user');
 var md5 = require('md5-node');
 var chalk = require('chalk');
+var cardUitls = require('../utils/card');
+
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let type = req.body.type;
     let goods = req.body.goods;
     let token = req.body.token;
+    let packageId = req.body.packageId || 0;
     //先解析token
     if(!token){
         console.info(
@@ -43,6 +46,7 @@ module.exports = async function(req, res, next){
         let times = 0;
         let price = 0;
         let card = [];
+        let cardAndStar = [];
         let databaseCard = {};
         if(goods==0){
             times = 1;
@@ -79,34 +83,28 @@ module.exports = async function(req, res, next){
             )
             return false;
         }
-        let starSix = 0;//统计抽到多少张六星卡
-        for(let i=0;i<times;i++){
-            let rareNum = utils.randomNum(1,100);
-            if(rareNum>97){
-                starSix++;
-            }
-            //50抽保底1张六星、100抽保底2张六星
-            if(i===49&&starSix===0){
-                starSix++;
-                rareNum = 98;
-                console.info(
-                    chalk.green(email+'50抽没抽到六星保底1张，IP为：'+IP)
-                )
-            }else if(i===99&&starSix<=1){
-                starSix++;
-                rareNum = 98;
-                console.info(
-                    chalk.green(email+'100抽没抽到六星保底2张，IP为：'+IP)
-                )
-            }
-            let cardId = utils.wmCreatCardId(rareNum);
-            card.push(cardId);
-            if(databaseCard['card.'+cardId]){
-                databaseCard['card.'+cardId] = databaseCard['card.'+cardId]+1;
-            }else{
-                databaseCard['card.'+cardId] = 1;
-            }  
+        console.log(packageId);
+        let cardIdArr = await cardUitls.chioseCard(packageId,times,true);
+        if(!cardIdArr){
+            res.send({
+                code:0,
+                msg:'抽卡失败，请检查参数！'
+            });
+            return false;
         }
+        // 获取卡牌ID
+        for(let i=0;i<cardIdArr.length;i++){
+            let cardId = cardIdArr[i].cardId;
+            card.push(cardId);
+            cardAndStar.push([cardIdArr[i].star,cardId]);
+            if(databaseCard['card.'+packageId+'.'+cardId]){
+                databaseCard['card.'+packageId+'.'+cardId] = databaseCard['card.'+packageId+'.'+cardId]+1;
+            }else{
+                databaseCard['card.'+packageId+'.'+cardId] = 1;
+            } 
+        }
+
+
         databaseCard['star'] = -price;
         let filters = {
             email: email
@@ -133,9 +131,10 @@ module.exports = async function(req, res, next){
             type:'shop_1',
             time:timeNow,
             data:{
-                card:card,
+                card:cardAndStar,
                 star:price,
-                times:times
+                times:times,
+                packageId:packageId,
             },
             ip:IP
         }
@@ -145,6 +144,7 @@ module.exports = async function(req, res, next){
         )
         res.send({
             code:1,
+            packageId:packageId,
             data:card,
             msg:'ok'
         });

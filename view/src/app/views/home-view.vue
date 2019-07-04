@@ -132,7 +132,7 @@
               >大家好，我是萌新{{item.nickName}}。初来乍到对什么都还很陌生，还恳请大家能够多多指导我怎么抽出六星卡！
               </span>
               <span v-else-if="item.type=='dailyCard'"
-              >我抽中了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" :class="item.data.star>=6?'wm_six_star_card_shake':''" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
+              >我抽中了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" :class="item.data.star>=6?'wm_six_star_card_shake':''" @click="openImg($wikimoecard.url+item.data.packageId+'/'+item.data.cardId+'.jpg')">{{item.data.name}}</span>。
                 {{item.data.star|cardStarText}}
               </span>
               <span v-else-if="item.type=='demining'"
@@ -515,7 +515,7 @@ export default {
         return false;
       }
       console.log(Num);
-      authApi.dailycard({email: this.email,sel:Num}).then(res => {
+      authApi.dailycard({email: this.email,sel:Num,packageId:this.seledCardPackage}).then(res => {
           console.log(res);
           let emailMD5 = md5(this.email);
           if(res.data.code==0){
@@ -523,14 +523,14 @@ export default {
           }else if(res.data.code==1){
             this.rememberEmail();
             let resData = res.data;
-            let getCardSrcArr = [this.$wikimoecard.url+PrefixInteger(resData.cardChoiseList[0],4)+'.jpg',this.$wikimoecard.url+PrefixInteger(resData.cardChoiseList[1],4)+'.jpg',this.$wikimoecard.url+PrefixInteger(resData.cardChoiseList[2],4)+'.jpg'];
+            let getCardSrcArr = [this.$wikimoecard.url+resData.packageId+'/'+resData.cardChoiseList[0]+'.jpg',this.$wikimoecard.url+resData.packageId+'/'+resData.cardChoiseList[1]+'.jpg',this.$wikimoecard.url+resData.packageId+'/'+resData.cardChoiseList[2]+'.jpg'];
             showLoading();
             new Promise((resolve, reject)=>{
                 loadingImg(getCardSrcArr,resolve, reject);
               }).then((result) => {
                 hideLoading();
                 this.seled = true;
-                this.getUserCard(emailMD5,true);
+                // this.getUserCard(emailMD5,true);
                 this.$set(this.getCardList, 0, getCardSrcArr[0]);
                 this.$set(this.getCardList, 1, getCardSrcArr[1]);
                 this.$set(this.getCardList, 2, getCardSrcArr[2]);

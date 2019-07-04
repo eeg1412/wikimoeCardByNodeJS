@@ -1,7 +1,8 @@
 var utils = require('../utils/utils');
 var userData = require('../utils/database/user');
-var cardPackageData = require('../../utils/database/cardPackage');
-var cardData = require('../../utils/database/cardData');
+var cardPackageData = require('../utils/database/cardPackage');
+var cardData = require('../utils/database/cardData');
+var cardUitls = require('../utils/card');
 var md5 = require('md5-node');
 var fs = require('fs');
 var chalk = require('chalk');
@@ -77,53 +78,17 @@ module.exports = async function(req, res, next){
                     dailyCard = 0;
                 }
                 let packageId = req.body.packageId || 0;
-                // 判断卡包是否存在
-                let resaultPackage = await cardPackageData.findCardPackageOne(params).catch((err)=>{
+                // 抽卡三次
+                let cardIdArr = await cardUitls.chioseCard(packageId,3);
+                if(!cardIdArr){
                     res.send({
                         code:0,
-                        msg:'内部错误或者卡包ID有误！'
-                    });
-                    console.error(
-                        chalk.red(err)
-                    );
-                    return false;
-                });
-                if(!resaultPackage){
-                    res.send({
-                        code:0,
-                        msg:'无该卡包！'
+                        msg:'抽卡失败，请检查参数！'
                     });
                     return false;
                 }
-                if(!resaultPackage.open){
-                    res.send({
-                        code:0,
-                        msg:'无该卡包！'
-                    });
-                    return false;
-                }
-                // 引入卡组数据
-                let cardDataArr = await cardData.findCardDataMany({packageId:packageId}).catch((err)=>{
-                    res.send({
-                        code:0,
-                        msg:'内部错误或者卡包ID有误！'
-                    });
-                    console.error(
-                        chalk.red(err)
-                    );
-                    return false;
-                });
-                // 
-
-                //循环三张牌
-                let cardIdArr = [];
-                while (cardIdArr.length<3){
-                    let rareNum = utils.randomNum(1,100);
-                    cardIdArr.push(utils.wmCreatCardId(rareNum));
-                    cardIdArr = utils.unique(cardIdArr);
-                }
-
-                let cardId = cardIdArr[sel];
+                // 获取卡牌ID
+                let cardId = cardIdArr[sel].cardId;
                 if(cardId===undefined||cardId===null){
                     res.send({
                         code:0,
@@ -131,8 +96,9 @@ module.exports = async function(req, res, next){
                     });
                     return false;
                 }
+
                 let cardDataBase = {};
-                cardDataBase['card.'+cardId] = 1;
+                cardDataBase['card.'+packageId+'.'+cardId] = 1;
                 let emailmd5 = result.md5;
                 dailyCard = dailyCard +1;
                 let filters = {
@@ -159,7 +125,6 @@ module.exports = async function(req, res, next){
                 );
                 let cardData = fs.readFileSync('./data/cardData.json', 'utf8');
                 cardData = JSON.parse(cardData)['cardData'];
-                let cardID_ = utils.PrefixInteger(cardId,4);
                 let logObject = {
                     email:userEmail,
                     md5:md5(userEmail),
@@ -167,20 +132,26 @@ module.exports = async function(req, res, next){
                     type:'dailyCard',
                     time:timeNow,
                     data:{
-                        cardId:cardID_,
-                        title:cardData[cardID_].title,
-                        name:cardData[cardID_].name,
-                        star:cardData[cardID_].star
+                        cardId:cardId,
+                        title:cardIdArr[sel].title,
+                        name:cardIdArr[sel].name,
+                        star:cardIdArr[sel].star,
+                        packageId:packageId
                     },
                     ip:IP
                 }
                 utils.writeLog(logObject);
+                let cardChoiseList = []
+                for(let i=0;i<cardIdArr.length;i++){
+                    cardChoiseList.push(cardIdArr[i].cardId)
+                }
                 res.send({
                     code:1,
-                    cardChoiseList:cardIdArr,
+                    cardChoiseList:cardChoiseList,
                     choiseIndex:sel,
                     emailmd5:emailmd5,
                     card:cardId,
+                    packageId:packageId,
                     leftGetChance:myDailyChance-dailyCard,
                     msg:'ok'
                 });

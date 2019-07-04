@@ -106,8 +106,12 @@ exports.setCardCount = async function (email) {
         return false;
     })
     if(result&&result.card){
-        let userCardCache = Object.entries(result.card);
-        let cardTotle = userCardCache.length;
+        let cardTotle = 0;
+        let packageCache = Object.entries(result.card);
+        for(let i=0;i<packageCache.length;i++){
+            let userCardCache = Object.entries(packageCache[i][1]);
+            cardTotle = cardTotle + userCardCache.length;
+        }
         let filters = {
             email: email
         }
@@ -121,7 +125,7 @@ exports.setCardCount = async function (email) {
             return false;
         })
         console.info(
-            chalk.green('统计'+email+'的卡牌收集率成功，一共获取了'+cardTotle+'张卡牌。')
+            chalk.green('统计'+email+'的卡牌收集率成功，一共获取了'+cardTotle+'种卡牌。')
         );
         return true;
     }else{

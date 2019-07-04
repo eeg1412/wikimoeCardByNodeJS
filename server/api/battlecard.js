@@ -79,7 +79,6 @@ module.exports = async function(req, res, next){
         for(let i=0;i<card.length;i++){
             let cardNum = result.card[card[i]];
             if(!(cardNum>0)){
-                console.log(cardNum);
                 console.info(
                     chalk.yellow(email+'传了他没有的战斗卡组，卡牌编号为：'+card[i]+'，IP为：'+IP)
                 )
