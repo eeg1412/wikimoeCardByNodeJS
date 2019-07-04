@@ -177,6 +177,7 @@ export default {
         haveCard:[],
         selIndex:null,
         userCardCache:null,
+        userLevels:{},
         cardPage:1,
         cardTotle:0,
         userCard:[],
@@ -422,42 +423,43 @@ export default {
       function setSort(a,b){
             let sort_ = that.searchForm.sort;
             if(sort_ === '0'){
-                if(a[4].star<b[4].star){
+                if(a.star<b.star){
                     return 1;
-                }else if(a[4].star>b[4].star){
+                }else if(a.star>b.star){
                     return -1;
                 }else{
-                    if(a[5]<a[5]){
+                    if(that.userLevels[a.cardId]<that.userLevels[b.cardId]){
                         return 1;
-                    }else if(a[5]>b[5]){
+                    }else if(that.userLevels[a.cardId]>that.userLevels[b.cardId]){
                         return -1;
                     }else{
                         return 0;
                     }
                 }
             }else if(sort_==='1'){
-                if(a[5]<b[5]){
+                if(that.userLevels[a.cardId]<that.userLevels[b.cardId]){
                     return 1;
-                }else if(a[5]>b[5]){
+                }else if(that.userLevels[a.cardId]>that.userLevels[b.cardId]){
                     return -1;
                 }else{
                     return 0;
                 }
             }else if(sort_==='2'){
-                return a[5] - b[5];
+                return that.userLevels[a.cardId] - that.userLevels[b.cardId];
             }else if(sort_==='3'){
-                if(a[4].star<b[4].star){
+                if(a.star<b.star){
                     return 1;
-                }else if(a[4].star>b[4].star){
+                }else if(a.star>b.star){
                     return -1;
                 }else{
                     return 0;
                 }
             }else if(sort_==='4'){
-                return a[4].star - b[4].star;
+                return a.star - b.star;
             }
         }
-      let userCardSearchRes = this.userCardCache.filter(item => item[2] && setStar(item[4].star) && setCry(item[4].cry) && setRightType(item[4].rightType) && setLeftType(item[4].leftType));
+      console.log(this.userCardCache);
+      let userCardSearchRes = this.userCardCache.filter(item => setStar(item.star) && setCry(item.cry) && setRightType(item.rightType) && setLeftType(item.leftType));
       userCardSearchRes = userCardSearchRes.sort(setSort);
       let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
       this.cardTotle = userCardSearchRes.length;
@@ -500,42 +502,32 @@ export default {
         });
     },
     getMycard(){
-        if(!this.token){
-            this.$router.replace({ path:'/'});
-        }
-        let tokenUserInfo = this.token.split('.')[1];
-        let email = JSON.parse(atob(tokenUserInfo)).email;
-        let md5 = md5_(email);
-        if(!md5Check(md5)){
-            this.$message.error('用户信息有误！');
-            return false;
-        }
-        authApi.searchcard({md5: md5}).then(res => {
+        authApi.searchcardbytoken({token: this.token}).then(res => {
             if(res.data.code==0){
                 this.$message.error(res.data.msg);
             }else if(res.data.code==1){
                 let resData = res.data;
-                if(res.data.card){
-                    this.userCardCache = Object.entries(res.data.card);
-                    this.userCardCache.reverse();
-                    for(let i=0;i<this.userCardCache.length;i++){
-                        this.userCardCache[i][2] = true;
-                        // 筛选卡牌是否已经有了
-                        for(let j=0;j<this.myCard.length;j++){
-                            if(this.myCard[j]===null){
-                                break
-                            }else{
-                                if(this.userCardCache[i][0]===this.myCard[j]){
-                                    this.userCardCache[i][2] = false;
-                                    this.myCardIndex[j] = i;
-                                }
-                            }
-                        }
-                        this.userCardCache[i][3] = i;
-                        let cardData_ = cardData['cardData'];//卡牌信息
-                        this.userCardCache[i][4] = cardData_[PrefixInteger(this.userCardCache[i][0],4)];//输入卡牌信息
-                        this.userCardCache[i][5] = this.myCardLevel[this.userCardCache[i][0]] || 0;
-                    }
+                if(res.data.cardIndexCount>0){
+                    this.userCardCache = res.data.card||[];
+                    this.userLevels = res.data.cardLevelData;
+                    // for(let i=0;i<this.userCardCache.length;i++){
+                    //     this.userCardCache[i][2] = true;
+                    //     // 筛选卡牌是否已经有了
+                    //     for(let j=0;j<this.myCard.length;j++){
+                    //         if(this.myCard[j]===null){
+                    //             break
+                    //         }else{
+                    //             if(this.userCardCache[i][0]===this.myCard[j]){
+                    //                 this.userCardCache[i][2] = false;
+                    //                 this.myCardIndex[j] = i;
+                    //             }
+                    //         }
+                    //     }
+                    //     this.userCardCache[i][3] = i;
+                    //     let cardData_ = cardData['cardData'];//卡牌信息
+                    //     this.userCardCache[i][4] = cardData_[PrefixInteger(this.userCardCache[i][0],4)];//输入卡牌信息
+                    //     this.userCardCache[i][5] = this.myCardLevel[this.userCardCache[i][0]] || 0;
+                    // }
                     // 0卡牌id、1卡牌数量、2卡牌是否已选、3卡牌index、4卡牌信息、5卡牌等级
                     this.cardPage = 1;
                     this.ADSHP = this.sumADSHP(this.myCard);

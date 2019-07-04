@@ -1,5 +1,5 @@
 var utils = require('../utils/utils');
-var fs = require('fs');
+var cardData = require('../utils/database/cardData');
 var userData = require('../utils/database/user');
 var chalk = require('chalk');
 module.exports = async function(req, res, next){
@@ -27,9 +27,30 @@ module.exports = async function(req, res, next){
         throw err;
     })
     if(result){
+        let myCard = result.card || {};
+        let card = myCard[packageId];
+        if(card){
+            let haveCardId = Object.keys(card).map(Number);
+            let params = {
+                cardId:{$in:haveCardId}
+            }
+            let myCardData = await cardData.findCardDataMany(params,'-__v -_id').catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库查询错误！')
+                );
+                throw err;
+            });
+            card = myCardData;
+        }
+        card = card || {};
         res.send({
             code:1,
-            card:result.card[packageId],
+            card:card,
+            cardCount:result.card[packageId],
             md5:result.md5,
             nickName:result.nickName,
             score:result.score,

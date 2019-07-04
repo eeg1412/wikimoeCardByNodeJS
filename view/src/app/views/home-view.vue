@@ -94,9 +94,9 @@
         </div>
         <sequential-entrance delay="100" tag="div">
           <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box">
-            <img class="wm_getcard_img" :src="$wikimoecard.url+userPackageNow+'/'+item[0]+'.jpg'" @click="openImg($wikimoecard.url+userPackageNow+'/'+item[0]+'.jpg')">
+            <img class="wm_getcard_img" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'" @click="openImg($wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg')">
             <br>
-            <span class="wm_card_nums">×{{item[1]}}</span>
+            <span class="wm_card_nums">×{{userPackageNow[item.cardId]}}</span>
           </div>
         </sequential-entrance>
         <el-pagination
@@ -211,7 +211,7 @@ export default {
   data() {
     return {
       userPackage:'0',
-      userPackageNow:'0',
+      userCardCountNow:{},
       seledCardPackage:'加载中',
       cardPackage:[],
       txDays:new Date().getDate(),
@@ -229,6 +229,7 @@ export default {
       restartDisabled:true,//重启按钮是否可用
       userCard:null,//用户当前页卡牌
       userCardCache:null,//用户卡牌
+      userCardCount:{},
       cardPage:1,//当前卡牌页码
       cardTotle:0,//一共多少
       nowUserInfo:{
@@ -313,7 +314,7 @@ export default {
       this.userCard = null;
       this.userCardCache = null;
       this.userPackage = '0';
-      this.userPackageNow = '0';
+      this.userCardCountNow = {};
     },
     openShopCard(cardArr,packageId){
       if(cardArr.length<1){
@@ -413,7 +414,7 @@ export default {
       let userCard_ = this.userCardCache.slice((val-1)*20,val*20);
       let userCardSrc = [];
       for(let i = 0;i<userCard_.length;i++){
-        let userCardSrcItem = this.$wikimoecard.url+this.userPackage+'/'+userCard_[i][0]+'.jpg';
+        let userCardSrcItem = this.$wikimoecard.url+this.userPackage+'/'+userCard_[i].cardId+'.jpg';
         userCardSrc.push(userCardSrcItem);
       }
       showLoading();
@@ -432,7 +433,7 @@ export default {
               scrollToTop(topSet+topNewsHeight,200);
             }
             hideLoading();
-            this.userPackageNow = this.userPackage;
+            this.userPackageNow = {...this.userCardCount};
             this.userCard = userCard_;
           },250);
       }).catch((reason)=> {
@@ -461,12 +462,14 @@ export default {
           }else if(res.data.code==1){
             let resData = res.data;
             if(resData.cardIndexCount>0){
-              this.userCardCache = Object.entries(res.data.card||{});
-              this.userCardCache.reverse();
+              this.userCardCache = res.data.card||[];
+              this.userCardCache = this.userCardCache.sort((a,b)=>{
+                return b.star-a.star;
+              })
               this.cardPage = 1;
               this.cardTotle = this.userCardCache.length;
               this.cardPageChange(1,noGoTop);
-              console.log(this.nowUserInfo);
+              this.userCardCount = res.data.cardCount;
               this.nowUserInfo = {
                 tx:'https://gravatar.loli.net/avatar/'+resData.md5+'?s=100&d=mm&r=g&d=robohash&days='+this.txDays,//头像地址
                 score:resData.score,//竞技点
@@ -476,7 +479,6 @@ export default {
                 cardCount:resData.cardCount,
                 md5:resData.md5
               };//当前用户信息
-              console.log(this.userCardCache);
               //this.userCard = res.data.card;
             }else{
               this.$message({

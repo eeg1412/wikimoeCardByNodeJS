@@ -1,11 +1,12 @@
 var utils = require('../utils/utils');
 var chalk = require('chalk');
 var cardData = require('../utils/database/cardData');
+var userbattleinfoData = require('../utils/database/userbattleinfo');
+
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
     let packageId = req.body.packageId || 0;
-    let type = req.body.type;
     console.info(
         chalk.green('开始查询战斗信息,IP为：'+IP)
     )
@@ -23,10 +24,11 @@ module.exports = async function(req, res, next){
     let result = await utils.tokenCheckAndEmail(token).catch ((err)=>{
         throw err;
     });
+    let cardLevelData = {};
     if(result){
         let myCard = result.card || {};
-        let card = card[packageId];
-        if(type == 'cardData' && card){
+        let card = myCard[packageId];
+        if(card){
             let haveCardId = Object.keys(card).map(Number);
             let params = {
                 cardId:{$in:haveCardId}
@@ -42,6 +44,20 @@ module.exports = async function(req, res, next){
                 throw err;
             });
             card = myCardData;
+            let getLevel = '-_id';
+            for(let i=0;i<myCardData.length;i++){
+                getLevel = getLevel + ' cardLevel.'+myCardData[i].cardId;
+            }
+            cardLevelData = await userbattleinfoData.findOne({email:result.email},getLevel).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库错误！')
+                );
+                throw err;
+            }) || {};
         }
         card = card || {};
         res.send({
@@ -51,6 +67,8 @@ module.exports = async function(req, res, next){
             nickName:result.nickName,
             score:result.score,
             level:result.level,
+            cardCount:result.card[packageId],
+            cardLevelData:cardLevelData,
             cardIndexCount:result.cardIndexCount
         });
     }else{
