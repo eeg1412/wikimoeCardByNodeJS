@@ -2,6 +2,16 @@
   <div class="common_body">
     <userTop ref="userTop" />
     <h5 class="common_title type_shop">星星商店</h5>
+    <div class="tc">
+      <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_card_package_sel">
+        <el-option
+          v-for="item in cardPackage"
+          :key="item.packageId"
+          :label="item.name"
+          :value="item.packageId">
+        </el-option>
+      </el-select>
+    </div>
     <el-collapse-transition>
       <div class="shop_card_list_body" v-if="openList">
         <div class="shop_card_list_btn_body" id="shopCardListBtnBody">
@@ -58,6 +68,8 @@ import userTop from '../components/topUserInfo.vue';
 export default {
   data() {
     return {
+      seledCardPackage:'加载中',
+      cardPackage:[],
       openList:false,
       cardList:[],
       userData:null,
@@ -74,8 +86,20 @@ export default {
   mounted() {
     this.$emit('l2dMassage','这里可以购买额外的抽卡机会，希望你能抽到心仪的卡。');
     window.addEventListener('scroll', this.menuTop);
+    this.getCardPackage();
   },
   methods: {
+    getCardPackage(){
+      authApi.searchcardpackage().then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            this.cardPackage = res.data.data;
+            this.seledCardPackage = '0';
+          }
+      });
+    },
     menuTop(){
       let el = document.getElementById('shopCardListBtnBody');
       if(!el){
@@ -112,7 +136,8 @@ export default {
           let params = {
             type:t,
             goods:g,
-            token:this.token
+            token:this.token,
+            packageId:this.seledCardPackage,
           }
           authApi.shop(params).then(res => {
               console.log(res);

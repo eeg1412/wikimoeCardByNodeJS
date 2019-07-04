@@ -30,28 +30,28 @@ exports.wmCreatCardId = function($randomCardRate,cardDataArr){
         let starCard = cardDataArr.filter(function(cardDataArr){
             return cardDataArr.star<=3;
         })
-        let randomNum = utils.randomNum(1,starCard.length-1);
+        let randomNum = utils.randomNum(0,starCard.length-1);
         return starCard[randomNum];
     }else if($randomCardRate>=65&&$randomCardRate<=86){
         //R
         let starCard = cardDataArr.filter(function(cardDataArr){
             return cardDataArr.star===4;
         })
-        let randomNum = utils.randomNum(1,starCard.length-1);
+        let randomNum = utils.randomNum(0,starCard.length-1);
         return starCard[randomNum];
     }else if($randomCardRate>=87&&$randomCardRate<=97){
         //SR
         let starCard = cardDataArr.filter(function(cardDataArr){
             return cardDataArr.star===5;
         })
-        let randomNum = utils.randomNum(1,starCard.length-1);
+        let randomNum = utils.randomNum(0,starCard.length-1);
         return starCard[randomNum];
     }else if($randomCardRate>97){
         //SSR
         let starCard = cardDataArr.filter(function(cardDataArr){
             return cardDataArr.star===6;
         })
-        let randomNum = utils.randomNum(1,starCard.length-1);
+        let randomNum = utils.randomNum(0,starCard.length-1);
         return starCard[randomNum];
     }
     return null;

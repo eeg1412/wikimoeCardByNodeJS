@@ -3,6 +3,7 @@ var utils = require('../../utils/utils');
 var userCreatCardData = require('../../utils/database/userCreatCard');
 var cardPackageData = require('../../utils/database/cardPackage');
 var cardData = require('../../utils/database/cardData');
+var userData = require('../../utils/database/user');
 var adminUtils = require('../../utils/admin/adminUtils');
 var fs = require('fs');
 
@@ -188,11 +189,32 @@ module.exports = async function(req, res, next){
                 );
                 return false;
             });
+            //设定给与星星
+            let userParams ={
+                email:UCCData.email
+            }
+            let updateParams = {
+                $inc:{
+                    star:100
+                }
+            };
+            await userData.updataUser(userParams,updateParams).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误，更新失败！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
             let logObj = {
                 text:'使用管理员账号'+adminAccount+'审核了卡牌,卡包为：'+packageId+'卡牌为：'+newCardId,
                 ip:IP
             }
             adminUtils.adminWriteLog(logObj);
+        }else{
+            fs.unlinkSync('./public/userCreatCard/'+UCCData._id+'.jpg');
         }
         //写入用户卡牌申请
         await userCreatCardData.updataUserCreatCard({_id:id},{check:1,pass:pass,packageId:pass?packageId:'',cardId:pass?newCardId:''}).catch((err)=>{

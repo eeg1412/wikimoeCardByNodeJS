@@ -6,7 +6,7 @@ exports.saveCardData = async function (parmas) {
     return await cardData.save()
 }
 exports.findCardDataMany = async function (parmas,getInfo = '-__v') {
-    return await cardDataModel.find(parmas,getInfo);
+    return await cardDataModel.find(parmas,getInfo).lean();
 }
 exports.findCardDataOne = async function (parmas) {
     return await cardDataModel.findOne(parmas);

@@ -83,7 +83,6 @@ module.exports = async function(req, res, next){
             )
             return false;
         }
-        console.log(packageId);
         let cardIdArr = await cardUitls.chioseCard(packageId,times,true);
         if(!cardIdArr){
             res.send({

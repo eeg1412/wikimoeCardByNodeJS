@@ -51,7 +51,7 @@
   </div>
   <topNews ref="topNews" />
   <div class="wm_user_info_body">
-    <el-collapse-transition>
+    <transition name="el-fade-in-linear">
       <div class="wm_mycard_list" v-if="userCard">
         <el-tooltip class="item" effect="dark" content="关闭信息" placement="top" :hide-after="3000">
           <div class="wm_mycard_list_close" @click="closeUserInfo"><i class="el-icon el-icon-close"></i></div>
@@ -68,20 +68,33 @@
             <tr>
               <th>等级</th>
               <th>竞技点</th>
-              <th>收集率</th>
+              <th>收集量</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td class="wm_user_level">{{nowUserInfo.level}}</td>
             <td class="wm_user_score">{{nowUserInfo.score}}</td>
-              <td class="wm_user_getcard_count">{{nowUserInfo.cardCol}}/{{nowUserInfo.cardCount}}</td>
+              <td class="wm_user_getcard_count">{{nowUserInfo.cardCol}}</td>
             </tr>
           </tbody>
         </table>
+        <div class="mb15">
+          <el-select v-model="userPackage" placeholder="选择卡包" class="wm_card_package_sel" @change="getUserCard(nowUserInfo.md5,false)">
+            <el-option
+              v-for="item in cardPackage"
+              :key="item.packageId"
+              :label="item.name"
+              :value="item.packageId">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="wm_market_card_datail_charts_empty" v-if="userCard.length<=0">
+          <span>该卡包下没有卡牌</span>
+        </div>
         <sequential-entrance delay="100" tag="div">
           <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box">
-            <img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'" @click="openImg($wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg')">
+            <img class="wm_getcard_img" :src="$wikimoecard.url+userPackageNow+'/'+item[0]+'.jpg'" @click="openImg($wikimoecard.url+userPackageNow+'/'+item[0]+'.jpg')">
             <br>
             <span class="wm_card_nums">×{{item[1]}}</span>
           </div>
@@ -96,7 +109,7 @@
           class="my_card_page">
         </el-pagination>
       </div>
-    </el-collapse-transition>
+    </transition>
   </div>
   <el-dialog
     title="分享卡牌信息"
@@ -139,7 +152,7 @@
               >我用{{item.data.pickaxe | pickaxeName}}在<span class="wm_card_get_list_card_link" @click="goMenu('/demining')">星星矿场</span>坐标【{{item.data.x+1}},{{item.data.y+1}}】处挖到了{{item.data.star}}颗星星，同时获得了{{item.data.exp}}点经验值！！请叫我专业的矿工！
               </span>
               <span v-else-if="item.type=='shop_1'"
-              >我用{{item.data.star}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/shop')">星星商店</span>购买了{{item.data.times}}次抽卡机会，共抽中了<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card6)">{{item.data.card6.length}}</span>张六星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card5)">{{item.data.card5.length}}</span>张五星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card4)">{{item.data.card4.length}}</span>张四星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card3)">{{item.data.card3.length}}</span>张三星及其以下的卡。
+              >我用{{item.data.star}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/shop')">星星商店</span>购买了{{item.data.times}}次抽卡机会，共抽中了<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card6,item.data.packageId)">{{item.data.card6.length}}</span>张六星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card5,item.data.packageId)">{{item.data.card5.length}}</span>张五星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card4,item.data.packageId)">{{item.data.card4.length}}</span>张四星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card3,item.data.packageId)">{{item.data.card3.length}}</span>张三星及其以下的卡。
               </span>
               <span v-else-if="item.type=='marketBuy'"
               >我用{{item.data.price}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/market/buycard')">星星交易市场</span>购买了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.name}}</span>。
@@ -197,6 +210,8 @@ import md5 from 'js-md5';
 export default {
   data() {
     return {
+      userPackage:'0',
+      userPackageNow:'0',
       seledCardPackage:'加载中',
       cardPackage:[],
       txDays:new Date().getDate(),
@@ -297,14 +312,16 @@ export default {
     closeUserInfo(){
       this.userCard = null;
       this.userCardCache = null;
+      this.userPackage = '0';
+      this.userPackageNow = '0';
     },
-    openShopCard(cardArr){
+    openShopCard(cardArr,packageId){
       if(cardArr.length<1){
         return false;
       }
       let shopImgHTML = '';
       for(let i=0;i<cardArr.length;i++){
-        shopImgHTML = shopImgHTML+'<div class="watch_shop_img"><img src="'+this.$wikimoecard.url+PrefixInteger(cardArr[i],4)+'.jpg'+'" /></div>';
+        shopImgHTML = shopImgHTML+'<div class="watch_shop_img"><img src="'+this.$wikimoecard.url+packageId+'/'+cardArr[i]+'.jpg'+'" /></div>';
       }
       this.$alert('<div class="watch_shop_body">'+shopImgHTML+'</div>', '查看卡牌', {
         dangerouslyUseHTMLString: true,
@@ -360,14 +377,14 @@ export default {
                 let card5 = [];
                 let card6 = [];
                 for(let j=0;j<shopCardData.length;j++){
-                  if(Number(shopCardData[j])<1000){//三星卡及其以下
-                    card3.push(shopCardData[j]);
-                  }else if(Number(shopCardData[j])<2000){//四星卡
-                    card4.push(shopCardData[j]);
-                  }else if(Number(shopCardData[j])<3000){//五星卡
-                    card5.push(shopCardData[j]);
-                  }else if(Number(shopCardData[j])<4000){//六星卡
-                    card6.push(shopCardData[j]);
+                  if(Number(shopCardData[j][0])<=3){//三星卡及其以下
+                    card3.push(shopCardData[j][1]);
+                  }else if(Number(shopCardData[j][0])==4){//四星卡
+                    card4.push(shopCardData[j][1]);
+                  }else if(Number(shopCardData[j][0])==5){//五星卡
+                    card5.push(shopCardData[j][1]);
+                  }else if(Number(shopCardData[j][0])==6){//六星卡
+                    card6.push(shopCardData[j][1]);
                   }
                 }
                 logListData[i].data.card3 = card3;
@@ -396,7 +413,7 @@ export default {
       let userCard_ = this.userCardCache.slice((val-1)*20,val*20);
       let userCardSrc = [];
       for(let i = 0;i<userCard_.length;i++){
-        let userCardSrcItem = this.$wikimoecard.url+PrefixInteger(userCard_[i][0],4)+'.jpg';
+        let userCardSrcItem = this.$wikimoecard.url+this.userPackage+'/'+userCard_[i][0]+'.jpg';
         userCardSrc.push(userCardSrcItem);
       }
       showLoading();
@@ -415,8 +432,9 @@ export default {
               scrollToTop(topSet+topNewsHeight,200);
             }
             hideLoading();
+            this.userPackageNow = this.userPackage;
             this.userCard = userCard_;
-          },300);
+          },250);
       }).catch((reason)=> {
         console.log(reason);
           hideLoading();
@@ -436,14 +454,14 @@ export default {
         this.$message.error('用户信息有误！');
         return false;
       }
-      authApi.searchcard({md5: md5}).then(res => {
+      authApi.searchcard({md5: md5,packageId:this.userPackage}).then(res => {
           console.log(res);
           if(res.data.code==0){
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
             let resData = res.data;
-            if(res.data.card){
-              this.userCardCache = Object.entries(res.data.card);
+            if(resData.cardIndexCount>0){
+              this.userCardCache = Object.entries(res.data.card||{});
               this.userCardCache.reverse();
               this.cardPage = 1;
               this.cardTotle = this.userCardCache.length;
@@ -453,7 +471,7 @@ export default {
                 tx:'https://gravatar.loli.net/avatar/'+resData.md5+'?s=100&d=mm&r=g&d=robohash&days='+this.txDays,//头像地址
                 score:resData.score,//竞技点
                 level:resData.level,//等级
-                cardCol:this.cardTotle,//收集卡牌
+                cardCol:resData.cardIndexCount,//收集卡牌
                 nickName:resData.nickName,
                 cardCount:resData.cardCount,
                 md5:resData.md5
