@@ -41,9 +41,27 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green(email+'成功查询了自己的战斗卡组，IP为：'+IP)
         )
+        let card = result.battleCard;
+        if(card.length>0){
+            let haveCardId = Object.keys(result.card).map(Number);
+            let params = {
+                cardId:{$in:haveCardId}
+            }
+            let myCardData = await cardData.findCardDataMany(params).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库查询错误！')
+                );
+                throw err;
+            });
+            card = myCardData;
+        }
         res.send({
             code:1,
-            data:result.battleCard,
+            data:card,
             msg:'ok'
         });
     }else if(type=='save'){
