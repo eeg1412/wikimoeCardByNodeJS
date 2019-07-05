@@ -424,7 +424,6 @@ export default {
           let nohaveId = true;
           for(let i=0;i<that.myCard.length;i++){
               if(that.myCard[i]!==null){
-                  console.log(item,that.myCard[i].cardId);
                   if(item==that.myCard[i].cardId){
                       //如果有一样的卡牌ID
                       nohaveId = false;
@@ -520,9 +519,8 @@ export default {
                 let resData = res.data;
                 this.cardIndexCount = res.data.cardIndexCount || 0;
                 if(res.data.cardIndexCount>0){
-                    this.myCardLevel = res.data.cardLevelData;
+                    this.myCardLevel = res.data.cardLevelData || {};
                     this.userCardCache = res.data.card||[];
-                    console.log(this.myCardLevel);
                     this.cardPage = 1;
                     this.ADSHP = this.sumADSHP(this.myCard);
                     this.cardPageChange(1);

@@ -1642,12 +1642,20 @@ img.wm_demining_img {
 .wm_cardlist_select {
   width: 80px;
 }
+.wm_cardlist_select.type_120{
+  width: 122px;
+}
 .wm_cardlist_select_search_body{
   text-align: center;
 }
+@media (max-width: 768px){
+  .wm_cardlist_select {
+    width: 80px!important;
+}
+}
 @media (max-width: 348px){
   .wm_cardlist_select {
-      width: 200px;
+      width: 200px!important;
   }
 }
 /* 无卡牌 */

@@ -2,10 +2,20 @@
     <div class="common_body">
         <userTop ref="userTop" />
         <h5 class="common_title type_shop">升级对战卡牌</h5>
-        <div class="wm_cardlist_select_search_body">
+        <div class="wm_cardlist_select_search_body type_upgradcard">
             <el-form :inline="true" :model="searchForm">
+                <el-form-item label="选择卡包">
+                    <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_cardlist_select type_120" @change="apiInit">
+                        <el-option
+                        v-for="item in cardPackage"
+                        :key="item.packageId"
+                        :label="item.name"
+                        :value="item.packageId">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="星星等级">
-                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.star" placeholder="筛选星级">
+                    <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.star" placeholder="筛选星级">
                     <el-option label="全部" value="0"></el-option>
                     <el-option label="1星" value="1"></el-option>
                     <el-option label="2星" value="2"></el-option>
@@ -16,7 +26,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="水晶属性">
-                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.cry" placeholder="筛选水晶属性">
+                    <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.cry" placeholder="筛选水晶属性">
                     <el-option label="全部" value="0"></el-option>
                     <el-option label="红火" value="1"></el-option>
                     <el-option label="蓝水" value="2"></el-option>
@@ -26,7 +36,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="被动属性">
-                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.leftType" placeholder="筛选被动属性">
+                    <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.leftType" placeholder="筛选被动属性">
                     <el-option label="全部" value="0"></el-option>
                     <el-option label="全能" value="1"></el-option>
                     <el-option label="兵攻" value="2"></el-option>
@@ -36,7 +46,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="主动技能">
-                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.rightType" placeholder="筛选主动技能">
+                    <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.rightType" placeholder="筛选主动技能">
                     <el-option label="全部" value="0"></el-option>
                     <el-option label="物" value="1"></el-option>
                     <el-option label="魔" value="2"></el-option>
@@ -48,14 +58,14 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="是否参战">
-                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.battle" placeholder="筛选是否参战">
+                    <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.battle" placeholder="筛选是否参战">
                     <el-option label="是" value="0"></el-option>
                     <el-option label="否" value="1"></el-option>
                     <el-option label="全部" value="2"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="设置排序">
-                    <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.sort" placeholder="设置排序">
+                    <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.sort" placeholder="设置排序">
                     <el-option label="默认" value="0"></el-option>
                     <el-option label="等级从高到低" value="1"></el-option>
                     <el-option label="等级从低到高" value="2"></el-option>
@@ -77,62 +87,62 @@
                             <tbody>
                                 <td>
                                     <el-tooltip class="item" effect="dark" content="点击去市场查找此卡！" placement="top">
-                                        <div class="wm_level_card_img_body mb10 wm_set_pointer" @click="goMarket(item[0],item[4].star)">
-                                            <img :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'" class="w_10 wm_level_card_img">
+                                        <div class="wm_level_card_img_body mb10 wm_set_pointer" @click="goMarket(item.cardId,item.star)">
+                                            <img :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'" class="w_10 wm_level_card_img">
                                         </div>
                                     </el-tooltip>
                                 </td>
                                 <td>
-                                    <h5 class="mb5 f18">Lv.{{item[3]+1}}</h5>
+                                    <h5 class="mb5 f18">Lv.{{item.level+1}}</h5>
                                     <p class="cRed mb20">
                                         <el-tooltip placement="top">
-                                            <div slot="content" class="tc" v-if="item[4].leftType==1">
+                                            <div slot="content" class="tc" v-if="item.leftType==1">
                                                 <p class="mb5">每升一级攻击力+50、防御力+25</p>
-                                                <p class="mb5">当前攻击+{{item[3]*50}}</p>
-                                                <p class="mb5">当前防御+{{item[3]*25}}</p>
-                                                <p class="mb5">下一级攻击+{{item[3]*50+50}}</p>
-                                                <p class="mb5">下一级防御+{{item[3]*25+25}}</p>
+                                                <p class="mb5">当前攻击+{{item.level*50}}</p>
+                                                <p class="mb5">当前防御+{{item.level*25}}</p>
+                                                <p class="mb5">下一级攻击+{{item.level*50+50}}</p>
+                                                <p class="mb5">下一级防御+{{item.level*25+25}}</p>
                                             </div>
-                                            <div slot="content" class="tc" v-else-if="item[4].leftType==2">
+                                            <div slot="content" class="tc" v-else-if="item.leftType==2">
                                                 <p class="mb5">每升一级攻击力+100</p>
-                                                <p class="mb5">当前攻击+{{item[3]*100}}</p>
-                                                <p class="mb5">下一级攻击+{{item[3]*100+100}}</p>
+                                                <p class="mb5">当前攻击+{{item.level*100}}</p>
+                                                <p class="mb5">下一级攻击+{{item.level*100+100}}</p>
                                             </div>
-                                            <div slot="content" class="tc" v-else-if="item[4].leftType==3">
+                                            <div slot="content" class="tc" v-else-if="item.leftType==3">
                                                 <p class="mb5">每升一级防御力+50</p>
-                                                <p class="mb5">当前防御+{{item[3]*50}}</p>
-                                                <p class="mb5">下一级防御+{{item[3]*50+50}}</p>
+                                                <p class="mb5">当前防御+{{item.level*50}}</p>
+                                                <p class="mb5">下一级防御+{{item.level*50+50}}</p>
                                             </div>
-                                            <div slot="content" class="tc" v-else-if="item[4].leftType==4">
+                                            <div slot="content" class="tc" v-else-if="item.leftType==4">
                                                 <p class="mb5">每升一级速度+1</p>
-                                                <p class="mb5">当前速度+{{item[3]*1}}</p>
-                                                <p class="mb5">下一级速度+{{item[3]*1+1}}</p>
+                                                <p class="mb5">当前速度+{{item.level*1}}</p>
+                                                <p class="mb5">下一级速度+{{item.level*1+1}}</p>
                                             </div>
-                                            <div slot="content" class="tc" v-else-if="item[4].leftType==5">
+                                            <div slot="content" class="tc" v-else-if="item.leftType==5">
                                                 <p class="mb5">每升一级SAN+500</p>
-                                                <p class="mb5">当前SAN+{{item[3]*500}}</p>
-                                                <p class="mb5">下一级SAN+{{item[3]*500+500}}</p>
+                                                <p class="mb5">当前SAN+{{item.level*500}}</p>
+                                                <p class="mb5">下一级SAN+{{item.level*500+500}}</p>
                                             </div>
                                             <span class="wm_set_pointer">查看属性加成</span>
                                         </el-tooltip>
                                     </p>
                                     <p class="mb10 f18">升级需要</p>
                                     <!-- 未勾选使用碎片 -->
-                                    <div class="mb20" v-show="!item[5]">
-                                        <p class="mb10"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item[4].leftType | setItemShould}}个【{{itemData_[item[4].cry+''+item[4].leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer" :src="'/static/otherImg/item/'+item[4].cry+''+item[4].leftType+'.png'"/></el-tooltip>×{{item[4].leftType | setItemShould}}({{myItem[item[4].cry+''+item[4].leftType] || 0}})</p>
-                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{setCardShould(item[4].star)}}张【{{item[4].name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'"/></el-tooltip></div><span>×{{setCardShould(item[4].star)}}({{item[1]}})</span></div>
-                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">您未使用碎片，升级将不会消耗【{{itemData_['1'+PrefixInteger_(item[4].star,2)].name}}】，<br />如果您需要使用碎片来替代缺少的卡牌可以勾选【使用碎片】。<br />碎片可以从【卡牌分解】中获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/otherImg/item/'+'1'+PrefixInteger_(item[4].star,2)+'.png'"/></el-tooltip></div><span>×0({{myItem['1'+PrefixInteger_(item[4].star,2)] || 0}})</span></div>
+                                    <div class="mb20" v-show="!item.usechip">
+                                        <p class="mb10"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item.leftType | setItemShould}}个【{{itemData_[item.cry+''+item.leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer" :src="'/static/otherImg/item/'+item.cry+''+item.leftType+'.png'"/></el-tooltip>×{{item.leftType | setItemShould}}({{myItem[item.cry+''+item.leftType] || 0}})</p>
+                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{setCardShould(item.star)}}张【{{item.name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'"/></el-tooltip></div><span>×{{setCardShould(item.star)}}({{item.count}})</span></div>
+                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">您未使用碎片，升级将不会消耗【{{itemData_['1'+PrefixInteger_(item.star,2)].name}}】，<br />如果您需要使用碎片来替代缺少的卡牌可以勾选【使用碎片】。<br />碎片可以从【卡牌分解】中获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/otherImg/item/'+'1'+PrefixInteger_(item.star,2)+'.png'"/></el-tooltip></div><span>×0({{myItem['1'+PrefixInteger_(item.star,2)] || 0}})</span></div>
                                     </div>
                                     <!-- 勾选使用碎片 -->
-                                    <div class="mb20" v-show="item[5]">
-                                        <p class="mb10"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item[4].leftType | setItemShould}}个【{{itemData_[item[4].cry+''+item[4].leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer" :src="'/static/otherImg/item/'+item[4].cry+''+item[4].leftType+'.png'"/></el-tooltip>×{{item[4].leftType | setItemShould}}({{myItem[item[4].cry+''+item[4].leftType] || 0}})</p>
-                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item[1]>setCardShould(item[4].star)?setCardShould(item[4].star):item[1]}}张【{{item[4].name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'"/></el-tooltip></div><span>×{{item[1]>setCardShould(item[4].star)?setCardShould(item[4].star):item[1]}}({{item[1]}})</span></div>
-                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item[1]>setCardShould(item[4].star)?0:(setCardShould(item[4].star)-item[1])*3}}个【{{itemData_['1'+PrefixInteger_(item[4].star,2)].name}}】，<br />碎片可以从【卡牌分解】中获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/otherImg/item/'+'1'+PrefixInteger_(item[4].star,2)+'.png'"/></el-tooltip></div><span>×{{item[1]>setCardShould(item[4].star)?0:(setCardShould(item[4].star)-item[1])*3}}({{myItem['1'+PrefixInteger_(item[4].star,2)] || 0}})</span></div>
+                                    <div class="mb20" v-show="item.usechip">
+                                        <p class="mb10"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item.leftType | setItemShould}}个【{{itemData_[item.cry+''+item.leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer" :src="'/static/otherImg/item/'+item.cry+''+item.leftType+'.png'"/></el-tooltip>×{{item.leftType | setItemShould}}({{myItem[item.cry+''+item.leftType] || 0}})</p>
+                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item.count>setCardShould(item.star)?setCardShould(item.star):item.count}}张【{{item.name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'"/></el-tooltip></div><span>×{{item.count>setCardShould(item.star)?setCardShould(item.star):item.count}}({{item.count}})</span></div>
+                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item.count>setCardShould(item.star)?0:(setCardShould(item.star)-item.count)*3}}个【{{itemData_['1'+PrefixInteger_(item.star,2)].name}}】，<br />碎片可以从【卡牌分解】中获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/otherImg/item/'+'1'+PrefixInteger_(item.star,2)+'.png'"/></el-tooltip></div><span>×{{item.count>setCardShould(item.star)?0:(setCardShould(item.star)-item.count)*3}}({{myItem['1'+PrefixInteger_(item.star,2)] || 0}})</span></div>
                                     </div>
-                                    <div class="mb20"><el-checkbox v-model="item[5]">使用碎片</el-checkbox></div>
-                                    <p class="mb10">成功率:{{item[3] | setChenggolv}}%</p>
+                                    <div class="mb20"><el-checkbox v-model="item.usechip" @change="chipChange">使用碎片</el-checkbox></div>
+                                    <p class="mb10">成功率:{{item.level | setChenggolv}}%</p>
                                     <div class="mt20 pb10">
-                                        <el-dropdown split-button type="primary" size="medium" trigger="click" @click="upgradecard(item[0],index,item[5])" @command="goChangeLevel">
+                                        <el-dropdown split-button type="primary" size="medium" trigger="click" @click="upgradecard(item.cardId,index,item.usechip)" @command="goChangeLevel">
                                             升级
                                             <el-dropdown-menu slot="dropdown">
                                                 <el-dropdown-item :command="item">转换等级</el-dropdown-item>
@@ -218,9 +228,12 @@ export default {
             sort:'0'
         },
         myBattleCard:[],
+        myCardCount:{},
         myCardLevel:{},
         itemData_:itemData,
-        myItem:{}
+        myItem:{},
+        seledCardPackage:'0',
+        cardPackage:[],
     }
   },
   components: {
@@ -257,10 +270,12 @@ export default {
   },
   mounted() {
         this.$emit('l2dMassage','这里可以升级自己的卡牌，所需材料可以在挖矿中获得，卡牌可以通过抽卡或者市场购买获得。如果卡牌不足可以通过卡牌碎片来替代卡牌，卡牌碎片可以通过分解卡牌获得。');
-        let level = new Promise((resolve, reject)=> {
-            this.searchcardlevel(resolve, reject);
-        });
-        let battlecard = new Promise((resolve, reject)=> {
+        this.getCardPackage();
+        this.apiInit();
+  },
+  methods: {
+        apiInit(){
+            let battlecard = new Promise((resolve, reject)=> {
             this.getMyBattleCard(resolve, reject);
         });
         let mycard = new Promise((resolve, reject)=> {
@@ -270,11 +285,24 @@ export default {
             this.searchuseritem(resolve, reject);
         });
         // 同时执行p1和p2，并在它们都完成后执行then:
-        Promise.all([level, battlecard, mycard, myItem]).then((results)=> {
+        Promise.all([battlecard, mycard, myItem]).then((results)=> {
             this.initData();
         })
-  },
-  methods: {
+        },
+        getCardPackage(){
+            authApi.searchcardpackage().then(res => {
+                console.log(res);
+                if(res.data.code==0){
+                    this.$message.error(res.data.msg);
+                }else if(res.data.code==1){
+                    this.cardPackage = res.data.data;
+                    this.seledCardPackage = '0';
+                }
+            });
+        },
+        chipChange(v){
+            this.$forceUpdate();
+        },
         goMarket(cardId,star){
             this.$router.push({ 
                 name:'buyCard',
@@ -288,13 +316,13 @@ export default {
             });
         },
         goChangeLevel(c){
-            let changeCardLvel = c[3];
+            let changeCardLvel = c.level;
             let changeItem = this.myItem['200'];
             if(changeItem>0){
                 this.$router.push({
                 path:'/cardlevelchange',
                     query: {
-                        from:c[0],
+                        from:c.cardId,
                         item:changeItem
                     }
                 });
@@ -368,8 +396,8 @@ export default {
                             this.$refs.userTop.getUserInfo();
                         }
                         // 0卡牌id、1卡牌数量、2卡牌是否出战、3卡牌等级、4卡牌信息、5是否使用碎片
-                        this.userCard[index][1] = res.data.cardNum;
-                        this.userCard[index][3] = res.data.myCardLevel;
+                        this.userCard[index].count = res.data.cardNum;
+                        this.userCard[index].level = res.data.myCardLevel;
                         let cardLeftType = this.cardDatas[PrefixInteger(cardId,4)].leftType;
                         let setItemShould = this.$options.filters['setItemShould'];
                         let shouldItemNum = setItemShould(cardLeftType);
@@ -392,21 +420,20 @@ export default {
         },
         initData(){//初始化数据
             for(let i=0;i<this.userCardCache.length;i++){
-                this.userCardCache[i][5] = false;
-                this.userCardCache[i][2] = false;
+                this.userCardCache[i].usechip = false;
+                this.userCardCache[i].battle = false;
+                this.userCardCache[i].count = this.myCardCount[this.userCardCache[i].cardId]
                 // 筛选卡牌是否已经出战
                 for(let j=0;j<this.myBattleCard.length;j++){
-                    if(this.userCardCache[i][0]===this.myBattleCard[j]){
-                        this.userCardCache[i][2] = true;
+                    if(this.userCardCache[i].cardId===this.myBattleCard[j]){
+                        this.userCardCache[i].battle = true;
                     }
                 }
-                let cardlv = this.myCardLevel[this.userCardCache[i][0]];
-                this.userCardCache[i][3] = 0;
+                let cardlv = this.myCardLevel[this.userCardCache[i].cardId];
+                this.userCardCache[i].level = 0;
                 if(cardlv){
-                    this.userCardCache[i][3] = cardlv;
+                    this.userCardCache[i].level = cardlv;
                 }
-                let cardData_ = cardData['cardData'];//卡牌信息
-                this.userCardCache[i][4] = cardData_[PrefixInteger(this.userCardCache[i][0],4)];//输入卡牌信息
             }
             // 0卡牌id、1卡牌数量、2卡牌是否出战、3卡牌等级、4卡牌信息、5是否使用碎片
             this.cardPageChange(1);
@@ -464,44 +491,44 @@ export default {
                 return false;
             }
             function setSort(a,b){
-                let sort_ = that.searchForm.sort;
-                if(sort_ === '0'){
-                    if(a[4].star<b[4].star){
+            let sort_ = that.searchForm.sort;
+            if(sort_ === '0'){
+                    if(a.star<b.star){
                         return 1;
-                    }else if(a[4].star>b[4].star){
+                    }else if(a.star>b.star){
                         return -1;
                     }else{
-                        if(a[3]<b[3]){
+                        if((that.myCardLevel[a.cardId] || 0)<(that.myCardLevel[b.cardId] || 0)){
                             return 1;
-                        }else if(a[3]>b[3]){
+                        }else if((that.myCardLevel[a.cardId] || 0)>(that.myCardLevel[b.cardId] || 0)){
                             return -1;
                         }else{
-                            return 0;
+                            return b.cardId-a.cardId;
                         }
                     }
                 }else if(sort_==='1'){
-                    if(a[3]<b[3]){
+                    if((that.myCardLevel[a.cardId] || 0)<(that.myCardLevel[b.cardId] || 0)){
                         return 1;
-                    }else if(a[3]>b[3]){
+                    }else if((that.myCardLevel[a.cardId] || 0)>(that.myCardLevel[b.cardId] || 0)){
                         return -1;
                     }else{
-                        return 0;
+                        return b.cardId-a.cardId;
                     }
                 }else if(sort_==='2'){
-                    return a[3] - b[3];
+                    return (that.myCardLevel[a.cardId] || 0) - (that.myCardLevel[b.cardId] || 0);
                 }else if(sort_==='3'){
-                    if(a[4].star<b[4].star){
+                    if(a.star<b.star){
                         return 1;
-                    }else if(a[4].star>b[4].star){
+                    }else if(a.star>b.star){
                         return -1;
                     }else{
-                        return 0;
+                        return b.cardId-a.cardId;
                     }
                 }else if(sort_==='4'){
-                    return a[4].star - b[4].star;
+                    return a.star - b.star;
                 }
             }
-            let userCardSearchRes = this.userCardCache.filter(item => setStar(item[4].star) && setCry(item[4].cry) && setRightType(item[4].rightType) && setLeftType(item[4].leftType) && setBattle(item[2]));
+            let userCardSearchRes = this.userCardCache.filter(item => setStar(item.star) && setCry(item.cry) && setRightType(item.rightType) && setLeftType(item.leftType) && setBattle(item.battle));
             userCardSearchRes = userCardSearchRes.sort(setSort);
             let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
             this.cardTotle = userCardSearchRes.length;
@@ -527,23 +554,6 @@ export default {
                 }
             });
         },
-        searchcardlevel(resolve, reject){
-            let params = {
-                token:this.token
-            }
-            authApi.searchcardlevel(params).then(res => {
-                console.log(res);
-                if(res.data.code==0){
-                    reject({msg:'error'});
-                    this.$message.error(res.data.msg);
-                }else if(res.data.code==1){
-                    if(res.data.data){
-                        this.myCardLevel = res.data.data;
-                    }
-                    resolve('ok');
-                }
-            });
-        },
         getMyBattleCard(resolve, reject){
             let params = {
                 token:this.token,
@@ -555,34 +565,23 @@ export default {
                     reject({msg:'error'});
                     this.$message.error(res.data.msg);
                 }else if(res.data.code==1){
-                    this.myBattleCard = res.data.data;
+                    this.myBattleCard = res.data.cardId;
                     resolve('ok');
                 }
             });
         },
         getMycard(resolve, reject){
-            if(!this.token){
-                this.$router.replace({ path:'/'});
-            }
-            let tokenUserInfo = this.token.split('.')[1];
-            let email = JSON.parse(atob(tokenUserInfo)).email;
-            let md5 = md5_(email);
-            if(!md5Check(md5)){
-                this.$message.error('用户信息有误！');
-                reject({msg:'error'});
-                return false;
-            }
-            authApi.searchcard({md5: md5}).then(res => {
+            authApi.searchcardbytoken({token: this.token,packageId:this.seledCardPackage}).then(res => {
                 if(res.data.code==0){
                     reject({msg:'error'});
                     this.$message.error(res.data.msg);
                 }else if(res.data.code==1){
                     resolve('ok');
                     let resData = res.data;
-                    if(res.data.card){
-                        this.userCardCache = Object.entries(res.data.card);
-                        this.userCardCache.reverse();
-                    }else{
+                    this.myCardLevel = res.data.cardLevelData || {};
+                    this.myCardCount = res.data.cardCount || {};
+                    this.userCardCache = res.data.card || [];
+                    if(res.data.cardIndexCount<=0){
                         this.$message({
                             message: resData.nickName+'还没有获得过卡牌呢！',
                             type: 'warning'

@@ -98,7 +98,7 @@ module.exports = async function(req, res, next){
             }
             catch(err) {
                 console.info(
-                    chalk.yellow(email+'传了他没有的战斗卡组，卡牌编号为：'+card[i]+'，IP为：'+IP)
+                    chalk.yellow(email+'传了他没有的战斗卡组，IP为：'+IP)
                 )
                 res.send({
                     code:0,
@@ -108,7 +108,7 @@ module.exports = async function(req, res, next){
             }
             if(!(cardNum>0)){
                 console.info(
-                    chalk.yellow(email+'传了他没有的战斗卡组，卡牌编号为：'+card[i]+'，IP为：'+IP)
+                    chalk.yellow(email+'传了他没有的战斗卡组，IP为：'+IP)
                 )
                 res.send({
                     code:0,
