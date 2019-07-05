@@ -1,6 +1,7 @@
 var utils = require('../utils/utils');
 var userData = require('../utils/database/user');
 var md5 = require('md5-node');
+var cardData = require('../utils/database/cardData');
 var chalk = require('chalk');
 
 module.exports = async function(req, res, next){
@@ -41,13 +42,13 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green(email+'成功查询了自己的战斗卡组，IP为：'+IP)
         )
-        let card = result.battleCard;
-        if(card.length>0){
-            let haveCardId = Object.keys(result.card).map(Number);
+        let myBattleCard = result.battleCard;
+        let myCardData = [];
+        if(myBattleCard.length>0){
             let params = {
-                cardId:{$in:haveCardId}
+                cardId:{$in:myBattleCard}
             }
-            let myCardData = await cardData.findCardDataMany(params).catch ((err)=>{
+            myCardData = await cardData.findCardDataMany(params,'-_id -__v').catch ((err)=>{
                 res.send({
                     code:0,
                     msg:'内部错误请联系管理员！'
@@ -57,11 +58,11 @@ module.exports = async function(req, res, next){
                 );
                 throw err;
             });
-            card = myCardData;
         }
         res.send({
             code:1,
-            data:card,
+            cardId:myBattleCard,
+            data:myCardData,
             msg:'ok'
         });
     }else if(type=='save'){
@@ -77,11 +78,6 @@ module.exports = async function(req, res, next){
             });
             return false;
         }
-        // 去个重
-        card = utils.unique(card);
-        console.info(
-            chalk.green(email+'上传的战斗卡组为'+card+'，IP为：'+IP)
-        )
         // 卡牌必须有20张
         if(card.length!==20){
             console.info(
@@ -94,8 +90,22 @@ module.exports = async function(req, res, next){
             return false;
         }
         // 验证用户是否有该卡片
+        let battleCardId = [];
         for(let i=0;i<card.length;i++){
-            let cardNum = result.card[card[i]];
+            let cardNum = 0;
+            try {
+                cardNum = result.card[card[i].packageId][card[i].cardId];
+            }
+            catch(err) {
+                console.info(
+                    chalk.yellow(email+'传了他没有的战斗卡组，卡牌编号为：'+card[i]+'，IP为：'+IP)
+                )
+                res.send({
+                    code:0,
+                    msg:'出战卡牌必须要有20张才行哦！如果您还没有20张卡组请努力抽卡吧！'
+                });
+                return false;
+            }
             if(!(cardNum>0)){
                 console.info(
                     chalk.yellow(email+'传了他没有的战斗卡组，卡牌编号为：'+card[i]+'，IP为：'+IP)
@@ -106,13 +116,27 @@ module.exports = async function(req, res, next){
                 });
                 return false;
             }
+            let thisBattleCardId = card[i].cardId;
+            battleCardId.push(thisBattleCardId);
+        }
+        // 去个重
+        battleCardId = utils.unique(battleCardId);
+        if(battleCardId.length!==20){
+            console.info(
+                chalk.yellow(email+'传了不足20的卡组，IP为：'+IP)
+            )
+            res.send({
+                code:0,
+                msg:'出战卡牌必须要有20张才行哦！如果您还没有20张卡组请努力抽卡吧！'
+            });
+            return false;
         }
         // 验证通过了
         let filters = {
             email: email
         }
         let updataParams = {
-            battleCard:card,
+            battleCard:battleCardId,
             ip:IP
         }
         await userData.updataUser(filters,updataParams).catch ((err)=>{

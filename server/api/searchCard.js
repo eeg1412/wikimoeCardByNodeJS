@@ -46,7 +46,7 @@ module.exports = async function(req, res, next){
             });
             card = myCardData;
         }
-        card = card || {};
+        card = card || [];
         res.send({
             code:1,
             card:card,

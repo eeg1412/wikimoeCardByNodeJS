@@ -59,7 +59,7 @@ module.exports = async function(req, res, next){
                 throw err;
             }) || {};
         }
-        card = card || {};
+        card = card || [];
         res.send({
             code:1,
             card:card,
@@ -68,7 +68,7 @@ module.exports = async function(req, res, next){
             score:result.score,
             level:result.level,
             cardCount:result.card[packageId],
-            cardLevelData:cardLevelData,
+            cardLevelData:cardLevelData['cardLevel'],
             cardIndexCount:result.cardIndexCount
         });
     }else{

@@ -47,14 +47,14 @@
         <el-collapse-transition>
             <div class="wm_battlecard_body" v-show="selIndex===null">
                 <div class="wm_battlecard_list_body">
-                    <draggable v-model="myCard" @change="change" handle=".handle">
+                    <draggable v-model="myCard" handle=".handle">
                         <div class="wm_battlecard_list_box" v-for="(item,index) in myCard" v-bind:key="index+1" @click="selcard(index)">
                             <el-tooltip class="item" effect="dark" content="拖动改变卡牌发动顺序" placement="top">
                                 <div class="wm_battlecard_list_move handle"><i class="el-icon-rank cRed"></i></div>
                             </el-tooltip>
-                            <div class="wm_battlecard_level cRed" v-if="item">Lv.{{myCardLevel[item]?myCardLevel[item]+1:1}}</div>
+                            <div class="wm_battlecard_level cRed" v-if="item">Lv.{{myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1}}</div>
                             <div class="wm_battlecard_list_number">{{index+1}}</div>
-                            <div v-if="item!==null"><img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item,4)+'.jpg'"></div>
+                            <div v-if="item!==null"><img class="wm_getcard_img" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'"></div>
                         </div>
                     </draggable>
                 </div>
@@ -63,6 +63,16 @@
         <div class="wm_battlecard_usercard" v-show="selIndex!==null">
             <div class="wm_cardlist_select_search_body">
                 <el-form :inline="true" :model="searchForm">
+                    <el-form-item label="选择卡包">
+                        <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_cardlist_select" @change="getMycard">
+                            <el-option
+                            v-for="item in cardPackage"
+                            :key="item.packageId"
+                            :label="item.name"
+                            :value="item.packageId">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="星星等级">
                         <el-select class="wm_cardlist_select" @change="searchChanged" v-model="searchForm.star" placeholder="筛选星级">
                         <el-option label="全部" value="0"></el-option>
@@ -119,9 +129,9 @@
             </div>
             <el-collapse-transition>
                 <div class="wm_mycard_list" v-if="userCard.length>0">
-                    <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="ifIndex===index?'card_sel_pikapika':''" @click="seledCard(index)">
-                        <img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'">
-                        <div class="wm_battlecard_level cRed">Lv.{{myCardLevel[item[0]]?myCardLevel[item[0]]+1:1}}</div>
+                    <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="ifCardId===item.cardId?'card_sel_pikapika':''" @click="seledCard(item.cardId,item)">
+                        <img class="wm_getcard_img" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'">
+                        <div class="wm_battlecard_level cRed">Lv.{{myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1}}</div>
                     </div>
                 </div>
                 <div class="wm_battlecard_nocard" v-if="userCard.length<=0&&!pageChangeing">您目前还没有这些卡牌呢！快去抽卡！</div>
@@ -169,15 +179,13 @@ export default {
   data() {
     return {
         fixedTable:false,
-        ifIndex:null,//当前暂时选择的卡
+        cardIndexCount:0,
+        ifCardId:null,//当前暂时选择的卡ID
         ifADSHPSUM:[0,0,0,0],//暂时卡组的增减差
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
-        myCard:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-        myCardIndex:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],
-        haveCard:[],
+        myCard:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],//卡牌
         selIndex:null,
         userCardCache:null,
-        userLevels:{},
         cardPage:1,
         cardTotle:0,
         userCard:[],
@@ -191,6 +199,8 @@ export default {
             sort:'0'
         },
         myCardLevel:{},
+        seledCardPackage:'0',
+        cardPackage:[],
     }
   },
   components: {
@@ -200,12 +210,24 @@ export default {
   },
   created() {
     this.getMyBattleCard();
+    this.getCardPackage();
   },
   mounted() {
     this.$emit('l2dMassage','这里可以组建自己的对战卡牌，只有拥有了20张卡牌才可以组建哦！推荐第一次的玩家点击【更多→说明】来查看对战规则哦！');
     window.addEventListener('scroll', this.tableFixed);
   },
   methods: {
+    getCardPackage(){
+      authApi.searchcardpackage().then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            this.cardPackage = res.data.data;
+            this.seledCardPackage = '0';
+          }
+      });
+    },
     moreBtn(command) {
         if(command==='shuoming'){
             this.openTips();
@@ -218,13 +240,7 @@ export default {
         }
     },
     clearBattleCard(){
-        for(let i=0;i<this.myCardIndex.length;i++){
-            if(this.myCardIndex[i]!==null){
-                this.userCardCache[this.myCardIndex[i]][2] = true;
-            }
-        }
         this.myCard = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
-        this.myCardIndex = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
     },
     tableFixed(){
         let el = document.getElementById('battlecardTable');
@@ -234,21 +250,6 @@ export default {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
         let offsetTop = el.offsetTop;
         scrollTop > offsetTop ? this.fixedTable = true : this.fixedTable = false;
-    },
-    change(data){
-        console.log(data);
-        let newIndex = data.moved.newIndex;
-        let oldIndex = data.moved.oldIndex;
-        let oldCardIndex = this.myCardIndex[oldIndex];
-        if(newIndex>oldIndex){
-            console.log('新比旧大');
-            this.myCardIndex.splice(newIndex+1, 0, oldCardIndex);
-            this.myCardIndex.splice(oldIndex, 1);
-        }else{
-            this.myCardIndex.splice(newIndex, 0, oldCardIndex);
-            this.myCardIndex.splice(oldIndex+1, 1);
-        }
-        console.log(this.myCardIndex);
     },
     openTips(){
       this.$alert('<div class="watch_tips"><img src="/static/otherImg/battletips.png" /></div>', '配卡说明', {
@@ -275,16 +276,18 @@ export default {
         });
     },
     sumADSHP(cardArr){
-        let cardData_ = cardData['cardData'];
-        let myCardInfo = [];
-        let cardList = cardArr;
-        for(let i=0;i<cardList.length;i++){
-            if(cardList[i]!==null){
-                let cardInfo = cardData_[PrefixInteger(cardList[i],4)];
-                cardInfo['cardId'] = cardList[i];
-                myCardInfo.push(cardInfo);
-            }
-        }
+        let myCardInfo = cardArr.filter((item)=>{
+            return item!==null;
+        });
+        console.log(myCardInfo);
+        // let cardList = cardArr;
+        // for(let i=0;i<cardList.length;i++){
+        //     if(cardList[i]!==null){
+        //         let cardInfo = cardData_[cardList[i]];
+        //         cardInfo['cardId'] = cardList[i];
+        //         myCardInfo.push(cardInfo);
+        //     }
+        // }
         if(myCardInfo.length>0){
             let cardArr = myCardInfo;
             let starArr = [0,0,0,0,0,0];
@@ -298,12 +301,11 @@ export default {
                 cryArr[cry] = cryArr[cry]+1;
             }
             let x = starCount;//初始化x为星星的数量
+            console.log(x);
             // 如果是1、2、3、4、5、6顺子排列的卡牌则攻击力和防御力和血的x+20
             let minStarCount = Math.min.apply(null, starArr);
             let cardCountPlus = 0;
-            if(this.userCardCache){
-                cardCountPlus = Math.floor(this.userCardCache.length/25);//每25收集率x+1
-            }
+            cardCountPlus = Math.floor(this.cardIndexCount/25);//每25收集率x+1
             x = x + minStarCount*20+cardCountPlus;
             // 每三种同属性的卡牌攻击力和防御力和血的x+1
             // for(let i=0;i<cryArr.length;i++){
@@ -339,22 +341,20 @@ export default {
             return [0,0,0,0];
         }
     },
-    seledCard(i){
-        if(i===this.ifIndex){
-            this.myCard[this.selIndex] = this.userCard[i][0];
-            let mycardIndex_ = this.myCardIndex[this.selIndex];
-            if(mycardIndex_!==null){
-                this.userCardCache[mycardIndex_][2] = true;
-            }
-            this.myCardIndex[this.selIndex] = this.userCard[i][3];
+    seledCard(i,item){
+        if(i===this.ifCardId){
+            //选中该卡
+            this.myCard[this.selIndex] = item;
             this.selIndex = null;
-            this.userCardCache[this.userCard[i][3]][2] = false;
             this.ADSHP = this.sumADSHP(this.myCard);
             this.restIf();
         }else{
-            this.ifIndex = i;
+            //选择该卡（闪亮）
+            this.ifCardId = i;
+            //复制一下原有的卡组
             let cardCache = [...this.myCard];
-            cardCache[this.selIndex] = this.userCard[i][0];
+            //将其替换成现在的卡
+            cardCache[this.selIndex] = item;
             let ifADSHP = this.sumADSHP(cardCache);
             for(let i=0;i<ifADSHP.length;i++){
                 this.ifADSHPSUM[i] = ifADSHP[i] - this.ADSHP[i];
@@ -362,7 +362,7 @@ export default {
         }
     },
     restIf(){
-        this.ifIndex = null;
+        this.ifCardId = null;
         this.ifADSHPSUM = [0,0,0,0]
     },
     selcard(i){
@@ -420,6 +420,20 @@ export default {
           }
           return false;
       }
+      function seledCard(item){
+          let nohaveId = true;
+          for(let i=0;i<that.myCard.length;i++){
+              if(that.myCard[i]!==null){
+                  console.log(item,that.myCard[i].cardId);
+                  if(item==that.myCard[i].cardId){
+                      //如果有一样的卡牌ID
+                      nohaveId = false;
+                      break;
+                  }
+              }
+          }
+          return nohaveId;
+      }
       function setSort(a,b){
             let sort_ = that.searchForm.sort;
             if(sort_ === '0'){
@@ -428,38 +442,38 @@ export default {
                 }else if(a.star>b.star){
                     return -1;
                 }else{
-                    if(that.userLevels[a.cardId]<that.userLevels[b.cardId]){
+                    if((that.myCardLevel[a.cardId] || 0)<(that.myCardLevel[b.cardId] || 0)){
                         return 1;
-                    }else if(that.userLevels[a.cardId]>that.userLevels[b.cardId]){
+                    }else if((that.myCardLevel[a.cardId] || 0)>(that.myCardLevel[b.cardId] || 0)){
                         return -1;
                     }else{
-                        return 0;
+                        return b.cardId-a.cardId;
                     }
                 }
             }else if(sort_==='1'){
-                if(that.userLevels[a.cardId]<that.userLevels[b.cardId]){
+                if((that.myCardLevel[a.cardId] || 0)<(that.myCardLevel[b.cardId] || 0)){
                     return 1;
-                }else if(that.userLevels[a.cardId]>that.userLevels[b.cardId]){
+                }else if((that.myCardLevel[a.cardId] || 0)>(that.myCardLevel[b.cardId] || 0)){
                     return -1;
                 }else{
-                    return 0;
+                    return b.cardId-a.cardId;
                 }
             }else if(sort_==='2'){
-                return that.userLevels[a.cardId] - that.userLevels[b.cardId];
+                return (that.myCardLevel[a.cardId] || 0) - (that.myCardLevel[b.cardId] || 0);
             }else if(sort_==='3'){
                 if(a.star<b.star){
                     return 1;
                 }else if(a.star>b.star){
                     return -1;
                 }else{
-                    return 0;
+                    return b.cardId-a.cardId;
                 }
             }else if(sort_==='4'){
                 return a.star - b.star;
             }
         }
       console.log(this.userCardCache);
-      let userCardSearchRes = this.userCardCache.filter(item => setStar(item.star) && setCry(item.cry) && setRightType(item.rightType) && setLeftType(item.leftType));
+      let userCardSearchRes = this.userCardCache.filter(item => setStar(item.star) && setCry(item.cry) && setRightType(item.rightType) && setLeftType(item.leftType) && seledCard(item.cardId));
       userCardSearchRes = userCardSearchRes.sort(setSort);
       let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
       this.cardTotle = userCardSearchRes.length;
@@ -479,56 +493,36 @@ export default {
                 this.$message.error(res.data.msg);
             }else if(res.data.code==1){
                 if(res.data.data.length===20){
-                    this.myCard = res.data.data;
-                }
-                this.searchcardlevel();
-            }
-        });
-    },
-    searchcardlevel(){
-        let params = {
-            token:this.token
-        }
-        authApi.searchcardlevel(params).then(res => {
-            console.log(res);
-            if(res.data.code==0){
-                this.$message.error(res.data.msg);
-            }else if(res.data.code==1){
-                if(res.data.data){
-                    this.myCardLevel = res.data.data;
+                    let myBattleCardData = res.data.data;
+                    let myBattleCardId = res.data.cardId;
+                    // 让数据按照卡组顺序排列
+                    myBattleCardData.sort((a, b) => {
+                        if (myBattleCardId.indexOf(a.cardId) === -1 && myBattleCardId.indexOf(b.cardId) === -1) {
+                            return 1
+                        } else if (myBattleCardId.indexOf(a.cardId) !== -1 && myBattleCardId.indexOf(b.cardId) === -1) {
+                            return -1
+                        } else if (myBattleCardId.indexOf(a.cardId) === -1 && myBattleCardId.indexOf(b.cardId) !== -1) {
+                            return 1
+                        }
+                        return myBattleCardId.indexOf(a.cardId) - myBattleCardId.indexOf(b.cardId)
+                    })
+                    this.myCard = myBattleCardData;
                 }
                 this.getMycard();
             }
         });
     },
     getMycard(){
-        authApi.searchcardbytoken({token: this.token}).then(res => {
+        authApi.searchcardbytoken({token: this.token,packageId:this.seledCardPackage}).then(res => {
             if(res.data.code==0){
                 this.$message.error(res.data.msg);
             }else if(res.data.code==1){
                 let resData = res.data;
+                this.cardIndexCount = res.data.cardIndexCount || 0;
                 if(res.data.cardIndexCount>0){
+                    this.myCardLevel = res.data.cardLevelData;
                     this.userCardCache = res.data.card||[];
-                    this.userLevels = res.data.cardLevelData;
-                    // for(let i=0;i<this.userCardCache.length;i++){
-                    //     this.userCardCache[i][2] = true;
-                    //     // 筛选卡牌是否已经有了
-                    //     for(let j=0;j<this.myCard.length;j++){
-                    //         if(this.myCard[j]===null){
-                    //             break
-                    //         }else{
-                    //             if(this.userCardCache[i][0]===this.myCard[j]){
-                    //                 this.userCardCache[i][2] = false;
-                    //                 this.myCardIndex[j] = i;
-                    //             }
-                    //         }
-                    //     }
-                    //     this.userCardCache[i][3] = i;
-                    //     let cardData_ = cardData['cardData'];//卡牌信息
-                    //     this.userCardCache[i][4] = cardData_[PrefixInteger(this.userCardCache[i][0],4)];//输入卡牌信息
-                    //     this.userCardCache[i][5] = this.myCardLevel[this.userCardCache[i][0]] || 0;
-                    // }
-                    // 0卡牌id、1卡牌数量、2卡牌是否已选、3卡牌index、4卡牌信息、5卡牌等级
+                    console.log(this.myCardLevel);
                     this.cardPage = 1;
                     this.ADSHP = this.sumADSHP(this.myCard);
                     this.cardPageChange(1);

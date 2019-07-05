@@ -464,7 +464,11 @@ export default {
             if(resData.cardIndexCount>0){
               this.userCardCache = res.data.card||[];
               this.userCardCache = this.userCardCache.sort((a,b)=>{
-                return b.star-a.star;
+                if(b.star!=a.star){
+                  return b.star-a.star;
+                }else{
+                  return b.cardId-a.cardId;
+                }
               })
               this.cardPage = 1;
               this.cardTotle = this.userCardCache.length;
