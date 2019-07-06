@@ -126,8 +126,8 @@
                 </div>
             </div>
             <div class="wm_top_info_more_body clearfix" v-show="cardMode">
-                <div class="wm_battle_user_card_item wm_set_pointer" v-for="(item,index) in userBattleLogInfo.cardArr" v-bind:key="index" @click="openImg($wikimoecard.url+PrefixInteger_(item,4)+'.jpg')">
-                    <img :src="$wikimoecard.url+PrefixInteger_(item,4)+'.jpg'">
+                <div class="wm_battle_user_card_item wm_set_pointer" v-for="(item,index) in userBattleLogInfo.cardArr" v-bind:key="index" @click="openImg($wikimoecard.url+(userBattleLogInfo.cardInfo[item].packageId||'0')+'/'+item+'.jpg')">
+                    <img :src="$wikimoecard.url+(userBattleLogInfo.cardInfo[item].packageId||'0')+'/'+item+'.jpg'">
                     <div class="f12 mt5">Lv.{{userBattleLogInfo.cardLevel[item]+1}}</div>
                 </div>
             </div>
@@ -160,6 +160,7 @@ export default {
             cardIndex:0,
             cardArr:[],
             cardLevel:[],
+            cardInfo:{},
         },
         logLoading:true,
         replayMode:false,
@@ -233,6 +234,7 @@ export default {
             cardIndex:0,
             cardArr:[],
             cardLevel:[],
+            cardInfo:{},
         }
       },
       openImg(imgsrc){
@@ -253,6 +255,7 @@ export default {
                     cardIndex:this.battleLogs[index].data.MyCardIndexCount,
                     cardArr:this.battleLogs[index].data.MyBattleCard,
                     cardLevel:this.battleLogs[index].data.myCardLevel || {},
+                    cardInfo:this.battleLogs[index].data.cardOtherData || {},
                 }
           }else{
               this.userBattleLogInfo={
@@ -262,12 +265,17 @@ export default {
                     cardIndex:this.battleLogs[index].data.EmCardIndexCount,
                     cardArr:this.battleLogs[index].data.EmBattleCard,
                     cardLevel:this.battleLogs[index].data.emCardLevel || {},
+                    cardInfo:this.battleLogs[index].data.cardOtherData || {},
                 }
           }
           this.dialogVisible = true;
       },
       replay(index){
           if(this.replayMode){
+              return false;
+          }
+          if(this.battleLogs[index].data.ver!==1){
+              this.$message.error('该回放版本过旧，无法回放。');
               return false;
           }
           this.battleData = this.battleLogs[index].data;

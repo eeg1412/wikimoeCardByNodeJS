@@ -54,7 +54,7 @@ var userData = require('../utils/database/user');
 var userbattleinfoData = require('../utils/database/userbattleinfo');
 var battleLogsData = require('../utils/database/battleLogs');
 var chalk = require('chalk');
-var cardData = require('../data/cardData');
+var cardData = require('../utils/database/cardData');
 var usersModel = require('../models/users');
 
 // 结算胜负
@@ -188,15 +188,24 @@ async function searchEm(parmas){
     return data;
 }
 // 出战卡牌信息写入
-function setBattleCardInfo(cardArr){
-    let cardArrInfo = [];
-    for(let i =0;i<cardArr.length;i++){
-        let cardId = utils.PrefixInteger(cardArr[i],4);
-        cardArrInfoItem = cardData['cardData'][cardId];
-        cardArrInfoItem['cardId'] = cardArr[i];
-        cardArrInfo.push(cardArrInfoItem);
+async function setBattleCardInfo(cardArr){
+    let params = {
+        cardId:{$in:cardArr}
     }
-    return cardArrInfo;
+    let myCardData = await cardData.findCardDataMany(params,'-__v -_id').catch ((err)=>{
+        throw err;
+    });
+    myCardData.sort((a, b) => {
+        if (cardArr.indexOf(a.cardId) === -1 && cardArr.indexOf(b.cardId) === -1) {
+            return 1
+        } else if (cardArr.indexOf(a.cardId) !== -1 && cardArr.indexOf(b.cardId) === -1) {
+            return -1
+        } else if (cardArr.indexOf(a.cardId) === -1 && cardArr.indexOf(b.cardId) !== -1) {
+            return 1
+        }
+        return cardArr.indexOf(a.cardId) - cardArr.indexOf(b.cardId)
+    })
+    return myCardData;
 }
 // 统计星级
 function starCount(cardArr){
@@ -400,7 +409,10 @@ module.exports = async function(req, res, next){
     let EmMD5 = '';
     // 初始化卡组
     let MyBattleCard = result.battleCard;//我的对战卡牌
+    let MyBattleCardArr_ = [];
+    let cardOtherData = {};
     let EmBattleCard = [];//对方的对战卡牌
+    let EmBattleCardArr_ = [];
     // 初始化我的属性
     let MyCardStarCount = [0,0,0,0,0,0]//我的卡牌星级个数统计
     let MyStarAll = 0;//我的所以卡牌加起来的星级
@@ -424,9 +436,14 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green(email+'并未设置出战卡牌，故由系统挑选卡牌。IP为：'+IP)
         )
-        MyBattleCard = Object.keys(result.card);
+        let packageIndex = Object.keys(result.card);
+        //合并卡组
+        MyBattleCard = [];
+        for(let i=0;i<packageIndex.length;i++){
+            MyBattleCard = MyBattleCard.concat(Object.keys(result.card[packageIndex[i]]));
+        }
         MyBattleCard = MyBattleCard.slice(MyBattleCard.length-20,MyBattleCard.length);
-        MyBattleCard = MyBattleCard.sort(cardSort);
+        //MyBattleCard = MyBattleCard.sort(cardSort);
     }
     // 获取我的卡牌等级
     let myCardGetInfo = '-_id';
@@ -446,7 +463,7 @@ module.exports = async function(req, res, next){
     myCardLevel = myCardLevel['cardLevel'] || {};
     // 设置我的出战卡牌信息
     MyBattleCardArr_ = [...MyBattleCard]
-    MyBattleCard = setBattleCardInfo(MyBattleCard);
+    MyBattleCard = await setBattleCardInfo(MyBattleCard);
     // 我的卡牌星级统计
     let MyCardStarRes = starCount(MyBattleCard);
     MyCardStarCount = MyCardStarRes[0];
@@ -490,9 +507,14 @@ module.exports = async function(req, res, next){
             console.info(
                 chalk.green('对手'+emData.email+'并未设置对战卡牌，故由系统挑选。IP为：'+IP)
             )
-            EmBattleCard = Object.keys(emData.card);
+            let packageIndex = Object.keys(emData.card);
+            //合并卡组
+            EmBattleCard = [];
+            for(let i=0;i<packageIndex.length;i++){
+                EmBattleCard = EmBattleCard.concat(Object.keys(emData.card[packageIndex[i]]));
+            }
             EmBattleCard = EmBattleCard.slice(EmBattleCard.length-20,EmBattleCard.length);
-            EmBattleCard = EmBattleCard.sort(cardSort);
+            //EmBattleCard = EmBattleCard.sort(cardSort);
         }
         let emCardGetInfo = '-_id';
         for(let i=0;i<EmBattleCard.length;i++){
@@ -512,7 +534,7 @@ module.exports = async function(req, res, next){
     }
     // 设置对方出战卡牌信息
     EmBattleCardArr_ = [...EmBattleCard]
-    EmBattleCard = setBattleCardInfo(EmBattleCard);
+    EmBattleCard = await setBattleCardInfo(EmBattleCard);
     // 对方卡牌星级统计
     let EmCardStarRes = starCount(EmBattleCard);
     EmCardStarCount = EmCardStarRes[0];
@@ -598,6 +620,26 @@ module.exports = async function(req, res, next){
         dailyIsToday = true;
     }else{
         myBattleTimes = 0;
+    }
+    // 只获取已经战斗过卡牌的等级
+    let MyBattleDataCount = MyBattleData.length;
+    let EmBattleDataCount = EmBattleData.length;
+    let biggerCount = MyBattleDataCount>=EmBattleDataCount?MyBattleDataCount:EmBattleDataCount
+    let MybattledCardLevel = {};
+    let EmbattledCardLevel = {};
+    MyBattleCardArr_ = MyBattleCardArr_.slice(0,biggerCount);
+    EmBattleCardArr_ = EmBattleCardArr_.slice(0,biggerCount);
+    for(let i=0;i<biggerCount;i++){
+        MybattledCardLevel[MyBattleCardArr_[i]] = myCardLevel[MyBattleCardArr_[i]] || 0;
+        EmbattledCardLevel[EmBattleCardArr_[i]] = emCardLevel [EmBattleCardArr_[i]] || 0;
+        cardOtherData[MyBattleCard[i].cardId] = {
+            rightType:MyBattleCard[i].rightType,
+            packageId:MyBattleCard[i].packageId
+        }
+        cardOtherData[EmBattleCard[i].cardId] = {
+            rightType:EmBattleCard[i].rightType,
+            packageId:EmBattleCard[i].packageId
+        }
     }
     // 如果并未超过当日的对战次数则结算竞技点、经验
     let getScore = 0;//获取竞技点
@@ -777,18 +819,6 @@ module.exports = async function(req, res, next){
             })
         }
         let timeNow = Math.round(new Date().getTime()/1000);
-        // 只获取已经战斗过卡牌的等级
-        let MyBattleDataCount = MyBattleData.length;
-        let EmBattleDataCount = EmBattleData.length;
-        let biggerCount = MyBattleDataCount>=EmBattleDataCount?MyBattleDataCount:EmBattleDataCount
-        let MybattledCardLevel = {};
-        let EmbattledCardLevel = {};
-        MyBattleCardArr_ = MyBattleCardArr_.slice(0,biggerCount);
-        EmBattleCardArr_ = EmBattleCardArr_.slice(0,biggerCount);
-        for(let i=0;i<biggerCount;i++){
-            MybattledCardLevel[MyBattleCardArr_[i]] = myCardLevel[MyBattleCardArr_[i]] || 0;
-            EmbattledCardLevel[EmBattleCardArr_[i]] = emCardLevel [EmBattleCardArr_[i]] || 0;
-        }
         // 写入战斗记录
         let battleLogsParams = {
             aEmail:email,
@@ -796,6 +826,7 @@ module.exports = async function(req, res, next){
             time:timeNow,
             data:{
                 MyBattleCard:MyBattleCardArr_,
+                cardOtherData:cardOtherData,
                 myCardLevel:MybattledCardLevel,
                 MyADSHP:MyADSHP_,
                 MyName:MyName,
@@ -815,7 +846,7 @@ module.exports = async function(req, res, next){
                 getExp:getExp,
                 EmGetScore:EmGetScore,
                 EmCardIndexCount:EmCardIndexCount,
-
+                ver:1
             }
         }
         battleLogsData.saveBattleLog(battleLogsParams).catch ((err)=>{
@@ -851,6 +882,7 @@ module.exports = async function(req, res, next){
         // MyStarAll:MyStarAll,
         // MyCryCount:MyCryCount,
         MyBattleCard:MyBattleCardArr_,
+        cardOtherData:cardOtherData,
         MyADSHP:MyADSHP_,
         MyName:MyName,
         MyMD5:MyMD5,

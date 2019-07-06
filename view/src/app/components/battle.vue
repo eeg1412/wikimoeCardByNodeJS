@@ -7,7 +7,6 @@
 <script>
 import * as PIXI from 'pixi.js'
 import {PrefixInteger,randomNum} from "../../utils/utils";
-import cardData from '../../utils/cardData.json';
 
 export default {
     props:{
@@ -94,16 +93,17 @@ export default {
             let myCardRightType = [];
             let emCardRightType = [];
             for(let i =0;i<this.battleData.MyBattleCard.length;i++){
-                let cardRightType = cardData['cardData'][PrefixInteger(this.battleData.MyBattleCard[i],4)].rightType;
+                console.log(this.battleData.MyBattleCard[i]);
+                let cardRightType = this.battleData.cardOtherData[this.battleData.MyBattleCard[i]].rightType;
                 myCardRightType.push(cardRightType);
             }for(let i =0;i<this.battleData.EmBattleCard.length;i++){
-                let cardRightType = cardData['cardData'][PrefixInteger(this.battleData.EmBattleCard[i],4)].rightType;
+                let cardRightType = this.battleData.cardOtherData[this.battleData.EmBattleCard[i]].rightType;
                 emCardRightType.push(cardRightType);
             }
             // 加载资源
             let cardList_ = this.MergeArray(this.battleData.MyBattleCard,this.battleData.EmBattleCard);
             for(let i=0;i<cardList_.length;i++){
-                loader.add(cardList_[i], '/static/img/'+PrefixInteger(cardList_[i],4)+'.jpg');
+                loader.add(cardList_[i], '/card/'+this.battleData.cardOtherData[cardList_[i]].packageId+'/'+cardList_[i]+'.jpg');
             }
             loader.add('myAvatar','/api/gravatar.png?md5='+this.battleData.MyMD5);
             if(this.battleData.EmMD5){
