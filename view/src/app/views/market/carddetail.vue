@@ -2,7 +2,7 @@
 <div class="wm_market_content_body">
     <div class="wm_market_card_datail_body">
       <div class="wm_market_card_datail_img_body">
-        <img class="wm_market_card_detail_img" :src="$wikimoecard.url+cardIdFormat+'.jpg'">
+        <img class="wm_market_card_detail_img" :src="$wikimoecard.url+packageId+'/'+cardIdFormat+'.jpg'">
       </div>
       <div class="wm_market_card_datail_info_body">
         <div class="wm_market_card_datail_price" v-if="sellPrice">售价：{{sellPrice}}星星</div>
@@ -110,6 +110,7 @@ export default {
       type:'buy',
       captcha:'',
       id:'',// 交易ID
+      packageId:this.$route.query.packageId || '0',//卡包
       sellPrice:0,//售价
       price:0,//设定售价
       minPrice:0,//最小售价
@@ -170,7 +171,7 @@ export default {
     if(this.sellPrice){
       this.price = this.sellPrice;
     }
-    this.cardIdFormat = PrefixInteger(cardId,4)
+    this.cardIdFormat = cardId;
     this.type = type;
     // 计算最低售价
     if(this.cardData[this.cardIdFormat].star==6){

@@ -8,6 +8,7 @@ var market = new Schema({
   name:String,
   title:String,
   star:{type: Number, default: 0},
+  packageId:{type: String, default: '0'},
   selled:{type: Boolean, default: false},
   cardId:{type: Number, default: 0},
   price:{type: Number, default: 30},

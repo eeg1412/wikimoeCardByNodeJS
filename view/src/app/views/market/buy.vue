@@ -4,14 +4,23 @@
       <div class="wm_market_buy_search_box">
         <el-form :inline="true" :model="searchForm" class="demo-form-inline">
           <el-form-item label="关键词">
-            <el-select v-model="searchForm.name" placeholder="关键词" class="wm_market_buy_search_select">
-              <el-option label="角色名" value="name"></el-option>
-              <el-option label="作品" value="title"></el-option>
-              <el-option label="卡牌ID" value="cardId"></el-option>
-            </el-select>
+            <el-input v-model="searchForm.text" placeholder="请输入搜索内容" @keyup.enter.native="search" class="wm_market_buy_search_slot_input">
+              <el-select v-model="searchForm.name" placeholder="关键词" class="wm_market_buy_search_slot_select" slot="prepend">
+                <el-option label="角色名" value="name"></el-option>
+                <el-option label="作品" value="title"></el-option>
+                <el-option label="卡牌ID" value="cardId"></el-option>
+              </el-select>
+            </el-input>
           </el-form-item>
-          <el-form-item>
-            <el-input v-model="searchForm.text" placeholder="请输入搜索内容" @keyup.enter.native="search"></el-input>
+          <el-form-item label="选择卡包">
+              <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_cardlist_select type_120">
+                  <el-option
+                  v-for="item in cardPackage"
+                  :key="item.packageId"
+                  :label="item.name"
+                  :value="item.packageId">
+                  </el-option>
+              </el-select>
           </el-form-item>
           <el-form-item label="星级">
             <el-select v-model="searchForm.star" placeholder="星级" class="wm_market_buy_search_select">
@@ -59,10 +68,10 @@
       </transition>
       <transition name="el-fade-in-linear">
         <div class="wm_mycard_list" v-if="cardList.length>0">
-            <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in cardList" v-bind:key="index+1" @click="buyCard(item.cardId,item.time,item.price,item._id)">
+            <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in cardList" v-bind:key="index+1" @click="buyCard(item.cardId,item.time,item.price,item._id,item.packageId)">
                 <div class="wm_getcard_img_box">
                   <div class="wm_getcard_img_checked" v-if="haveCardCheck(item.cardId)>0"><i class="el-icon-check"></i></div>
-                  <img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item.cardId,4)+'.jpg'">
+                  <img class="wm_getcard_img" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'">
                 </div>
                 <div class="wm_card_nums"><span class="wm_top_info_star">★</span>{{item.price}}</div>
             </div>
@@ -142,9 +151,12 @@ export default {
         ihave:this.$route.query.ihave || '0'
       },
       loadingMarket:true,
+      seledCardPackage:'0',
+      cardPackage:[],
     }
   },
   created() {
+    this.getCardPackage();
     this.getUserCard();
     if(this.want=='1'){
       this.calMinPrice();
@@ -154,6 +166,17 @@ export default {
     this.$emit('l2dMassage','这里可以购买由玩家贩卖的卡牌，不知道有没有你心仪的卡呀！');
   },
   methods: {
+    getCardPackage(){
+      authApi.searchcardpackage().then(res => {
+          console.log(res);
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            this.cardPackage = res.data.data;
+            this.seledCardPackage = '0';
+          }
+      });
+    },
     wantCard(){
       let params = {
             token:this.token,
@@ -221,7 +244,7 @@ export default {
             }
         });
     }, 
-    buyCard(cardId,time,price,id){
+    buyCard(cardId,time,price,id,packageId){
         let cardHave = this.haveCardCheck(cardId);
         this.$router.push({ 
           name:'cardDetail',
@@ -231,7 +254,8 @@ export default {
             price:price,
             time:time,
             id:id,
-            have:cardHave
+            have:cardHave,
+            packageId:packageId,
           }
         });
     },
@@ -342,5 +366,11 @@ export default {
 <style>
 .wm_market_buy_want{
   margin-top: 10px;
+}
+.wm_market_buy_search_slot_select{
+  width: 100px;
+}
+.wm_market_buy_search_slot_input{
+  width: 240px;
 }
 </style>
