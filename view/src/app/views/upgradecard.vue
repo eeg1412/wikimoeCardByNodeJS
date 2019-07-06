@@ -213,7 +213,6 @@ export default {
         myBattleTimes:'--',
         battleOverTimes:'--',
         itemData_:itemData,
-        cardDatas:cardData['cardData'],
         userCardCache:null,
         cardPage:1,
         cardTotle:0,
@@ -276,18 +275,18 @@ export default {
   methods: {
         apiInit(){
             let battlecard = new Promise((resolve, reject)=> {
-            this.getMyBattleCard(resolve, reject);
-        });
-        let mycard = new Promise((resolve, reject)=> {
-            this.getMycard(resolve, reject);
-        });
-        let myItem = new Promise((resolve, reject)=> {
-            this.searchuseritem(resolve, reject);
-        });
-        // 同时执行p1和p2，并在它们都完成后执行then:
-        Promise.all([battlecard, mycard, myItem]).then((results)=> {
-            this.initData();
-        })
+                this.getMyBattleCard(resolve, reject);
+            });
+            let mycard = new Promise((resolve, reject)=> {
+                this.getMycard(resolve, reject);
+            });
+            let myItem = new Promise((resolve, reject)=> {
+                this.searchuseritem(resolve, reject);
+            });
+            // 同时执行p1和p2，并在它们都完成后执行then:
+            Promise.all([battlecard, mycard, myItem]).then((results)=> {
+                this.initData();
+            })
         },
         getCardPackage(){
             authApi.searchcardpackage().then(res => {
@@ -323,7 +322,11 @@ export default {
                 path:'/cardlevelchange',
                     query: {
                         from:c.cardId,
-                        item:changeItem
+                        item:changeItem,
+                        packageId:this.seledCardPackage,
+                        leftType:c.leftType,
+                        star:c.star,
+                        fromLevel:c.level
                     }
                 });
             }else{
@@ -395,13 +398,9 @@ export default {
                             });
                             this.$refs.userTop.getUserInfo();
                         }
-                        // 0卡牌id、1卡牌数量、2卡牌是否出战、3卡牌等级、4卡牌信息、5是否使用碎片
                         this.userCard[index].count = res.data.cardNum;
                         this.userCard[index].level = res.data.myCardLevel;
-                        let cardLeftType = this.cardDatas[PrefixInteger(cardId,4)].leftType;
-                        let setItemShould = this.$options.filters['setItemShould'];
-                        let shouldItemNum = setItemShould(cardLeftType);
-                        this.myItem[this.cardDatas[PrefixInteger(cardId,4)].cry+''+cardLeftType] = res.data.itemNum;
+                        this.myItem[res.data.itemId] = res.data.itemNum;
                         if(usePieces){
                             this.myItem[res.data.pieceId] = res.data.myPieces;
                         }
@@ -491,8 +490,8 @@ export default {
                 return false;
             }
             function setSort(a,b){
-            let sort_ = that.searchForm.sort;
-            if(sort_ === '0'){
+                let sort_ = that.searchForm.sort;
+                if(sort_ === '0'){
                     if(a.star<b.star){
                         return 1;
                     }else if(a.star>b.star){

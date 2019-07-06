@@ -1,9 +1,10 @@
 var utils = require('../utils/utils');
 var userbattleinfoData = require('../utils/database/userbattleinfo');
 var itemData = require('../utils/database/item.js');
-var cardData = require('../data/cardData');
+// var cardData = require('../data/cardData');
 var chalk = require('chalk');
 var userData = require('../utils/database/user');
+var cardData = require('../utils/database/cardData');
 
 function setChenggolv(v){
     let lv = v;
@@ -92,17 +93,17 @@ module.exports = async function(req, res, next){
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
     //检查卡牌是否存在
-    let myCardData = cardData['cardData'][utils.PrefixInteger(cardId,4)];
-    if(!myCardData){
-        res.send({
-            code:0,
-            msg:'您没有这张卡！'
-        });
-        console.info(
-            chalk.yellow(email+'查询了不存在的卡,IP为：'+IP)
-        );
-        return false;
-    }
+    // let myCardData = cardData['cardData'][utils.PrefixInteger(cardId,4)];
+    // if(!myCardData){
+    //     res.send({
+    //         code:0,
+    //         msg:'您没有这张卡！'
+    //     });
+    //     console.info(
+    //         chalk.yellow(email+'查询了不存在的卡,IP为：'+IP)
+    //     );
+    //     return false;
+    // }
     //检查用户是否有卡
     if(!result.card){
         res.send({
@@ -114,10 +115,30 @@ module.exports = async function(req, res, next){
         );
         return false;
     }
+    let myCardData = await cardData.findCardDataOne({cardId:cardId}).catch ((err)=>{
+        res.send({
+            code:0,
+            msg:'内部错误请联系管理员！'
+        });
+        console.error(
+            chalk.red('数据库查询错误！')
+        );
+        throw err;
+    });
+    if(!myCardData){
+        res.send({
+            code:0,
+            msg:'您没有这张卡！'
+        });
+        console.info(
+            chalk.yellow(email+'查询了不存在的卡,IP为：'+IP)
+        );
+        return false;
+    }
     //检查卡牌是否拥有
     let shouldCardNum = setCardShould(myCardData.star);
-    let myCardCount = result.card[cardId] || 0;
-    if(result.card[cardId]<=0){
+    let myCardCount = result.card[myCardData.packageId][cardId] || 0;
+    if(myCardCount<=0){
         res.send({
             code:0,
             msg:'您没有这张卡！'
@@ -177,7 +198,7 @@ module.exports = async function(req, res, next){
     };
     //删卡数据库
     let cardDataBase = {};
-    cardDataBase['card.'+cardId] = -shouldCardNum;
+    cardDataBase['card.'+myCardData.packageId+'.'+cardId] = -shouldCardNum;
     let shouldPieces = 0;//需要多少碎片
     let pieceId = ItemList[myCardData.star];//碎片ID
     let myPieces = userItemData[pieceId] || 0;//碎片数量
@@ -197,7 +218,7 @@ module.exports = async function(req, res, next){
                 return false;
             }
             itemDataBase['item.'+pieceId] = -shouldPieces;
-            cardDataBase['card.'+cardId] = -(shouldCardNum - cardCha);
+            cardDataBase['card.'+myCardData.packageId+'.'+cardId] = -(shouldCardNum - cardCha);
         }
 
     }
@@ -213,7 +234,7 @@ module.exports = async function(req, res, next){
         throw err;
     }) || {};
     //安全起见再对比下卡牌是否超过了拥有的卡牌数量
-    if(myCardCount<=Math.abs(cardDataBase['card.'+cardId])){
+    if(myCardCount<=Math.abs(cardDataBase['card.'+myCardData.packageId+'.'+cardId])){
         res.send({
             code:0,
             msg:'您的升级卡牌不足,快去挖矿吧！'
@@ -271,7 +292,7 @@ module.exports = async function(req, res, next){
         )
     }else{
         //如果失败
-        getStar = myCardData.star * Math.abs(cardDataBase['card.'+cardId]);
+        getStar = myCardData.star * Math.abs(cardDataBase['card.'+myCardData.packageId+'.'+cardId]);
         console.info(
             chalk.green(email+'升级失败，卡牌'+cardId+'化作了'+getStar+'颗星星')
         )
@@ -306,7 +327,8 @@ module.exports = async function(req, res, next){
             getStar:getStar,
             myCardLevel:myCardLevel,
             cardName:myCardData.name,
-            cardId:cardId
+            cardId:cardId,
+            packageId:myCardData.packageId
         },
         ip:IP
     }
@@ -316,10 +338,11 @@ module.exports = async function(req, res, next){
         isSuccess:isSuccess,
         getStar:getStar,
         myCardLevel:myCardLevel,
-        cardNum:myCardCount+cardDataBase['card.'+cardId],
+        cardNum:myCardCount+cardDataBase['card.'+myCardData.packageId+'.'+cardId],
         itemNum:myItemNum-shouldItemNum,
         myPieces:myPieces+itemDataBase['item.'+pieceId],
         pieceId:pieceId,
+        itemId:shouldItemId,
         msg:'ok'
     });
 }

@@ -1,15 +1,15 @@
 var utils = require('../utils/utils');
 var userbattleinfoData = require('../utils/database/userbattleinfo');
 var itemData = require('../utils/database/item.js');
-var cardData = require('../data/cardData');
+var cardData = require('../utils/database/cardData');
 var chalk = require('chalk');
 var userData = require('../utils/database/user');
 
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
-    let fromCardId = req.body.fromCardId || 0;
-    let toCardId = req.body.toCardId || 0;
+    let fromCardId = req.body.fromCardId || '0';
+    let toCardId = req.body.toCardId || '0';
     console.info(
         chalk.green('开始转换卡牌等级,IP为：'+IP)
     )
@@ -42,8 +42,35 @@ module.exports = async function(req, res, next){
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
     //检查卡牌是否存在
-    let fromCardData = cardData['cardData'][utils.PrefixInteger(fromCardId,4)];
-    let toCardData = cardData['cardData'][utils.PrefixInteger(toCardId,4)];
+    let cardDataParams = {
+        cardId:{$in:[fromCardId,toCardId]}
+    }
+    let myCardData = await cardData.findCardDataMany(cardDataParams).catch ((err)=>{
+        res.send({
+            code:0,
+            msg:'内部错误请联系管理员！'
+        });
+        console.error(
+            chalk.red('数据库查询错误！')
+        );
+        throw err;
+    });
+    if(myCardData.length!==2){
+        res.send({
+            code:0,
+            msg:'您没有这张卡！'
+        });
+        console.info(
+            chalk.yellow(email+'查询了不存在的卡,IP为：'+IP)
+        );
+        return false;
+    }
+    let cardData_ = {};
+    for(let i=0;i<myCardData.length;i++){
+        cardData_[myCardData[i].cardId] = myCardData[i];
+    }
+    let fromCardData = cardData_[fromCardId];
+    let toCardData = cardData_[toCardId];
     if(!fromCardData || !toCardData){
         res.send({
             code:0,
@@ -113,7 +140,7 @@ module.exports = async function(req, res, next){
         return false;
     }
     //查询等级信息
-    let myCardLevel = await userbattleinfoData.findOne({email:email},'-_id').catch ((err)=>{
+    let myCardLevel = await userbattleinfoData.findOne({email:email},'-_id cardLevel.'+fromCardId +' cardLevel.'+toCardId).catch ((err)=>{
         res.send({
             code:0,
             msg:'内部错误请联系管理员！'
@@ -138,9 +165,7 @@ module.exports = async function(req, res, next){
     }
     //开始转换
     //升级
-    let update = {
-        
-    };
+    let update = {};
     update['cardLevel.'+fromCardId] = toCardLevel;
     update['cardLevel.'+toCardId] = fromCardLevel;
     await userbattleinfoData.findOneAndUpdate(params,update).catch ((err)=>{
@@ -177,10 +202,12 @@ module.exports = async function(req, res, next){
         time:timeNow,
         data:{
             fromCardId:fromCardId,
+            fromCardPackageId:fromCardData.packageId,
             fromCardName:fromCardData.name,
             toCardId:toCardId,
             toCardName:toCardData.name,
             toCardLevel:fromCardLevel,
+            toCardPackageId:toCardData.packageId,
             fromCardLevel:toCardLevel
         },
         ip:IP

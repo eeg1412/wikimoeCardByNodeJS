@@ -167,16 +167,16 @@
               >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/decomposeitem')">道具分解</span>，用公式Cl2+2KI+{{item.data.shouldItemNum}}{{item.data.itemName}}分解出了2KCl+I2+{{item.data.getStar}}颗星星！
               </span>
               <span v-else-if="item.type=='upgradecard' && item.data.isSuccess"
-              >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌升级</span>，成功将卡牌<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.cardName}}</span>升级到了{{item.data.myCardLevel+1}}级。我感觉我已经天下无敌了呀！
+              >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌升级</span>，成功将卡牌<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.packageId+'/'+item.data.cardId+'.jpg')">{{item.data.cardName}}</span>升级到了{{item.data.myCardLevel+1}}级。我感觉我已经天下无敌了呀！
               </span>
               <span v-else-if="item.type=='upgradecard' && !item.data.isSuccess"
-              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌升级</span>中升级<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.cardId,4)+'.jpg')">{{item.data.cardName}}</span>的时候，升级失败了……我的卡牌和升级材料全部化作了{{item.data.getStar}}颗星星……
+              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌升级</span>中准备将<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.packageId+'/'+item.data.cardId+'.jpg')">{{item.data.cardName}}</span>升级到{{item.data.myCardLevel+2}}级的时候，升级失败了……我的卡牌和升级材料全部化作了{{item.data.getStar}}颗星星……
               </span>
               <span v-else-if="item.type=='dailyGetItem'"
               >{{item.data.msg}}。大家每天也不要忘记在<span class="wm_card_get_list_card_link" @click="goMenu('/dailygetitem')">签到系统</span>里白嫖……不对领取奖励哦！
               </span>
               <span v-else-if="item.type=='levelChange'"
-              >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌等级转换</span>将<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.fromCardId,4)+'.jpg')">{{item.data.fromCardName}}</span>和<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.toCardId,4)+'.jpg')">{{item.data.toCardName}}</span>的等级进行了对换。现在我的<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.fromCardId,4)+'.jpg')">{{item.data.fromCardName}}</span>变成了{{item.data.fromCardLevel+1}}级，<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+PrefixInteger_(item.data.toCardId,4)+'.jpg')">{{item.data.toCardName}}</span>变成了{{item.data.toCardLevel+1}}级。
+              >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌等级转换</span>将<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.fromCardPackageId+'/'+item.data.fromCardId+'.jpg')">{{item.data.fromCardName}}</span>和<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.toCardPackageId+'/'+item.data.toCardId+'.jpg')">{{item.data.toCardName}}</span>的等级进行了对换。现在我的<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.fromCardPackageId+'/'+item.data.fromCardId+'.jpg')">{{item.data.fromCardName}}</span>变成了{{item.data.fromCardLevel+1}}级，<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.toCardPackageId+'/'+item.data.toCardId+'.jpg')">{{item.data.toCardName}}</span>变成了{{item.data.toCardLevel+1}}级。
               </span>
             </p>
           </div>
@@ -514,17 +514,17 @@ export default {
       this.$refs.cardListBody.children[1].classList.remove("no-selectedcard");
       this.$refs.cardListBody.children[2].classList.remove("no-selectedcard");
       this.cardIsRotate = [false,false,false];
-      this.userCard = null;//用户当前页卡牌
-      this.userCardCache = null;//用户卡牌
-      this.cardPage = 1;//当前卡牌页码
-      this.cardTotle = 0;//一共多少
-      this.nowUserInfo = {
-        tx:'',//头像地址
-        score:0,//竞技点
-        level:0,//等级
-        cardCol:0,//收集卡牌
-        nickName:''
-      };//当前用户信息
+      // this.userCard = null;//用户当前页卡牌
+      // this.userCardCache = null;//用户卡牌
+      // this.cardPage = 1;//当前卡牌页码
+      // this.cardTotle = 0;//一共多少
+      // this.nowUserInfo = {
+      //   tx:'',//头像地址
+      //   score:0,//竞技点
+      //   level:0,//等级
+      //   cardCol:0,//收集卡牌
+      //   nickName:''
+      // };//当前用户信息
       setTimeout(()=>{
         this.getCardList = ['','',''];
         this.seled = false;
