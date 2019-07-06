@@ -3,15 +3,6 @@
     <div class="wm_market_buy_search_body">
       <div class="wm_market_buy_search_box">
         <el-form :inline="true" :model="searchForm" class="demo-form-inline">
-          <el-form-item label="关键词">
-            <el-input v-model="searchForm.text" placeholder="请输入搜索内容" @keyup.enter.native="search" class="wm_market_buy_search_slot_input">
-              <el-select v-model="searchForm.name" placeholder="关键词" class="wm_market_buy_search_slot_select" slot="prepend">
-                <el-option label="角色名" value="name"></el-option>
-                <el-option label="作品" value="title"></el-option>
-                <el-option label="卡牌ID" value="cardId"></el-option>
-              </el-select>
-            </el-input>
-          </el-form-item>
           <el-form-item label="选择卡包">
               <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_cardlist_select type_120">
                   <el-option
@@ -21,6 +12,15 @@
                   :value="item.packageId">
                   </el-option>
               </el-select>
+          </el-form-item>
+          <el-form-item label="关键词">
+            <el-input v-model="searchForm.text" placeholder="请输入搜索内容" @keyup.enter.native="search" class="wm_market_buy_search_slot_input">
+              <el-select v-model="searchForm.name" placeholder="关键词" class="wm_market_buy_search_slot_select" slot="prepend">
+                <el-option label="角色名" value="name"></el-option>
+                <el-option label="作品" value="title"></el-option>
+                <el-option label="卡牌ID" value="cardId"></el-option>
+              </el-select>
+            </el-input>
           </el-form-item>
           <el-form-item label="星级">
             <el-select v-model="searchForm.star" placeholder="星级" class="wm_market_buy_search_select">
