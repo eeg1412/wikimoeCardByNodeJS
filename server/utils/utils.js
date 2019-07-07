@@ -10,15 +10,9 @@ var marketData = require('./database/market');
 var cardData = require('../data/cardData');
 
 // 设置最低价格
-exports.checkMinPrice = function(cardId){
+exports.checkMinPrice = function(star){
     // 设置最低价格
-    let cardStar = 1;
-    try{
-        cardStar = cardData['cardData'][this.PrefixInteger(cardId,4)]['star'];
-    }
-    catch(err){
-        return false;
-    }
+    let cardStar = star;
     let minPrice = null;
     if(cardStar==6){
         minPrice = 600;

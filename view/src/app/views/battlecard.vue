@@ -172,7 +172,6 @@ import {PrefixInteger,md5Check,scrollToTop} from "../../utils/utils";
 import {authApi} from "../api";
 import userTop from '../components/topUserInfo.vue';
 import md5_ from 'js-md5';
-import cardData from '../../utils/cardData.json';
 import draggable from 'vuedraggable'
 
 export default {

@@ -123,8 +123,6 @@ module.exports = async function(req, res, next){
                 console.info(
                     chalk.green('邮箱：'+userEmail+'，抽到卡牌：【'+cardId+'】! IP为：'+IP)
                 );
-                let cardData = fs.readFileSync('./data/cardData.json', 'utf8');
-                cardData = JSON.parse(cardData)['cardData'];
                 let logObject = {
                     email:userEmail,
                     md5:md5(userEmail),

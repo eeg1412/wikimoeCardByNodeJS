@@ -78,13 +78,15 @@ module.exports = async function(req, res, next){
         let name = req.body.name || '';
         let text = req.body.text || '';
         let have = req.body.have || '';
+        let packageId = req.body.packageId || '0';
         let star = isNaN(Math.round(req.body.star))?0:Math.round(req.body.star);
         let sortType = isNaN(Math.round(req.body.sort))?0:Math.round(req.body.sort);
         let time = Math.round(new Date().getTime()/1000);
         let haveCardId = [];
         let params = {
             time:{$gte:time-2592000},
-            selled:false
+            selled:false,
+            packageId:packageId
         }
         if(have=='1'){
             if(result.card){
@@ -208,7 +210,7 @@ module.exports = async function(req, res, next){
         let starCard = {
             star:-myData.price
         }
-        starCard['card.'+myData.cardId] = 1;
+        starCard['card.'+myData.packageId+'.'+myData.cardId] = 1;
         let userFilters = {
             email:email
         }
@@ -260,6 +262,7 @@ module.exports = async function(req, res, next){
                 title:myData.title,
                 name:myData.name,
                 star:myData.star,
+                packageId:myData.packageId,
             },
             ip:IP
         }

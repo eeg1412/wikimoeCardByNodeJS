@@ -6,6 +6,69 @@
         <h5 class="common_title type_shop type_dec">卡牌分解</h5>
         <h6 class="common_title_tips type_dec">系统已自动保留一张卡牌</h6>
         <div>
+            <div class="tc">
+                <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+                    <el-form-item label="选择卡包">
+                        <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_cardlist_select type_120" @change="changepackageId">
+                            <el-option
+                            v-for="item in cardPackage"
+                            :key="item.packageId"
+                            :label="item.name"
+                            :value="item.packageId">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="星级">
+                        <el-select v-model="searchForm.star" class="wm_market_buy_search_select" @change="searchChanged">
+                            <el-option label="全部" value="0"></el-option>
+                            <el-option label="1星" value="1"></el-option>
+                            <el-option label="2星" value="2"></el-option>
+                            <el-option label="3星" value="3"></el-option>
+                            <el-option label="4星" value="4"></el-option>
+                            <el-option label="5星" value="5"></el-option>
+                            <el-option label="6星" value="6"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="水晶属性">
+                        <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.cry" placeholder="筛选水晶属性">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="红火" value="1"></el-option>
+                        <el-option label="蓝水" value="2"></el-option>
+                        <el-option label="绿风" value="3"></el-option>
+                        <el-option label="光" value="4"></el-option>
+                        <el-option label="暗" value="5"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="被动属性">
+                        <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.leftType" placeholder="筛选被动属性">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="全能" value="1"></el-option>
+                        <el-option label="兵攻" value="2"></el-option>
+                        <el-option label="盾防" value="3"></el-option>
+                        <el-option label="速度" value="4"></el-option>
+                        <el-option label="爱心" value="5"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="主动技能">
+                        <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.rightType" placeholder="筛选主动技能">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="物" value="1"></el-option>
+                        <el-option label="魔" value="2"></el-option>
+                        <el-option label="防" value="3"></el-option>
+                        <el-option label="治" value="4"></el-option>
+                        <el-option label="妨" value="5"></el-option>
+                        <el-option label="支" value="6"></el-option>
+                        <el-option label="特" value="7"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="设置排序">
+                        <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.sort" placeholder="设置排序">
+                            <el-option label="星级从高到低" value="0"></el-option>
+                            <el-option label="星级从低到高" value="1"></el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+            </div>
             <transition name="el-fade-in-linear">
                 <div class="wm_market_tips" v-if="userCard.length<=0&&!pageChangeing">您暂时没有可以分解的卡牌！</div>
             </transition>
@@ -13,10 +76,10 @@
                 <div class="wm_mycard_list type_dec" v-if="userCard.length>0">
                     <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box type_mobile">
                         <div class="wm_dec_img_box">
-                            <div class="wm_dec_can_num">可解:{{item[1]-1}}张</div>
-                            <img class="wm_getcard_img" :src="$wikimoecard.url+PrefixInteger_(item[0],4)+'.jpg'">
+                            <div class="wm_dec_can_num">可解:{{item.count-1}}张</div>
+                            <img class="wm_getcard_img" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'">
                         </div>
-                        <div class="wm_dec_input_body"><el-input-number :precision="0" :step="1" :max="item[1]-1" :min="0" size="mini" v-model="item[2]" class="wm_dec_input"></el-input-number></div>
+                        <div class="wm_dec_input_body"><el-input-number :precision="0" :step="1" :max="item.count-1" :min="0" size="mini" v-model="item.dec" class="wm_dec_input" @change="decChange"></el-input-number></div>
                     </div>
                 </div>
             </transition>
@@ -48,7 +111,6 @@ import md5_ from 'js-md5';
 import menuView from '../components/menu.vue';
 import {authApi} from "../api";
 import userTop from '../components/topUserInfo.vue';
-import cardData from "../../utils/cardData";
 import decomposehead from "../components/decomposehead";
 import itemData from '../../../../server/data/item';
 
@@ -63,9 +125,17 @@ export default {
         myMarket:[],//自己上架的卡牌
         serverTime:0,//服务器时间
         pageChangeing:false,
-        cardDatas:cardData['cardData'],
         decCard:{},//待分解卡牌
         starCount:0,//待分解卡牌价值
+        seledCardPackage:'0',
+        cardPackage:[],
+        searchForm:{
+            star:'0',
+            cry:'0',
+            rightType:'0',
+            leftType:'0',
+            sort:'0'
+        },
     }
   },
   components: {
@@ -75,15 +145,29 @@ export default {
   },
   created() {
       this.getUserCard();
+      this.getCardPackage();
   },
   mounted() {
       this.$emit('l2dMassage','这里可以分解多余的卡牌，但是感觉很不值得，推荐还是将卡牌寄售市场比较好！');
   },
   methods: {
+    getCardPackage(){
+        authApi.searchcardpackage().then(res => {
+            console.log(res);
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                this.cardPackage = res.data.data;
+            }
+        });
+    },
     clear(){
         for(let i=0;i<this.userCard.length;i++){
-            this.userCard[i][2] = 0;
+            this.userCard[i].dec = 0;
         }
+        this.$forceUpdate();
+    },
+    decChange(){
         this.$forceUpdate();
     },
     dec(){
@@ -107,14 +191,15 @@ export default {
         let cardId = [];
         let cardCount = [];
         for(let i=0;i<this.userCard.length;i++){
-            if(this.userCard[i][2]>0){
-                cardId.push(this.userCard[i][0]);
-                cardCount.push(this.userCard[i][2]);
+            if(this.userCard[i].dec>0){
+                cardId.push(this.userCard[i].cardId);
+                cardCount.push(this.userCard[i].dec);
             }
         }
         let params = {
             token:this.token,
             cardId:cardId,
+            packageId:this.seledCardPackage,
             cardCount:cardCount
         }
         authApi.decompose(params).then(res => {
@@ -138,7 +223,7 @@ export default {
     },
     decAll(){
         for(let i=0;i<this.userCard.length;i++){
-            this.userCard[i][2] = this.userCard[i][1]-1;
+            this.userCard[i].dec = this.userCard[i].count-1;
         }
         this.$forceUpdate();
         this.countCardStar();
@@ -157,10 +242,10 @@ export default {
         let cardObj = {};
         let star = 0;
         for(let i=0;i<this.userCard.length;i++){
-            let num = this.userCard[i][2];
+            let num = this.userCard[i].dec;
             if(num>0){
-                star = star + this.cardDatas[PrefixInteger(this.userCard[i][0],4)].star*num;
-                cardObj[this.userCard[i][0]] = num;
+                star = star +this.userCard[i].star*num;
+                cardObj[this.userCard[i].cardId] = num;
             }
         }
         this.starCount = star;
@@ -170,48 +255,121 @@ export default {
       return PrefixInteger(num,length);
     },
     cardPageChange(val){
-        let userCard_ = this.userCardCache.slice((val-1)*20,val*20);
+        let that = this;
+        // 筛选条件
+        function setStar(item){
+            let p_ = that.searchForm.star;
+            if(p_==='0'){
+                return true;
+            }else if(item.star==p_){
+                return true;
+            }
+            return false;
+        }
+        function setCry(item){
+            let p_ = that.searchForm.cry;
+            if(p_==='0'){
+                return true;
+            }else if(item==p_){
+                return true;
+            }
+            return false;
+        }
+        function setRightType(item){
+            let p_ = that.searchForm.rightType;
+            if(p_==='0'){
+                return true;
+            }else if(item==p_){
+                return true;
+            }
+            return false;
+        }
+        function setLeftType(item){
+            let p_ = that.searchForm.leftType;
+            if(p_==='0'){
+                return true;
+            }else if(item==p_){
+                return true;
+            }
+            return false;
+        }
+        function setSort(a,b){
+            let sort_ = that.searchForm.sort;
+            if(sort_==='0'){
+                if(a.star<b.star){
+                    return 1;
+                }else if(a.star>b.star){
+                    return -1;
+                }else{
+                    return b.cardId-a.cardId;
+                }
+            }else if(sort_==='1'){
+                return a.star - b.star;
+            }
+        }
+        function setwant(item){
+            let p_ = that.searchForm.havewant;
+            if(p_==='0'){
+                return true;
+            }else if(that.wantList[item]>0){
+                return true;
+            }
+            return false;
+        }
+        console.log(this.userCardCache);
+        let userCardSearchRes = this.userCardCache.filter(item => setStar(item)&& setCry(item.cry) && setRightType(item.rightType) && setLeftType(item.leftType));
+        userCardSearchRes = userCardSearchRes.sort(setSort);
+        let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
+        this.cardTotle = userCardSearchRes.length;
         if(userCard_.length>0){
             this.pageChangeing = true;
         }
-        console.log(userCard_);
         this.userCard = [];
         setTimeout(()=>{
-            this.userCard = userCard_;
             this.pageChangeing = false;
+            this.userCard = userCard_;
         },300)
     },
+    searchChanged(){
+        this.cardPage = 1;
+        this.cardPageChange(1);
+    },
+    changepackageId(){
+        this.searchForm = {
+            star:'0',
+            cry:'0',
+            rightType:'0',
+            leftType:'0',
+            sort:'0'
+        }
+        this.cardPage = 1;
+        this.getUserCard();
+    },
     checkCanBuy(item) {
-        return item[1]>1;
+        return item.count>1;
     },
     getUserCard(){
-        let tokenUserInfo = this.token.split('.')[1];
-        let email = JSON.parse(atob(tokenUserInfo)).email;
-        let md5 = md5_(email);
-        if(!md5Check(md5)){
-            this.$message.error('用户信息有误！');
-            return false;
-        }
-        authApi.searchcard({md5: md5}).then(res => {
+        authApi.searchcardbytoken({token: this.token,packageId:this.seledCardPackage}).then(res => {
             console.log(res);
             if(res.data.code==0){
                 this.$message.error(res.data.msg);
             }else if(res.data.code==1){
                 let resData = res.data;
                 if(res.data.card){
-                    this.userCardCache = Object.entries(res.data.card);
-                    this.userCardCache = this.userCardCache.filter(this.checkCanBuy);
+                    this.userCardCache = res.data.card||[];
+                    let userCardCount = res.data.cardCount;
                     for(let i=0;i<this.userCardCache.length;i++){
-                        this.userCardCache[i][2] = 0;
+                        this.userCardCache[i]['count'] = userCardCount[this.userCardCache[i].cardId] || 0;
+                        this.userCardCache[i]['dec'] = 0;
                     }
-                    this.cardPage = 1;
+                    this.userCardCache = this.userCardCache.filter(this.checkCanBuy);
                     this.cardTotle = this.userCardCache.length;
-                    this.cardPageChange(1);
+                    this.cardPageChange(this.cardPage);
                     }else{
-                    this.$message({
-                        message: resData.nickName+'还没有获得过卡牌呢！',
-                        type: 'warning'
-                    });
+                        this.$message({
+                            message: resData.nickName+'还没有获得过卡牌呢！',
+                            type: 'warning'
+                        });
                 }
             }
         });

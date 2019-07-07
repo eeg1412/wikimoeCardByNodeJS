@@ -87,7 +87,7 @@
                             <tbody>
                                 <td>
                                     <el-tooltip class="item" effect="dark" content="点击去市场查找此卡！" placement="top">
-                                        <div class="wm_level_card_img_body mb10 wm_set_pointer" @click="goMarket(item.cardId,item.star)">
+                                        <div class="wm_level_card_img_body mb10 wm_set_pointer" @click="goMarket(item.cardId,item.star,item.packageId)">
                                             <img :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'" class="w_10 wm_level_card_img">
                                         </div>
                                     </el-tooltip>
@@ -199,7 +199,6 @@ import {authApi} from "../api";
 import userTop from '../components/topUserInfo.vue';
 import battle from '../components/battle.vue';
 import itemData from '../../../../server/data/item';
-import cardData from '../../utils/cardData';
 import {PrefixInteger,md5Check} from "../../utils/utils";
 import md5_ from 'js-md5';
 
@@ -302,7 +301,7 @@ export default {
         chipChange(v){
             this.$forceUpdate();
         },
-        goMarket(cardId,star){
+        goMarket(cardId,star,packageId){
             this.$router.push({ 
                 name:'buyCard',
                 query: {
@@ -310,7 +309,8 @@ export default {
                     text:cardId,
                     want:1,
                     wantstar:star,
-                    wantid:cardId
+                    wantid:cardId,
+                    packageId:packageId
                 }
             });
         },

@@ -1,13 +1,14 @@
 var utils = require('../utils/utils');
 var userData = require('../utils/database/user');
 var chalk = require('chalk');
-var cardData = require('../data/cardData');
+var cardData = require('../utils/database/cardData');
 var itemDatabase = require('../utils/database/item');
 
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let cardId = req.body.cardId;
     let cardCount = req.body.cardCount;
+    let packageId = req.body.packageId || '0';
     let token = req.body.token;
     //解析token
     if(!token){
@@ -38,7 +39,7 @@ module.exports = async function(req, res, next){
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
     // 检查改卡牌是否大于1
-    let myCard = result.card;
+    let myCard = result.card[packageId];
     if(!myCard){
         res.send({
             code:0,
@@ -83,6 +84,17 @@ module.exports = async function(req, res, next){
     }
     //去重
     cardId = utils.unique(cardId);
+    // 去重后数量和卡牌对不上
+    if(cardId.length!==cardCount.length){
+        console.info(
+            chalk.yellow(email+'去重后卡牌对不上分解数，IP为：'+IP)
+        )
+        res.send({
+            code:0,
+            msg:'参数有误！'
+        });
+        return false;
+    }
     //开始分解
     let star  = 0;
     let cardNumCount = 0;
@@ -97,6 +109,33 @@ module.exports = async function(req, res, next){
         "5":"105",
         "6":"106"
     };
+    let params = {
+        cardId:{$in:cardId}
+    }
+    let myCardData = await cardData.findCardDataMany(params).catch ((err)=>{
+        res.send({
+            code:0,
+            msg:'内部错误请联系管理员！'
+        });
+        console.error(
+            chalk.red('数据库查询错误！')
+        );
+        throw err;
+    });
+    if(myCardData.length!==cardId.length){
+        console.info(
+            chalk.yellow(email+'分解卡牌对不上数据库的数量，IP为：'+IP)
+        )
+        res.send({
+            code:0,
+            msg:'参数有误！'
+        });
+        return false;
+    }
+    let myCardDataObj = {};
+    for(let i=0;i<myCardData.length;i++){
+        myCardDataObj[myCardData[i].cardId] = myCardData[i];
+    }
     for(let i=0;i<cardId.length;i++){
         let num = Math.floor(Number(cardCount[i]));
         num = Math.abs(num);
@@ -123,7 +162,7 @@ module.exports = async function(req, res, next){
         }
         let dataStar = 0;
         try{
-            dataStar = cardData['cardData'][utils.PrefixInteger(cardId[i],4)].star;
+            dataStar = myCardDataObj[cardId[i]].star;
         }catch(err){
             console.info(
                 chalk.yellow(email+'数据库不存在该卡牌，IP为：'+IP)
@@ -139,7 +178,7 @@ module.exports = async function(req, res, next){
         getItemDataBase['item.'+itemId] = (getItemDataBase['item.'+itemId]||0) + num;
         star = star + dataStar*num;
         cardNumCount = cardNumCount + num;
-        databaseCard['card.'+cardId[i]] = -num;
+        databaseCard['card.'+packageId+'.'+cardId[i]] = -num;
     }
     databaseCard['star'] = star;
     let filters = {

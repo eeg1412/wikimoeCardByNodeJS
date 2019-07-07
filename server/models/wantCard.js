@@ -8,6 +8,7 @@ var wantcard = new Schema({
   nickName:String,
   md5:String,
   cardId:{type: Number, default: 1},
+  packageId:{type: String, default: '0'},
   name:String,
   title:String,
   star:{type: Number, default: 0},

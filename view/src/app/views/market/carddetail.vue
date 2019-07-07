@@ -8,9 +8,9 @@
         <div class="wm_market_card_datail_price" v-if="sellPrice">售价：{{sellPrice}}星星</div>
         <div class="wm_market_card_datail_info_box">
           <div><span class="fb">卡牌ID：</span>{{cardId}}</div>
-          <div><span class="fb">卡牌人物：</span>{{cardData[cardIdFormat].name}}</div>
-          <div><span class="fb">出自作品：</span>《{{cardData[cardIdFormat].title}}》</div>
-          <div><span class="fb">星级：</span>{{cardData[cardIdFormat].star}}星</div>
+          <div><span class="fb">卡牌人物：</span>{{cardData.name}}</div>
+          <div><span class="fb">出自作品：</span>《{{cardData.title}}》</div>
+          <div><span class="fb">星级：</span>{{cardData.star}}星</div>
           <div v-if="have!=undefined"><span class="fb">持有：</span>{{have}}张</div>
           <div v-if="uptime"><span class="fb">上架时间：</span>{{uptime | capitalize}}</div>
         </div>
@@ -91,7 +91,6 @@
 <script>
 import {PrefixInteger} from "../../../utils/utils";
 import {authApi} from "../../api";
-import cardData from "../../../utils/cardData";
 import VeLine from 'v-charts/lib/line.common'
 
 export default {
@@ -103,7 +102,11 @@ export default {
       wantLog:[],
       fromFullPath:'/',
       captchaSrc:'/api/captcha?time='+new Date().getTime(),
-      cardData:cardData['cardData'],
+      cardData:{
+        star:this.$route.query.star,
+        title:decodeURIComponent(this.$route.query.title || ''),
+        name:decodeURIComponent(this.$route.query.name || ''),
+      },
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       cardId:1,
       cardIdFormat:1,
@@ -174,11 +177,11 @@ export default {
     this.cardIdFormat = cardId;
     this.type = type;
     // 计算最低售价
-    if(this.cardData[this.cardIdFormat].star==6){
+    if(this.cardData.star==6){
       this.minPrice = 600;
-    }else if(this.cardData[this.cardIdFormat].star==5){
+    }else if(this.cardData.star==5){
       this.minPrice = 200;
-    }else if(this.cardData[this.cardIdFormat].star==4){
+    }else if(this.cardData.star==4){
       this.minPrice = 90;
     }else{
       this.minPrice = 30;
@@ -272,7 +275,7 @@ export default {
               type: 'success'
             });
             this.$emit('updateUserinfo');
-            this.$router.replace({ path:'/star/market/sellcard'});
+            this.$router.replace({ path:this.fromFullPath});
           }
           this.captchaUpdata();
       });
@@ -293,7 +296,7 @@ export default {
               message: res.data.msg,
               type: 'success'
             });
-            this.$router.replace({ path:'/star/market/sellcard'});
+            this.$router.replace({ path:this.fromFullPath});
           }
           this.captchaUpdata();
       });
@@ -315,7 +318,7 @@ export default {
               message: res.data.msg,
               type: 'success'
             });
-            this.$router.replace({ path:'/star/market/sellcard'});
+            this.$router.replace({ path:this.fromFullPath});
           }
           this.captchaUpdata();
       });
@@ -337,7 +340,7 @@ export default {
               message: res.data.msg,
               type: 'success'
             });
-            this.$router.replace({ path:'/star/market/sellcard'});
+            this.$router.replace({ path:this.fromFullPath});
           }
           this.captchaUpdata();
       });

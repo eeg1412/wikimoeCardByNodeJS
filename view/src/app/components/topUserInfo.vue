@@ -37,7 +37,7 @@
                     <div class="wm_top_moreinfo_label">累计挖矿：{{userData.deminingStarCount}}</div>
                 </div>
                 <div class="wm_top_moreinfo_box">
-                    <div class="wm_top_moreinfo_label">收集率：{{userData.cardIndexCount}}/{{cardDataCount.length}}</div>
+                    <div class="wm_top_moreinfo_label">收集量：{{userData.cardIndexCount}}</div>
                 </div>
             </div>
         </div>

@@ -1,7 +1,7 @@
 var utils = require('../utils/utils');
 var wantCardData = require('../utils/database/wantCard');
 var chalk = require('chalk');
-var cardData = require('../data/cardData');
+var cardData = require('../utils/database/cardData');
 var userData = require('../utils/database/user');
 
 module.exports = async function(req, res, next){
@@ -81,7 +81,31 @@ module.exports = async function(req, res, next){
         chalk.green(IP+'的邮箱解析结果为'+email+'开始求购。')
     )
     //验证卡牌是否是有的卡牌
-    let minPrice = utils.checkMinPrice(cardId);
+    let cardDataParams = {
+        cardId:cardId
+    }
+    let myCardData = await cardData.findCardDataOne(cardDataParams).catch ((err)=>{
+        res.send({
+            code:0,
+            msg:'内部错误请联系管理员！'
+        });
+        console.error(
+            chalk.red('数据库查询错误！')
+        );
+        throw err;
+    });
+    if(!myCardData){
+        res.send({
+            code:0,
+            msg:'您没有这张卡牌！'
+        });
+        console.info(
+            chalk.yellow('email:'+email+'没有卡牌：'+cardId+'，不存在。IP为：'+IP)
+        );
+        return false;
+    }
+    // 最低价
+    let minPrice = utils.checkMinPrice(myCardData.star);
     if(!minPrice){
         res.send({
             code:0,
@@ -124,9 +148,10 @@ module.exports = async function(req, res, next){
         nickName:result.nickName,
         md5:result.md5,
         cardId:cardId,
-        name:cardData['cardData'][cardId].name,
-        title:cardData['cardData'][cardId].title,
-        star:cardData['cardData'][cardId].star,
+        name:myCardData.name,
+        title:myCardData.title,
+        star:myCardData.star,
+        packageId:myCardData.packageId,
         wantPrice:price,
         time:timeNow,
     }

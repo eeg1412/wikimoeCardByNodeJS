@@ -2,7 +2,7 @@ var utils = require('../utils/utils');
 var userData = require('../utils/database/user');
 var marketData = require('../utils/database/market');
 var chalk = require('chalk');
-var cardData = require('../data/cardData');
+var cardData = require('../utils/database/cardData');
 
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
@@ -128,8 +128,32 @@ module.exports = async function(req, res, next){
             );
             return false;
         }
+        // 获取卡牌数据
+        let cardDataParams = {
+            cardId:cardId
+        }
+        let myCardData = await cardData.findCardDataOne(cardDataParams).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库查询错误！')
+            );
+            throw err;
+        });
+        if(!myCardData){
+            res.send({
+                code:0,
+                msg:'您没有这张卡牌！'
+            });
+            console.info(
+                chalk.yellow('email:'+email+'没有卡牌：'+cardId+'，不存在。IP为：'+IP)
+            );
+            return false;
+        }
         // 确保卡牌数量大于1
-        let myCardCount = myCard[cardId];
+        let myCardCount = myCard[myCardData.packageId][cardId];
         if(!(myCardCount>1)){
             res.send({
                 code:0,
@@ -164,7 +188,7 @@ module.exports = async function(req, res, next){
         //     );
         //     return false;
         // }
-        let minPrice = utils.checkMinPrice(cardId);
+        let minPrice = utils.checkMinPrice(myCardData.star);
         if(!minPrice){
             res.send({
                 code:0,
@@ -187,7 +211,7 @@ module.exports = async function(req, res, next){
         }
         // 减少卡牌数量
         let cardDataBase = {};
-        cardDataBase['card.'+cardId] = -1;
+        cardDataBase['card.'+myCardData.packageId+'.'+cardId] = -1;
         let filters = {
             email: email
         }
@@ -207,12 +231,13 @@ module.exports = async function(req, res, next){
         })
         // 存入市场
         let time = Math.round(new Date().getTime()/1000);
-        let myCardInfo = cardData['cardData'][utils.PrefixInteger(cardId,4)];
+        let myCardInfo = myCardData;
         let params = {
             email:email,
             name:myCardInfo.name,
             title:myCardInfo.title,
             star:myCardInfo.star,
+            packageId:myCardData.packageId,
             selled:false,
             cardId:Number(cardId),
             price:price,
@@ -318,7 +343,7 @@ module.exports = async function(req, res, next){
             );
             return false;
         }
-        let minPrice = utils.checkMinPrice(myData.cardId);
+        let minPrice = utils.checkMinPrice(myData.star);
         if(!minPrice){
             res.send({
                 code:0,
@@ -431,7 +456,8 @@ module.exports = async function(req, res, next){
             throw err;
         });
         let cardDataBase = {};
-        cardDataBase['card.'+cardId] = 1;
+        console.log(myData.packageId);
+        cardDataBase['card.'+myData.packageId+'.'+cardId] = 1;
         let userFilters = {
             email:email
         }

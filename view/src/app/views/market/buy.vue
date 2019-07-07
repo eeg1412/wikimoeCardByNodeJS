@@ -3,6 +3,15 @@
     <div class="wm_market_buy_search_body">
       <div class="wm_market_buy_search_box">
         <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+          <el-form-item label="关键词">
+            <el-input v-model="searchForm.text" placeholder="请输入搜索内容" @keyup.enter.native="search" class="wm_market_buy_search_slot_input">
+              <el-select v-model="searchForm.name" placeholder="关键词" class="wm_market_buy_search_slot_select" slot="prepend">
+                <el-option label="角色名" value="name"></el-option>
+                <el-option label="作品" value="title"></el-option>
+                <el-option label="卡牌ID" value="cardId"></el-option>
+              </el-select>
+            </el-input>
+          </el-form-item>
           <el-form-item label="选择卡包">
               <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_cardlist_select type_120">
                   <el-option
@@ -12,15 +21,6 @@
                   :value="item.packageId">
                   </el-option>
               </el-select>
-          </el-form-item>
-          <el-form-item label="关键词">
-            <el-input v-model="searchForm.text" placeholder="请输入搜索内容" @keyup.enter.native="search" class="wm_market_buy_search_slot_input">
-              <el-select v-model="searchForm.name" placeholder="关键词" class="wm_market_buy_search_slot_select" slot="prepend">
-                <el-option label="角色名" value="name"></el-option>
-                <el-option label="作品" value="title"></el-option>
-                <el-option label="卡牌ID" value="cardId"></el-option>
-              </el-select>
-            </el-input>
           </el-form-item>
           <el-form-item label="星级">
             <el-select v-model="searchForm.star" placeholder="星级" class="wm_market_buy_search_select">
@@ -68,7 +68,7 @@
       </transition>
       <transition name="el-fade-in-linear">
         <div class="wm_mycard_list" v-if="cardList.length>0">
-            <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in cardList" v-bind:key="index+1" @click="buyCard(item.cardId,item.time,item.price,item._id,item.packageId)">
+            <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in cardList" v-bind:key="index+1" @click="buyCard(item)">
                 <div class="wm_getcard_img_box">
                   <div class="wm_getcard_img_checked" v-if="haveCardCheck(item.cardId)>0"><i class="el-icon-check"></i></div>
                   <img class="wm_getcard_img" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'">
@@ -151,7 +151,7 @@ export default {
         ihave:this.$route.query.ihave || '0'
       },
       loadingMarket:true,
-      seledCardPackage:'0',
+      seledCardPackage:this.$route.query.packageId || '0',
       cardPackage:[],
     }
   },
@@ -173,7 +173,6 @@ export default {
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
             this.cardPackage = res.data.data;
-            this.seledCardPackage = '0';
           }
       });
     },
@@ -223,39 +222,35 @@ export default {
       }
     },
     getUserCard(){
-        let tokenUserInfo = this.token.split('.')[1];
-        let email = JSON.parse(atob(tokenUserInfo)).email;
-        let md5 = md5_(email);
-        if(!md5Check(md5)){
-            this.$message.error('用户信息有误！');
-            return false;
-        }
-        authApi.searchcard({md5: md5}).then(res => {
+        authApi.searchcardbytoken({token: this.token,packageId:this.seledCardPackage}).then(res => {
             console.log(res);
             if(res.data.code==0){
                 this.$message.error(res.data.msg);
             }else if(res.data.code==1){
                 let resData = res.data;
                 if(res.data.card){
-                    this.myCard = res.data.card;
+                    this.myCard = res.data.cardCount;
                     console.log(this.myCard);
                 }
                 this.getUserMarket();
             }
         });
     }, 
-    buyCard(cardId,time,price,id,packageId){
-        let cardHave = this.haveCardCheck(cardId);
+    buyCard(data){
+        let cardHave = this.haveCardCheck(data.cardId);
         this.$router.push({ 
           name:'cardDetail',
           query: {
             type:'buy',
-            card:cardId,
-            price:price,
-            time:time,
-            id:id,
             have:cardHave,
-            packageId:packageId,
+            card:data.cardId,
+            price:data.price,
+            time:data.time,
+            id:data._id,
+            packageId:data.packageId,
+            star:data.star,
+            title:encodeURIComponent(data.title),
+            name:encodeURIComponent(data.name)
           }
         });
     },
@@ -271,6 +266,7 @@ export default {
           star:this.searchForm.star,
           sort:this.searchForm.sort,
           have:this.searchForm.ihave,
+          packageId:this.seledCardPackage
         }
       });
     },
@@ -284,6 +280,7 @@ export default {
             star:this.searchForm.star,
             sort:this.searchForm.sort,
             have:this.searchForm.ihave,
+            packageId:this.seledCardPackage
         }
         authApi.marketbuy(params).then(res => {
           console.log(res);
@@ -331,10 +328,11 @@ export default {
           text:encodeURIComponent(this.searchForm.text),
           star:this.searchForm.star,
           sort:this.searchForm.sort,
-          ihave:this.searchForm.ihave
+          ihave:this.searchForm.ihave,
+          packageId:this.seledCardPackage
         }
       });
-      this.getUserMarket();
+      this.getUserCard();
     },
     clearSearch(){
       this.cardPage = 1;
