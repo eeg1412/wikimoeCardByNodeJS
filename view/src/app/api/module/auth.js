@@ -96,6 +96,9 @@ export default function (api) {
     handbook(data){
       return api.post('handbook',data)
     },
+    searchcrearchcard(data){
+      return api.post('searchcrearchcard',data)
+    },
     searchcardpackage(data){
       return api.post('searchcardpackage',data)
     },

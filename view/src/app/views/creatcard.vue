@@ -80,6 +80,32 @@
             </el-col>
         </el-row>
     </div>
+    <div class="mb20 wm_crearcard_info_body" v-if="creatCardInfo.length>0">
+        <h5 class="common_title type_shop">审核日志</h5>
+        <el-row :gutter="20">
+            <el-col :sm="6" :xs="24" v-for="(item,index) in creatCardInfo" v-bind:key="index" class="mb10">
+                <el-card>
+                    <div class="tc mb5">{{item.time | capitalize}}</div>
+                    <div class="ellipsis w_10">出自：{{item.title}}</div>
+                    <div class="ellipsis w_10">名字：{{item.name}}</div>
+                    <div>状态：{{item.check==0?'未审核':'已审核'}}</div>
+                    <div v-if="item.check==0">结果：--</div>
+                    <div v-else>结果：<span v-if="item.pass==0" class="cRed">驳回</span><span v-else class="cGreen1A7">通过</span></div>
+                </el-card>
+            </el-col>
+        </el-row>
+        <div class="wm_market_content_page">
+            <el-pagination
+            small
+            layout="prev, pager, next"
+            :total="logTotle"
+            @current-change="logPageChange"
+            :current-page.sync="logPage"
+            :page-size="20"
+            class="my_card_page">
+            </el-pagination>
+        </div>
+    </div>
     <menuView></menuView>
     <captcha @captchaShow="captchaDigShow" @send="sendCaptcha" :codeDigShow="captchaShow" v-if="captchaShow" ref="captch"></captcha>
 </div>
@@ -95,6 +121,8 @@ import {authApi} from "../api";
 export default {
   data() {
     return {
+        logTotle:0,
+        logPage:1,
         uploadCardUrl:'',
         captchaShow:false,
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
@@ -118,7 +146,8 @@ export default {
             leftTypeSprite:null,
             rightTypeSprite:null,
         },
-        imageUrl: ''
+        imageUrl: '',
+        creatCardInfo:[],
     }
   },
   components: {
@@ -126,10 +155,36 @@ export default {
     userTop,
     captcha
   },
+  filters: {
+      capitalize(value) {
+        var date = new Date(parseInt(value*1000));
+        var tt = [date.getFullYear(), ((date.getMonth()+1)<10?'0'+(date.getMonth()+1):date.getMonth()+1), (date.getDate()<10?'0'+date.getDate():date.getDate())].join('-') + '  ' +[(date.getHours()<10?'0'+date.getHours():date.getHours()), (date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes()), (date.getSeconds()<10?'0'+date.getSeconds():date.getSeconds())].join(':');
+        return tt;
+      }
+  },
   mounted() {
       this.drawCard();
+      this.getLog();
   },
   methods: {
+      logPageChange(){
+          this.getLog();
+      },
+      getLog(){
+          let params = {
+            token:this.token,
+            page:this.logPage
+        }
+        authApi.searchcrearchcard(params).then(res => {
+            console.log(res);
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                this.creatCardInfo = res.data.data;
+                this.logTotle = res.data.total;
+            }
+        });
+      },
       captchaDigShow(v){
         this.captchaShow = v;
       },
@@ -156,6 +211,8 @@ export default {
                     type: 'success'
                 });
                 this.captchaShow = false;
+                this.logPage = 1;
+                this.getLog();
             }
         });
       },
@@ -350,5 +407,8 @@ export default {
 }
 .wm_crearchcard_watch{
     width: 426px;
+}
+.wm_crearcard_info_body{
+    border-top: 1px dashed #ccc;
 }
 </style>

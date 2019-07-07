@@ -34,6 +34,7 @@ var apiSearchBattleLogs = require('../api/searchBattleLogs');
 var apiSearchCardPackage = require('../api/searchCardPackage');
 var apiUploadcard = require('../api/uploadcard');
 var apiHandbook = require('../api/handbook');
+var apiSearchCreatCard = require('../api/searchcreatcard');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -89,6 +90,7 @@ router.post('/searchbattlelogs', apiSearchBattleLogs);
 router.post('/uploadcard', apiUploadcard);
 router.post('/searchcardpackage', apiSearchCardPackage);
 router.post('/handbook', apiHandbook);
+router.post('/searchcrearchcard', apiSearchCreatCard);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);
