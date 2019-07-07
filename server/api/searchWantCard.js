@@ -113,7 +113,7 @@ module.exports = async function(req, res, next){
         let haveCardId = [];
         let packageId = req.body.packageId || '0';
         if(result.card){
-            haveCardId = Object.keys(result.card[packageId]).map(Number);
+            haveCardId = Object.keys(result.card[packageId] || {}).map(Number);
         }
         let countData = await wantCardData.getGroup(haveCardId);
         res.send({

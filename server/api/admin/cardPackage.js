@@ -80,7 +80,7 @@ module.exports = async function(req, res, next){
             );
             throw err;
         });
-        fs.mkdir('./public/card/'+newPackageId)
+        fs.mkdirSync('./public/card/'+newPackageId)
         res.send({
             code:1,
             msg:'增加卡包成功！'

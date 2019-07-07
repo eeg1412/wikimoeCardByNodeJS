@@ -184,7 +184,7 @@ export default {
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         myCard:[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],//卡牌
         selIndex:null,
-        userCardCache:null,
+        userCardCache:[],
         cardPage:1,
         cardTotle:0,
         userCard:[],

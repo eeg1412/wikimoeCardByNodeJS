@@ -50,7 +50,7 @@ module.exports = async function(req, res, next){
         res.send({
             code:1,
             card:card,
-            cardCount:result.card[packageId],
+            cardCount:myCard[packageId] || {},
             md5:result.md5,
             nickName:result.nickName,
             score:result.score,

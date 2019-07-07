@@ -27,38 +27,35 @@ module.exports = async function(req, res, next){
     let cardLevelData = {};
     if(result){
         let myCard = result.card || {};
-        let card = myCard[packageId];
-        if(card){
-            let params = {
-                packageId:packageId
-            }
-            let myCardData = await cardData.findCardDataMany(params,'-_id -__v').catch ((err)=>{
-                res.send({
-                    code:0,
-                    msg:'内部错误请联系管理员！'
-                });
-                console.error(
-                    chalk.red('数据库查询错误！')
-                );
-                throw err;
-            });
-            card = myCardData;
-            let getLevel = '-_id';
-            for(let i=0;i<myCardData.length;i++){
-                getLevel = getLevel + ' cardLevel.'+myCardData[i].cardId;
-            }
-            cardLevelData = await userbattleinfoData.findOne({email:result.email},getLevel).catch ((err)=>{
-                res.send({
-                    code:0,
-                    msg:'内部错误请联系管理员！'
-                });
-                console.error(
-                    chalk.red('数据库错误！')
-                );
-                throw err;
-            }) || {};
+        let card = [];
+        let params = {
+            packageId:packageId
         }
-        card = card || [];
+        let myCardData = await cardData.findCardDataMany(params,'-_id -__v').catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库查询错误！')
+            );
+            throw err;
+        });
+        card = myCardData;
+        let getLevel = '-_id';
+        for(let i=0;i<myCardData.length;i++){
+            getLevel = getLevel + ' cardLevel.'+myCardData[i].cardId;
+        }
+        cardLevelData = await userbattleinfoData.findOne({email:result.email},getLevel).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库错误！')
+            );
+            throw err;
+        }) || {};
         res.send({
             code:1,
             card:card,
@@ -66,7 +63,7 @@ module.exports = async function(req, res, next){
             nickName:result.nickName,
             score:result.score,
             level:result.level,
-            cardCount:result.card[packageId],
+            cardCount:myCard[packageId] || {},
             cardLevelData:cardLevelData['cardLevel'],
             cardIndexCount:result.cardIndexCount
         });

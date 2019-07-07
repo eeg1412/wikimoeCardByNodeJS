@@ -396,7 +396,7 @@ exports.sendMail = function(email, IP) {
                                     reject(err);
                                     throw err;
                                 }else{
-                                    emailCodeModel.remove({ time: {$lte:removeTime} }, function(err, result) {
+                                    emailCodeModel.deleteMany({ time: {$lte:removeTime} }, function(err, result) {
                                         if(err) {
                                             throw err;
                                         }else{

@@ -67,7 +67,7 @@ module.exports = async function(req, res, next){
             nickName:result.nickName,
             score:result.score,
             level:result.level,
-            cardCount:result.card[packageId],
+            cardCount:myCard[packageId] || {},
             cardLevelData:cardLevelData['cardLevel'],
             cardIndexCount:result.cardIndexCount
         });

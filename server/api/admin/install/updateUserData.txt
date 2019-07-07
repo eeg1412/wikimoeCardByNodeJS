@@ -1,0 +1,129 @@
+var utils = require('../../../utils/utils');
+var adminUtils = require('../../../utils/admin/adminUtils');
+var adminUtilsDatabase = require('../../../utils/database/adminAccount');
+var cardPackageDatabase = require('../../../utils/database/cardPackage');
+var cardDataDatabase = require('../../../utils/database/cardData');
+var cardData = require('../../../data/cardData.json');
+var chalk = require('chalk');
+var md5 = require('md5-node');
+var userData = require('../../../utils/database/user');
+var usersModel = require('../../../models/users');
+var marketModel = require('../../../models/market');
+var wantCardModel = require('../../../models/wantCard');
+
+async function update(){
+    console.info(
+        chalk.green('开始更新')
+    );
+    // 创建初始卡牌
+    // 获取卡牌数据
+    let cardData_ = cardData['cardData']
+    let one = 0;
+    let two = 0;
+    let three = 0;
+    let four = 0;
+    let five = 0;
+    let six = 0;
+    for (var index in cardData_){
+        let thisCard = cardData_[index]
+        let cardDataParams = {
+            cardId:Number(index),
+            star: thisCard.star,
+            leftType: thisCard.leftType,
+            rightType: thisCard.rightType,
+            cry: thisCard.cry,
+            title:thisCard.title,
+            name:thisCard.name,
+            packageId:'0'
+        }
+        if(thisCard.star==1){
+            one++
+        }else if(thisCard.star==2){
+            two++
+        }else if(thisCard.star==3){
+            three++
+        }else if(thisCard.star==4){
+            four++
+        }else if(thisCard.star==5){
+            five++
+        }else if(thisCard.star==6){
+            six++
+        }
+        await cardDataDatabase.saveCardData(cardDataParams).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            throw err;
+        })
+        console.info(
+            chalk.green('写入卡牌：'+index+'成功！')
+        );
+    }
+    // 创建初始卡包
+    let packageParams = {
+        name:'维基萌卡包',
+        packageId:'0',
+        open:true,
+        oneStar:one,
+        twoStar:two,
+        threeStar:three,
+        fourStar:four,
+        fiveStar:five,
+        sixStar:six,
+    }
+    await cardPackageDatabase.saveCardPackage(packageParams).catch ((err)=>{
+        res.send({
+            code:0,
+            msg:'内部错误请联系管理员！'
+        });
+        console.error(
+            chalk.red('数据库更新错误！')
+        );
+        throw err;
+    })
+    // 开始更改用户数据
+    // 获取用户数据
+    let userData = await usersModel.find({});
+    for(let i=0;i<userData.length;i++){
+        let cardData = userData[i].card;
+        if(cardData){
+            console.info(
+                chalk.green('开始更改'+ userData[i].email+'的卡牌数据！')
+            );
+            let email = {
+                email:userData[i].email
+            }
+            let data = {};
+            data['0'] = cardData;
+            await usersModel.updateOne(email, {card:data});
+            console.info(
+                chalk.green(userData[i].email+'的卡牌数据更新成功！')
+            );
+        }
+    }
+    console.info(
+        chalk.green('用户数据更新完毕！')
+    );
+    console.info(
+        chalk.green('开始更新市场数据')
+    );
+    await marketModel.updateMany({}, {packageId:'0'});
+    console.info(
+        chalk.green('市场数据更新完毕')
+    );
+    console.info(
+        chalk.green('开始更新求卡数据')
+    );
+    await wantCardModel.updateMany({}, {packageId:'0'});
+    console.info(
+        chalk.green('求卡数据更新完毕')
+    );
+    console.info(
+        chalk.green('更新完毕！')
+    );
+}
+update();

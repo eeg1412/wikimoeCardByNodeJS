@@ -88,7 +88,8 @@ module.exports = async function(req, res, next){
             selled:false,
             packageId:packageId
         }
-        let myCardObj = result.card[packageId];
+        let baseCard = result.card || {}
+        let myCardObj = baseCard[packageId];
         if(have=='1'){
             if(myCardObj){
                 haveCardId = Object.keys(myCardObj).map(Number);

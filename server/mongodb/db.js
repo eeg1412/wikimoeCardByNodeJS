@@ -10,6 +10,7 @@ db.once('open' ,() => {
 	console.log(
     chalk.green('连接数据库成功')
   );
+  // var update = require('../api/admin/install/updateUserData.js');
 })
 
 db.on('error', function(error) {

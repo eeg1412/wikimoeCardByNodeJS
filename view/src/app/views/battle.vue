@@ -247,6 +247,10 @@ export default {
         return PrefixInteger(num,length);
       },
       watchUserInfo(a,index){
+          if(this.battleLogs[index].data.ver!==1){
+              this.$message.error('该战斗数据版本过旧，无法查看。');
+              return false;
+          }
           if(a){
               this.userBattleLogInfo={
                     name:this.battleLogs[index].data.MyName,

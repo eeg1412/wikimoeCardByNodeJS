@@ -7,7 +7,7 @@ function configData(){
 		site:'https://127.0.0.1:667',//站点域名
 		keyFileSrc:'./bin/nodejs.wikimoe.com-key.pem',//私钥文件路径
 		certFileSrc:'./bin/nodejs.wikimoe.com-chain.pem',//证书文件路径
-		url: 'mongodb://localhost:27017/wikimoecardTest',//mongoDB地址
+		url: 'mongodb://localhost:27017/wikimoecard',//mongoDB地址
 		sessionSecret:'wikimoe',//session加密字符串
 		JWTSecret:'wikimoe',//JWT加密字符串
 		dailyChance:5,//每日抽卡次数
