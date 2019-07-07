@@ -1,7 +1,7 @@
 <template>
 <div class="common_body">
     <userTop ref="userTop" />
-    <h5 class="common_title type_shop type_dec">卡牌生成器</h5>
+    <h5 class="common_title type_shop type_dec">卡牌工坊</h5>
     <h6 class="common_title_tips type_dec">Tip:可能会因为系统字体缺失导致文字错位，当前使用字体为【Arial】。</h6>
     <div class="mt20">
         <el-row>
@@ -39,6 +39,8 @@
                     </el-form-item>
                     <el-form-item label="星级">
                         <el-select v-model="cardSet.star" placeholder="请选择星级" @change="changeStar">
+                            <el-option label="1星" value="1"></el-option>
+                            <el-option label="2星" value="2"></el-option>
                             <el-option label="3星" value="3"></el-option>
                             <el-option label="4星" value="4"></el-option>
                             <el-option label="5星" value="5"></el-option>

@@ -62,8 +62,11 @@ module.exports = async function(req, res, next){
         return false;
     }
     // 参数检查
-    let numberRe = /^[1-9]+[0-9]*]*$/
-    if(!numberRe.test(star) || !numberRe.test(leftType) || !numberRe.test(rightType) || !numberRe.test(cry) || !title || !name || !imgBase64){
+    let starReg = /^[1-6]{1}$/
+    let ltReg = /^[1-5]{1}$/
+    let rtReg = /^[1-7]{1}$/
+    let cryReg = /^[1-5]{1}$/
+    if(!starReg.test(star) || !ltReg.test(leftType) || !rtReg.test(rightType) || !cryReg.test(cry) || !title || !name || !imgBase64){
         console.info(
             chalk.yellow(IP+'参数有误！')
         )

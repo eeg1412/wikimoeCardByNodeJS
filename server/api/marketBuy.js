@@ -88,14 +88,15 @@ module.exports = async function(req, res, next){
             selled:false,
             packageId:packageId
         }
+        let myCardObj = result.card[packageId];
         if(have=='1'){
-            if(result.card){
-                haveCardId = Object.keys(result.card).map(Number);
+            if(myCardObj){
+                haveCardId = Object.keys(myCardObj).map(Number);
             }
             params['cardId']={$in:haveCardId};
         }else if(have=='2'){
-            if(result.card){
-                haveCardId = Object.keys(result.card).map(Number);
+            if(myCardObj){
+                haveCardId = Object.keys(myCardObj).map(Number);
             }
             params['cardId']={$nin:haveCardId};
         }

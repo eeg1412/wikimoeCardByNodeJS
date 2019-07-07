@@ -8,6 +8,16 @@
             <div class="wm_handbook_cardlist">
                 <div class="wm_cardlist_select_search_body">
                     <el-form :inline="true" :model="searchForm">
+                        <el-form-item label="选择卡包">
+                            <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_cardlist_select type_120" @change="changepackageId">
+                                <el-option
+                                v-for="item in cardPackage"
+                                :key="item.packageId"
+                                :label="item.name"
+                                :value="item.packageId">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
                         <el-form-item label="出自作品">
                             <el-input v-model="searchForm.title" placeholder="请输入作品名" class="wm_cardlist_search_input" @keyup.enter.native="searchChanged" clearable @clear="searchChanged">
                                 <el-button slot="append" icon="el-icon-search" @click="searchChanged"></el-button>
@@ -73,8 +83,8 @@
                 </div>
                 <el-collapse-transition>
                     <div class="wm_mycard_list" v-if="userCard.length>0">
-                        <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg($wikimoecard.url+item.cardId+'.jpg',item.info.name,item.have,item.info.star,item.cardId)" @mouseover="$wikimoecard.l2dMassage('点击卡牌可以查看卡牌并且发起求购哦！')">
-                            <img class="wm_getcard_img" :src="$wikimoecard.url+item.cardId+'.jpg'">
+                        <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg($wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg',item.name,item.have,item.star,item.cardId,item.packageId)" @mouseover="$wikimoecard.l2dMassage('点击卡牌可以查看卡牌并且发起求购哦！')">
+                            <img class="wm_getcard_img" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'">
                         </div>
                     </div>
                 </el-collapse-transition>
@@ -101,7 +111,6 @@
 import menuView from '../components/menu.vue';
 import {authApi} from "../api";
 import userTop from '../components/topUserInfo.vue';
-import cardData from "../../utils/cardData"
 import {PrefixInteger,md5Check} from "../../utils/utils";
 import md5_ from 'js-md5';
 
@@ -109,8 +118,8 @@ export default {
   data() {
     return {
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
-        card:Object.keys(cardData.cardData).sort(),
         cardBook:[],
+        cardCount:{},
         cardPage:Number(this.$route.query.page) || 1,
         userCard:[],
         pageChangeing:false,
@@ -124,7 +133,9 @@ export default {
             title:decodeURIComponent(this.$route.query.title || ''),
             name:decodeURIComponent(this.$route.query.name || ''),
         },
-        loading:true
+        loading:true,
+        seledCardPackage:this.$route.query.packageId || '0',
+        cardPackage:[],
     }
   },
   components: {
@@ -133,13 +144,37 @@ export default {
   },
   created() {
       console.log(this.searchForm.title);
+      this.getCardPackage();
       this.getUserCard();
   },
   mounted() {
       this.$emit('l2dMassage','这里可以查看自己已经收集到的卡牌。');
   },
   methods: {
-    openImg(imgsrc,name,have,star,cardId){
+    changepackageId(){
+        this.searchForm={
+            star:'0',
+            cry:'0',
+            rightType:'0',
+            leftType:'0',
+            have:'0',
+            title:'',
+            name:'',
+        }
+        this.cardPage = 1;
+        this.getUserCard();
+    },
+    getCardPackage(){
+        authApi.searchcardpackage().then(res => {
+            console.log(res);
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                this.cardPackage = res.data.data;
+            }
+        });
+    },
+    openImg(imgsrc,name,have,star,cardId,packageId){
         this.$confirm('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
             dangerouslyUseHTMLString: true,
             lockScroll:false,
@@ -153,7 +188,8 @@ export default {
                     text:cardId,
                     want:1,
                     wantstar:star,
-                    wantid:cardId
+                    wantid:cardId,
+                    packageId:packageId
                 }
             });
         }).catch(() => {
@@ -161,35 +197,19 @@ export default {
         });
     },
     getUserCard(){
-        if(!this.token){
-            this.$router.replace({ path:'/'});
-        }
-        let tokenUserInfo = this.token.split('.')[1];
-        let email = JSON.parse(atob(tokenUserInfo)).email;
-        let md5 = md5_(email);
-        if(!md5Check(md5)){
-            this.$message.error('用户信息有误！');
-            return false;
-        }
-        this.loading = true;
-        authApi.searchcard({md5: md5}).then(res => {
+        authApi.handbook({token: this.token,packageId:this.seledCardPackage}).then(res => {
             this.loading = false;
             if(res.data.code==0){
                 this.$message.error(res.data.msg);
             }else if(res.data.code==1){
-                if(res.data.card){
-                    let cardCache = [];
-                    for(let i =0;i<this.card.length;i++){
-                        let cardI = {
-                            cardId:this.card[i],
-                            have:res.data.card[Number(this.card[i])],
-                            info:cardData.cardData[this.card[i]]
-                        }
-                        cardCache.push(cardI);
+                this.cardCount = res.data.cardCount;
+                this.cardBook = res.data.card;
+                for(let i =0;i<this.cardBook.length;i++){
+                    if(this.cardCount[this.cardBook[i].cardId]){
+                        this.cardBook[i].have = this.cardCount[this.cardBook[i].cardId];
                     }
-                    this.cardBook = cardCache;
-                    this.cardPageChange(this.cardPage);
                 }
+                this.cardPageChange(this.cardPage);
             }
         });
     },
@@ -278,7 +298,14 @@ export default {
                 return true;
             }
         }
-        let userCardSearchRes = this.cardBook.filter(item => setStar(item.info.star) && setCry(item.info.cry) && setRightType(item.info.rightType) && setLeftType(item.info.leftType) && setHave(item.have) && setTitle(item.info.title.toLowerCase()) && setName(item.info.name.toLowerCase()));
+        let userCardSearchRes = this.cardBook.filter(item => setStar(item.star) && setCry(item.cry) && setRightType(item.rightType) && setLeftType(item.leftType) && setHave(item.have) && setTitle(item.title.toLowerCase()) && setName(item.name.toLowerCase()));
+        userCardSearchRes.sort((a,b)=>{
+            if(b.star!=a.star){
+                return b.star-a.star;
+            }else{
+                return b.cardId-a.cardId;
+            }
+        })
         let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
         this.cardTotle = userCardSearchRes.length;
         if(userCard_.length<=0&&this.cardPage!=1){
@@ -317,6 +344,7 @@ export default {
                 have:this.searchForm.have,
                 title:encodeURIComponent(this.searchForm.title),
                 name:encodeURIComponent(this.searchForm.name),
+                packageId:this.seledCardPackage
             }
         });
     },

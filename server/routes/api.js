@@ -33,6 +33,7 @@ var apiCardLevelChange = require('../api/cardLevelChange');
 var apiSearchBattleLogs = require('../api/searchBattleLogs');
 var apiSearchCardPackage = require('../api/searchCardPackage');
 var apiUploadcard = require('../api/uploadcard');
+var apiHandbook = require('../api/handbook');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -87,6 +88,7 @@ router.post('/cardlevelchange', apiCardLevelChange);
 router.post('/searchbattlelogs', apiSearchBattleLogs);
 router.post('/uploadcard', apiUploadcard);
 router.post('/searchcardpackage', apiSearchCardPackage);
+router.post('/handbook', apiHandbook);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);

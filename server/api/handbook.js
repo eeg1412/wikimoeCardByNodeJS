@@ -32,7 +32,7 @@ module.exports = async function(req, res, next){
             let params = {
                 packageId:packageId
             }
-            let myCardData = await cardData.findCardDataMany(params).catch ((err)=>{
+            let myCardData = await cardData.findCardDataMany(params,'-_id -__v').catch ((err)=>{
                 res.send({
                     code:0,
                     msg:'内部错误请联系管理员！'

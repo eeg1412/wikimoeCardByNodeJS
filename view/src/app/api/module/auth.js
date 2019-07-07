@@ -93,6 +93,9 @@ export default function (api) {
     uploadcard(data){
       return api.post('uploadcard',data)
     },
+    handbook(data){
+      return api.post('handbook',data)
+    },
     searchcardpackage(data){
       return api.post('searchcardpackage',data)
     },

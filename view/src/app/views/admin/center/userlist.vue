@@ -66,9 +66,9 @@
     <el-table-column
       sortable="custom"
       prop="cardIndexCount"
-      label="收集率">
+      label="收集量">
       <template slot-scope="scope">
-        <span>{{scope.row.cardIndexCount}}/{{cardDataCount.length}}</span>
+        <span>{{scope.row.cardIndexCount}}</span>
       </template>
     </el-table-column>
     <el-table-column
@@ -103,7 +103,6 @@ export default {
   data() {
     return {
       cardData:cardData,
-      cardDataCount:Object.keys(cardData.cardData),
       tableData: [],
       token:sessionStorage.getItem("adminToken")?sessionStorage.getItem("adminToken"):localStorage.getItem("adminToken"),
       page:1,

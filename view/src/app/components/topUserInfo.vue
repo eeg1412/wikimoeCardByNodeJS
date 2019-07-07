@@ -71,7 +71,6 @@ export default {
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         dialogVisible:false,
         cardData:cardData,
-        cardDataCount:Object.keys(cardData.cardData),
         openMenu:false,
     }
   },
