@@ -178,6 +178,9 @@
               <span v-else-if="item.type=='levelChange'"
               >我通过<span class="wm_card_get_list_card_link" @click="goMenu('/upgradecard')">卡牌等级转换</span>将<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.fromCardPackageId+'/'+item.data.fromCardId+'.jpg')">{{item.data.fromCardName}}</span>和<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.toCardPackageId+'/'+item.data.toCardId+'.jpg')">{{item.data.toCardName}}</span>的等级进行了对换。现在我的<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.fromCardPackageId+'/'+item.data.fromCardId+'.jpg')">{{item.data.fromCardName}}</span>变成了{{item.data.fromCardLevel+1}}级，<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.toCardPackageId+'/'+item.data.toCardId+'.jpg')">{{item.data.toCardName}}</span>变成了{{item.data.toCardLevel+1}}级。
               </span>
+              <span v-else-if="item.type=='UCC'"
+              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/creatcard')">卡牌工坊</span>制作的{{item.data.star}}星卡牌——出自作品《{{item.data.title}}》的<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.packageId+'/'+item.data.cardId+'.jpg')">{{item.data.name}}</span>，通过了审核，获得了100颗星星的奖励！应该过不了多久大家就能抽到我制作的卡牌了吧！
+              </span>
             </p>
           </div>
         </div>

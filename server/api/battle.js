@@ -232,6 +232,9 @@ function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount,cardLevel){
     let x = starCount;//初始化x为星星的数量
     // 如果是1、2、3、4、5、6顺子排列的卡牌则攻击力和防御力和血的x+20
     let minStarCount = Math.min.apply(null, starArr);
+    if(minStarCount>2){
+        minStarCount = 2;
+    }
     let cardCountPlus = Math.floor(cardIndexCount/25);//每25收集率x+1
     x = x + minStarCount*20 + cardCountPlus;
     // 每三种同属性的卡牌攻击力和防御力和血的x+1

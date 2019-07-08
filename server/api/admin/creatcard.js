@@ -213,6 +213,25 @@ module.exports = async function(req, res, next){
                 ip:IP
             }
             adminUtils.adminWriteLog(logObj);
+            if(UCCData.nickName){//兼容老数据
+                let timeNow = Math.round(new Date().getTime()/1000);
+                let IndexObj = {
+                    email:UCCData.email,
+                    md5:UCCData.md5,
+                    nickName:UCCData.nickName,
+                    type:'UCC',
+                    time:timeNow,
+                    data:{
+                        packageId:packageId,
+                        name:UCCData.name,
+                        title:UCCData.title,
+                        star:UCCData.star,
+                        cardId:newCardId
+                    },
+                    ip:IP
+                }
+                utils.writeLog(IndexObj);
+            }
         }else{
             fs.unlinkSync('./public/userCreatCard/'+UCCData._id+'.jpg');
         }

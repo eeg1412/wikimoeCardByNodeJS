@@ -55,9 +55,9 @@ module.exports = async function(req, res, next){
         throw err;
     });
     let delParmas = {
-        time:{$lt:time-2592000},
+        time:{$lt:time-604800},
     }
-    // 删除一月前的数据
+    // 删除一周前的数据
     await battleLogsData.deletBattleLogs(delParmas).catch ((err)=>{
         throw err;
     });

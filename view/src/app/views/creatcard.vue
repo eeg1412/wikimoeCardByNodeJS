@@ -31,12 +31,30 @@
                     <el-form-item label="立绘旋转">
                         <el-input-number v-model="cardSet.rotation" :precision="2" :step="1" :min="0" :max="360" @change="CGRotation "></el-input-number>
                     </el-form-item>
-                    <el-form-item label="出自作品">
-                        <el-input v-model="cardSet.title" @input="changeTitle" @blur="changeTitle"></el-input>
-                    </el-form-item>
-                    <el-form-item label="角色名字">
-                        <el-input v-model="cardSet.name" @input="changeName" @blur="changeName"></el-input>
-                    </el-form-item>
+                    <el-tooltip class="item" effect="dark" content="请尽量完整的输入作品全名！" placement="top">
+                        <el-form-item label="作品全名">
+                            <el-input v-model="cardSet.title" @input="changeTitle" @blur="changeTitle"></el-input>
+                        </el-form-item>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="用于卡框，如果和全名一样请点击同上" placement="top">
+                        <el-form-item label="作品简称">
+                            <el-input v-model="cardSet.titleS" @input="changeTitle" @blur="changeTitle"  class="wm_append_btn">
+                                <el-button slot="append" @click="smallTitle">同上</el-button>
+                            </el-input>
+                        </el-form-item>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="请尽量完整的输入角色全名！" placement="top">
+                        <el-form-item label="角色全名">
+                            <el-input v-model="cardSet.name" @input="changeName" @blur="changeName"></el-input>
+                        </el-form-item>
+                    </el-tooltip>
+                    <el-tooltip class="item" effect="dark" content="用于卡框，如果和全名一样请点击同上" placement="top">
+                        <el-form-item label="角色简称">
+                            <el-input v-model="cardSet.nameS" @input="changeName" @blur="changeName" class="wm_append_btn">
+                                <el-button slot="append" @click="smallName">同上</el-button>
+                            </el-input>
+                        </el-form-item>
+                    </el-tooltip>
                     <el-form-item label="星级">
                         <el-select v-model="cardSet.star" placeholder="请选择星级" @change="changeStar">
                             <el-option label="1星" value="1"></el-option>
@@ -130,6 +148,8 @@ export default {
         cardSet:{
             title:'',
             name:'',
+            titleS:'',
+            nameS:'',
             leftType:'1',
             rightType:'1',
             star:'3',
@@ -218,11 +238,19 @@ export default {
       },
       creatCardNoText(){
             if(!this.cardSet.title){
-                this.$message.error('请输入出自作品');
+                this.$message.error('请输入作品全名');
+                return false;
+            }
+            if(!this.cardSet.titleS){
+                this.$message.error('请输入作品简称');
                 return false;
             }
             if(!this.cardSet.name){
-                this.$message.error('请输入角色名字');
+                this.$message.error('请输入角色全名');
+                return false;
+            }
+            if(!this.cardSet.nameS){
+                this.$message.error('请输入角色简称');
                 return false;
             }
             if(!this.imageUrl){
@@ -257,10 +285,18 @@ export default {
           this.sprite.starSprite.texture = PIXI.Texture.from('/static/otherImg/creatcard/star/'+this.cardSet.star+'.png');
       },
       changeTitle(){
-          this.sprite.titleSprite.text = this.cardSet.title;
+          this.sprite.titleSprite.text = this.cardSet.titleS;
+      },
+      smallTitle(){
+          this.cardSet.titleS = this.cardSet.title;
+          this.changeTitle();
       },
       changeName(){
-           this.sprite.nameSprite.text = this.cardSet.name;
+           this.sprite.nameSprite.text = this.cardSet.nameS;
+      },
+      smallName(){
+          this.cardSet.nameS = this.cardSet.name;
+          this.changeName();
       },
       changeCry(){
           this.sprite.crySprite.texture = PIXI.Texture.from('/static/otherImg/creatcard/cry/'+this.cardSet.cry+'.png');

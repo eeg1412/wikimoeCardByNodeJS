@@ -5,6 +5,8 @@ var SchemaTypes = mongoose.Schema.Types;
 // Schema
 var usercreatcard = new Schema({
     email:String,
+    md5:String,
+    nickName:String,
     star: Number,
     leftType: Number,
     rightType: Number,

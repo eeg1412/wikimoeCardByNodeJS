@@ -8,6 +8,10 @@
       label="邮箱">
     </el-table-column>
     <el-table-column
+      prop="nickName"
+      label="昵称">
+    </el-table-column>
+    <el-table-column
       prop="name"
       label="卡牌名">
     </el-table-column>

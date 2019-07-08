@@ -1,6 +1,6 @@
 <template>
 <el-dialog title="请输入验证码" :visible.sync="codeShow" class="reg_code_dialog" width="100%" :lock-scroll="false">
-    <el-input placeholder="请输入验证码" v-model="captcha" type="tel">
+    <el-input placeholder="请输入验证码" v-model="captcha" type="tel" @keyup.enter.native="goto()">
     <template slot="append">
         <img class="reg_code_img" :src="captchaSrc" @click="captchaUpdata">
     </template>

@@ -146,6 +146,8 @@ module.exports = async function(req, res, next){
     let timeNow = Math.round(new Date().getTime()/1000);
     let uploadCardDataParams = {
         email:email,
+        md5:result.md5,
+        nickName:result.nickName,
         star: Number(star),
         leftType: Number(leftType),
         rightType: Number(rightType),
