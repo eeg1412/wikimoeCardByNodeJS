@@ -509,6 +509,22 @@ export default {
                     })
                     this.myCard = myBattleCardData;
                 }
+                this.searchcardlevel();
+            }
+        });
+    },
+    searchcardlevel(){
+        let params = {
+            token:this.token
+        }
+        authApi.searchcardlevel(params).then(res => {
+            console.log(res);
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                if(res.data.data){
+                    this.myCardLevel = res.data.data;
+                }
                 this.getMycard();
             }
         });
@@ -521,7 +537,6 @@ export default {
                 let resData = res.data;
                 this.cardIndexCount = res.data.cardIndexCount || 0;
                 if(res.data.cardIndexCount>0){
-                    this.myCardLevel = res.data.cardLevelData || {};
                     this.userCardCache = res.data.card||[];
                     this.cardPage = 1;
                     this.ADSHP = this.sumADSHP(this.myCard);

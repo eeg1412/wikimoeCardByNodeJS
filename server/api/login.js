@@ -3,7 +3,6 @@ var utils = require('../utils/utils');
 var chalk = require('chalk');
 var userData = require('../utils/database/user');
 var jwt = require('jsonwebtoken');
-var chalk = require('chalk');
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let email = req.body.email;
