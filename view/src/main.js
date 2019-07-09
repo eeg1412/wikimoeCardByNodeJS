@@ -20,6 +20,7 @@ Vue.prototype.$wikimoecard = siteSetting;
 Vue.prototype.$wikimoecard.l2dMassage = function(){
   console.log('live2d还在加载...');
 };
+window.$l2dMotion = {};
 Vue.prototype.$wikimoecard.l2dMassageClose = function(){
   console.log('live2d还在加载...');
 };

@@ -266,12 +266,22 @@ L2DBaseModel.prototype.loadMotion      = function(name/*String*/, path /*String*
     var motion = null; //Live2DMotion
 
     var thisRef = this;
+    if($l2dMotion[path]){
+        let buf = $l2dMotion[path];
+        motion = Live2DMotion.loadMotion(buf);
+        if( name != null ) {
+            thisRef.motions[name] = motion;
+        }
+        callback(motion);
+        return;
+    }
     loadBytes(path, 'arraybuffer', function(buf) {
         motion = Live2DMotion.loadMotion(buf);
         if( name != null ) {
             thisRef.motions[name] = motion;
         }
         callback(motion);
+        $l2dMotion[path] = buf;
     });
 
 }
