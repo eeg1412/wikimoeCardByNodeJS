@@ -10,7 +10,8 @@
                     <div id="wmCreatCard" class="tc"></div>
                 </div>
                 <div class="wm_creatcard_btn_body">
-                    <el-button size="mini" type="primary" @click="creatCardNoText">生成并投稿</el-button>
+                    <el-button size="mini" type="primary" @click="creatCardNoText">生成投稿</el-button>
+                    <el-button size="mini" type="primary" @click="creatCardHelp">查看说明</el-button>
                 </div>
             </el-col>
             <el-col :sm="12">
@@ -259,7 +260,7 @@ export default {
             }
             this.uploadCardUrl = this.app.view.toDataURL('image/jpeg', 0.9);
             // let cardUrl = this.app.view.toDataURL("image/png");
-            this.$confirm('<div class="watch_img"><img src="'+this.uploadCardUrl+'" /></div><div class="tc mt10">确认无误后点击上传按钮上传作品吧！</div>', '查看卡牌', {
+            this.$confirm('<div class="watch_img"><img src="'+this.uploadCardUrl+'" /></div><div class="tc mt10">请仔细阅读说明并确认无误后点击上传按钮上传作品吧！</div>', '查看卡牌', {
                 dangerouslyUseHTMLString: true,
                 lockScroll:false,
                 falsedistinguishCancelAndClose: true,
@@ -271,6 +272,13 @@ export default {
                 this.captchaShow = true;
             })
             .catch(action => {});
+      },
+      creatCardHelp(){
+          this.$alert('<div class="watch_img"><img src="/static/otherImg/uploadhelp.jpg" /></div>', '查看说明', {
+                dangerouslyUseHTMLString: true,
+                lockScroll:false,
+                customClass:'wm_crearchcard_watch',
+            })
       },
       handleAvatarSuccess(file, fileList) {
         this.imageUrl = URL.createObjectURL(file.raw);
