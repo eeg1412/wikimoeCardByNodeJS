@@ -306,7 +306,7 @@ export default {
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
             this.cardPackage = res.data.data;
-            this.seledCardPackage = '0';
+            this.seledCardPackage = localStorage.getItem("dailyCardPackageId") || '0';
           }
       });
     },
@@ -533,6 +533,10 @@ export default {
         this.seled = false;
       },800)
     },
+    rememberPackageId(){
+      const packageId = this.seledCardPackage;
+      localStorage.setItem("dailyCardPackageId",packageId);
+    },
     getDailyCard(Num){
       if(this.seled){
         return false;
@@ -541,6 +545,7 @@ export default {
         this.$message.error('邮箱格式不正确！');
         return false;
       }
+      this.rememberPackageId();
       console.log(Num);
       authApi.dailycard({email: this.email,sel:Num,packageId:this.seledCardPackage}).then(res => {
           console.log(res);

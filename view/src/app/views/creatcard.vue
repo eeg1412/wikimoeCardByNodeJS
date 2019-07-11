@@ -34,24 +34,24 @@
                     </el-form-item>
                     <el-tooltip class="item" effect="dark" content="请尽量完整的输入作品全名！" placement="top">
                         <el-form-item label="作品全名">
-                            <el-input v-model="cardSet.title" @input="changeTitle" @blur="changeTitle"></el-input>
+                            <el-input v-model="cardSet.title" @input="changeTitle" @blur="changeTitle" placeholder="请尽量完整的输入作品全名！"></el-input>
                         </el-form-item>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="用于卡框，如果和全名一样请点击同上" placement="top">
                         <el-form-item label="作品简称">
-                            <el-input v-model="cardSet.titleS" @input="changeTitle" @blur="changeTitle"  class="wm_append_btn">
+                            <el-input v-model="cardSet.titleS" @input="changeTitle" @blur="changeTitle" class="wm_append_btn" placeholder="用于卡框，如果和全名一样请点击同上">
                                 <el-button slot="append" @click="smallTitle">同上</el-button>
                             </el-input>
                         </el-form-item>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="请尽量完整的输入角色全名！" placement="top">
                         <el-form-item label="角色全名">
-                            <el-input v-model="cardSet.name" @input="changeName" @blur="changeName"></el-input>
+                            <el-input v-model="cardSet.name" @input="changeName" @blur="changeName" placeholder="请尽量完整的输入角色全名！"></el-input>
                         </el-form-item>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="用于卡框，如果和全名一样请点击同上" placement="top">
                         <el-form-item label="角色简称">
-                            <el-input v-model="cardSet.nameS" @input="changeName" @blur="changeName" class="wm_append_btn">
+                            <el-input v-model="cardSet.nameS" @input="changeName" @blur="changeName" class="wm_append_btn" placeholder="用于卡框，如果和全名一样请点击同上">
                                 <el-button slot="append" @click="smallName">同上</el-button>
                             </el-input>
                         </el-form-item>

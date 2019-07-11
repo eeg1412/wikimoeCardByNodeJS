@@ -89,6 +89,10 @@ export default {
     this.getCardPackage();
   },
   methods: {
+    rememberPackageId(){
+      const packageId = this.seledCardPackage;
+      localStorage.setItem("shopCardPackageId",packageId);
+    },
     getCardPackage(){
       authApi.searchcardpackage().then(res => {
           console.log(res);
@@ -96,7 +100,7 @@ export default {
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
             this.cardPackage = res.data.data;
-            this.seledCardPackage = '0';
+            this.seledCardPackage = localStorage.getItem("shopCardPackageId") || '0';
           }
       });
     },
@@ -128,7 +132,7 @@ export default {
       return PrefixInteger(num,length);
     },
     buy(t,g){
-      this.$confirm('确定要购买吗?', '提示', {
+      this.$confirm('确定要购买该卡包的抽卡次数吗?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -139,6 +143,7 @@ export default {
             token:this.token,
             packageId:this.seledCardPackage,
           }
+          this.rememberPackageId();
           authApi.shop(params).then(res => {
               console.log(res);
               if(res.data.code==0){
