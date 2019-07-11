@@ -101,7 +101,7 @@ module.exports = async function(req, res, next){
             }
             params['cardId']={$nin:haveCardId};
         }
-        let sort = {'cardId':-1,'price':1};
+        let sort = {'star':-1,'cardId':-1,'price':1};
         if(name==='name' || name==='title'){
             const reg=new RegExp(text,'i');
             params[name] = {$regex:reg};
