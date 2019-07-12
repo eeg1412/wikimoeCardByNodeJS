@@ -13,7 +13,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="选择卡包">
-              <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_cardlist_select type_120">
+              <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_market_buy_search_select">
                   <el-option
                   v-for="item in cardPackage"
                   :key="item.packageId"
@@ -22,7 +22,7 @@
                   </el-option>
               </el-select>
           </el-form-item>
-          <el-form-item label="星级">
+          <el-form-item label="选择星级">
             <el-select v-model="searchForm.star" placeholder="星级" class="wm_market_buy_search_select">
               <el-option label="全部" value="0"></el-option>
               <el-option label="1星" value="1"></el-option>
@@ -33,7 +33,7 @@
               <el-option label="6星" value="6"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="排序">
+          <el-form-item label="设置排序">
             <el-select v-model="searchForm.sort" placeholder="排序" class="wm_market_buy_search_select">
               <el-option label="默认" value="0"></el-option>
               <el-option label="价格从低到高" value="1"></el-option>
@@ -43,7 +43,7 @@
             </el-select>
           </el-form-item>
           <el-tooltip class="item" effect="dark" content="如果指定卡牌ID搜索，此筛选条件将失效。" placement="top">
-          <el-form-item label="拥有">
+          <el-form-item label="是否拥有">
             <el-select v-model="searchForm.ihave" placeholder="拥有" class="wm_market_buy_search_select">
               <el-option label="全部" value="0"></el-option>
               <el-option label="拥有" value="1"></el-option>

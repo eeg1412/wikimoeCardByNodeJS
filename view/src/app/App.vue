@@ -2,6 +2,7 @@
 <div id="app">
     <router-view @l2dMassage="l2dMassage"></router-view>
     <live2d ref="l2d"></live2d>
+    <footer class="tc powerdby">Powered by <a href="https://www.wikimoe.com/" target="_blank">wikimoe</a></footer>
 </div>
 </template>
 
@@ -24,5 +25,13 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
+.powerdby{
+  margin: 30px 0 30px 0;
+  height: 24px;
+  line-height: 24px;
+}
+.powerdby a{
+  color: inherit;
+}
 </style>

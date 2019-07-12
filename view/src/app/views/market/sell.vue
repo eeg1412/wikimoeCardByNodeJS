@@ -45,8 +45,8 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="星级">
-                        <el-select v-model="searchForm.star" class="wm_market_buy_search_select" @change="searchChanged">
+                    <el-form-item label="选择星级">
+                        <el-select v-model="searchForm.star" class="wm_cardlist_select type_120" @change="searchChanged">
                             <el-option label="全部" value="0"></el-option>
                             <el-option label="1星" value="1"></el-option>
                             <el-option label="2星" value="2"></el-option>
@@ -88,8 +88,8 @@
                         <el-option label="特" value="7"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="求购">
-                    <el-select v-model="searchForm.havewant" class="wm_market_buy_search_select" @change="searchChanged">
+                    <el-form-item label="是否求购">
+                    <el-select v-model="searchForm.havewant" class="wm_cardlist_select type_120" @change="searchChanged">
                         <el-option label="全部" value="0"></el-option>
                         <el-option label="有求购" value="1"></el-option>
                     </el-select>

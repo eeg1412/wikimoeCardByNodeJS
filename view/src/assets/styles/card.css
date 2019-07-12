@@ -225,7 +225,7 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 }
 .common_body{
     max-width: 980px;
-    padding:80px 10px;
+    padding:80px 10px 0px 10px;
     margin: 0 auto 0 auto;
 }
 @media screen and (max-width:480px) {
@@ -1492,7 +1492,7 @@ img.wm_demining_img {
 }
 @media ( max-width : 768px) {
   .common_body{
-    padding: 40px 10px 80px 10px;
+    padding: 40px 10px 0px 10px;
   }
   /* 首页 */
   .wm_card_nums{

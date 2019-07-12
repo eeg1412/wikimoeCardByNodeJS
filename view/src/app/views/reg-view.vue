@@ -133,7 +133,7 @@ export default {
           }else if(res.data.code==1){
             let resData = res.data;
             sessionStorage.setItem("token",resData.token);
-            this.$alert('恭喜您，注册成功！', '提示', {
+            this.$alert('恭喜您，注册成功并获得了新人福利！可以在【商店】中查看！', '提示', {
               confirmButtonText: '确定',
               showClose:false,
               callback: action => {
