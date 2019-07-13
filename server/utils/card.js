@@ -15,9 +15,15 @@ exports.checkPackage = async function(packageId){
         return false;
     });
     if(!resaultPackage){
+        console.info(
+            chalk.yellow('没有开放的卡包')
+        )
         return false;
     }
     if(!resaultPackage.open){
+        console.info(
+            chalk.yellow('此为未开放卡包返回false')
+        )
         return false;
     }
     return resaultPackage;
@@ -60,7 +66,7 @@ exports.wmCreatCardId = function($randomCardRate,cardDataArr){
 // 抽卡
 exports.chioseCard = async function(packageId,times =0,baodi){
     // 检查卡包
-    let package = this.checkPackage(packageId);
+    let package = await this.checkPackage(packageId);
     if(!package){
         return false;
     }
