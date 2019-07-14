@@ -83,7 +83,8 @@
                 </div>
                 <el-collapse-transition>
                     <div class="wm_mycard_list" v-if="userCard.length>0">
-                        <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openImg($wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg',item.name,item.have,item.star,item.cardId,item.packageId)" @mouseover="$wikimoecard.l2dMassage('点击卡牌可以查看卡牌并且发起求购哦！')">
+                        <!-- openImg($wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg',item.name,item.have,item.star,item.cardId,item.packageId) -->
+                        <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in userCard" v-bind:key="index" :class="item.have?'have':''" @click="openCardInfo(item)" @mouseover="$wikimoecard.l2dMassage('点击卡牌可以查看卡牌并且发起求购哦！')">
                             <img class="wm_getcard_img" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'">
                         </div>
                     </div>
@@ -103,6 +104,42 @@
                     </el-pagination>
                 </div>
             </div>
+            <el-dialog
+                title="卡牌详情"
+                :visible.sync="dialogCard"
+                :lock-scroll="false"
+                :append-to-body="true"
+                class="wm_handbook_info_dialog"
+                width="852px">
+                <el-row :gutter="20">
+                    <el-col :sm="12" :xs="24">
+                        <div>
+                            <img class="wm_handbook_info_img wm_set_pointer" :src="this.$wikimoecard.url+cardData.packageId+'/'+cardData.cardId+'.jpg'" @click="goMarket" />
+                        </div>
+                    </el-col>
+                    <el-col :sm="12" :xs="24">
+                        <div class="f20 mb10 mt10 wm_handbook_cardname tc">{{cardData.name}}</div>
+                        <div class="wm_handbook_cardinfo_body">
+                            <div class="wm_handbook_cardinfo_item">卡牌编号：{{cardData.cardId}}</div>
+                            <div class="wm_handbook_cardinfo_item">出自作品：《{{cardData.title}}》</div>
+                            <div class="wm_handbook_cardinfo_item">星星等级：{{cardData.star}}星</div>
+                            <div class="wm_handbook_cardinfo_item">水晶属性：{{cardData.cry | cry}}</div>
+                            <div class="wm_handbook_cardinfo_item">被动属性：{{cardData.leftType | leftType}}</div>
+                            <div class="wm_handbook_cardinfo_item">主动技能：{{cardData.rightType | rightType}}</div>
+                            <div class="wm_handbook_cardinfo_item">拥有卡牌：{{cardData.have || '0'}}张</div>
+                        </div>
+                        <div class="wm_handbook_cardinfo_body mt20">卡牌提供：<el-tooltip placement="top">
+                                <div slot="content" class="tc"><img class="wm_handbook_auther_tx" :src="'https://gravatar.loli.net/avatar/'+cardData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" /><div class="mt5">{{cardData.auther}}</div></div>
+                                <span class="dib">{{cardData.auther}}</span>
+                            </el-tooltip>
+                        </div>
+                        <el-button type="primary" class="w_10 mt20" @click="goMarket">购卡或求购</el-button>
+                    </el-col>
+                </el-row>
+                <span slot="footer" class="dialog-footer">
+                    <el-button @click="dialogCard = false">关闭</el-button>
+                </span>
+            </el-dialog>
         <menuView></menuView>
     </div>
 </template>
@@ -117,6 +154,9 @@ import md5_ from 'js-md5';
 export default {
   data() {
     return {
+        txDays:new Date().getDate(),
+        cardData:{},
+        dialogCard:false,
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         cardBook:[],
         cardCount:{},
@@ -174,28 +214,45 @@ export default {
             }
         });
     },
-    openImg(imgsrc,name,have,star,cardId,packageId){
-        this.$confirm('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
-            dangerouslyUseHTMLString: true,
-            lockScroll:false,
-            showCancelButton: false,
-            confirmButtonText: '购卡或求购',
-        }).then(() => {
-            this.$router.push({ 
-                name:'buyCard',
-                query: {
-                    name:'cardId',
-                    text:cardId,
-                    want:1,
-                    wantstar:star,
-                    wantid:cardId,
-                    packageId:packageId
-                }
-            });
-        }).catch(() => {
-                   
+    openCardInfo(data){
+        this.dialogCard = true;
+        this.cardData = data;
+    },
+    goMarket(){
+        this.$router.push({ 
+            name:'buyCard',
+            query: {
+                name:'cardId',
+                text:this.cardData.cardId,
+                want:1,
+                wantstar:this.cardData.star,
+                wantid:this.cardData.cardId,
+                packageId:this.cardData.packageId
+            }
         });
     },
+    // openImg(imgsrc,name,have,star,cardId,packageId){
+    //     this.$confirm('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
+    //         dangerouslyUseHTMLString: true,
+    //         lockScroll:false,
+    //         showCancelButton: false,
+    //         confirmButtonText: '购卡或求购',
+    //     }).then(() => {
+    //         this.$router.push({ 
+    //             name:'buyCard',
+    //             query: {
+    //                 name:'cardId',
+    //                 text:cardId,
+    //                 want:1,
+    //                 wantstar:star,
+    //                 wantid:cardId,
+    //                 packageId:packageId
+    //             }
+    //         });
+    //     }).catch(() => {
+                   
+    //     });
+    // },
     getUserCard(){
         authApi.handbook({token: this.token,packageId:this.seledCardPackage}).then(res => {
             this.loading = false;
@@ -348,9 +405,116 @@ export default {
             }
         });
     },
-  }
+  },
+  filters:{
+      leftType(v){
+          let name = '';
+          switch(v) {
+                case 1:
+                    name = '全能';
+                    break;
+                case 2:
+                    name = '兵攻';
+                    break;
+                case 3:
+                    name = '盾防';
+                    break;
+                case 4:
+                    name = '速度';
+                    break;
+                case 5:
+                    name = '爱心';
+                    break;
+        }
+        return name;
+      },
+      cry(v){
+          let name = '';
+          switch(v) {
+                case 1:
+                    name = '红火';
+                    break;
+                case 2:
+                    name = '蓝水';
+                    break;
+                case 3:
+                    name = '绿风';
+                    break;
+                case 4:
+                    name = '光';
+                    break;
+                case 5:
+                    name = '暗';
+                    break;
+        }
+        return name;
+      },
+      rightType(v){
+          let name = '';
+          switch(v) {
+                case 1:
+                    name = '物';
+                    break;
+                case 2:
+                    name = '魔';
+                    break;
+                case 3:
+                    name = '防';
+                    break;
+                case 4:
+                    name = '治';
+                    break;
+                case 5:
+                    name = '妨';
+                    break;
+                case 6:
+                    name = '支';
+                    break;
+                case 7:
+                    name = '特';
+                    break;
+        }
+        return name;
+      }
+  },
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
+.wm_handbook_cardname{
+    padding: 5px 15px;
+}
+.wm_handbook_cardinfo_body{
+    border: 1px solid #ccc;
+    padding: 10px 15px;
+    border-radius: 5px;
+    line-height: 24px;
+    font-size: 16px;
+}
+.wm_handbook_cardinfo_item{
+    margin-bottom: 10px;
+}
+.wm_handbook_auther_tx{
+    width: 50px;
+    height:50px;
+    border-radius: 2px;
+}
+.wm_handbook_info_img{
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+}
+</style>
+<style>
+.wm_handbook_info_dialog .el-dialog{
+    max-width: 100%;
+}
+.wm_handbook_info_dialog .el-dialog__body{
+    padding: 10px 20px;
+}
+@media ( max-width : 768px) {
+    .wm_handbook_info_dialog .el-dialog{
+        margin-top: 0!important;
+    }
+}
 </style>

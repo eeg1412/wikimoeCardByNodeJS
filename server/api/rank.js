@@ -37,6 +37,11 @@ module.exports = async function(req, res, next){
         sortData = {cardIndexCount:-1};
         let cardIndexCount_ =  await userData.findUserInPage(parmas,pageSize_,page_,getParams,sortData);
         newRankData['cardIndexCount'] = cardIndexCount_['data'];
+        // 查询制卡数量
+        getParams = '-_id UCC md5 nickName';
+        sortData = {UCC:-1};
+        let UCC_ =  await userData.findUserInPage(parmas,pageSize_,page_,getParams,sortData);
+        newRankData['UCC'] = UCC_['data'];
         // 更新文件
         let rankData_ = JSON.stringify(newRankData);
         fs.writeFileSync('./config/cache/rank.json', rankData_, 'utf8');
