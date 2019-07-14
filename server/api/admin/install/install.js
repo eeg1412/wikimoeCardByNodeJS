@@ -100,7 +100,9 @@ module.exports = async function(req, res, next){
                     cry: thisCard.cry,
                     title:thisCard.title,
                     name:thisCard.name,
-                    packageId:'0'
+                    packageId:'0',
+                    auther:'广树',
+                    md5:'fbb31d99a24cf9a56c48b44dd0797d22'
                 }
                 if(thisCard.star==1){
                     one++

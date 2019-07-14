@@ -145,7 +145,9 @@ module.exports = async function(req, res, next){
                 cry: UCCData.cry,
                 title:UCCData.title,
                 name:UCCData.name,
-                packageId:packageId
+                packageId:packageId,
+                auther:UCCData.nickName,
+                md5:UCCData.md5
             }
             await cardData.saveCardData(cardParams).catch((err)=>{
                 res.send({
@@ -189,13 +191,14 @@ module.exports = async function(req, res, next){
                 );
                 return false;
             });
-            //设定给与星星
+            //设定给与星星卡牌计数+1
             let userParams ={
                 email:UCCData.email
             }
             let updateParams = {
                 $inc:{
-                    star:100
+                    star:100,
+                    UCC:1
                 }
             };
             await userData.updataUser(userParams,updateParams).catch ((err)=>{

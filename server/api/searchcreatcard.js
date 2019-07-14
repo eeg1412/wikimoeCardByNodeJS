@@ -37,7 +37,7 @@ module.exports = async function(req, res, next){
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
     let page = req.body.page;
-    let UCCData = await userCreatCardData.findUserCreatCard(20,page,{email:email},{'check':1,'time':-1},'-_id -__v -email').catch((err)=>{
+    let UCCData = await userCreatCardData.findUserCreatCard(20,page,{email:email},{'check':1,'time':-1},'-_id -__v -email -md5 -nickName').catch((err)=>{
         res.send({
             code:0,
             msg:'内部错误请联系管理员！'

@@ -11,6 +11,7 @@ db.once('open' ,() => {
     chalk.green('连接数据库成功')
   );
   // var update = require('../api/admin/install/updateUserData.js');
+  // var update = require('../api/admin/install/updateUCC');
 })
 
 db.on('error', function(error) {

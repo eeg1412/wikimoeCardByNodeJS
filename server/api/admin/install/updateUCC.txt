@@ -1,0 +1,66 @@
+var cardDataDatabase = require('../../../utils/database/cardData');
+var userCreatCardData = require('../../../utils/database/userCreatCard');
+var userData = require('../../../utils/database/user');
+var cardDataModel = require('../../../models/cardData');
+var chalk = require('chalk');
+
+async function update(){
+    // 全部卡牌先设定所有作者是站长
+    console.info(
+        chalk.green('全部卡牌先设定所有作者是站长')
+    )
+    await cardDataModel.updateMany({},{
+        auther:'广树',
+        md5:'fbb31d99a24cf9a56c48b44dd0797d22'
+    })
+    // 补全昵称缺失的制卡数据
+    console.info(
+        chalk.green('补全昵称缺失的制卡数据')
+    )
+    let UCCData = await userCreatCardData.findUserCreatCardMany({});
+    for(let i=0;i<UCCData.length;i++){
+        // 补全md5和昵称
+        // 获取md5和昵称
+        console.info(
+            chalk.green('补全'+UCCData[i].email)
+        )
+        let userEmail = {
+            email:UCCData[i].email
+        }
+        let UserData = await userData.findUser(userEmail);
+        let UCCF = {
+            _id:UCCData[i].id
+        }
+        let UCCP = {
+            md5:UserData.md5,
+            nickName:UserData.nickName
+        }
+        await userCreatCardData.updataUserCreatCard(UCCF,UCCP)
+        // 卡牌数据增加作者和作者头像
+        if(UCCData[i].pass===1&&UCCData[i].check===1){
+            // 用户写入制卡次数
+            let userUpdateParams = {
+                $inc:{
+                    UCC:1
+                }
+            }
+            await userData.updataUser(userEmail,userUpdateParams)
+            let cardId = UCCData[i].cardId;
+            console.info(
+                chalk.green('补全卡牌'+cardId)
+            )
+            let cardF = {
+                cardId:cardId
+            }
+            let cardP = {
+                auther:UserData.nickName,
+                md5:UserData.md5
+            }
+            await cardDataDatabase.updataCardData(cardF,cardP)
+        }
+    }
+    console.info(
+        chalk.green('更新完毕！')
+    )
+}
+update();

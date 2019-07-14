@@ -10,7 +10,9 @@ var cardData = new Schema({
     cry: Number,
     title:String,
     name:String,
-    packageId:String
+    packageId:String,
+    auther:String,
+    md5:String,
 });
 
 module.exports = mongoose.model('cardData', cardData);
