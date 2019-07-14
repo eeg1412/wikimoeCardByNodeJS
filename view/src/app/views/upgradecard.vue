@@ -140,7 +140,7 @@
                                         <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item.count>setCardShould(item.star)?0:(setCardShould(item.star)-item.count)*3}}个【{{itemData_['1'+PrefixInteger_(item.star,2)].name}}】，<br />碎片可以从【卡牌分解】中获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/otherImg/item/'+'1'+PrefixInteger_(item.star,2)+'.png'"/></el-tooltip></div><span>×{{item.count>setCardShould(item.star)?0:(setCardShould(item.star)-item.count)*3}}({{myItem['1'+PrefixInteger_(item.star,2)] || 0}})</span></div>
                                     </div>
                                     <div class="mb20"><el-checkbox v-model="item.usechip" @change="chipChange">使用碎片</el-checkbox></div>
-                                    <p class="mb10">成功率:{{item.level | setChenggolv}}%</p>
+                                    <p class="mb10">成功率:{{[item.level,item.leftType] | setChenggolv}}%</p>
                                     <div class="mt20 pb10">
                                         <el-dropdown split-button type="primary" size="medium" trigger="click" @click="upgradecard(item.cardId,index,item.usechip)" @command="goChangeLevel">
                                             升级
@@ -241,12 +241,19 @@ export default {
   },
   filters: {
       setChenggolv(v){
-          let lv = v;
+          let lv = v[0];
+          let leftType = v[1];
           let n = 100;
+          let down = 5;
           if(lv<5){
               return n;
           }
-          n = 100 - (v + 1 - 5)*5;
+          if(leftType===3){
+              down = 2;
+          }else if(leftType===1){
+              down = 4;
+          }
+          n = 100 - (lv + 1 - 5)*down;
           if(n<1){
               n = 1;
           }

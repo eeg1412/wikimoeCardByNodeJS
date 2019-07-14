@@ -6,13 +6,19 @@ var chalk = require('chalk');
 var userData = require('../utils/database/user');
 var cardData = require('../utils/database/cardData');
 
-function setChenggolv(v){
+function setChenggolv(v,l){
     let lv = v;
     let n = 100;
+    let down = 5;
     if(lv<5){
         return n;
     }
-    n = 100 - (v + 1 - 5)*5;
+    if(l===3){
+        down = 2;
+    }else if(l===1){
+        down = 4;
+    }
+    n = 100 - (lv + 1 - 5)*down;
     if(n<1){
         n = 1;
     }
@@ -247,7 +253,7 @@ module.exports = async function(req, res, next){
     let cardLevel = cardLevelData['cardLevel']||{};//获取卡牌等级
     let myCardLevel = cardLevel[cardId] || 0;
     let chenggongyinzi = utils.randomNum(1,100)//成功率因子
-    let chenggonglv = setChenggolv(myCardLevel);//计算成功率
+    let chenggonglv = setChenggolv(myCardLevel,myCardData.leftType);//计算成功率
     //删道具数据库操作
     itemDataBase['item.'+shouldItemId] = -shouldItemNum;
     let updataItemParams = {
