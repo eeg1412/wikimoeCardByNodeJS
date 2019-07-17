@@ -37,6 +37,12 @@
       label="六星卡">
     </el-table-column>
     <el-table-column
+      label="合计">
+      <template slot-scope="scope">
+        <div>{{scope.row.oneStar+scope.row.twoStar+scope.row.threeStar+scope.row.fourStar+scope.row.fiveStar+scope.row.sixStar}}</div>
+      </template>
+    </el-table-column>
+    <el-table-column
       label="开放">
       <template slot-scope="scope">
         <div>{{scope.row.open?"开放":"关闭"}}</div>

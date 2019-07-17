@@ -7,7 +7,7 @@
         <el-input v-model="email" placeholder="输入邮箱地址抽卡" class="wm_card_email">
             <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_card_package_sel" slot="prepend">
               <el-option
-                v-for="item in cardPackage"
+                v-for="item in cardPackage.filter(item =>{return item.open})"
                 :key="item.packageId"
                 :label="item.name"
                 :value="item.packageId">

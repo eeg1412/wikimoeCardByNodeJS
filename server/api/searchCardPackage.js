@@ -1,7 +1,7 @@
 var cardPackageDatabase = require('../utils/database/cardPackage.js');
 module.exports = async function(req, res, next){
     let all = req.body.all;
-    let params = {open:true}
+    let params = {}
     if(all){
         params = {};
     }

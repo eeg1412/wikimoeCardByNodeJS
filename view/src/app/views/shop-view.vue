@@ -3,9 +3,9 @@
     <userTop ref="userTop" />
     <h5 class="common_title type_shop">星星商店</h5>
     <div class="tc">
-      <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_card_package_sel">
+      <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_card_package_sel" :disabled="openList">
         <el-option
-          v-for="item in cardPackage"
+          v-for="item in cardPackage.filter(item =>{return item.open})"
           :key="item.packageId"
           :label="item.name"
           :value="item.packageId">
