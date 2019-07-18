@@ -1,4 +1,4 @@
-# 维基萌抽卡系统Node.js版v1.x
+# 维基萌抽卡系统Node.js版 v1.x
 
 by 广树 [维基萌](https://www.wikimoe.com/)
 
