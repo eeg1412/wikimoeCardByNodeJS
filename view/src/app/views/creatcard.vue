@@ -2,7 +2,7 @@
 <div class="common_body">
     <userTop ref="userTop" />
     <h5 class="common_title type_shop type_dec">卡牌工坊</h5>
-    <h6 class="common_title_tips type_dec">Tip:可能会因为系统字体缺失导致文字错位，当前使用字体为【Arial】。</h6>
+    <h6 class="common_title_tips type_dec">Tip:当前字体库为延时加载，请先确认字体是否有异样后再生成投稿。</h6>
     <div class="mt20">
         <el-row>
             <el-col :sm="12">
@@ -341,15 +341,15 @@ export default {
             this.sprite.starSprite  = new PIXI.Sprite(star);
             this.sprite.starSprite.zIndex = 2;
             // 作品
-            this.sprite.titleSprite = new PIXI.Text(this.cardSet.title,{ fontFamily:'Arial' ,fontSize: '18px', fill : 0xffffff ,strokeThickness:2,padding:28,textBaseline:'ideographic' });
+            this.sprite.titleSprite = new PIXI.Text(this.cardSet.title,{ fontFamily:'Noto Sans SC' ,fontSize: '18px', fill : 0xffffff ,strokeThickness:2,padding:28 });
             this.sprite.titleSprite.anchor.set(0.5,0);
-            this.sprite.titleSprite.position.set(202, 486);
+            this.sprite.titleSprite.position.set(202, 480);
             this.sprite.titleSprite.zIndex = 3;
             this.sprite.titleSprite.roundPixels = true;
             // 名字
-            this.sprite.nameSprite = new PIXI.Text(this.cardSet.name,{ fontFamily:'Arial' ,fontSize: '22px', fill : 0xffffff ,strokeThickness:2,padding:36,textBaseline:'ideographic' });
+            this.sprite.nameSprite = new PIXI.Text(this.cardSet.name,{ fontFamily:'Noto Sans SC' ,fontSize: '22px', fill : 0xffffff ,strokeThickness:2,padding:36 });
             this.sprite.nameSprite.anchor.set(0.5,0);
-            this.sprite.nameSprite.position.set(202, 518);
+            this.sprite.nameSprite.position.set(202, 512);
             this.sprite.nameSprite.zIndex = 3;
             this.sprite.nameSprite.roundPixels = true;
             // 立绘
@@ -413,9 +413,10 @@ export default {
             container.addChild(this.sprite.leftTypeSprite);
             container.addChild(this.sprite.rightTypeSprite);
             app.ticker.maxFPS = 30;
-            // app.ticker.add((delta) => {
-            //     console.log(123);
-            // });
+            app.ticker.add((delta) => {
+                this.sprite.titleSprite.style = { fontFamily:'Noto Sans SC' ,fontSize: '18px', fill : 0xffffff ,strokeThickness:2,padding:28 }
+                this.sprite.nameSprite.style = { fontFamily:'Noto Sans SC' ,fontSize: '22px', fill : 0xffffff ,strokeThickness:2,padding:36 }
+            });
       }
   },
   beforeDestroy(){
@@ -455,4 +456,7 @@ export default {
 .wm_crearcard_info_body{
     border-top: 1px dashed #ccc;
 }
+</style>
+<style>
+@import url('https://fonts.loli.net/css?family=Noto+Sans+SC&display=swap');
 </style>
