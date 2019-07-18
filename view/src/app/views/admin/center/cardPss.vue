@@ -71,8 +71,14 @@
       <template slot-scope="scope">
         <el-button type="text" size="small" @click="checkUCC(true,scope.row._id,scope.row.packageId)" v-if="scope.row.check === 0">通过</el-button>
         <el-button type="text" size="small" @click="checkUCC(false,scope.row._id,scope.row.packageId)" v-if="scope.row.check === 0">驳回</el-button>
-        <el-button type="text" size="small" @click="watchCard('/userCreatCard/'+scope.row._id+'.jpg')"  v-if="scope.row.check === 0">卡面</el-button>
-        <el-button type="text" size="small" @click="watchCard('/card/'+scope.row.packageId+'/'+scope.row.cardId+'.jpg')"  v-if="scope.row.check === 1&&scope.row.pass===1">卡面</el-button>
+        <el-tooltip placement="left" v-if="scope.row.check === 0">
+          <div slot="content"><img :src="'/userCreatCard/'+scope.row._id+'.jpg'" class="wm_admin_cardpass_watchcard" /></div>
+          <el-button type="text" size="small" @click="watchCard('/userCreatCard/'+scope.row._id+'.jpg')">卡面</el-button>
+        </el-tooltip>
+        <el-tooltip placement="left" v-if="scope.row.check === 1&&scope.row.pass===1">
+          <div slot="content"><img :src="'/card/'+scope.row.packageId+'/'+scope.row.cardId+'.jpg'" class="wm_admin_cardpass_watchcard" /></div>
+          <el-button type="text" size="small" @click="watchCard('/card/'+scope.row.packageId+'/'+scope.row.cardId+'.jpg')">卡面</el-button>
+        </el-tooltip>
       </template>
     </el-table-column>
   </el-table>
@@ -176,16 +182,14 @@ export default {
       }
   },
   methods: {
-    pass(){
-
-    },
     cardPageChange(){
         this.getUCC();
     },
     watchCard(imgsrc){
       this.$alert('<div class="watch_img"><img src="'+imgsrc+'" /></div>', '查看卡牌', {
         dangerouslyUseHTMLString: true,
-        lockScroll:false
+        lockScroll:false,
+        customClass:'wm_crearchcard_watch',
       });
     },
     getCardPackage(){
@@ -203,18 +207,26 @@ export default {
             this.$message.error('请设置卡包');
             return false;
         }
-        authApi.adminCreatcard({token:this.token,type:'check',packageId:packageId,id:id,pass:pass}).then(res => {
-            console.log(res);
-            if(res.data.code==0){
-                this.$message.error(res.data.msg);
-            }else if(res.data.code==1){
-                this.$message({
-                    message: res.data.msg,
-                    type: 'success'
-                });
-                this.getUCC();
-            }
-        })
+        this.$confirm('确定'+(pass?'通过':'驳回')+'吗？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          authApi.adminCreatcard({token:this.token,type:'check',packageId:packageId,id:id,pass:pass}).then(res => {
+              console.log(res);
+              if(res.data.code==0){
+                  this.$message.error(res.data.msg);
+              }else if(res.data.code==1){
+                  this.$message({
+                      message: res.data.msg,
+                      type: 'success'
+                  });
+                  this.getUCC();
+              }
+          })
+        }).catch(() => {
+        
+        });
     },
     getUCC(){
         authApi.adminCreatcard({token:this.token,type:'get',page:this.page}).then(res => {
@@ -230,4 +242,9 @@ export default {
   },
 }
 </script>
-
+<style>
+.wm_admin_cardpass_watchcard{
+  width:396px;
+  height: 556px;
+}
+</style>

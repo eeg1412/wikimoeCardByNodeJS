@@ -1,4 +1,4 @@
-# 维基萌抽卡系统Node.js版
+# 维基萌抽卡系统Node.js版v1.x
 
 by 广树 [维基萌](https://www.wikimoe.com/)
 
@@ -6,7 +6,7 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 
 ### 介绍
 
-一款由玩家DIY卡牌的卡牌收集游戏。
+一款由玩家自由DIY卡牌的卡牌收集游戏。
 
 ### 特色系统
 

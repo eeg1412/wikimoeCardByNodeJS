@@ -1672,3 +1672,7 @@ img.wm_demining_img {
 .wm_battle_notify{
   z-index: 9999!important;
 }
+/* 制卡 */
+.wm_crearchcard_watch{
+  width: 426px;
+}

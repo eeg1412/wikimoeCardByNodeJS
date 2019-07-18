@@ -450,9 +450,6 @@ export default {
     display: inline-block;
     margin-bottom: 10px;
 }
-.wm_crearchcard_watch{
-    width: 426px;
-}
 .wm_crearcard_info_body{
     border-top: 1px dashed #ccc;
 }
