@@ -27,6 +27,7 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 ### 关于更新
 
 如果是更新的话，请注意不要覆盖/server/config/config.json，如果覆盖将会导致配置失效。
+
 1.x不兼容0.x的数据库！
 
 ### 使用方法
