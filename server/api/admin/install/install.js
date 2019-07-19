@@ -63,6 +63,27 @@ module.exports = async function(req, res, next){
                 );
                 return false;
             }
+            let searchAdmin =await adminUtilsDatabase.findAdmin({}).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            });
+            if(searchAdmin){
+                res.send({
+                    code:0,
+                    msg:'检测到已经有管理员账号，请检查配置！'
+                });
+                console.error(
+                    chalk.red('已经存在管理员账号，安装失败！')
+                );
+                return false;
+            }
+            // 配置信息
             let adminParams ={
                 account:config_.account,
                 password:md5(config_.password),
