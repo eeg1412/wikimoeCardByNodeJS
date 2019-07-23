@@ -10,6 +10,7 @@ var history = require('connect-history-api-fallback');
 var apiRouter = require('./routes/api');
 const accessLogger = require("./lib/log/accessLogger");  // ADD
 const logger = require("./lib/log/logger").application;
+var compression = require('compression')
 var app = express();
 console.info = (function(oriLogFunc){
     return function(str)
@@ -25,6 +26,15 @@ console.error = (function(oriLogFunc){
         oriLogFunc.call(console,str);
     }
 })(console.error);
+app.use(compression({filter: shouldCompress}))
+function shouldCompress (req, res) {
+ if (req.headers['x-no-compression']) {
+  // 这里就过滤掉了请求头包含'x-no-compression'
+  return false
+ }
+ 
+ return compression.filter(req, res)
+}
 app.use(mlogger('dev'));
 app.use(express.json({limit: '1mb'}));
 app.use(express.urlencoded({ extended: false,limit: '1mb' }));
