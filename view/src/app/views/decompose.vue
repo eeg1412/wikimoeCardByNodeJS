@@ -61,6 +61,13 @@
                         <el-option label="特" value="7"></el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="是否参战">
+                        <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.battle" placeholder="筛选是否参战">
+                        <el-option label="全部" value="0"></el-option>
+                        <el-option label="不参战" value="1"></el-option>
+                        <el-option label="参战" value="2"></el-option>
+                        </el-select>
+                    </el-form-item>
                     <el-form-item label="设置排序">
                         <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.sort" placeholder="设置排序">
                             <el-option label="星级从高到低" value="0"></el-option>
@@ -74,12 +81,15 @@
             </transition>
             <transition name="el-fade-in-linear">
                 <div class="wm_mycard_list type_dec" v-if="userCard.length>0">
-                    <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box type_mobile">
+                    <div v-for="(item,index) in userCard" v-bind:key="index+1" class="wm_getcard_box type_mobile" :class="{'type_locked':item.lock}">
                         <div class="wm_dec_img_box">
                             <div class="wm_dec_can_num">可解:{{item.count-1}}张</div>
+                            <el-tooltip class="item" effect="dark" :content="item.lock?'点击解锁':'点击锁定'" :enterable="false" :hide-after="1500" placement="bottom">
+                                <div class="wm_dec_lock wm_set_pointer" @click="goLockCard(item,index)"><i class="el-icon-lock" v-if="item.lock"></i><i class="el-icon-unlock" v-else></i>{{item.lock?'已锁定':'未锁定'}}</div>
+                            </el-tooltip>
                             <img class="wm_getcard_img" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'">
                         </div>
-                        <div class="wm_dec_input_body"><el-input-number :precision="0" :step="1" :max="item.count-1" :min="0" size="mini" v-model="item.dec" class="wm_dec_input" @change="decChange"></el-input-number></div>
+                        <div class="wm_dec_input_body"><el-input-number :precision="0" :step="1" :max="item.count-1" :min="0" size="mini" v-model="item.dec" class="wm_dec_input" :disabled="item.lock" @change="decChange"></el-input-number></div>
                     </div>
                 </div>
             </transition>
@@ -117,6 +127,8 @@ import itemData from '../../../../server/data/item';
 export default {
   data() {
     return {
+        battlecardId:[],
+        lockCard:localStorage.getItem("wikimoeLockCard")?JSON.parse(localStorage.getItem("wikimoeLockCard")):{},
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         userCard:[],//用户当前页卡牌
         userCardCache:[],//用户卡牌
@@ -134,7 +146,8 @@ export default {
             cry:'0',
             rightType:'0',
             leftType:'0',
-            sort:'0'
+            sort:'0',
+            battle:'1'
         },
     }
   },
@@ -144,13 +157,28 @@ export default {
     decomposehead
   },
   created() {
-      this.getUserCard();
+      this.getMyBattleCard();
       this.getCardPackage();
   },
   mounted() {
       this.$emit('l2dMassage','这里可以分解多余的卡牌，但是感觉很不值得，推荐还是将卡牌寄售市场比较好！');
   },
   methods: {
+    //   锁卡
+    goLockCard(card,index){
+        const cardId = card.cardId;
+        const lock = card.lock;
+        if(lock){
+            this.userCard[index].lock = false;
+            delete this.lockCard[card.cardId];
+        }else{
+            this.userCard[index].lock = true;
+            this.userCard[index].dec = 0;
+            this.lockCard[card.cardId] = true;
+        }
+        localStorage.setItem("wikimoeLockCard",JSON.stringify(this.lockCard));
+        this.$forceUpdate();
+    },
     getCardPackage(){
         authApi.searchcardpackage().then(res => {
             console.log(res);
@@ -223,10 +251,16 @@ export default {
     },
     decAll(){
         for(let i=0;i<this.userCard.length;i++){
-            this.userCard[i].dec = this.userCard[i].count-1;
+            if(!this.userCard[i].lock){
+                this.userCard[i].dec = this.userCard[i].count-1;
+            }
         }
         this.$forceUpdate();
         this.countCardStar();
+        if(this.starCount<=0){
+            this.$message.error('该页没有能分解的卡牌！');
+            return false;
+        }
         this.$confirm('分解卡牌后将会获得<span class="cOrange">'+this.starCount+'</span>颗星星和对应的碎片，是否要继续分解？', '提示', {
           confirmButtonText: '分解',
           cancelButtonText: '取消',
@@ -316,8 +350,19 @@ export default {
             }
             return false;
         }
+        function battle(item){
+            let p_ = that.searchForm.battle;
+            if(p_==='0'){
+                return true;
+            }else if(p_==='1'){
+                return that.battlecardId.indexOf(item)===-1;
+            }else{
+                return that.battlecardId.indexOf(item)!==-1;
+            }
+            return false;
+        }
         console.log(this.userCardCache);
-        let userCardSearchRes = this.userCardCache.filter(item => setStar(item)&& setCry(item.cry) && setRightType(item.rightType) && setLeftType(item.leftType));
+        let userCardSearchRes = this.userCardCache.filter(item => setStar(item)&& setCry(item.cry) && setRightType(item.rightType) && setLeftType(item.leftType) && battle(item.cardId));
         userCardSearchRes = userCardSearchRes.sort(setSort);
         let userCard_ = userCardSearchRes.slice((val-1)*20,val*20);
         this.cardTotle = userCardSearchRes.length;
@@ -340,13 +385,29 @@ export default {
             cry:'0',
             rightType:'0',
             leftType:'0',
-            sort:'0'
+            sort:'0',
+            battle:'1'
         }
         this.cardPage = 1;
         this.getUserCard();
     },
     checkCanBuy(item) {
         return item.count>1;
+    },
+    getMyBattleCard(){
+        let params = {
+            token:this.token,
+            type:'search'
+        }
+        authApi.battlecard(params).then(res => {
+            console.log(res);
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                this.battlecardId = res.data.cardId;
+                this.getUserCard();
+            }
+        });
     },
     getUserCard(){
         authApi.searchcardbytoken({token: this.token,packageId:this.seledCardPackage}).then(res => {
@@ -361,6 +422,7 @@ export default {
                     for(let i=0;i<this.userCardCache.length;i++){
                         this.userCardCache[i]['count'] = userCardCount[this.userCardCache[i].cardId] || 0;
                         this.userCardCache[i]['dec'] = 0;
+                        this.userCardCache[i]['lock'] = this.lockCard[this.userCardCache[i].cardId]||false;
                     }
                     this.userCardCache = this.userCardCache.filter(this.checkCanBuy);
                     this.cardTotle = this.userCardCache.length;
@@ -379,16 +441,31 @@ export default {
 </script>
 
 <style scoped>
-.wm_dec_can_num{
+.wm_dec_can_num,.wm_dec_lock{
     position: absolute;
     z-index: 2;
     right: 5px;
-    bottom: 5px;
-    background-color: rgba(255,255,255,0.85);
+    left: 5px;
     padding: 2px 5px;
     border-radius: 3px;
     font-size: 12px;
+}
+.wm_dec_can_num{
+    bottom: 28px;
+    background-color: rgba(255,255,255,0.85);
     color: #ff5364;
+}
+.wm_dec_lock{
+    bottom: 5px;
+    color:#ff5364;
+    background-color: rgba(255,255,255,0.85);
+}
+.wm_dec_lock:hover{
+    background-color: rgba(255,255,255,0.95);
+}
+.wm_getcard_box.type_locked .wm_dec_lock{
+    background-color: #ff5364;
+    color:#fff;
 }
 .wm_dec_img_box{
     position: relative;
@@ -403,6 +480,9 @@ export default {
 }
 .wm_mycard_list.type_dec .wm_getcard_box{
     height: 301px;
+}
+.wm_getcard_box.type_locked{
+    opacity: 0.4;
 }
 .wm_mycard_list.type_dec .wm_getcard_img{
     cursor: url(/static/cur/default.cur),default;
