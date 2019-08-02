@@ -118,7 +118,7 @@ import itemData from '../../../../server/data/item';
 export default {
   data() {
     return {
-        fromLevel:this.$route.query.fromLevel||'1',
+        fromLevel:Number(this.$route.query.fromLevel),
         from:this.$route.query.from||'1',
         fromPackageId:this.$route.query.packageId||'0',
         to:null,
