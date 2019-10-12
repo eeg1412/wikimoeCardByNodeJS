@@ -96,8 +96,9 @@
                     </el-form-item>
                     <el-form-item label="设置排序">
                         <el-select class="wm_cardlist_select type_120" @change="searchChanged" v-model="searchForm.sort" placeholder="设置排序">
-                            <el-option label="星级从高到低" value="0"></el-option>
-                            <el-option label="星级从低到高" value="1"></el-option>
+                            <el-option label="求购优先" value="0"></el-option>
+                            <el-option label="星级高到低" value="1"></el-option>
+                            <el-option label="星级低到高" value="2"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-form>
@@ -210,7 +211,8 @@ export default {
     },
     getWant(){
       let params = {
-          token:this.token
+          token:this.token,
+          packageId:this.seledCardPackage
       }
       authApi.searchwantcard(params).then(res => {
           console.log(res);
@@ -380,7 +382,16 @@ export default {
         function setSort(a,b){
             let sort_ = that.searchForm.sort;
             if(sort_==='0'){
-                if(a.star<b.star){
+                const aWant = that.wantList[a.cardId]||0;
+                const bWant = that.wantList[b.cardId]||0;
+                // 如果有求卡则排前
+                if(aWant||bWant){
+                    if(aWant===bWant){
+                        return b.star-a.star;
+                    }else{
+                        return bWant-aWant;
+                    }
+                }else if(a.star<b.star){
                     return 1;
                 }else if(a.star>b.star){
                     return -1;
@@ -388,6 +399,15 @@ export default {
                     return b.cardId-a.cardId;
                 }
             }else if(sort_==='1'){
+                if(a.star<b.star){
+                    return 1;
+                }else if(a.star>b.star){
+                    return -1;
+                }else{
+                    return b.cardId-a.cardId;
+                }
+            }
+            else if(sort_==='2'){
                 return a.star - b.star;
             }
         }
