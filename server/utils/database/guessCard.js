@@ -43,7 +43,7 @@ exports.deletGuessCard = async function (parmas) {
 }
 // 创建新的猜卡
 exports.creatNewGuessCard = async ()=>{
-    console.log(
+    console.info(
         chalk.green('生成猜卡数据中...')
     );
     // 查询开放的卡包
@@ -85,7 +85,7 @@ exports.creatNewGuessCard = async ()=>{
         guessCardArrRes.push(data_);
     }
     // 将现在开放的猜卡关闭并抽选出中奖序号
-    this.creatGuessCardAttack();
+    await this.creatGuessCardAttack();
     // 设定时间
     const timeNow = Math.floor(new Date().getTime()/3600000);
     // 写入数据库
@@ -100,7 +100,7 @@ exports.creatNewGuessCard = async ()=>{
         );
         throw err;
     });
-    console.log(
+    console.info(
         chalk.green('生成猜卡数据完毕！')
     );
     // 删除旧的猜卡
