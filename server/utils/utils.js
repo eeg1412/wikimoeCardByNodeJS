@@ -9,6 +9,18 @@ var userData = require('./database/user');
 var marketData = require('./database/market');
 var cardData = require('../data/cardData');
 
+// 随机数组
+exports.randomArray = function(array,count){
+    const arr = [...array]
+    let result = [];
+    const ranNum = count;
+    for (var i = 0; i < ranNum; i++) {
+        let ran = Math.floor(Math.random() * (arr.length - i));
+        result.push(arr[ran]);
+        arr[ran] = arr[arr.length - i - 1];
+    };
+    return result
+}
 // 设置最低价格
 exports.checkMinPrice = function(star){
     // 设置最低价格

@@ -8,7 +8,7 @@ var apiSearchCard = require('../api/searchCard');
 var apiSearchCardByToken = require('../api/searchCardByToken');
 var apiSearchLog = require('../api/searchLog');
 var apiCaptcha = require('../api/captcha');
-var apiSendMail = require('../api/sendEMail');
+var apiSendMail = require('../api/sendEmail');
 var apiUserInfo = require('../api/userInfo');
 var apiShop = require('../api/shop');
 var apiLogout = require('../api/logout');
@@ -35,6 +35,8 @@ var apiSearchCardPackage = require('../api/searchCardPackage');
 var apiUploadcard = require('../api/uploadcard');
 var apiHandbook = require('../api/handbook');
 var apiSearchCreatCard = require('../api/searchcreatcard');
+var apiSearchGuessCard = require('../api/searchGuessCard');
+var apiUserGuessCard = require('../api/userGuessCard');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -91,6 +93,8 @@ router.post('/uploadcard', apiUploadcard);
 router.post('/searchcardpackage', apiSearchCardPackage);
 router.post('/handbook', apiHandbook);
 router.post('/searchcrearchcard', apiSearchCreatCard);
+router.post('/searchguesscard', apiSearchGuessCard);
+router.post('/userguesscard', apiUserGuessCard);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);

@@ -20,6 +20,7 @@ const upgradecardView = () => import(/* webpackChunkName: "battleCryView" */ '@/
 const dailyGetItemView = () => import(/* webpackChunkName: "dailyGetItemView" */ '@/views/userDaliyGetItem.vue')
 const cardlevelchangeView = () => import(/* webpackChunkName: "dailyGetItemView" */ '@/views/cardlevelchange.vue')
 const creatcardView = () => import(/* webpackChunkName: "dailyGetItemView" */ '@/views/creatcard.vue')
+const guessCardView = () => import(/* webpackChunkName: "guessCardView" */ '@/views/guessCard/index.vue')
 
 const adminLoginView = () => import(/* webpackChunkName: "adminLoginView" */ '@/views/admin/login-view.vue')
 const adminInstallView = () => import(/* webpackChunkName: "adminInstallView" */ '@/views/admin/install-view.vue')
@@ -127,6 +128,43 @@ const router = new VueRouter({
           name: 'cardDetail',
           path: 'carddetail',
           component: resolve => require(['../views/market/carddetail.vue'], resolve),
+          meta:{
+            login:true,
+            admin:false,
+          },
+        },
+      ]
+    },
+    {
+      path: '/star/guessCard',
+      component: guessCardView,
+      children: [
+        { //默认
+          path: '',
+          redirect: 'guess'
+        },
+        {//猜卡
+          name: 'guess',
+          path: 'guess',
+          component: resolve => require(['../views/guessCard/guessCard.vue'], resolve),
+          meta:{
+            login:true,
+            admin:false,
+          },
+        },
+        {//兑换
+          name: 'getGuessCard',
+          path: 'getGuessCard',
+          component: resolve => require(['../views/guessCard/getGuessCard.vue'], resolve),
+          meta:{
+            login:true,
+            admin:false,
+          },
+        },
+        {//往期
+          name: 'guessHistory',
+          path: 'guessHistory',
+          component: resolve => require(['../views/guessCard/guessHistory.vue'], resolve),
           meta:{
             login:true,
             admin:false,

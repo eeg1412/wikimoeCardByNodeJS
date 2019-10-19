@@ -1,0 +1,2 @@
+合并master分支后view需要重新Build一下
+注意配置json是否有更新

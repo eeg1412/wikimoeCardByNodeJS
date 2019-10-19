@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var chalk = require('chalk');
+const checkStat = require('../utils/check');
 
 mongoose.connect(global.myAppConfig.url,{useNewUrlParser:true,useFindAndModify: false});
 mongoose.Promise = global.Promise;
@@ -10,6 +11,8 @@ db.once('open' ,() => {
 	console.log(
     chalk.green('连接数据库成功')
   );
+  checkStat.checkGuessCard();
+  checkStat.checkRank();
   // var update = require('../api/admin/install/updateUserData.js');
   // var update = require('../api/admin/install/updateUCC');
 })
