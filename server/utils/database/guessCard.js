@@ -71,9 +71,9 @@ exports.creatNewGuessCard = async ()=>{
     const starThree = allCardData.filter(item => item.star<=3);
     // 生成随机星级卡牌数量
     let guessCardArr = utils.randomArray(starSix,1);
-    guessCardArr = guessCardArr.concat(utils.randomArray(starFive,5));
-    guessCardArr = guessCardArr.concat(utils.randomArray(starFour,12));
-    guessCardArr = guessCardArr.concat(utils.randomArray(starThree,32));
+    guessCardArr = guessCardArr.concat(utils.randomArray(starFive,2));
+    guessCardArr = guessCardArr.concat(utils.randomArray(starFour,5));
+    guessCardArr = guessCardArr.concat(utils.randomArray(starThree,42));
     // 取其中30个
     guessCardArr = utils.randomArray(guessCardArr,30);
     let guessCardArrRes = [];

@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const utils = require('../utils/utils');
 const guessCardData = require('../utils/database/guessCard');
+const cardPackageData = require('../utils/database/cardPackage');
 
 module.exports = async function(req, res, next){
     const IP = utils.getUserIp(req);
@@ -67,9 +68,37 @@ module.exports = async function(req, res, next){
             );
             throw err;
         });
+        // 查询卡包数据
+        // 以后更新猜卡卡包后增加条件
+        const params = {};
+        const packageInfo = await cardPackageData.findCardPackageMany(params,'name packageId').catch((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库查询错误！')
+            );
+            throw err;
+        });
+        // 查询卡牌拥有数量
+        let myCardCount = {};
+        for(let i=0;i<guessCardInfo.card.length;i++){
+            const cardId = guessCardInfo.card[i].cardId;
+            const packageId = guessCardInfo.card[i].packageId;
+            try {
+                myCardCount[cardId] = result.card[packageId][cardId]?result.card[packageId][cardId]:0;
+            }
+            catch(err) {
+                myCardCount[cardId] = 0;
+            }
+        }
         // 发送数据
         res.send({
             code:1,
+            myCardCount:myCardCount,
+            packageInfo:packageInfo,
+            battleCard:result.battleCard,
             data:guessCardInfo,
             msg:'ok'
         });

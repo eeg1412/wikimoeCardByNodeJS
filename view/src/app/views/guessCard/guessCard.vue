@@ -9,9 +9,15 @@
     <div class="wm_guesscard_card_body" v-if="data.length>0">
       <el-row :gutter="5">
         <el-col class="mb5" :span="4" :xs="8" v-for="(item,index) in data" v-bind:key="index">
-          <div class="wm_guesscard_col">
-            <img :class="{wm_guesscard_nosel:!item.sel}" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'" class="wm_guesscard_card_img" v-bind:key="item.cardId" @click="selCard(index)" />
+          <div class="wm_guesscard_col" @click="selCard(index)">
+            <img :class="{wm_guesscard_nosel:!item.sel}" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'" class="wm_guesscard_card_img" v-bind:key="item.cardId" />
+            <div class="wm_guesscard_mark_box type_2 f12 cOrange ellipsis"><span class="wm_guesscard_mark_item">{{packageInfo[item.packageId]}}</span></div>
+            <div class="wm_guesscard_mark_box f12 cRed ellipsis"><span class="wm_guesscard_mark_item" v-if="checkIndexOf(item.cardId,battleCard)!==-1">战</span> <span class="wm_guesscard_mark_item cGreen1A7">持:{{haveCard[item.cardId]}}</span></div>
           </div>
+          <!-- <div class="tc mt5 mb5" :class="{wm_guesscard_nosel:!item.sel}">
+            <div class="ellipsis f12 wm_guesscard_packageinfo">{{packageInfo[item.packageId]}}</div>
+            <div class="ellipsis f12 wm_guesscard_cardhave">持有:{{haveCard[item.cardId]}}</div>
+          </div> -->
         </el-col>
       </el-row>
       <div class="wm_guesscard_btn_body">
@@ -33,6 +39,9 @@ export default {
       data:[],
       cardTime:0,
       time:0,
+      packageInfo:{},
+      haveCard:{},
+      battleCard:[],
     }
   },
   created() {
@@ -49,6 +58,9 @@ export default {
     this.$emit('l2dMassage','这里可以进行猜卡，不仅可以获得猜中的卡，更可以获得丰厚的星星奖励！就算一张都没有猜中也可以获得宝石奖励！');
   },
   methods: {
+    checkIndexOf(i,arr){
+      return arr.indexOf(i);
+    },
     send(){
       const seledCard = this.data.filter(item => item.sel);
       if(seledCard.length<6){
@@ -120,12 +132,18 @@ export default {
           if(res.data.code==0){
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
+            this.haveCard = res.data.myCardCount;
+            this.battleCard = res.data.battleCard;
             this.data = res.data.data.card;
             this.id = res.data.data._id;
             this.cardTime = Number(res.data.data.time);
             for(let i=0;i<this.data.length;i++){
               this.data[i].sel = false;
               this.data[i].index = i;
+            }
+            const packageInfo_ = res.data.packageInfo;
+            for(let i=0;i<packageInfo_.length;i++){
+              this.packageInfo[packageInfo_[i].packageId] = packageInfo_[i].name;
             }
           }
       });
@@ -138,7 +156,6 @@ export default {
 .wm_guesscard_card_img{
   width: 100%;
   height: auto;
-  cursor: url(/static/cur/pointer.cur),pointer;
 }
 .wm_guesscard_nosel{
   opacity: 0.4;
@@ -157,10 +174,25 @@ export default {
   padding-bottom: 140%;
   position: relative;
   z-index: 1;
+  cursor: url(/static/cur/pointer.cur),pointer;
 }
 .wm_guesscard_col img{
   position: absolute;
   left: 0;
   top: 0;
+}
+.wm_guesscard_mark_box{
+  z-index: 2;
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+}
+.wm_guesscard_mark_box.type_2{
+  bottom: 24px;
+}
+.wm_guesscard_mark_item{
+  background-color: rgba(255,255,255,0.8);
+  padding: 0px 3px;
 }
 </style>
