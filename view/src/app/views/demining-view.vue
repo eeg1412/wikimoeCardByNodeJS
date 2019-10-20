@@ -88,8 +88,8 @@ export default {
     this.$emit('l2dMassage','这里挖到游戏的通货【星星】和升级卡牌所需要的材料。显示的数字暗示周围的星星数量。请注意每种镐的产出不一样哦！');
     let socketurl = window.location.hostname;
     let port = window.location.port;
-    // this.socket = io.connect('//'+socketurl+':'+port);
-    this.socket = io.connect('//'+socketurl+':3000');
+    this.socket = io.connect('//'+socketurl+':'+port);
+    // this.socket = io.connect('//'+socketurl+':3000');
     this.socket.on('userCount',(data)=>{
       this.onlineUser = data.userCount;
     });
