@@ -58,6 +58,7 @@ module.exports = async function(req, res, next){
     }else if(type==='check'){
         let pass = req.body.pass?1:0;
         let id = req.body.id;
+        let mark = req.body.mark?req.body.mark:'无';
         let packageId = req.body.packageId;
         let UCCData = await userCreatCardData.findUserCreatCardOne({_id:id}).catch((err)=>{
             res.send({
@@ -239,7 +240,7 @@ module.exports = async function(req, res, next){
             fs.unlinkSync('./public/userCreatCard/'+UCCData._id+'.jpg');
         }
         //写入用户卡牌申请
-        await userCreatCardData.updataUserCreatCard({_id:id},{check:1,pass:pass,packageId:pass?packageId:'',cardId:pass?newCardId:''}).catch((err)=>{
+        await userCreatCardData.updataUserCreatCard({_id:id},{check:1,pass:pass,packageId:pass?packageId:'',cardId:pass?newCardId:'',mark:mark}).catch((err)=>{
             res.send({
                 code:0,
                 msg:'内部错误请联系管理员！'

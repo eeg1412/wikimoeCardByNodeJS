@@ -1,7 +1,8 @@
-var utils = require('../utils/utils');
-var userCreatCard = require('../utils/database/userCreatCard');
-var chalk = require('chalk');
-var base64Img = require('base64-img');
+const utils = require('../utils/utils');
+const userCreatCard = require('../utils/database/userCreatCard');
+const chalk = require('chalk');
+const base64Img = require('base64-img');
+const cardPackageData = require('../utils/database/cardPackage');
 
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
@@ -15,6 +16,7 @@ module.exports = async function(req, res, next){
     let imgBase64 = req.body.imgBase64;
     let SK = req.body.secretkey;
     let captcha = req.body.captcha;
+    let packageId = req.body.packageId;
 
     console.info(
         chalk.green(IP+'开始制卡')
@@ -66,7 +68,8 @@ module.exports = async function(req, res, next){
     let ltReg = /^[1-5]{1}$/
     let rtReg = /^[1-7]{1}$/
     let cryReg = /^[1-5]{1}$/
-    if(!starReg.test(star) || !ltReg.test(leftType) || !rtReg.test(rightType) || !cryReg.test(cry) || !title || !name || !imgBase64){
+    let packageIdReg = /^[0-9]*$/
+    if(!packageIdReg.test(packageId) || !starReg.test(star) || !ltReg.test(leftType) || !rtReg.test(rightType) || !cryReg.test(cry) || !title || !name || !imgBase64){
         console.info(
             chalk.yellow(IP+'参数有误！')
         )
@@ -131,7 +134,7 @@ module.exports = async function(req, res, next){
         );
         throw err;
     })
-    //检查是否超过5张卡牌
+    //检查是否超过20张卡牌
     if(uploadData.length>=20){
         res.send({
             code:0,
@@ -141,6 +144,27 @@ module.exports = async function(req, res, next){
             chalk.yellow('制卡图片数据有误')
         );
         return false
+    }
+    // 检查是否有这个卡包
+    let packageData = await cardPackageData.findCardPackageOne({packageId:packageId}).catch((err)=>{
+        res.send({
+            code:0,
+            msg:'内部错误请联系管理员！'
+        });
+        console.error(
+            chalk.red(err)
+        );
+        return false;
+    });
+    if(!packageData){
+        res.send({
+            code:0,
+            msg:'无该卡包！'
+        });
+        console.info(
+            chalk.yellow('不存在卡包'+packageId+',IP为：'+IP)
+        )
+        return false;
     }
     //写入数据库
     let timeNow = Math.round(new Date().getTime()/1000);
@@ -155,6 +179,7 @@ module.exports = async function(req, res, next){
         title:title,
         name:name,
         time:timeNow,
+        packageId:packageId,
     }
     let uploadCardData = await userCreatCard.saveUserCreatCard(uploadCardDataParams).catch ((err)=>{
         res.send({
