@@ -99,6 +99,16 @@ exports.creatRankFile = async ()=>{
     sortData = {UCC:-1};
     let UCC_ =  await userData.findUserInPage(parmas,pageSize_,page_,getParams,sortData);
     newRankData['UCC'] = UCC_['data'];
+    // 查询星星数量
+    getParams = '-_id star md5 nickName';
+    sortData = {star:-1};
+    let star_ =  await userData.findUserInPage(parmas,pageSize_,page_,getParams,sortData);
+    newRankData['star'] = star_['data'];
+    // 查询猜卡数量
+    getParams = '-_id guessCardCount md5 nickName';
+    sortData = {guessCardCount:-1};
+    let guessCardCount_ =  await userData.findUserInPage(parmas,pageSize_,page_,getParams,sortData);
+    newRankData['guessCardCount'] = guessCardCount_['data'];
     // 更新文件
     let rankData_ = JSON.stringify(newRankData);
     fs.writeFileSync('./config/cache/rank.json', rankData_, 'utf8');

@@ -182,7 +182,7 @@
               >我在<span class="wm_card_get_list_card_link" @click="goMenu('/creatcard')">卡牌工坊</span>制作的{{item.data.star}}星卡牌——出自作品《{{item.data.title}}》的<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.packageId+'/'+item.data.cardId+'.jpg')">{{item.data.name}}</span>，通过了审核，获得了100颗星星的奖励！应该过不了多久大家就能抽到我制作的卡牌了吧！
               </span>
               <span v-else-if="item.type=='guesscard'"
-              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/star/guessCard/guess')">星星猜卡</span>中猜了<span class="wm_card_get_list_card_link" @click="openCardList(item.data.card)">这6张卡牌</span>，希望运气爆棚中个大奖抱回家！
+              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/star/guessCard/guess')">星星猜卡</span>中猜了<span class="wm_card_get_list_card_link" @click="openCardList(item.data.card)">这6张卡牌</span>，希望运气爆棚中个大奖，大家也快来一起猜卡吧，一夜暴富就在这一下！
               </span>
               <span v-else-if="item.type=='guesscardNoCard'"
               >我虽然在<span class="wm_card_get_list_card_link" @click="goMenu('/star/guessCard/guess')">星星猜卡</span>中没有猜中卡牌，但是我也获得了{{item.data.itemName}}×2，希望下次能中一个大奖！
