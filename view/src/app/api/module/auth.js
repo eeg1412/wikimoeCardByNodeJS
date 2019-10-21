@@ -102,6 +102,12 @@ export default function (api) {
     searchcardpackage(data){
       return api.post('searchcardpackage',data)
     },
+    searchguesscard(data){
+      return api.post('searchguesscard',data)
+    },
+    userguesscard(data){
+      return api.post('userguesscard',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },

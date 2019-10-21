@@ -31,6 +31,12 @@
       </div>
       <div class="wm_card_menu_text">矿场</div>
     </div>
+    <div class="wm_card_menu_box" @click="login('/star/guesscard')" v-if="$route.path.indexOf('/star/guessCard')==-1" @mouseenter="$wikimoecard.l2dMassage('通过猜卡获得丰厚的奖励吧！')" @mouseleave="$wikimoecard.l2dMassageClose">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/guesscard.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">猜卡</div>
+    </div>
     <div class="wm_card_menu_box" @click="login('/battle')" v-if="$route.path!='/battle'" @mouseenter="$wikimoecard.l2dMassage('通过对战来增加每日抽卡的机会吧！')" @mouseleave="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/battle.png" width="100%" height="100%" />

@@ -95,6 +95,16 @@
                             <el-option label="特" value="7"></el-option>
                         </el-select>
                     </el-form-item>
+                    <el-form-item label="选择卡包">
+                        <el-select v-model="seledCardPackage" placeholder="选择卡包">
+                            <el-option
+                            v-for="item in cardPackage"
+                            :key="item.packageId"
+                            :label="item.name"
+                            :value="item.packageId">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                 </el-form>
             </el-col>
         </el-row>
@@ -109,7 +119,7 @@
                     <div class="ellipsis w_10">名字：{{item.name}}</div>
                     <div>状态：{{item.check==0?'未审核':'已审核'}}</div>
                     <div v-if="item.check==0">结果：--</div>
-                    <div v-else>结果：<span v-if="item.pass==0" class="cRed">驳回</span><span v-else class="cGreen1A7">通过</span></div>
+                    <div v-else>结果：<span v-if="item.pass==0" class="cRed"><span>驳回</span><el-tooltip class="item" effect="dark" :content="item.mark?item.mark:'无'" placement="top"><span class="wm_crearcard_info_nopass">(理由)</span></el-tooltip></span><span v-else class="cGreen1A7">通过</span></div>
                 </el-card>
             </el-col>
         </el-row>
@@ -167,6 +177,8 @@ export default {
             leftTypeSprite:null,
             rightTypeSprite:null,
         },
+        seledCardPackage:'0',
+        cardPackage:[],
         imageUrl: '',
         creatCardInfo:[],
     }
@@ -184,10 +196,21 @@ export default {
       }
   },
   mounted() {
+      this.getCardPackage();
       this.drawCard();
       this.getLog();
   },
   methods: {
+      getCardPackage(){
+        authApi.searchcardpackage().then(res => {
+            console.log(res);
+            if(res.data.code==0){
+                this.$message.error(res.data.msg);
+            }else if(res.data.code==1){
+                this.cardPackage = res.data.data;
+            }
+        });
+      },
       logPageChange(){
           this.getLog();
       },
@@ -219,7 +242,8 @@ export default {
             name:this.cardSet.name,
             token:this.token,
             imgBase64:this.uploadCardUrl,
-            captcha:v
+            captcha:v,
+            packageId:this.seledCardPackage
         }
         authApi.uploadcard(params).then(res => {
             console.log(res);
@@ -436,6 +460,10 @@ export default {
 }
 .common_body.type_creatcard{
     padding: 20px 10px;
+}
+.wm_crearcard_info_nopass{
+    text-decoration: underline;
+    cursor: url(/static/cur/pointer.cur),pointer;
 }
 @media ( max-width : 768px) {
   .common_body.type_creatcard{

@@ -22,6 +22,7 @@ var users = new Schema({
   card: {},
   cardIndexCount:{type: Number, default: 0},
   UCC:{type: Number, default: 0},
+  guessCardCount:{type: SchemaTypes.Long, default: 0},
   token:{type: String, default: ''},
   ip:String,
   ban:{type: Number, default: 0},

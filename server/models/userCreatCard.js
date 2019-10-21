@@ -18,6 +18,7 @@ var usercreatcard = new Schema({
     packageId:String,
     cardId:String,
     time:{type: SchemaTypes.Long, default: 0},
+    mark:{type: String, default: ''},
 });
 
 module.exports = mongoose.model('usercreatcard', usercreatcard);

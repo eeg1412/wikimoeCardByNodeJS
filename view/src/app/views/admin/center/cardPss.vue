@@ -207,26 +207,48 @@ export default {
             this.$message.error('请设置卡包');
             return false;
         }
-        this.$confirm('确定'+(pass?'通过':'驳回')+'吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          authApi.adminCreatcard({token:this.token,type:'check',packageId:packageId,id:id,pass:pass}).then(res => {
-              console.log(res);
-              if(res.data.code==0){
-                  this.$message.error(res.data.msg);
-              }else if(res.data.code==1){
-                  this.$message({
-                      message: res.data.msg,
-                      type: 'success'
-                  });
-                  this.getUCC();
-              }
-          })
-        }).catch(() => {
-        
-        });
+        if(pass){
+          this.$confirm('确定通过吗？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            authApi.adminCreatcard({token:this.token,type:'check',packageId:packageId,id:id,pass:pass}).then(res => {
+                console.log(res);
+                if(res.data.code==0){
+                    this.$message.error(res.data.msg);
+                }else if(res.data.code==1){
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'success'
+                    });
+                    this.getUCC();
+                }
+            })
+          }).catch(() => {
+          
+          });
+        }else{
+          this.$prompt('请输入驳回理由', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            lockScroll:false,
+          }).then(({ value }) => {
+            authApi.adminCreatcard({token:this.token,type:'check',packageId:packageId,id:id,pass:pass,mark:value}).then(res => {
+                console.log(res);
+                if(res.data.code==0){
+                    this.$message.error(res.data.msg);
+                }else if(res.data.code==1){
+                    this.$message({
+                        message: res.data.msg,
+                        type: 'success'
+                    });
+                    this.getUCC();
+                }
+            })
+          }).catch(() => {     
+          });
+        }
     },
     getUCC(){
         authApi.adminCreatcard({token:this.token,type:'get',page:this.page}).then(res => {

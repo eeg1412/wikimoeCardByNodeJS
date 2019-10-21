@@ -140,8 +140,8 @@ var getMineMap = function(socket,cast){
         }
     });
 }
-var openNode = function(socket,data,result_){
-    deminingModel.findOne({ close: 0 }, async (err, result)=> {
+const openNode = async function(socket,data,result_){
+    await deminingModel.findOne({ close: 0 }, async (err, result)=> {
         if (err) {
             socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
             throw err;
@@ -417,7 +417,7 @@ exports.mine = async function(socket,data){
                 sendUserData(socket,userData);
                 return false;
             }
-            openNode(socket,data,result);
+            await openNode(socket,data,result);
         }  
     }else{
         console.info(
