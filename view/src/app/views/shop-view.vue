@@ -5,7 +5,7 @@
     <div class="tc">
       <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_card_package_sel" :disabled="openList">
         <el-option
-          v-for="item in cardPackage.filter(item =>{return item.open})"
+          v-for="item in cardPackage.filter(item =>{return item.starShopOpen})"
           :key="item.packageId"
           :label="item.name"
           :value="item.packageId">
@@ -100,7 +100,16 @@ export default {
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
             this.cardPackage = res.data.data;
-            this.seledCardPackage = localStorage.getItem("shopCardPackageId") || '0';
+            let nowPackageId = localStorage.getItem("shopCardPackageId") || '0';
+            this.seledCardPackage = '0';
+            for(let i=0;i<this.cardPackage.length;i++){
+              if(this.cardPackage[i].packageId===nowPackageId){
+                if(this.cardPackage[i].starShopOpen){
+                  this.seledCardPackage = nowPackageId;
+                }
+                break;
+              }
+            }
           }
       });
     },

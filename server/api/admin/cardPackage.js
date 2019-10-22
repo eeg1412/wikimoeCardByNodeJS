@@ -154,7 +154,7 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green(adminAccount+'改卡包名成功,IP为：'+IP)
         )
-    }else if(type==='open'){
+    }else if(type==='daily' || type==='shop' || type==='guess' || type==='starCoin'){
         let open = req.body.open?true:false;
         console.info(
             chalk.green(adminAccount+'开始打开或关闭卡包,IP为：'+IP)
@@ -180,25 +180,45 @@ module.exports = async function(req, res, next){
             });
             return false;
         }
-        if(resault.packageId=='0'){
-            res.send({
-                code:0,
-                msg:'基础卡包无法开关！'
-            });
-            return false;
-        }
-        if(open){
-            if((resault.oneStar+resault.twoStar+resault.threeStar)<3 || resault.fourStar<3 || resault.fiveStar<3 || resault.sixStar<3){
+        // 校验每种卡包是否符合要求
+        if(type==='daily'){
+            if(resault.packageId=='0'){
                 res.send({
                     code:0,
-                    msg:'卡包卡牌数量不足，无法开启！'
+                    msg:'基础卡包无法开关！'
                 });
                 return false;
             }
+            if(open){
+                if((resault.oneStar+resault.twoStar+resault.threeStar)<3 || resault.fourStar<3 || resault.fiveStar<3 || resault.sixStar<3){
+                    res.send({
+                        code:0,
+                        msg:'卡包卡牌数量不足，无法开启！'
+                    });
+                    return false;
+                }
+            }
         }
-        let params_ = {
-            open:open,
+        // 设置每种卡包开关
+        let params_ = {}
+        if(type==='daily'){
+            params_ = {
+                open:open,
+            }
+        }else if(type==='shop'){
+            params_ = {
+                starShopOpen:open,
+            }
+        }else if(type==='guess'){
+            params_ = {
+                guessOpen:open,
+            }
+        }else if(type==='starCoin'){
+            params_ = {
+                starCoinOpen:open,
+            }
         }
+        // 写入数据库
         await cardPackageData.updataCardPackage(params,params_).catch((err)=>{
             res.send({
                 code:0,
@@ -214,7 +234,7 @@ module.exports = async function(req, res, next){
             msg:'修改成功！'
         });
         let logObj = {
-            text:'使用管理员账号'+adminAccount+(open?'打开':'关闭')+'卡包名：《'+resault.name+'》',
+            text:'使用管理员账号'+adminAccount+(open?'打开':'关闭')+'卡包名：《'+resault.name+'》,类别：'+type,
             ip:IP
         }
         adminUtils.adminWriteLog(logObj);

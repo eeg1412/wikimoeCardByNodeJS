@@ -315,7 +315,16 @@ export default {
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
             this.cardPackage = res.data.data;
-            this.seledCardPackage = localStorage.getItem("dailyCardPackageId") || '0';
+            let nowPackageId = localStorage.getItem("dailyCardPackageId") || '0';
+            this.seledCardPackage = '0';
+            for(let i=0;i<this.cardPackage.length;i++){
+              if(this.cardPackage[i].packageId===nowPackageId){
+                if(this.cardPackage[i].open){
+                  this.seledCardPackage = nowPackageId;
+                }
+                break;
+              }
+            }
           }
       });
     },

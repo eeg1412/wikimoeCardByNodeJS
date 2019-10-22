@@ -68,6 +68,16 @@ module.exports = async function(req, res, next){
             );
             throw err;
         });
+        if(!guessCardInfo){
+            res.send({
+                code:0,
+                msg:'当前无猜卡数据！'
+            });
+            console.error(
+                chalk.red('当前无猜卡数据！')
+            );
+            return false;
+        }
         // 查询卡包数据
         // 以后更新猜卡卡包后增加条件
         const params = {};

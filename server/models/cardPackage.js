@@ -11,7 +11,10 @@ var cardPackages = new Schema({
   fourStar:{type: Number, default: 0},
   fiveStar:{type: Number, default: 0},
   sixStar:{type: Number, default: 0},
-  open:{type: Boolean, default: false}
+  open:{type: Boolean, default: false},
+  guessOpen:{type: Boolean, default: false},
+  starCoinOpen:{type: Boolean, default: false},
+  starShopOpen:{type: Boolean, default: false},
 });
 
 module.exports = mongoose.model('cardPackages', cardPackages);

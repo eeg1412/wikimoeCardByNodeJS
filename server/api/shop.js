@@ -83,7 +83,7 @@ module.exports = async function(req, res, next){
             )
             return false;
         }
-        let cardIdArr = await cardUitls.chioseCard(packageId,times,true);
+        let cardIdArr = await cardUitls.chioseCard(packageId,times,true,'starShopOpen');
         if(!cardIdArr){
             res.send({
                 code:0,

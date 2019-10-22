@@ -13,6 +13,8 @@ db.once('open' ,() => {
   );
   checkStat.checkGuessCard();
   checkStat.checkRank();
+  // 升级1.3.x用
+  // checkStat.checkPackage();
   // var update = require('../api/admin/install/updateUserData.js');
   // var update = require('../api/admin/install/updateUCC');
 })

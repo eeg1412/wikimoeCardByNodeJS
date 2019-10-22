@@ -1,9 +1,31 @@
 const guessCard = require('../utils/database/guessCard');
 const userGuessCard = require('../utils/database/userGuessCard');
-var userData = require('../utils/database/user');
-var fs = require('fs');
+const userData = require('../utils/database/user');
+const fs = require('fs');
 const chalk = require('chalk');
 const schedule = require('node-schedule');
+const cardPackageData = require('../utils/database/cardPackage');
+
+// 1.3.x升级卡包数据
+exports.checkPackage = async ()=>{
+    console.info(
+        chalk.yellow('开始对卡包数据进行升级！')
+    );
+    const params = {
+        guessOpen:true,
+        starCoinOpen:true,
+        starShopOpen:true,
+    }
+    await cardPackageData.updataCardPackageMany({},params).catch((err)=>{
+        console.error(
+            chalk.red(err)
+        );
+        return false;
+    });
+    console.info(
+        chalk.yellow('卡包数据升级完毕！')
+    );
+}
 
 exports.checkGuessCard = async ()=>{
     // 查看现在有没有开放的猜卡

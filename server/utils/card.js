@@ -7,7 +7,7 @@ var cardPackageData = require('./database/cardPackage');
 var cardData = require('./database/cardData');
 
 // 判断卡包是否存在或者打开
-exports.checkPackage = async function(packageId){
+exports.checkPackage = async function(packageId,packageOpen){
     let resaultPackage = await cardPackageData.findCardPackageOne({packageId:packageId}).catch((err)=>{
         console.error(
             chalk.red(err)
@@ -20,7 +20,7 @@ exports.checkPackage = async function(packageId){
         )
         return false;
     }
-    if(!resaultPackage.open){
+    if(!resaultPackage[packageOpen]){
         console.info(
             chalk.yellow('此为未开放卡包返回false')
         )
@@ -64,9 +64,9 @@ exports.wmCreatCardId = function($randomCardRate,cardDataArr){
 }
 
 // 抽卡
-exports.chioseCard = async function(packageId,times =0,baodi){
+exports.chioseCard = async function(packageId,times =0,baodi,packageOpen = 'open'){
     // 检查卡包
-    let package = await this.checkPackage(packageId);
+    let package = await this.checkPackage(packageId,packageOpen);
     if(!package){
         return false;
     }
