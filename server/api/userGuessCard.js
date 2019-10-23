@@ -42,7 +42,7 @@ module.exports = async function(req, res, next){
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
     if(type==='buy'){
-        const payStar = 188;
+        const payStar = 258;
         // 星星是否够
         if(result.star<payStar){
             res.send({
@@ -331,7 +331,7 @@ module.exports = async function(req, res, next){
             return false;
         }
         // 可以获得的星星
-        const giftStar = [0,10,25,100,2500,500000,5000000];
+        const giftStar = [0,10,30,160,2000,50000,5000000];
         // 检测一共猜中几张卡
         const cardIndexArr = getGuessCardData.selectIndex;
         let cardDataArr = [];
