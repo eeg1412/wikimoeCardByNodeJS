@@ -67,6 +67,12 @@
       </div>
       <div class="wm_card_menu_text">公告</div>
     </div>
+    <div class="wm_card_menu_box" @click="login('/goen')" v-if="$route.path!='/goen'" @mouseenter="$wikimoecard.l2dMassage('通过竞技点获得的五円玉可以在这里进行结缘哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/goen.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">结缘</div>
+    </div>
     <div class="wm_card_menu_box" @click="login('/handbook')" v-if="$route.path.indexOf('/handbook')==-1" @mouseenter="$wikimoecard.l2dMassage('可以查看自己的卡牌收集情况！')" @mouseleave="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/handbook.png" width="100%" height="100%" />

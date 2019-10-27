@@ -44,7 +44,7 @@ module.exports = async function(req, res, next){
         myBattleTimes = 0;
     }
     //查询胜负信息
-    let userbattleinfoData_ = await userbattleinfoData.findOne({email:email},'-_id lose win draw').catch ((err)=>{
+    let userbattleinfoData_ = await userbattleinfoData.findOne({email:email},'-_id lose win draw battleScoreHistory').catch ((err)=>{
         res.send({
             code:0,
             msg:'内部错误请联系管理员！'

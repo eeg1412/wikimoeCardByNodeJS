@@ -21,6 +21,7 @@ const dailyGetItemView = () => import(/* webpackChunkName: "dailyGetItemView" */
 const cardlevelchangeView = () => import(/* webpackChunkName: "dailyGetItemView" */ '@/views/cardlevelchange.vue')
 const creatcardView = () => import(/* webpackChunkName: "dailyGetItemView" */ '@/views/creatcard.vue')
 const guessCardView = () => import(/* webpackChunkName: "guessCardView" */ '@/views/guessCard/index.vue')
+const goenView = () => import(/* webpackChunkName: "goenView" */ '@/views/goen.vue')
 
 const adminLoginView = () => import(/* webpackChunkName: "adminLoginView" */ '@/views/admin/login-view.vue')
 const adminInstallView = () => import(/* webpackChunkName: "adminInstallView" */ '@/views/admin/install-view.vue')
@@ -88,6 +89,15 @@ const router = new VueRouter({
         admin:false,
       },
       component: shopView
+    },
+    {
+      name: 'goen',
+      path: '/goen',
+      meta:{
+        login:false,
+        admin:false,
+      },
+      component: goenView
     },
     {
       path: '/star/market',

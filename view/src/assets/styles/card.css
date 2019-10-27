@@ -1102,6 +1102,8 @@ img.wm_demining_img {
 .wm_card_menu_body{
   text-align: center;
   padding: 10px 0;
+  max-width: 800px;
+  margin: 0 auto;
 }
 .wm_card_menu_box{
   display: inline-block;

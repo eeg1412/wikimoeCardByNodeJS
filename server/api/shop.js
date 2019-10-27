@@ -3,6 +3,7 @@ var userData = require('../utils/database/user');
 var md5 = require('md5-node');
 var chalk = require('chalk');
 var cardUitls = require('../utils/card');
+var itemData = require('../utils/database/item.js');
 
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
@@ -140,6 +141,138 @@ module.exports = async function(req, res, next){
         utils.writeLog(logObject);
         console.info(
             chalk.green(email+'成功'+times+'抽，IP为：'+IP)
+        )
+        res.send({
+            code:1,
+            packageId:packageId,
+            data:card,
+            msg:'ok'
+        });
+    }else if(type==1){
+        // 结缘
+        console.info(
+            chalk.green(email+'选择的是结缘，IP为：'+IP)
+        )
+        //结缘商品
+        let times = 0;
+        let price = 0;
+        let card = [];
+        let cardAndStar = [];
+        let databaseCard = {};
+        if(goods==0){
+            times = 1;
+            price = 1;
+        }else if(goods==1){
+            times = 10;
+            price = 10;
+        }else if(goods==2){
+            times = 30;
+            price = 30;
+        }else{
+            res.send({
+                code:0,
+                msg:'无该商品！'
+            });
+            return false;
+        }
+        console.info(
+            chalk.green(email+'选择了'+times+'次结缘，IP为：'+IP)
+        )
+        let params ={
+            email:email
+        }
+        // 获取道具数据
+        const itemData_ = await itemData.findOne(params).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库错误！')
+            );
+            throw err;
+        }) || {};
+        let userItemData = itemData_['item'] || {};//获取道具信息
+        let myItemNum = userItemData['300'] || 0;
+        // 判断五円玉够不够
+        if(myItemNum<price){
+            res.send({
+                code:0,
+                msg:'五円玉不足！'
+            });
+            return false;
+        }
+        // 抽卡
+        let cardIdArr = await cardUitls.chioseCard(packageId,times,false,'starCoinOpen');
+        if(!cardIdArr){
+            res.send({
+                code:0,
+                msg:'抽卡失败，请检查参数！'
+            });
+            return false;
+        }
+        // 获取卡牌ID
+        for(let i=0;i<cardIdArr.length;i++){
+            let cardId = cardIdArr[i].cardId;
+            card.push(cardId);
+            cardAndStar.push([cardIdArr[i].star,cardId]);
+            if(databaseCard['card.'+packageId+'.'+cardId]){
+                databaseCard['card.'+packageId+'.'+cardId] = databaseCard['card.'+packageId+'.'+cardId]+1;
+            }else{
+                databaseCard['card.'+packageId+'.'+cardId] = 1;
+            } 
+        }
+        // 扣除五円玉
+        let itemDataBase = {};//删除的道具
+        itemDataBase['item.300'] = -price;
+        let updataItemParams = {
+            $inc:itemDataBase,
+        }
+        await itemData.findOneAndUpdate(params,updataItemParams).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库错误！')
+            );
+            throw err;
+        })
+        // 用户数据库加卡
+        let updataParams = {
+            $inc:databaseCard,
+            ip:IP
+        }
+        await userData.updataUser(params,updataParams,true).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            throw err;
+        })
+        // 写入日志
+        let timeNow = Math.round(new Date().getTime()/1000);
+        let logObject = {
+            email:email,
+            md5:md5(email),
+            nickName:result.nickName,
+            type:'goen',
+            time:timeNow,
+            data:{
+                card:cardAndStar,
+                goentama:price,
+                times:times,
+                packageId:packageId,
+            },
+            ip:IP
+        }
+        utils.writeLog(logObject);
+        // 发送数据
+        console.info(
+            chalk.green(email+'成功'+times+'次结缘，IP为：'+IP)
         )
         res.send({
             code:1,

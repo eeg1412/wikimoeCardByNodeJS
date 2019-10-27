@@ -85,7 +85,7 @@
       </template>
     </el-table-column>
     <el-table-column
-      label="星币">
+      label="结缘">
       <template slot-scope="scope">
         <div>
           <el-switch

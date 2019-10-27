@@ -181,7 +181,7 @@ module.exports = async function(req, res, next){
             return false;
         }
         // 校验每种卡包是否符合要求
-        if(type==='daily'){
+        if(!open){
             if(resault.packageId=='0'){
                 res.send({
                     code:0,
@@ -189,8 +189,21 @@ module.exports = async function(req, res, next){
                 });
                 return false;
             }
+        }
+        if(type==='daily'){
             if(open){
                 if((resault.oneStar+resault.twoStar+resault.threeStar)<3 || resault.fourStar<3 || resault.fiveStar<3 || resault.sixStar<3){
+                    res.send({
+                        code:0,
+                        msg:'卡包卡牌数量不足，无法开启！'
+                    });
+                    return false;
+                }
+            }
+        }
+        if(type==='starCoin'||type==='shop'||type==='guess'){
+            if(open){
+                if((resault.oneStar+resault.twoStar+resault.threeStar)<1 || resault.fourStar<1 || resault.fiveStar<1 || resault.sixStar<1){
                     res.send({
                         code:0,
                         msg:'卡包卡牌数量不足，无法开启！'

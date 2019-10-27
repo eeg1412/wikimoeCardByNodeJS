@@ -5,6 +5,9 @@ exports.findUser = async function (parmas) {
     // document查询
     return await usersModel.findOne(parmas);
 }
+exports.findUserMany = async function (parmas,getInfo = '-__v',sortData = {'_id':-1}) {
+    return await usersModel.find(parmas,getInfo).sort(sortData);
+}
 exports.findUserNotAll = async function (parmas,notParams) {
     // document查询
     return await usersModel.findOne(parmas,notParams);

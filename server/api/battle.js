@@ -332,6 +332,16 @@ module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
     let advanced = req.body.advanced;
+    if(global.checkScoreRankIng){
+        res.send({
+            code:0,
+            msg:'系统正在结算竞技点中，请十分钟后再来尝试吧！！'
+        });
+        console.info(
+            chalk.green('因为竞技点正在结算，无法成功对战，IP为：'+IP)
+        )
+        return false;
+    }
     //解析token
     if(!token){
         console.info(
@@ -701,6 +711,7 @@ module.exports = async function(req, res, next){
                 $inc:{
                     star:levelUpStar+battleGetStar
                 },
+                battled:true,
                 battleStamp:Math.round(new Date().getTime()/1000),
                 battleDailyCount:myBattleTimes,
                 score:result.score + getScore,
@@ -745,6 +756,7 @@ module.exports = async function(req, res, next){
                 email:email
             }
             updataParams = {
+                battled:true,
                 score:myNewScore,
                 ip:IP
             }
@@ -760,6 +772,17 @@ module.exports = async function(req, res, next){
             console.info(
                 chalk.green(email+'战败。IP为：'+IP)
             )
+        }else{
+            // 如果没有对战过则写入已战斗
+            if(!result.battled){
+                userFilters = {
+                    email:email
+                }
+                updataParams = {
+                    battled:true,
+                    ip:IP
+                }
+            }
         }
         //胜负统计
         let userbattleinfoDataUpdata = {};

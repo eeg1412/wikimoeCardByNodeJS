@@ -5,7 +5,102 @@ const fs = require('fs');
 const chalk = require('chalk');
 const schedule = require('node-schedule');
 const cardPackageData = require('../utils/database/cardPackage');
+const userbattleinfoData = require('../utils/database/userbattleinfo');
+const itemDatabase = require('../utils/database/item');
 
+// 月结算竞技点日程表
+exports.checkScoreRankTimer = async ()=>{
+    schedule.scheduleJob('0 5 3 1 * *',()=>{//每月1日2点55分执行
+        this.checkScoreRank();
+    }); 
+}
+// 每个月结算竞技点
+exports.checkScoreRank = async ()=>{
+    // 循环全员数据
+    console.info(
+        chalk.yellow('开始结算竞技点，竞技将被锁定！')
+    );
+    global.checkScoreRankIng = true;
+    setTimeout(()=>{
+        global.checkScoreRankIng = false;
+        console.info(
+            chalk.yellow('竞技锁定结束！')
+        );
+    },600000)
+    let coinAdd = 10;
+    let preScore = -1;
+    userData.findUserMany({},'-__v',{score:-1,cardIndexCount:-1}).then(users=>users.forEach((item,index)=>{
+        // 计算给与多少五円玉
+        const score = item.score;//用户竞技点
+        const getCoin = Math.floor(score/500);//每500竞技点1个五円玉
+        let newScore = Math.floor(score/250)*250;//新的竞技点
+        if(newScore>6000){
+            newScore = 6000;
+        }
+        // 用户
+        const params = {
+            email:item.email
+        }
+        // 写入道具
+        if(getCoin>0&&item.battled){
+            let getItemDataBase = {};
+            getItemDataBase['item.300'] = getCoin+(coinAdd<0?0:coinAdd);
+            let update_ = {
+                $inc:getItemDataBase
+            }
+            itemDatabase.findOneAndUpdate(params,update_).catch ((err)=>{
+                console.error(
+                    chalk.red('数据库更新错误！--赠送五円玉')
+                );
+                throw err;
+            })
+            coinAdd--
+        }
+        if(score>0){
+            // 写入历史
+            const timeNow = Math.floor(new Date().getTime()/86400000);
+            let update_ = {
+                $push:{
+                    battleScoreHistory:{
+                    time:timeNow,
+                    score:score
+                }}
+            }
+            userbattleinfoData.findOneAndUpdate(params,update_).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+            // 写入用户数据
+            userData.updataUser(params,{score:newScore,battled:false}).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+        }else{
+            userData.updataUser(params,{score:0,battled:false}).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+        }
+    }))
+}
 // 1.3.x升级卡包数据
 exports.checkPackage = async ()=>{
     console.info(

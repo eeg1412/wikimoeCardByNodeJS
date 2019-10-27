@@ -52,7 +52,8 @@ module.exports = async function(req, res, next){
                     return false;
                 }
                 let dailyCard = result.dailyCard;
-                let scoreChance = Math.floor(result.score/1000);
+                // 取消竞技点抽卡加成
+                let scoreChance = 0;//Math.floor(result.score/1000);
                 if(isNaN(scoreChance)){
                     res.send({
                         code:0,
