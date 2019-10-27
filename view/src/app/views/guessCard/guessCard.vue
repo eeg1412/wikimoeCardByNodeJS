@@ -1,7 +1,7 @@
 <template>
   <div class="wm_guesscard_content_body">
     <h6 class="mt20 tc f16"><span>每个整点更新一次猜卡！</span></h6>
-    <h6 class="tc f14 mb15 mt5"><span v-if="myGuessTimes===0">本次猜卡<span class="cRed">免费</span>！</span><span v-else-if="myGuessTimes===1">本次猜卡将消耗<span class="cRed">78</span>颗星星！</span><span v-else>本次猜卡消耗<span class="cRed">288</span>颗星星！</span><span>上次获取时间：{{time | capitalize}}
+    <h6 class="tc f14 mb15 mt5"><span v-if="myGuessTimes===0">本次猜卡<span class="cRed">免费</span>！</span><span v-else-if="myGuessTimes===1">本次猜卡将消耗<span class="cRed">78</span>颗星星！</span><span v-else>本次猜卡消耗<span class="cRed">258</span>颗星星！</span><span>上次获取时间：{{time | capitalize}}
     <el-tooltip class="item" effect="dark" content="点击刷新" placement="top">
       <i class="el-icon-refresh wm_set_pointer pl5 cRed" @click="searchGuessCard()"></i>
     </el-tooltip>
