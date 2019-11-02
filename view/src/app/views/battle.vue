@@ -350,6 +350,7 @@ export default {
                     const battleScoreHistory = res.data.userbattleinfoData.battleScoreHistory;
                     let preTime = 0;
                     let timeCount = 1;
+                    this.chartData['rows'] = [];
                     for(let i=0;i<battleScoreHistory.length;i++){
                         const timeMonth = battleScoreHistory[i].time;
                         const time = new Date(parseInt(timeMonth*86400000));

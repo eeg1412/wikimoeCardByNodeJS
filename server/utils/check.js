@@ -27,7 +27,7 @@ exports.checkScoreRank = async ()=>{
             chalk.yellow('竞技锁定结束！')
         );
     },600000)
-    let coinAdd = 10;
+    let coinAdd = 100;
     let preScore = -1;
     userData.findUserMany({},'-__v',{score:-1,cardIndexCount:-1}).then(users=>users.forEach((item,index)=>{
         // 计算给与多少五円玉
