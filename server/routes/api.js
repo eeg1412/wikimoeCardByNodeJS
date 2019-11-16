@@ -37,6 +37,7 @@ var apiHandbook = require('../api/handbook');
 var apiSearchCreatCard = require('../api/searchcreatcard');
 var apiSearchGuessCard = require('../api/searchGuessCard');
 var apiUserGuessCard = require('../api/userGuessCard');
+var apiUserPost = require('../api/post');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -52,6 +53,7 @@ var adminApiSearchLog = require('../api/admin/searchLog');
 var adminApiNews = require('../api/admin/news');
 var adminApiRenameCardPackage = require('../api/admin/cardPackage');
 var adminApiCreatCard = require('../api/admin/creatcard');
+var adminApiSearchCard = require('../api/admin/searchCard');
 
 
 /* GET users listing. */
@@ -95,6 +97,7 @@ router.post('/handbook', apiHandbook);
 router.post('/searchcrearchcard', apiSearchCreatCard);
 router.post('/searchguesscard', apiSearchGuessCard);
 router.post('/userguesscard', apiUserGuessCard);
+router.post('/userpost', apiUserPost);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);
@@ -110,5 +113,6 @@ router.post('/admin/searchlog', adminApiSearchLog);
 router.post('/admin/news', adminApiNews);
 router.post('/admin/renamecardpackage', adminApiRenameCardPackage);
 router.post('/admin/creatcard', adminApiCreatCard);
+router.post('/admin/searchcard', adminApiSearchCard);
 
 module.exports = router;

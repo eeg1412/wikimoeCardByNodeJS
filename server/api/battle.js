@@ -332,6 +332,7 @@ module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
     let advanced = req.body.advanced;
+    let timeNow = Math.round(new Date().getTime()/1000);
     if(global.checkScoreRankIng){
         res.send({
             code:0,
@@ -404,13 +405,16 @@ module.exports = async function(req, res, next){
         }else{
             let emMinScore = myScore-500<0?0:myScore-500;
             let emMaxScore = myScore+500;
+            const hitTime = timeNow-120;
             let emScore = {
                 score:{$gte:emMinScore,$lte:emMaxScore},
                 email:{$ne:email},
+                battleHitStamp:{$lte:hitTime},
                 cardIndexCount:{$gte:20}
             };
             // 竞技点分数段内的
             emData = await searchEm(emScore);
+            console.table(emData)
         }
     }
     // 初始化一些信息
@@ -728,7 +732,8 @@ module.exports = async function(req, res, next){
                     email:emData.email
                 }
                 EmUpdataParams = {
-                    score:EmNewScore
+                    score:EmNewScore,
+                    battleHitStamp:timeNow
                 }
             }
             console.info(
@@ -766,7 +771,8 @@ module.exports = async function(req, res, next){
                     email:emData.email
                 }
                 EmUpdataParams = {
-                    score:EmNewScore
+                    score:EmNewScore,
+                    battleHitStamp:timeNow
                 }
             }
             console.info(
@@ -781,6 +787,15 @@ module.exports = async function(req, res, next){
                 updataParams = {
                     battled:true,
                     ip:IP
+                }
+            }
+            // 平局写入被战斗记录
+            if(!AiMode){
+                EmUserFilters = {
+                    email:emData.email
+                }
+                EmUpdataParams = {
+                    battleHitStamp:timeNow
                 }
             }
         }
@@ -844,7 +859,6 @@ module.exports = async function(req, res, next){
                 throw err;
             })
         }
-        let timeNow = Math.round(new Date().getTime()/1000);
         // 写入战斗记录
         let battleLogsParams = {
             aEmail:email,

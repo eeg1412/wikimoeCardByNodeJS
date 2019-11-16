@@ -108,6 +108,9 @@ export default function (api) {
     userguesscard(data){
       return api.post('userguesscard',data)
     },
+    userpost(data){
+      return api.post('userpost',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },
@@ -149,6 +152,9 @@ export default function (api) {
     },
     adminCreatcard(data){
       return api.post('admin/creatcard',data)
+    },
+    adminSearchcard(data){
+      return api.post('admin/searchcard',data)
     },
   }
 }

@@ -7,10 +7,11 @@ const schedule = require('node-schedule');
 const cardPackageData = require('../utils/database/cardPackage');
 const userbattleinfoData = require('../utils/database/userbattleinfo');
 const itemDatabase = require('../utils/database/item');
+const userPost = require('../utils/database/userPost');
 
 // 月结算竞技点日程表
 exports.checkScoreRankTimer = async ()=>{
-    schedule.scheduleJob('0 5 3 1 * *',()=>{//每月1日2点55分执行
+    schedule.scheduleJob('0 5 3 1 * *',()=>{//每月1日3点5分执行
         this.checkScoreRank();
     }); 
 }
@@ -54,7 +55,7 @@ exports.checkScoreRank = async ()=>{
                 );
                 throw err;
             })
-            coinAdd--
+            coinAdd = coinAdd-10;
         }
         if(score>0){
             // 写入历史
@@ -149,6 +150,24 @@ exports.checkGuessCard = async ()=>{
         guessCard.creatNewGuessCard();
         this.deletOldUserGuessCard();
     }); 
+}
+exports.checkOldPost = ()=>{
+    schedule.scheduleJob('0 0 3 * * *',()=>{
+        this.deletOldPost();
+    }); 
+}
+exports.deletOldPost = ()=>{
+    console.info(
+        chalk.green('系统自动删除过期用户邮箱礼物！')
+    );
+    // 删除过期邮件数据
+    const time = Math.round(new Date().getTime()/1000);
+    const delParmas = {
+        endTime:{$lt:time},
+    }
+    userPost.deletUserPost(delParmas).catch ((err)=>{
+        throw err;
+    });
 }
 exports.deletOldUserGuessCard = async ()=>{
     const time = Math.floor(new Date().getTime()/3600000);

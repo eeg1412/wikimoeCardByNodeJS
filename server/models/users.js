@@ -15,6 +15,7 @@ var users = new Schema({
   level:{type: Number, default: 0},
   exp:{type: Number, default: 0},
   battleStamp:{type: SchemaTypes.Long, default: 0},
+  battleHitStamp:{type: SchemaTypes.Long, default: 0},
   battleDailyCount:{type: Number, default: 0},
   battleCard:{type: Array, default: []},
   battled:{type: Boolean, default: false},//本月是否战斗过

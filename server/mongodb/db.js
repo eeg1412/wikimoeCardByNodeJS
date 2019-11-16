@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var chalk = require('chalk');
 const checkStat = require('../utils/check');
 
-mongoose.connect(global.myAppConfig.url,{useNewUrlParser:true,useFindAndModify: false});
+mongoose.connect(global.myAppConfig.url,{useNewUrlParser:true,useFindAndModify: false,useUnifiedTopology: true});
 mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
@@ -14,6 +14,7 @@ db.once('open' ,() => {
   checkStat.checkGuessCard();
   checkStat.checkRank();
   checkStat.checkScoreRankTimer();
+  checkStat.checkOldPost();
   // 升级1.3.x用
   // checkStat.checkPackage();
   // var update = require('../api/admin/install/updateUserData.js');
