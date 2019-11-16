@@ -387,6 +387,7 @@ module.exports = async function(req, res, next){
     let AiP = utils.randomNum(1,100);//AI概率因子
     let emData = [];
     let seeAiP = 40;
+    const hitTime = timeNow-120;
     if(result.level<=15){//新手大概率遇到AI
         console.info(
             chalk.green(email+'是新手，高概率遇到AI。IP为：'+IP)
@@ -398,6 +399,7 @@ module.exports = async function(req, res, next){
             let emScore = {
                 score:{$gte:myScore+500},
                 email:{$ne:email},
+                battleHitStamp:{$lte:hitTime},
                 cardIndexCount:{$gte:20}
             };
             // 竞技点分数段内的
@@ -405,7 +407,6 @@ module.exports = async function(req, res, next){
         }else{
             let emMinScore = myScore-500<0?0:myScore-500;
             let emMaxScore = myScore+500;
-            const hitTime = timeNow-120;
             let emScore = {
                 score:{$gte:emMinScore,$lte:emMaxScore},
                 email:{$ne:email},

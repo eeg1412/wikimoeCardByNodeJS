@@ -125,7 +125,6 @@
       <el-collapse accordion v-else>
         <el-collapse-item :title="item.title" :name="index" v-for="(item,index) in postList" v-bind:key="item._id">
           <div class="wm_post_content_body">
-            <div class="wm_menu_news_time">时间：{{item.time*1000 | capitalize}}</div>
             <div class="wm_menu_news_text">{{item.text}}</div>
           </div>
           <div class="mt5 mb5 fb">礼物：</div>
@@ -143,6 +142,10 @@
             <img src="/static/otherImg/item/star.png" height="32px" width="32px" />
             <div>星星 × {{item.itemNumber}}</div>
             <el-button size="mini" type="primary" @click="getPostItem(item._id)">领取</el-button>
+          </div>
+          <div class="mt10">
+            <div class="wm_menu_news_time">发布时间：{{item.time*1000 | capitalize}}</div>
+            <div class="wm_menu_news_time">过期时间：{{item.endTime*1000 | capitalize}}</div>
           </div>
         </el-collapse-item>
       </el-collapse>
@@ -454,7 +457,6 @@ export default {
 .wm_post_content_body{
   padding: 15px 0px;
   border-top: 1px dotted #cecece;
-  border-bottom: 1px dotted #cecece;
 }
 </style>
 <style>
