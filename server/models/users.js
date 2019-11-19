@@ -29,6 +29,9 @@ var users = new Schema({
   guessDailyCount:{type: Number, default: 0},
   token:{type: String, default: ''},
   ip:String,
+  robotRate:{type: Number, default: 0},
+  robotCheck:{type: Boolean, default: false},
+  captchaLock:{type: Boolean, default: false},
   ban:{type: Number, default: 0},
 });
 

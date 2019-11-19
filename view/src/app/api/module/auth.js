@@ -111,6 +111,9 @@ export default function (api) {
     userpost(data){
       return api.post('userpost',data)
     },
+    robotcheck(data){
+      return api.post('robotcheck',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },

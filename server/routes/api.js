@@ -38,6 +38,7 @@ var apiSearchCreatCard = require('../api/searchcreatcard');
 var apiSearchGuessCard = require('../api/searchGuessCard');
 var apiUserGuessCard = require('../api/userGuessCard');
 var apiUserPost = require('../api/post');
+var apiRobotCheck = require('../api/robotCheck');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -98,6 +99,7 @@ router.post('/searchcrearchcard', apiSearchCreatCard);
 router.post('/searchguesscard', apiSearchGuessCard);
 router.post('/userguesscard', apiUserGuessCard);
 router.post('/userpost', apiUserPost);
+router.post('/robotcheck', apiRobotCheck);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);

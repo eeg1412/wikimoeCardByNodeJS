@@ -47,6 +47,7 @@
     </div>
     <menuView></menuView>
   </div>
+  <captcha @captchaShow="captchaDigShow" @send="sendCaptcha" :codeDigShow="captchaShow" v-if="captchaShow" ref="captch"></captcha>
 </div>
 </template>
 
@@ -56,12 +57,20 @@ import {showLoading,hideLoading} from "../../utils/utils";
 import menuView from '../components/menu.vue';
 import pickaxe from '../components/pickaxe.vue';
 import userTop from '../components/topUserInfo.vue';
+import captcha from '../components/captcha.vue';
 import itemData from '../../../../server/data/item';
 import mapData from '../../../../server/data/deminingMap';
+import {authApi} from "../api";
 
 export default {
   data() {
     return {
+      openCache:{
+        x:null,
+        y:null,
+        num:null
+      },
+      captchaShow:false,
       itemData_:itemData,
       mapData_:mapData,
       txDays:new Date().getDate(),
@@ -82,7 +91,8 @@ export default {
   components: {
     menuView,
     pickaxe,
-    userTop
+    userTop,
+    captcha
   },
   mounted() {
     this.$emit('l2dMassage','这里挖到游戏的通货【星星】和升级卡牌所需要的材料。显示的数字暗示周围的星星数量。请注意每种镐的产出不一样哦！');
@@ -125,6 +135,8 @@ export default {
           type: 'success'
         });
         this.$refs.userTop.getUserInfo();
+      }else if(data.code==301){//需要验证码
+        this.captchaShow = true;
       }else if(data.code==201){//未挖到星星
         this.upDateMapData(data.x,data.y,data.md5,data.demNum)
         if(data.levelUpStar>0){
@@ -200,6 +212,42 @@ export default {
     });
   },
   methods: {
+    captchaDigShow(v){
+      this.captchaShow = v;
+    },
+    sendCaptcha(captcha){
+      const params = {
+        token:this.token,
+        captcha:captcha
+      }
+      authApi.robotcheck(params).then(res => {
+          console.log(res.data);
+          this.$refs.captch.captchaUpdata();
+          if(res.data.code==0){
+            this.$message.error(res.data.msg);
+          }else if(res.data.code==1){
+            this.captchaShow = false;
+            this.openNode(this.openCache.x,this.openCache.y,this.openCache.num,true)
+            if(res.data.getStar>0){
+              this.$notify({
+                type: 'success',
+                title: '恭喜',
+                message: '通过验证，获得'+res.data.getStar+'颗星星！',
+                duration:13000
+              });
+              this.$refs.userTop.getUserInfo();
+            }else{
+              this.$notify({
+                type: 'success',
+                title: '恭喜',
+                message: res.data.msg,
+                duration:13000
+              });
+            }
+
+          }
+      });
+    },
     upDateMapData(x,y,md5,num){
       console.log('更新');
       this.mineMap[y][x] = {
@@ -226,13 +274,18 @@ export default {
       }
       return c;
     },
-    openNode(x,y,num){
+    openNode(x,y,num,openNow){
       if(num>=0){
         return false;
       }
+      this.openCache = {
+        x:x,
+        y:y,
+        num:num
+      }
       let x_y = x+'_'+y;
       this.openTime = new Date().getTime();
-      if(x_y == this.selBlock){
+      if(x_y == this.selBlock || openNow){
           let parmas = {
           type:'open',
           creatTime:this.mineInfo.data.creatTime,
