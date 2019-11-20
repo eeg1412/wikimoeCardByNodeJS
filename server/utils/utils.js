@@ -11,13 +11,13 @@ var cardData = require('../data/cardData');
 
 // 机器人可疑度检测
 exports.RobotCheck = async (userData_) =>{
-    console.log(userData_.robotCheck)
+    // console.log(userData_.robotCheck)
     if(userData_.robotCheck){
         return true;
     }
     let baseRobotCheck = 10+userData_.robotRate;
     let radomCheck = this.randomNum(1, 100);
-    console.log(radomCheck,baseRobotCheck)
+    // console.log(radomCheck,baseRobotCheck)
     if(baseRobotCheck>radomCheck){
         let filters = {
             email: userData_.email

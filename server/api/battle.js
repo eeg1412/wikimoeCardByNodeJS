@@ -188,13 +188,9 @@ async function searchEm(parmas){
     return data;
 }
 // 出战卡牌信息写入
-async function setBattleCardInfo(cardArr){
-    let params = {
-        cardId:{$in:cardArr}
-    }
-    let myCardData = await cardData.findCardDataMany(params,'-__v -_id').catch ((err)=>{
-        throw err;
-    });
+async function setBattleCardInfo(cardArr,allCardDataArr){
+    let myCardData = allCardDataArr[0];
+    myCardData = myCardData.filter(item=>cardArr.indexOf(item.cardId)!==-1)
     myCardData.sort((a, b) => {
         if (cardArr.indexOf(a.cardId) === -1 && cardArr.indexOf(b.cardId) === -1) {
             return 1
@@ -269,60 +265,38 @@ function setADSHP(cardArr,starArr,starCount,cryArr,cardIndexCount,cardLevel){
     return [A,D,S,HP];
 }
 // 设置AI卡牌
-function creatAICard(starArr_){
+function creatAICard(starArr_,allCardDataArr){
     let cardArr = []
     let starArr = [...starArr_];
-    //如果有1、2星卡
-    if(starArr[0]===1){
-        cardArr.push('2');
-        starArr[0] = starArr[0] -1;
-    }else if(starArr[0]>1){
-        cardArr.push('2');
-        cardArr.push('1');
-        starArr[0] = starArr[0] -2;
-    }
-    if(starArr[1]===1){
-        cardArr.push('4');
-        starArr[1] = starArr[1] -1;
-    }else if(starArr[1]>1){
-        cardArr.push('3');
-        cardArr.push('4');
-        starArr[1] = starArr[1] -2;
-    }
     for(let i=0;i<starArr.length;i++){
-        for(let j=0;j<starArr[i];j++){
-            if(i<=2){
-                let cardId = utils.wmCreatCardId(1);
-                if(cardArr.indexOf(cardId) == -1){
-                    cardArr.unshift(cardId);
-                }else{
-                    j = j -1;
-                }
-            }else if(i===3){
-                let cardId = utils.wmCreatCardId(65);
-                if(cardArr.indexOf(cardId) == -1){
-                    cardArr.unshift(cardId);
-                }else{
-                    j = j -1;
-                }
-            }else if(i===4){
-                let cardId = utils.wmCreatCardId(87);
-                if(cardArr.indexOf(cardId) == -1){
-                    cardArr.unshift(cardId);
-                }else{
-                    j = j -1;
-                }
-            }else if(i===5){
-                let cardId = utils.wmCreatCardId(98);
-                if(cardArr.indexOf(cardId) == -1){
-                    cardArr.unshift(cardId);
-                }else{
-                    j = j -1;
-                }
+        // 如果该星级卡牌大于0张则开始分配卡牌
+        if(starArr[i]>0){
+            const starCard = allCardDataArr[i+1]
+            const randomCardData = utils.randomArray(starCard,starArr[i]);
+            // 循环获取卡牌ID
+            for(let j=0;j<randomCardData.length;j++){
+                cardArr.unshift(randomCardData[j].cardId);
             }
         }
     }
+    console.log(cardArr);
     return cardArr;
+}
+// 获取所有卡牌
+async function getAllCardInfo(){
+    let allCardArr = [];
+    const allCardData = await cardData.findCardDataMany({},'-__v -_id').catch ((err)=>{
+        throw err;
+    });
+    allCardArr[0] = [...allCardData];
+    // 卡牌星级分类
+    allCardArr[1] = allCardArr[0].filter(item=>item.star===1);
+    allCardArr[2] = allCardArr[0].filter(item=>item.star===2);
+    allCardArr[3] = allCardArr[0].filter(item=>item.star===3);
+    allCardArr[4] = allCardArr[0].filter(item=>item.star===4);
+    allCardArr[5] = allCardArr[0].filter(item=>item.star===5);
+    allCardArr[6] = allCardArr[0].filter(item=>item.star===6);
+    return allCardArr;
 }
 // 卡牌排序
 function cardSort(a,b){
@@ -379,6 +353,10 @@ module.exports = async function(req, res, next){
         )
         return false;
     }
+    // 获取所有卡牌数据
+    // 0全部卡牌，1为1星卡，2为2星卡，3为3星卡以此类推
+    const allCardDataArr = await getAllCardInfo();
+
     console.info(
         chalk.green(email+'开始匹配对战对手。IP为：'+IP)
     )
@@ -415,7 +393,6 @@ module.exports = async function(req, res, next){
             };
             // 竞技点分数段内的
             emData = await searchEm(emScore);
-            console.table(emData)
         }
     }
     // 初始化一些信息
@@ -481,7 +458,7 @@ module.exports = async function(req, res, next){
     myCardLevel = myCardLevel['cardLevel'] || {};
     // 设置我的出战卡牌信息
     MyBattleCardArr_ = [...MyBattleCard]
-    MyBattleCard = await setBattleCardInfo(MyBattleCard);
+    MyBattleCard = await setBattleCardInfo(MyBattleCard,allCardDataArr);
     // 我的卡牌星级统计
     let MyCardStarRes = starCount(MyBattleCard);
     MyCardStarCount = MyCardStarRes[0];
@@ -495,7 +472,7 @@ module.exports = async function(req, res, next){
         console.info(
             chalk.green(email+'无匹配的情况下给一个AI。IP为：'+IP)
         )
-        EmBattleCard = creatAICard(MyCardStarCount);
+        EmBattleCard = creatAICard(MyCardStarCount,allCardDataArr);
         // EmBattleCard = EmBattleCard.sort(cardSort);
         EmName = '自动书记人偶'+ utils.randomNum(0,99) + '号';
         if(MyCardIndexCount<200&&!advanced){
@@ -552,7 +529,7 @@ module.exports = async function(req, res, next){
     }
     // 设置对方出战卡牌信息
     EmBattleCardArr_ = [...EmBattleCard]
-    EmBattleCard = await setBattleCardInfo(EmBattleCard);
+    EmBattleCard = await setBattleCardInfo(EmBattleCard,allCardDataArr);
     // 对方卡牌星级统计
     let EmCardStarRes = starCount(EmBattleCard);
     EmCardStarCount = EmCardStarRes[0];
