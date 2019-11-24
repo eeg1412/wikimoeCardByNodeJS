@@ -11,7 +11,7 @@
                 </div>
                 <div class="wm_creatcard_btn_body">
                     <el-button size="mini" type="primary" @click="creatCardNoText">生成投稿</el-button>
-                    <el-button size="mini" type="primary" @click="creatCardHelp">查看说明</el-button>
+                    <el-button size="mini" type="primary" @click="creatCardHelp" v-if="creatCardExplainUrl">查看说明</el-button>
                 </div>
             </el-col>
             <el-col :sm="12">
@@ -150,6 +150,7 @@ import {authApi} from "../api";
 export default {
   data() {
     return {
+        creatCardExplainUrl:window.$siteConfig.creatCardExplainUrl,
         logTotle:0,
         logPage:1,
         uploadCardUrl:'',
@@ -298,7 +299,7 @@ export default {
             .catch(action => {});
       },
       creatCardHelp(){
-          this.$alert('<div class="watch_img"><img src="/static/otherImg/uploadhelp.jpg" /></div>', '查看说明', {
+          this.$alert('<div class="watch_img"><img src="'+this.creatCardExplainUrl+'" /></div>', '查看说明', {
                 dangerouslyUseHTMLString: true,
                 lockScroll:false,
                 customClass:'wm_crearchcard_watch',

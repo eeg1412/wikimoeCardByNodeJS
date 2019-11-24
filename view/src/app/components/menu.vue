@@ -67,6 +67,20 @@
       </div>
       <div class="wm_card_menu_text">公告</div>
     </div>
+    <div class="wm_card_menu_box" @click="login('/goen')" v-if="$route.path!='/goen'" @mouseenter="$wikimoecard.l2dMassage('通过竞技点获得的五円玉可以在这里进行结缘哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/goen.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">结缘</div>
+    </div>
+    <div class="wm_card_menu_box" @click="postDialog=true"  @mouseenter="$wikimoecard.l2dMassage('快来看看有没有新的邮件吧！说不定会有意外收获哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
+      <el-badge :is-dot="postTotle?true:false" :max="9" class="item">
+        <div class="wm_card_menu_ico">
+          <img src="../../assets/images/menu/post.png" width="100%" height="100%" />
+        </div>
+      </el-badge>
+      <div class="wm_card_menu_text">邮件</div>
+    </div>
     <div class="wm_card_menu_box" @click="login('/handbook')" v-if="$route.path.indexOf('/handbook')==-1" @mouseenter="$wikimoecard.l2dMassage('可以查看自己的卡牌收集情况！')" @mouseleave="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/handbook.png" width="100%" height="100%" />
@@ -85,19 +99,71 @@
       </div>
       <div class="wm_card_menu_text">制卡</div>
     </div>
-    <a class="wm_card_menu_box" :href="$wikimoecard.qunUrl" v-if="$wikimoecard.qunUrl" target="_blank" @mouseenter="$wikimoecard.l2dMassage('加入官方QQ群，和大佬们一起开心抽卡吧！')" @mouseleave="$wikimoecard.l2dMassageClose">
+    <a class="wm_card_menu_box" :href="menuLink.QQunURL" v-if="menuLink.QQunURL" target="_blank" @mouseenter="$wikimoecard.l2dMassage('加入官方QQ群，和大佬们一起开心抽卡吧！')" @mouseleave="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/qun.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">Q群</div>
     </a>
-    <div class="wm_card_menu_box" @click="openDonate" @mouseenter="$wikimoecard.l2dMassage('呜呜呜，开发者现在穷的没饭吃了，求捐赠！')" @mouseleave="$wikimoecard.l2dMassageClose">
+    <div class="wm_card_menu_box" @click="openDonate" @mouseenter="$wikimoecard.l2dMassage('呜呜呜，开发者现在穷的没饭吃了，求捐赠！')" @mouseleave="$wikimoecard.l2dMassageClose" v-if="menuLink.donateImgUrl">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/zanzhu.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">捐赠</div>
     </div>
   </div>
+  <!-- 邮箱礼物开始 -->
+  <el-dialog
+    title="我的邮件"
+    :visible.sync="postDialog"
+    :lock-scroll="false"
+    :append-to-body="true"
+    class="reg_code_dialog"
+    width="100%">
+    <div class="wm_menu_news_body">
+      <div v-if="postList.length<=0" class="pt15 pb15 tc">暂无邮件或没登陆账号</div>
+      <el-collapse accordion v-else>
+        <el-collapse-item :title="item.title" :name="index" v-for="(item,index) in postList" v-bind:key="item._id">
+          <div class="wm_post_content_body">
+            <div class="wm_menu_news_text">{{item.text}}</div>
+          </div>
+          <div class="mt5 mb5 fb">礼物：</div>
+          <div class="wm_post_gift_body" v-if="item.type==='card'">
+            <img :src="$wikimoecard.url+item.packageId+'/'+item.itemId+'.jpg'" width="200px" />
+            <div>×{{item.itemNumber}}</div>
+            <el-button size="mini" type="primary" @click="getPostItem(item._id)">领取</el-button>
+          </div>
+          <div class="wm_post_gift_body" v-else-if="item.type==='item'">
+            <img :src="'/static/otherImg/item/'+item.itemId+'.png'" height="32px" width="32px" />
+            <div>{{itemData_[item.itemId].name}} × {{item.itemNumber}}</div>
+            <el-button size="mini" type="primary" @click="getPostItem(item._id)">领取</el-button>
+          </div>
+          <div class="wm_post_gift_body" v-else-if="item.type==='star'">
+            <img src="/static/otherImg/item/star.png" height="32px" width="32px" />
+            <div>星星 × {{item.itemNumber}}</div>
+            <el-button size="mini" type="primary" @click="getPostItem(item._id)">领取</el-button>
+          </div>
+          <div class="mt10">
+            <div class="wm_menu_news_time">发布时间：{{item.time*1000 | capitalize}}</div>
+            <div class="wm_menu_news_time">过期时间：{{item.endTime*1000 | capitalize}}</div>
+          </div>
+        </el-collapse-item>
+      </el-collapse>
+      <el-pagination
+        small
+        layout="prev, pager, next"
+        :total="postTotle"
+        @current-change="postPageChange"
+        :current-page.sync="postPage"
+        :page-size="20"
+        class="wm_menu_news_page">
+      </el-pagination>
+    </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="postDialog=false">关闭</el-button>
+    </span>
+  </el-dialog>
+  <!-- 邮箱礼物结束 -->
   <el-dialog
     title="新闻公告"
     :visible.sync="newsDialog"
@@ -163,10 +229,16 @@
 import {authApi} from "../api";
 import {mailCheck,passwordCheck} from "../../utils/utils";
 import md5_ from 'js-md5';
+import itemData from '../../../../server/data/item';
 
 export default {
   data() {
     return {
+      menuLink:{
+        courseURL:window.$siteConfig.courseURL,
+        QQunURL:window.$siteConfig.QQunURL,
+        donateImgUrl:window.$siteConfig.donateImgUrl,
+      },
       txDays:new Date().getDate(),
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       captchaSrc:'/api/captcha?time='+new Date().getTime(),
@@ -176,6 +248,11 @@ export default {
       newsList:null,
       page:1,
       totle:0,
+      postPage:1,
+      postList:[],
+      postTotle:0,
+      postDialog:false,
+      itemData_:itemData,
       form: {
           email: '',
           password: '',
@@ -186,6 +263,7 @@ export default {
   },
   mounted() {
     this.getRememberEmail();
+    this.getPost();
   },
   filters:{
     capitalize: function (value) {
@@ -195,8 +273,49 @@ export default {
     }
   },
   methods: {
+    getPostItem(id){
+      const params = {
+        token:this.token,
+        id:id,
+        type:'get'
+      }
+      authApi.userpost(params).then(res => {
+        console.log(res);
+        if(res.data.code==1){
+          this.$message({
+            message: res.data.msg,
+            type: 'success'
+          });
+          try{
+            this.$parent.$refs.userTop.getUserInfo();
+          }catch (e) {}
+          this.getPost();
+        }else{
+          this.$message.error(res.data.msg);
+        }
+      });
+    },
+    getPost(){
+      const params = {
+        token:this.token,
+        page:this.postPage,
+        type:'search'
+      }
+      authApi.userpost(params).then(res => {
+        console.log(res);
+        if(res.data.code==1){
+          this.postList = res.data.data;
+          this.postTotle = res.data.totle;
+          if(this.postList.length<=0&&this.postPage>1){
+            this.postPage = 1;
+            this.getPost();
+          }
+        }else{
+        }
+      });
+    },
     goCouse(){
-      window.open('https://www.wikimoe.com/?post=228','_blank');
+      window.open(this.menuLink.courseURL||'https://www.wikimoe.com/?post=228','_blank');
     },
     getCardMd5(){
       let md5 = '';
@@ -219,6 +338,10 @@ export default {
       this.page = p;
       this.getNews();
     },
+    postPageChange(p){
+      this.postPage = p;
+      this.getPost();
+    },
     getNews(){
       let params = {
         page:this.page
@@ -234,7 +357,7 @@ export default {
       });
     },
     openDonate(){
-      this.$alert('<div class="watch_img"><img src="/static/otherImg/donate.jpg" /></div>', '捐赠', {
+      this.$alert('<div class="watch_img"><img src="'+this.menuLink.donateImgUrl+'" /></div>', '捐赠', {
         dangerouslyUseHTMLString: true
       });
     },
@@ -329,4 +452,20 @@ export default {
   }
 }
 </script>
-
+<style scoped>
+.wm_post_gift_body{
+    text-align: center;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.wm_post_content_body{
+  padding: 15px 0px;
+  border-top: 1px dotted #cecece;
+}
+</style>
+<style>
+.wm_menu_news_body .el-collapse-item__header.is-active{
+  color: #ff5364;
+}
+</style>

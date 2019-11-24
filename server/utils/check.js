@@ -1,9 +1,144 @@
 const guessCard = require('../utils/database/guessCard');
 const userGuessCard = require('../utils/database/userGuessCard');
-var userData = require('../utils/database/user');
-var fs = require('fs');
+const userData = require('../utils/database/user');
+const fs = require('fs');
 const chalk = require('chalk');
 const schedule = require('node-schedule');
+const cardPackageData = require('../utils/database/cardPackage');
+const userbattleinfoData = require('../utils/database/userbattleinfo');
+const itemDatabase = require('../utils/database/item');
+const userPost = require('../utils/database/userPost');
+
+// 月结算竞技点日程表
+exports.checkScoreRankTimer = async ()=>{
+    schedule.scheduleJob('0 5 3 1 * *',()=>{//每月1日3点5分执行
+        this.checkScoreRank();
+    });
+    // schedule.scheduleJob('0 59 * * * *',()=>{//每月1日3点5分执行
+    //     this.checkScoreRank();
+    // }); 
+}
+// 每个月结算竞技点
+exports.checkScoreRank = async ()=>{
+    // 循环全员数据
+    console.info(
+        chalk.yellow('开始结算竞技点，竞技将被锁定！')
+    );
+    global.checkScoreRankIng = true;
+    setTimeout(()=>{
+        global.checkScoreRankIng = false;
+        console.info(
+            chalk.yellow('竞技锁定结束！')
+        );
+    },600000)
+    let coinAdd = global.myAppConfig.battleRankGetItem;
+    const coinRankDecay = global.myAppConfig.battleRankGetItemDecay;
+    //let preScore = -1;
+    let rank = 1;
+    userData.findUserMany({},'-__v',{score:-1,cardIndexCount:-1}).then(users=>users.forEach((item,index)=>{
+        // 计算给与多少五円玉
+        const score = item.score;//用户竞技点
+        const getCoin = Math.floor(score/500);//每500竞技点1个五円玉
+        let newScore = Math.floor(score/250)*250;//新的竞技点
+        if(newScore>6000){
+            newScore = 6000;
+        }
+        // 用户
+        const params = {
+            email:item.email
+        }
+        // 写入道具到邮件
+        if(getCoin>0&&item.battled){
+            const time = Math.round(new Date().getTime()/1000);
+            const canGetItem = getCoin+(coinAdd<0?0:coinAdd);
+            const saveParams = {
+                text:'恭喜，您在本次的竞技中取得了'+score+'点竞技点，排名第'+rank+'名。共获得'+canGetItem+'个【五円玉】，请注意查收！',
+                title:'竞技点结算奖励',
+                time:time,
+                endTime:time+2592000,
+                type:'item',
+                itemId:'300',
+                itemNumber:canGetItem,
+                email:item.email
+            };
+            userPost.saveUserPost(saveParams).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误，更新失败！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+            coinAdd = coinAdd-coinRankDecay;
+            rank++;
+        }
+        if(score>0){
+            // 写入历史
+            const timeNow = Math.floor(new Date().getTime()/86400000);
+            let update_ = {
+                $push:{
+                    battleScoreHistory:{
+                    time:timeNow,
+                    score:score
+                }}
+            }
+            userbattleinfoData.findOneAndUpdate(params,update_).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+            // 写入用户数据
+            userData.updataUser(params,{score:newScore,battled:false}).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+        }else{
+            userData.updataUser(params,{score:0,battled:false}).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+        }
+    }))
+}
+// 1.3.x升级卡包数据
+exports.checkPackage = async ()=>{
+    console.info(
+        chalk.yellow('开始对卡包数据进行升级！')
+    );
+    const params = {
+        guessOpen:true,
+        starCoinOpen:true,
+        starShopOpen:true,
+    }
+    await cardPackageData.updataCardPackageMany({},params).catch((err)=>{
+        console.error(
+            chalk.red(err)
+        );
+        return false;
+    });
+    console.info(
+        chalk.yellow('卡包数据升级完毕！')
+    );
+}
 
 exports.checkGuessCard = async ()=>{
     // 查看现在有没有开放的猜卡
@@ -32,6 +167,24 @@ exports.checkGuessCard = async ()=>{
         guessCard.creatNewGuessCard();
         this.deletOldUserGuessCard();
     }); 
+}
+exports.checkOldPost = ()=>{
+    schedule.scheduleJob('0 0 3 * * *',()=>{
+        this.deletOldPost();
+    }); 
+}
+exports.deletOldPost = ()=>{
+    console.info(
+        chalk.green('系统自动删除过期用户邮箱礼物！')
+    );
+    // 删除过期邮件数据
+    const time = Math.round(new Date().getTime()/1000);
+    const delParmas = {
+        endTime:{$lt:time},
+    }
+    userPost.deletUserPost(delParmas).catch ((err)=>{
+        throw err;
+    });
 }
 exports.deletOldUserGuessCard = async ()=>{
     const time = Math.floor(new Date().getTime()/3600000);

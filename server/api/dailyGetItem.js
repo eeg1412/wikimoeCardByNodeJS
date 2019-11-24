@@ -180,7 +180,10 @@ module.exports = async function(req, res, next){
                 $inc:getItemDataBase
             }
             await itemDatabase.findOneAndUpdate(params,update_).catch ((err)=>{
-                socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
                 console.error(
                     chalk.red('数据库更新错误！')
                 );
@@ -209,7 +212,10 @@ module.exports = async function(req, res, next){
                 $inc:getItemDataBase
             }
             await itemDatabase.findOneAndUpdate(params,update_).catch ((err)=>{
-                socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
+                res.send({
+                    code:0,
+                    msg:'内部错误请联系管理员！'
+                });
                 console.error(
                     chalk.red('数据库更新错误！')
                 );

@@ -72,6 +72,14 @@
       </template>
     </el-table-column>
     <el-table-column
+      sortable="custom"
+      prop="robotRate"
+      label="可疑度">
+      <template slot-scope="scope">
+        <span>{{scope.row.robotRate}}</span>
+      </template>
+    </el-table-column>
+    <el-table-column
       prop="ip"
       label="IP">
     </el-table-column>
@@ -83,6 +91,7 @@
       </template>
     </el-table-column>
   </el-table>
+  <div class="cGray999 f12 pl10 pt10">结果总计：{{cardTotle}}</div>
   <el-pagination
     small
     layout="prev, pager, next"

@@ -1,7 +1,7 @@
 <template>
   <div class="wm_guesscard_content_body">
-    <h6 class="mt20 tc"><span class="f16">每个整点更新一次猜卡！</span></h6>
-    <h6 class="tc f14 mb15 mt5"><span>上次获取时间：{{time | capitalize}}
+    <h6 class="mt20 tc f16"><span>每个整点更新一次猜卡！</span></h6>
+    <h6 class="tc f14 mb15 mt5"><span v-if="myGuessTimes===0">本次猜卡<span class="cRed">免费</span>！</span><span v-else-if="myGuessTimes===1">本次猜卡消耗<span class="cRed">78</span>颗星星！</span><span v-else>本次猜卡消耗<span class="cRed">258</span>颗星星！</span><span>上次获取时间：{{time | capitalize}}
     <el-tooltip class="item" effect="dark" content="点击刷新" placement="top">
       <i class="el-icon-refresh wm_set_pointer pl5 cRed" @click="searchGuessCard()"></i>
     </el-tooltip>
@@ -42,6 +42,7 @@ export default {
       packageInfo:{},
       haveCard:{},
       battleCard:[],
+      myGuessTimes:0,
     }
   },
   created() {
@@ -67,7 +68,13 @@ export default {
         this.$message.error('请选择6张卡牌！');
         return false;
       }
-      this.$confirm('猜卡将消耗188星星, 是否继续?', '提示', {
+      let useStar = 258;
+      if(this.myGuessTimes===0){
+        useStar = 0;
+      }else if(this.myGuessTimes===1){
+        useStar = 78;
+      }
+      this.$confirm('猜卡将消耗'+useStar+'颗星星, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         lockScroll:false,
@@ -103,7 +110,7 @@ export default {
       });
     },
     help(){
-      this.$alert('系统每个整点会自动生成30张卡牌并自动结算上个整点选中的6张卡牌。<br />每位大佬可以选择6张心仪的卡牌，点击【猜卡】按钮消费188颗星星上传选中的卡牌。<br />然后等下一个整点公布结果后在【兑换】选项卡中兑换奖品。<br />系统将会根据猜中卡牌的张数发放对应的星星，同时还会获得猜中的卡牌。<br />奖品如下：<br />猜中零张卡牌：随机宝石×2。<br />猜中一张卡牌：10颗星星+猜中的卡牌。<br />猜中两张卡牌：25颗星星+猜中的卡牌。<br />猜中三张卡牌：100颗星星+猜中的卡牌。<br />猜中四张卡牌：2500颗星星+猜中的卡牌。<br />猜中五张卡牌：50万颗星星+猜中的卡牌。<br />猜中六张卡牌：500万颗星星+猜中的卡牌。', {
+      this.$alert('系统每个整点会自动生成30张卡牌并自动结算上个整点选中的6张卡牌。<br />每位大佬可以选择6张心仪的卡牌，点击【猜卡】按钮上传选中的卡牌。<br />当天第一次猜卡免费，第二次猜卡消耗78星星，第三次以后每次消耗258星星。<br />然后等下一个整点公布结果后在【兑换】选项卡中兑换奖品。<br />系统将会根据猜中卡牌的张数发放对应的星星，同时还会获得猜中的卡牌。<br />奖品如下：<br />猜中零张卡牌：随机宝石×2。<br />猜中一张卡牌：10颗星星+猜中的卡牌。<br />猜中两张卡牌：30颗星星+猜中的卡牌。<br />猜中三张卡牌：160颗星星+猜中的卡牌。<br />猜中四张卡牌：2000颗星星+猜中的卡牌。<br />猜中五张卡牌：50000颗星星+猜中的卡牌。<br />猜中六张卡牌：500万颗星星+猜中的卡牌。', {
         dangerouslyUseHTMLString: true,
         lockScroll:false
       });
@@ -136,6 +143,7 @@ export default {
             this.battleCard = res.data.battleCard;
             this.data = res.data.data.card;
             this.id = res.data.data._id;
+            this.myGuessTimes = res.data.myGuessTimes;
             this.cardTime = Number(res.data.data.time);
             for(let i=0;i<this.data.length;i++){
               this.data[i].sel = false;

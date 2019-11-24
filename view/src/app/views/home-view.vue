@@ -1,6 +1,6 @@
 <template>
 <div class="common_body">
-  <h5 class="wm_card_chiose_title">欢迎来到维基萌抽卡</h5>
+  <h5 class="wm_card_chiose_title">{{siteTitle}}</h5>
   <div class="wm_card_email_body">
     <transition name="el-fade-in-linear">
       <div class="wm_card_email_input_body" v-show="!seled">
@@ -154,6 +154,9 @@
               <span v-else-if="item.type=='shop_1'"
               >我用{{item.data.star}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/shop')">星星商店</span>购买了{{item.data.times}}次抽卡机会，共抽中了<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card6,item.data.packageId)">{{item.data.card6.length}}</span>张六星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card5,item.data.packageId)">{{item.data.card5.length}}</span>张五星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card4,item.data.packageId)">{{item.data.card4.length}}</span>张四星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card3,item.data.packageId)">{{item.data.card3.length}}</span>张三星及其以下的卡。
               </span>
+              <span v-else-if="item.type=='goen'"
+              >我用{{item.data.goentama}}枚五円玉在<span class="wm_card_get_list_card_link" @click="goMenu('/goen')">结缘神社</span>结缘了{{item.data.times}}次，共结缘了<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card6,item.data.packageId)">{{item.data.card6.length}}</span>张六星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card5,item.data.packageId)">{{item.data.card5.length}}</span>张五星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card4,item.data.packageId)">{{item.data.card4.length}}</span>张四星卡、<span class="wm_card_get_list_card_link" @click="openShopCard(item.data.card3,item.data.packageId)">{{item.data.card3.length}}</span>张三星及其以下的卡。
+              </span>
               <span v-else-if="item.type=='marketBuy'"
               >我用{{item.data.price}}颗星星在<span class="wm_card_get_list_card_link" @click="goMenu('/star/market/buycard')">星星交易市场</span>购买了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.packageId+'/'+item.data.cardId+'.jpg')">{{item.data.name}}</span>。
               </span>
@@ -222,6 +225,7 @@ import md5 from 'js-md5';
 export default {
   data() {
     return {
+      siteTitle:window.$siteConfig.siteTitle,
       userPackage:'0',
       userCardCountNow:{},
       seledCardPackage:'加载中',
@@ -315,7 +319,16 @@ export default {
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
             this.cardPackage = res.data.data;
-            this.seledCardPackage = localStorage.getItem("dailyCardPackageId") || '0';
+            let nowPackageId = localStorage.getItem("dailyCardPackageId") || '0';
+            this.seledCardPackage = '0';
+            for(let i=0;i<this.cardPackage.length;i++){
+              if(this.cardPackage[i].packageId===nowPackageId){
+                if(this.cardPackage[i].open){
+                  this.seledCardPackage = nowPackageId;
+                }
+                break;
+              }
+            }
           }
       });
     },
@@ -396,7 +409,7 @@ export default {
           }else if(res.data.code==1){
             let logListData = res.data.data;
             for(let i=0;i<logListData.length;i++){
-              if(logListData[i].type=='shop_1'){//判断是否为商店
+              if(logListData[i].type=='shop_1'||logListData[i].type=='goen'){//判断是否为商店
                 let shopCardData = logListData[i].data.card;
                 let card3 = [];
                 let card4 = [];

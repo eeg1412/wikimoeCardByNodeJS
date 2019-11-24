@@ -5,7 +5,7 @@
     <el-form-item label="邮箱地址">
       <el-input v-model="form.email" @input="emailToLowerCase" placeholder="请输入邮箱地址"></el-input>
     </el-form-item>
-    <el-form-item label="密码">
+    <el-form-item label="新密码">
       <el-input v-model="form.password" show-password placeholder="请输入4-8位纯数字"></el-input>
     </el-form-item>
     <el-form-item label="邮箱验证">

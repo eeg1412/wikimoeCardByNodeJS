@@ -15,7 +15,10 @@ exports.findCardData = async function (pageSize_,page_,parmas) {
     // document查询
     let pageSize = pageSize_;
     let page = isNaN(Math.round(page_))?1:Math.round(page_);
-    let query = cardDataModel.find(parmas).sort({'time':-1});
+    if(page<=0){
+        page = 1;
+    }
+    let query = cardDataModel.find(parmas).sort({'_id':-1});
     let total = await query.countDocuments();
     let data = await query
         .find()

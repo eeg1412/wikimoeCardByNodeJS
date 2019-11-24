@@ -200,6 +200,8 @@ const openNode = async function(socket,data,result_){
                     }else if(useTool==2){
                         starAdd = utils.randomNum(20,30);
                     }
+                    // 乘以后台设定的星星系数
+                    starAdd = starAdd*global.myAppConfig.deminingStarRatio;
                 }else{
                     let itemRare = utils.randomNum(1,100);//随机一个随机道具因子
                     let mapType = result.mapType;
@@ -217,6 +219,8 @@ const openNode = async function(socket,data,result_){
                     }else if(useTool==2){
                         getItemNum = getItemNum*6;
                     }
+                    // 乘以后台的系数
+                    getItemNum = getItemNum*global.myAppConfig.deminingItemRatio;
                 }
                 if(boomedNum>=boomNum){
                     close = 1;
@@ -256,6 +260,7 @@ const openNode = async function(socket,data,result_){
                     deminingStamp:deminingTool,
                     level:levelExp[0],
                     exp:levelExp[1],
+                    captchaLock:false,
                     ip:data.IP
                 };
                 let md5Email = md5(data.email);
@@ -400,6 +405,21 @@ exports.mine = async function(socket,data){
             };
             sendUserData(socket,userData);
         }else if(data.type=='open'){
+            // 机器人可疑度检测
+            const robotCheck = result.robotCheck;
+            const captchaLock = result.captchaLock;
+            if(!(robotCheck===false&&captchaLock===true)){
+                const robotCheckRes = await utils.RobotCheck(result);
+                if(robotCheckRes){
+                    // 判断验证码是否能通过
+                    socket.emit('demining',{
+                        code:301,
+                        msg:'ok',
+                        time:data.time
+                    });
+                    return false;
+                }
+            }
             data.tool = (data.tool&&data.tool<=2)?data.tool:0;
             let useTool = data.tool;
             if(timeNow<Number(result.deminingStamp[useTool])){

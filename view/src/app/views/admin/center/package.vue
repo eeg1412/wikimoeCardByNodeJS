@@ -43,16 +43,65 @@
       </template>
     </el-table-column>
     <el-table-column
-      label="开放">
+      label="日常">
       <template slot-scope="scope">
-        <div>{{scope.row.open?"开放":"关闭"}}</div>
+        <div>
+          <el-switch
+            :value="scope.row.open"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="openPackage(scope.row.open,scope.row._id,'daily')"
+            >
+          </el-switch>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column
+      label="星星商店">
+      <template slot-scope="scope">
+        <div>
+          <el-switch
+            :value="scope.row.starShopOpen"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="openPackage(scope.row.starShopOpen,scope.row._id,'shop')"
+            >
+          </el-switch>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column
+      label="猜卡">
+      <template slot-scope="scope">
+        <div>
+          <el-switch
+            :value="scope.row.guessOpen"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="openPackage(scope.row.guessOpen,scope.row._id,'guess')"
+            >
+          </el-switch>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column
+      label="结缘">
+      <template slot-scope="scope">
+        <div>
+          <el-switch
+            :value="scope.row.starCoinOpen"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="openPackage(scope.row.starCoinOpen,scope.row._id,'starCoin')"
+            >
+          </el-switch>
+        </div>
       </template>
     </el-table-column>
     <el-table-column
       label="操作">
       <template slot-scope="scope">
         <el-button type="text" size="small" @click="goEditor(scope.row._id,scope.row.name)">改名</el-button>
-        <el-button type="text" size="small" @click="openPackage(scope.row.open,scope.row._id)">{{scope.row.open?'关闭':'打开'}}</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -91,11 +140,11 @@ export default {
 
   },
   methods: {
-    openPackage(open,id){
+    openPackage(open,id,type){
       let paramas = {
         token:this.token,
         open:!open,
-        type:'open',
+        type:type,
         _id:id
       }
       authApi.renamecardpackage(paramas).then(res => {

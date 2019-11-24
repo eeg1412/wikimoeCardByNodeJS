@@ -49,6 +49,12 @@
                 </el-tooltip>
             </div>
         </div>
+        <div class="wm_battle_logs_body" v-if="chartData.rows.length>0">
+            <h5 class="common_title type_shop">生涯统计</h5>
+            <div>
+                <ve-line :data="chartData" :settings="chartSettings" :extend="extend" :colors="colors"></ve-line>
+            </div>
+        </div>
         <div class="wm_battle_logs_body" v-if="battleLogs.length>0">
             <h5 class="common_title type_shop">对战记录</h5>
             <div class="tc">Tip:仅记录最近一周的对战记录。</div>
@@ -146,6 +152,7 @@ import {authApi} from "../api";
 import userTop from '../components/topUserInfo.vue';
 import battle from '../components/battle.vue';
 import {PrefixInteger} from "../../utils/utils";
+import VeLine from 'v-charts/lib/line.common'
 
 export default {
   data() {
@@ -175,13 +182,28 @@ export default {
         testWin:[0,0,0],
         userbattleinfoData:{win:0,lose:0,draw:0},
         myScore:'--',
-        skipBattle:localStorage.getItem("skipBattle")==='true'
+        skipBattle:localStorage.getItem("skipBattle")==='true',
+        extend:{
+        'xAxis.0.axisLabel.rotate': 45
+      },
+      chartSettings:{
+        labelMap: {
+          'score': '竞技点'
+        },
+      },
+      chartData: {
+        columns: ['time','score'],
+        rows: [
+        ]
+      },
+      colors: ['#FF4C4C']
     }
   },
   components: {
     menuView,
     userTop,
-    battle
+    battle,
+    VeLine
   },
   filters: {
       capitalize(value) {
@@ -325,6 +347,28 @@ export default {
                 this.myScore = res.data.score;
                 if(res.data.userbattleinfoData){
                     this.userbattleinfoData = res.data.userbattleinfoData;
+                    const battleScoreHistory = res.data.userbattleinfoData.battleScoreHistory;
+                    let preTime = 0;
+                    let timeCount = 1;
+                    this.chartData['rows'] = [];
+                    for(let i=0;i<battleScoreHistory.length;i++){
+                        const timeMonth = battleScoreHistory[i].time;
+                        const time = new Date(parseInt(timeMonth*86400000));
+                        let timeStr = time.getFullYear()+'年'+(time.getMonth())+'月'
+                        if(preTime===time.getMonth()){
+                            timeCount++;
+                            timeStr=timeStr+'第'+timeCount+'轮'
+                        }else{
+                            timeCount = 1;
+                        }
+                        preTime = time.getMonth();
+                        const hisData = {
+                            time:timeStr,
+                            score:battleScoreHistory[i].score,
+                        }
+                        this.chartData['rows'].push(hisData);
+                    }
+                    // this.chartData['rows'] = res.data.userbattleinfoData.battleScoreHistory;
                 }
             }
         });

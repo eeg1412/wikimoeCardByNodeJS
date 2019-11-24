@@ -105,10 +105,10 @@ module.exports = async function(req, res, next){
         return false;
     }
     //卡牌收集大于50
-    if(result.cardIndexCount<=20){
+    if(result.cardIndexCount<=25){
         res.send({
             code:0,
-            msg:'只有收集20种卡牌以上才能申请添加卡牌！'
+            msg:'只有收集25种卡牌以上才能申请添加卡牌！'
         });
         console.error(
             chalk.yellow(email+'卡牌收集率不够还不能上传卡牌')
@@ -135,13 +135,13 @@ module.exports = async function(req, res, next){
         throw err;
     })
     //检查是否超过20张卡牌
-    if(uploadData.length>=20){
+    if(uploadData.length>=global.myAppConfig.creatCardWait){
         res.send({
             code:0,
             msg:'待审核的卡牌过多，等管理员审核一些卡牌后再来上传吧！'
         });
         console.error(
-            chalk.yellow('制卡图片数据有误')
+            chalk.yellow('制卡数量过多')
         );
         return false
     }

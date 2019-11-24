@@ -45,7 +45,7 @@ module.exports = async function(req, res, next){
         parmas['ban'] = Number(ban);
     }
     let pageSize_ = 20;
-    let getParams = '_id email md5 nickName star score level exp deminingStarCount ip ban cardIndexCount';
+    let getParams = '_id email md5 nickName star score level exp deminingStarCount ip ban cardIndexCount robotRate';
     let sortData = sort;
     let userData_ =  await userData.findUserInPage(parmas,pageSize_,page_,getParams,sortData);
 

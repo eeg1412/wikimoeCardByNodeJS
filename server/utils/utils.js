@@ -9,6 +9,38 @@ var userData = require('./database/user');
 var marketData = require('./database/market');
 var cardData = require('../data/cardData');
 
+// 机器人可疑度检测
+exports.RobotCheck = async (userData_) =>{
+    // console.log(userData_.robotCheck)
+    if(userData_.robotCheck){
+        return true;
+    }
+    let baseRobotCheck = 10+userData_.robotRate;
+    let radomCheck = this.randomNum(1, 100);
+    // console.log(radomCheck,baseRobotCheck)
+    if(baseRobotCheck>radomCheck){
+        let filters = {
+            email: userData_.email
+        }
+        let updataParams = {
+            robotCheck:true,
+            captchaLock:true
+        }
+        await userData.updataUser(filters,updataParams).catch ((err)=>{
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            return false;
+        })
+        console.info(
+            chalk.green(userData_.email+'被随机检测是否是机器人，可疑度为：'+userData_.robotRate)
+        );
+        return true;
+    }else{
+        return false;
+    }
+}
+
 // 随机数组
 exports.randomArray = function(array,count){
     const arr = [...array]

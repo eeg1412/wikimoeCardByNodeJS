@@ -2,7 +2,7 @@
 import 'element-ui/lib/theme-chalk/base.css';
 import Vue from 'vue'
 
-import siteSetting from './utils/setting';
+// import siteSetting from './utils/setting';
 
 import vuexStore from '@/store'
 import router from '@/router'
@@ -16,7 +16,9 @@ import SequentialEntrance from 'vue-sequential-entrance'
 import 'vue-sequential-entrance/vue-sequential-entrance.css'
 import VueClipboard from 'vue-clipboard2'
 
-Vue.prototype.$wikimoecard = siteSetting;
+Vue.prototype.$wikimoecard = {
+  "url":"/card/"
+};
 Vue.prototype.$wikimoecard.l2dMassage = function(){
   console.log('live2d还在加载...');
 };

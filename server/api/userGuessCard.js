@@ -42,7 +42,20 @@ module.exports = async function(req, res, next){
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
     if(type==='buy'){
-        const payStar = 188;
+        let payStar = 258;
+        // 计算当天猜卡次数
+        let dailyGuessTime = Math.round(Number(result.guessStamp)*1000);
+        let myGuessTimes = result.guessDailyCount;//战斗次数
+        let dailyIsToday = false;//对战次数数据是否是当日
+        if(new Date().toDateString()===new Date(dailyGuessTime).toDateString()){//如果是同天
+            if(myGuessTimes===1){
+                payStar = 78;
+            }
+            dailyIsToday = true;
+        }else{
+            payStar = 0;
+            myGuessTimes = 0;
+        }
         // 星星是否够
         if(result.star<payStar){
             res.send({
@@ -177,6 +190,11 @@ module.exports = async function(req, res, next){
             });
             return false;
         }
+        if(dailyIsToday){
+            myGuessTimes = myGuessTimes+1;
+        }else{
+            myGuessTimes = 1;
+        }
         // 扣星星
         let useStar = {
             star:-payStar
@@ -186,6 +204,8 @@ module.exports = async function(req, res, next){
         }
         let updataParams = {
             $inc:useStar,
+            guessStamp:Math.round(new Date().getTime()/1000),
+            guessDailyCount:myGuessTimes,
             ip:IP
         }
         await userData.updataUser(userFilters,updataParams,false).catch ((err)=>{
@@ -331,7 +351,7 @@ module.exports = async function(req, res, next){
             return false;
         }
         // 可以获得的星星
-        const giftStar = [0,10,25,100,2500,500000,5000000];
+        const giftStar = [0,10,30,160,2000,50000,5000000];
         // 检测一共猜中几张卡
         const cardIndexArr = getGuessCardData.selectIndex;
         let cardDataArr = [];

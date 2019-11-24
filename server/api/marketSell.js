@@ -116,7 +116,17 @@ module.exports = async function(req, res, next){
         );
     }else if(type=='up'){
         // 上架卡牌
-        // 检查改卡牌是否大于1
+        if(result.cardIndexCount<global.myAppConfig.useMarketCardCount){
+            res.send({
+                code:0,
+                msg:'您的卡牌不满'+global.myAppConfig.useMarketCardCount+'种，暂时还不能买卡呢！'
+            });
+            console.info(
+                chalk.yellow('email:'+email+'卡牌不满50种，暂时还不能卖卡。IP为：'+IP)
+            );
+            return false;
+        }
+        // 检查该卡牌是否大于1
         let myCard = result.card;
         if(!myCard){
             res.send({

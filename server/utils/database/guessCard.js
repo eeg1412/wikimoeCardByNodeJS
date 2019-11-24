@@ -47,12 +47,18 @@ exports.creatNewGuessCard = async ()=>{
         chalk.green('生成猜卡数据中...')
     );
     // 查询开放的卡包
-    const resaultPackage = await cardPackageData.findCardPackageMany({open:true}).catch((err)=>{
+    const resaultPackage = await cardPackageData.findCardPackageMany({guessOpen:true}).catch((err)=>{
         console.error(
             chalk.red(err)
         );
         return false;
     });
+    if(resaultPackage.length<=0){
+        console.error(
+            chalk.red('未设置猜卡卡包！')
+        );
+        return false;
+    }
     let openPackageId = [];
     for(let i=0;i<resaultPackage.length;i++){
         openPackageId.push(resaultPackage[i].packageId)

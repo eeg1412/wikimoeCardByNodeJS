@@ -68,6 +68,16 @@ module.exports = async function(req, res, next){
             );
             throw err;
         });
+        if(!guessCardInfo){
+            res.send({
+                code:0,
+                msg:'当前无猜卡数据！'
+            });
+            console.error(
+                chalk.red('当前无猜卡数据！')
+            );
+            return false;
+        }
         // 查询卡包数据
         // 以后更新猜卡卡包后增加条件
         const params = {};
@@ -93,6 +103,12 @@ module.exports = async function(req, res, next){
                 myCardCount[cardId] = 0;
             }
         }
+        // 查询第几次猜卡
+        let dailyGuessTime = Math.round(Number(result.guessStamp)*1000);
+        let myGuessTimes = result.guessDailyCount;//猜卡次数
+        if(!(new Date().toDateString()===new Date(dailyGuessTime).toDateString())){//如果不是同天
+            myGuessTimes = 0;
+        }
         // 发送数据
         res.send({
             code:1,
@@ -100,6 +116,7 @@ module.exports = async function(req, res, next){
             packageInfo:packageInfo,
             battleCard:result.battleCard,
             data:guessCardInfo,
+            myGuessTimes:myGuessTimes,
             msg:'ok'
         });
     }

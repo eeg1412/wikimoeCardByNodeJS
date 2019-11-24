@@ -32,6 +32,10 @@ exports.updataCardPackage = async function (filters,parmas) {
     // document查询
     return await cardPackageModel.updateOne(filters, parmas);
 }
+exports.updataCardPackageMany = async function (filters,parmas) {
+    // document查询
+    return await cardPackageModel.updateMany(filters, parmas);
+}
 exports.deletCardPackage = async function (parmas) {
     // document查询
     return await cardPackageModel.deleteOne(parmas);

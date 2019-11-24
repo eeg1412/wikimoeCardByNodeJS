@@ -17,6 +17,7 @@ var apiMarketSell = require('../api/marketSell');
 var apiMarketBuy = require('../api/marketBuy');
 var apiMarketChart = require('../api/marketChart');
 var apiGravatar = require('../api/gravatar');
+var apiSiteConfig = require('../api/siteConfig');
 var apiBattle = require('../api/battle');
 var apiBattleCard = require('../api/battlecard');
 var apiRank = require('../api/rank');
@@ -37,6 +38,8 @@ var apiHandbook = require('../api/handbook');
 var apiSearchCreatCard = require('../api/searchcreatcard');
 var apiSearchGuessCard = require('../api/searchGuessCard');
 var apiUserGuessCard = require('../api/userGuessCard');
+var apiUserPost = require('../api/post');
+var apiRobotCheck = require('../api/robotCheck');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -52,6 +55,7 @@ var adminApiSearchLog = require('../api/admin/searchLog');
 var adminApiNews = require('../api/admin/news');
 var adminApiRenameCardPackage = require('../api/admin/cardPackage');
 var adminApiCreatCard = require('../api/admin/creatcard');
+var adminApiSearchCard = require('../api/admin/searchCard');
 
 
 /* GET users listing. */
@@ -60,6 +64,7 @@ router.get('/', function(req, res, next) {
 });
 router.get('/captcha', apiCaptcha);
 router.get('/gravatar.png', apiGravatar);
+router.get('/siteConfig.js', apiSiteConfig);
 router.get('/rank', apiRank);
 router.post('/dailycard', apiDailycard);
 router.post('/reg', apiReg);
@@ -95,6 +100,8 @@ router.post('/handbook', apiHandbook);
 router.post('/searchcrearchcard', apiSearchCreatCard);
 router.post('/searchguesscard', apiSearchGuessCard);
 router.post('/userguesscard', apiUserGuessCard);
+router.post('/userpost', apiUserPost);
+router.post('/robotcheck', apiRobotCheck);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);
@@ -110,5 +117,6 @@ router.post('/admin/searchlog', adminApiSearchLog);
 router.post('/admin/news', adminApiNews);
 router.post('/admin/renamecardpackage', adminApiRenameCardPackage);
 router.post('/admin/creatcard', adminApiCreatCard);
+router.post('/admin/searchcard', adminApiSearchCard);
 
 module.exports = router;
