@@ -99,13 +99,13 @@
       </div>
       <div class="wm_card_menu_text">制卡</div>
     </div>
-    <a class="wm_card_menu_box" :href="$wikimoecard.qunUrl" v-if="$wikimoecard.qunUrl" target="_blank" @mouseenter="$wikimoecard.l2dMassage('加入官方QQ群，和大佬们一起开心抽卡吧！')" @mouseleave="$wikimoecard.l2dMassageClose">
+    <a class="wm_card_menu_box" :href="menuLink.QQunURL" v-if="menuLink.QQunURL" target="_blank" @mouseenter="$wikimoecard.l2dMassage('加入官方QQ群，和大佬们一起开心抽卡吧！')" @mouseleave="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/qun.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">Q群</div>
     </a>
-    <div class="wm_card_menu_box" @click="openDonate" @mouseenter="$wikimoecard.l2dMassage('呜呜呜，开发者现在穷的没饭吃了，求捐赠！')" @mouseleave="$wikimoecard.l2dMassageClose">
+    <div class="wm_card_menu_box" @click="openDonate" @mouseenter="$wikimoecard.l2dMassage('呜呜呜，开发者现在穷的没饭吃了，求捐赠！')" @mouseleave="$wikimoecard.l2dMassageClose" v-if="menuLink.donateImgUrl">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/zanzhu.png" width="100%" height="100%" />
       </div>
@@ -234,6 +234,11 @@ import itemData from '../../../../server/data/item';
 export default {
   data() {
     return {
+      menuLink:{
+        courseURL:window.$siteConfig.courseURL,
+        QQunURL:window.$siteConfig.QQunURL,
+        donateImgUrl:window.$siteConfig.donateImgUrl,
+      },
       txDays:new Date().getDate(),
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       captchaSrc:'/api/captcha?time='+new Date().getTime(),
@@ -310,7 +315,7 @@ export default {
       });
     },
     goCouse(){
-      window.open('https://www.wikimoe.com/?post=228','_blank');
+      window.open(this.menuLink.courseURL||'https://www.wikimoe.com/?post=228','_blank');
     },
     getCardMd5(){
       let md5 = '';
@@ -352,7 +357,7 @@ export default {
       });
     },
     openDonate(){
-      this.$alert('<div class="watch_img"><img src="/static/otherImg/donate.jpg" /></div>', '捐赠', {
+      this.$alert('<div class="watch_img"><img src="'+this.menuLink.donateImgUrl+'" /></div>', '捐赠', {
         dangerouslyUseHTMLString: true
       });
     },

@@ -1,6 +1,6 @@
 <template>
 <div class="common_body">
-  <h5 class="wm_card_chiose_title">欢迎来到维基萌抽卡</h5>
+  <h5 class="wm_card_chiose_title">{{siteTitle}}</h5>
   <div class="wm_card_email_body">
     <transition name="el-fade-in-linear">
       <div class="wm_card_email_input_body" v-show="!seled">
@@ -225,6 +225,7 @@ import md5 from 'js-md5';
 export default {
   data() {
     return {
+      siteTitle:window.$siteConfig.siteTitle,
       userPackage:'0',
       userCardCountNow:{},
       seledCardPackage:'加载中',

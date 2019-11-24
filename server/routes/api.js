@@ -17,6 +17,7 @@ var apiMarketSell = require('../api/marketSell');
 var apiMarketBuy = require('../api/marketBuy');
 var apiMarketChart = require('../api/marketChart');
 var apiGravatar = require('../api/gravatar');
+var apiSiteConfig = require('../api/siteConfig');
 var apiBattle = require('../api/battle');
 var apiBattleCard = require('../api/battlecard');
 var apiRank = require('../api/rank');
@@ -63,6 +64,7 @@ router.get('/', function(req, res, next) {
 });
 router.get('/captcha', apiCaptcha);
 router.get('/gravatar.png', apiGravatar);
+router.get('/siteConfig.js', apiSiteConfig);
 router.get('/rank', apiRank);
 router.post('/dailycard', apiDailycard);
 router.post('/reg', apiReg);

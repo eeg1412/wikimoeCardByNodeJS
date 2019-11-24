@@ -19,6 +19,9 @@ export default {
       this.$refs.l2d.showMessage(text);
     }
   },
+  mounted() {
+    document.title = window.$siteConfig.browserTitle;
+  },
   components: {
     live2d
   },

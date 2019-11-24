@@ -200,6 +200,8 @@ const openNode = async function(socket,data,result_){
                     }else if(useTool==2){
                         starAdd = utils.randomNum(20,30);
                     }
+                    // 乘以后台设定的星星系数
+                    starAdd = starAdd*global.myAppConfig.deminingStarRatio;
                 }else{
                     let itemRare = utils.randomNum(1,100);//随机一个随机道具因子
                     let mapType = result.mapType;
@@ -217,6 +219,8 @@ const openNode = async function(socket,data,result_){
                     }else if(useTool==2){
                         getItemNum = getItemNum*6;
                     }
+                    // 乘以后台的系数
+                    getItemNum = getItemNum*global.myAppConfig.deminingItemRatio;
                 }
                 if(boomedNum>=boomNum){
                     close = 1;

@@ -152,10 +152,10 @@ module.exports = async function(req, res, next){
             );
             return false;
         }
-        if(result.cardIndexCount<50){
+        if(result.cardIndexCount<global.myAppConfig.useMarketCardCount){
             res.send({
                 code:0,
-                msg:'您的卡牌不满50种，暂时还不能买卡呢！'
+                msg:'您的卡牌不满'+global.myAppConfig.useMarketCardCount+'种，暂时还不能买卡呢！'
             });
             console.info(
                 chalk.yellow('email:'+email+'卡牌不满50种，暂时还不能买卡。IP为：'+IP)

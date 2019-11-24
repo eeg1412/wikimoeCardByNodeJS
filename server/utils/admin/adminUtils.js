@@ -6,21 +6,9 @@ var adminLogModel = require('../../models/adminLog');
 
 // 写入配置
 exports.writeGlobalOpt = function (opt) {
-    let baseConfig = {
-        init:'true',
-		sessionSecret:opt.sessionSecret,//session加密字符串
-		JWTSecret:opt.JWTSecret,//JWT加密字符串
-		dailyChance:opt.dailyChance,//每日抽卡次数
-		smtpHost: opt.smtpHost,//邮件发送host
-		smtpPort: opt.smtpPort,//邮件发送端口
-		smtpAuth: {
-			user: opt.smtpAuth.user,//用户名
-			pass: opt.smtpAuth.pass//密码
-		}
-    };
-    let baseConfig_ = JSON.stringify(baseConfig);
+    let baseConfig_ = JSON.stringify(opt);
     fs.writeFileSync('./config/config.json', baseConfig_, 'utf8');
-    global.myAppConfig = Object.assign(global.myAppConfig, baseConfig);
+    global.myAppConfig = Object.assign(global.myAppConfig, opt);
     console.info(
         chalk.green('配置修改成功，新的配置为：')
     );

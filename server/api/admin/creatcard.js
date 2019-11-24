@@ -198,7 +198,7 @@ module.exports = async function(req, res, next){
             }
             let updateParams = {
                 $inc:{
-                    star:100,
+                    star:global.myAppConfig.creatCardStar,
                     UCC:1
                 }
             };

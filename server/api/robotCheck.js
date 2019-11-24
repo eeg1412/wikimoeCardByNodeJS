@@ -74,8 +74,8 @@ module.exports = async function(req, res, next){
     if(robot<0){
         robot = 0;
     }
-    if(robot<25){
-        getStar = 40;
+    if(robot<global.myAppConfig.robotCheckCanGetStar){
+        getStar = global.myAppConfig.robotCheckStar;
     }
     const params = {
         robotRate:robot,

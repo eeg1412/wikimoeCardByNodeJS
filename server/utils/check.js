@@ -13,7 +13,10 @@ const userPost = require('../utils/database/userPost');
 exports.checkScoreRankTimer = async ()=>{
     schedule.scheduleJob('0 5 3 1 * *',()=>{//每月1日3点5分执行
         this.checkScoreRank();
-    }); 
+    });
+    // schedule.scheduleJob('0 59 * * * *',()=>{//每月1日3点5分执行
+    //     this.checkScoreRank();
+    // }); 
 }
 // 每个月结算竞技点
 exports.checkScoreRank = async ()=>{
@@ -28,8 +31,10 @@ exports.checkScoreRank = async ()=>{
             chalk.yellow('竞技锁定结束！')
         );
     },600000)
-    let coinAdd = 100;
-    let preScore = -1;
+    let coinAdd = global.myAppConfig.battleRankGetItem;
+    const coinRankDecay = global.myAppConfig.battleRankGetItemDecay;
+    //let preScore = -1;
+    let rank = 1;
     userData.findUserMany({},'-__v',{score:-1,cardIndexCount:-1}).then(users=>users.forEach((item,index)=>{
         // 计算给与多少五円玉
         const score = item.score;//用户竞技点
@@ -42,20 +47,32 @@ exports.checkScoreRank = async ()=>{
         const params = {
             email:item.email
         }
-        // 写入道具
+        // 写入道具到邮件
         if(getCoin>0&&item.battled){
-            let getItemDataBase = {};
-            getItemDataBase['item.300'] = getCoin+(coinAdd<0?0:coinAdd);
-            let update_ = {
-                $inc:getItemDataBase
-            }
-            itemDatabase.findOneAndUpdate(params,update_).catch ((err)=>{
+            const time = Math.round(new Date().getTime()/1000);
+            const canGetItem = getCoin+(coinAdd<0?0:coinAdd);
+            const saveParams = {
+                text:'恭喜，您在本次的竞技中取得了'+score+'点竞技点，排名第'+rank+'名。共获得'+canGetItem+'个【五円玉】，请注意查收！',
+                title:'竞技点结算奖励',
+                time:time,
+                endTime:time+2592000,
+                type:'item',
+                itemId:'300',
+                itemNumber:canGetItem,
+                email:item.email
+            };
+            userPost.saveUserPost(saveParams).catch ((err)=>{
+                res.send({
+                    code:0,
+                    msg:'内部错误，更新失败！'
+                });
                 console.error(
-                    chalk.red('数据库更新错误！--赠送五円玉')
+                    chalk.red('数据库更新错误！')
                 );
                 throw err;
             })
-            coinAdd = coinAdd-10;
+            coinAdd = coinAdd-coinRankDecay;
+            rank++;
         }
         if(score>0){
             // 写入历史
