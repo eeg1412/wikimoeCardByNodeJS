@@ -31,14 +31,15 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 
 ### v1.2.1更新至v2.0.0的方法
 
-1. 在[releases](https://github.com/eeg1412/wikimoeCardByNodeJS/releases)下载更新包。
-2. 备份配置文件(【server\config\default.js和server\config\default.js】和【server\config\default.js和server\config\config.json】)后解压更新包覆盖项目文件。
-3. 如果当前路径不在服务端则`cd server`切换至服务端。
-4. `npm install`更新依赖。
-5. `npm run update1to2`对1.x版本的数据库更新。
-6. 将原先填入default.js的默认配置重新写入新的server\config\default.js和server\config\default.js里。
-7. 关闭窗口，执行`npm start`启动服务器。
-8. 进入/cardinstall，对网站进行配置。
+1. 更新前请务必备份原先的文件和数据库！！！！
+2. 在[releases](https://github.com/eeg1412/wikimoeCardByNodeJS/releases)下载更新包。
+3. 解压更新包覆盖项目文件。
+4. 如果当前路径不在服务端则`cd server`切换至服务端。
+5. `npm install`更新依赖。
+6. `npm run update1to2`对1.x版本的数据库更新。
+7. 将原先填入default.js的默认服务器配置重新写入新的server\config\default.js里。
+8. 关闭窗口，执行`npm start`启动服务器。
+9. 浏览器进入/cardinstall，对网站进行配置。
 
 注意：必须是v1.2.1版本才能使用上面的升级方法！如果低于v1.2.1的话请先更新至该版本！
 
@@ -47,7 +48,7 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 1. 在[releases](https://github.com/eeg1412/wikimoeCardByNodeJS/releases)下载最新版（记得事先安装MongoDB）。
 2. `cd server`切换至服务端。
 3. `npm install`下载依赖。
-4. 确认端口和mongodb地址：server/config/default.js
+4. 在【server/config/default.js】文件中，确认并填入【网页端口】、【是否开启https】、【https端口】、【站点域名】、【私钥文件路径】、【证书文件路径】、【mongoDB地址】，剩下的配置会在下面安装时设定。
 ```javascript
 let baseConfig = {
 	port: 3000,//网页端口
