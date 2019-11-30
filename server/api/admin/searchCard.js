@@ -7,7 +7,7 @@ module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
     console.info(
-        chalk.green('开始增改新闻,IP为：'+IP)
+        chalk.green('开始查询卡牌——后台,IP为：'+IP)
     )
     if(!token){
         res.send({

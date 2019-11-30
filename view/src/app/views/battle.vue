@@ -2,7 +2,7 @@
     <div class="common_body">
         <userTop ref="userTop" />
         <h5 class="common_title type_shop">卡牌对战</h5>
-        <div class="tc">Tip:进阶匹配将会匹配到更强大的对手，同时收益也会更高。</div>
+        <div class="tc">Tip:每日对战次数达标后可以获得星星奖励哦！</div>
         <transition name="el-fade-in-linear">
             <battle :battleData="battleData" v-if="battleSence" @gameover="gameover"></battle>
         </transition>
@@ -33,11 +33,11 @@
                     <el-button type="primary" icon="el-icon-search" @click="battle(false)">匹配对手（普通）</el-button>
                 </el-tooltip>
             </div>
-            <div class="wm_battle_btn_box">
+            <!-- <div class="wm_battle_btn_box">
                 <el-tooltip class="item" effect="dark" content="匹配竞技点比自己高一些的对手。" placement="top" :enterable="false">
                     <el-button type="primary" icon="el-icon-search" @click="battle(true)">匹配对手（进阶）</el-button>
                 </el-tooltip>
-            </div>
+            </div> -->
             <div class="wm_battle_btn_box">
                 <el-tooltip class="item" effect="dark" content="组建自己的对战卡牌。" placement="top" :enterable="false">
                     <el-button type="primary" icon="el-icon-star-off" @click="goBattleRoute('/battlecard')">组建我的对战卡牌</el-button>

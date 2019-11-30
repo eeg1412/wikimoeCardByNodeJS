@@ -305,7 +305,7 @@ function cardSort(a,b){
 module.exports = async function(req, res, next){
     let IP = utils.getUserIp(req);
     let token = req.body.token;
-    let advanced = req.body.advanced;
+    let advanced = false;//req.body.advanced;
     let timeNow = Math.round(new Date().getTime()/1000);
     if(global.checkScoreRankIng){
         res.send({

@@ -17,6 +17,10 @@ exports.findWantCard = async function (pageSize_,page_,parmas,getParams) {
         .limit(pageSize);
     return [data,total];
 }
+exports.updatatWantMany = async function (filters,parmas) {
+    // document查询
+    return await wantCardModel.updateMany(filters, parmas);
+}
 exports.deletWantMany = async function (parmas) {
     // document查询
     return await wantCardModel.deleteMany(parmas);

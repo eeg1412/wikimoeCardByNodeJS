@@ -10,7 +10,7 @@ module.exports = async function(req, res, next){
     let token = req.body.token;
     let type = req.body.type;
     console.info(
-        chalk.green('开始增改新闻,IP为：'+IP)
+        chalk.green('开始卡包处理,IP为：'+IP)
     )
     if(!token){
         res.send({
