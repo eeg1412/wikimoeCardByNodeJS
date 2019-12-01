@@ -2,7 +2,7 @@
     <div class="common_body">
         <userTop ref="userTop" />
         <h5 class="common_title type_shop">卡牌对战</h5>
-        <div class="tc">Tip:进阶匹配将会匹配到更强大的对手，同时收益也会更高。</div>
+        <div class="tc">Tip:每日对战次数达标后可以获得星星奖励哦！</div>
         <transition name="el-fade-in-linear">
             <battle :battleData="battleData" v-if="battleSence" @gameover="gameover"></battle>
         </transition>
@@ -77,7 +77,7 @@
                                 <el-tooltip class="item" effect="dark" :content="'查看【'+item.data.EmName+'】的对战信息'" placement="top">
                                     <div class="dib wm_set_pointer wm_battlelogs_content" @click="watchUserInfo(false,index)">
                                         <div class="mb5">
-                                            <img class="radius5" :src="item.data.EmMD5?'https://gravatar.loli.net/avatar/'+item.data.EmMD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(item.data.EmName.replace(/[^0-9]/ig,''))%29+'.jpg'" width="45" height="45">
+                                            <img class="radius5" :src="item.data.EmMD5?'https://gravatar.loli.net/avatar/'+item.data.EmMD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(item.data.EmName.replace(/[^0-9]/ig,''))+'.jpg'" width="45" height="45">
                                         </div>
                                         <div :class="{'cRed':item.data.win==0,'cGreen1A7':item.data.win==1}">{{item.data.win | emWin}}<span v-if="item.data.EmGetScore!=0">({{item.data.EmGetScore | setScore}})</span></div>
                                     </div>
@@ -111,7 +111,7 @@
             width="95%"
             >
             <div class="wm_top_info_more_body" v-show="!cardMode">
-                <div><img class="wm_top_moreinfo_avatar_pic" :src="userBattleLogInfo.MD5?'https://gravatar.loli.net/avatar/'+userBattleLogInfo.MD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(userBattleLogInfo.name.replace(/[^0-9]/ig,''))%29+'.jpg'"></div>
+                <div><img class="wm_top_moreinfo_avatar_pic" :src="userBattleLogInfo.MD5?'https://gravatar.loli.net/avatar/'+userBattleLogInfo.MD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(userBattleLogInfo.name.replace(/[^0-9]/ig,''))+'.jpg'"></div>
                 <div class="wm_top_moreinfo_name mt5">{{userBattleLogInfo.name}}</div>
                 <div class="wm_top_moreinfo_body clearfix">
                     <div class="wm_top_moreinfo_box">

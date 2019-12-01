@@ -92,11 +92,11 @@ function cardBattle(AttackADSHP,AttackCard,DefendEmADSHP,DefendCard){
     // 克：增伤10%*星级差(最多10%)
     // 被克：防御减少10%*星级差(最多10%)
     let cryKe = {
-        '1':[3,4],
+        '1':[3],
         '2':[1],
         '3':[2],
         '4':[5],
-        '5':[1,2,3]
+        '5':[4]
     }
     let AttackRightType = AttackCard.rightType;
     // let AttackCry = AttackCard.cry;
@@ -384,7 +384,7 @@ module.exports = async function(req, res, next){
             emData = await searchEm(emScore);
         }else{
             let emMinScore = myScore-500<0?0:myScore-500;
-            let emMaxScore = myScore+500;
+            let emMaxScore = myScore+750;
             let emScore = {
                 score:{$gte:emMinScore,$lte:emMaxScore},
                 email:{$ne:email},
@@ -477,11 +477,10 @@ module.exports = async function(req, res, next){
         EmName = '自动书记人偶'+ utils.randomNum(0,99) + '号';
         if(MyCardIndexCount<200&&!advanced){
             EmCardIndexCount = MyCardIndexCount+utils.randomNum(-550,0);
-        }else if(advanced){
-            EmCardIndexCount = MyCardIndexCount+utils.randomNum(-125,300);
         }else{
-            EmCardIndexCount = MyCardIndexCount+utils.randomNum(-550,200);
+            EmCardIndexCount = MyCardIndexCount+utils.randomNum(-300,460);
         }
+        // 老版进阶加成：EmCardIndexCount = MyCardIndexCount+utils.randomNum(-125,300);
         //给AI设置等级
         let myCardLevelArr = Object.entries(myCardLevel);
         //打乱卡牌数组
@@ -651,9 +650,9 @@ module.exports = async function(req, res, next){
         let EmUpdataParams = null;
         if(AiMode){//如果是AI模式则竞技点与自己一样
             EmScore = MyScore;
-            if(advanced){
-                EmScore = EmScore+70;
-            }
+            // if(advanced){
+            //     EmScore = EmScore+70;
+            // }
         }else{
             EmScore = emData.score;
         }

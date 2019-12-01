@@ -370,6 +370,15 @@ const router = new VueRouter({
             admin:true,
           },
         },
+        {//卡牌管理
+          name: 'cardmanagement',
+          path: 'cardmanagement',
+          component: resolve => require(['../views/admin/center/cardManagement.vue'], resolve),
+          meta:{
+            login:true,
+            admin:true,
+          },
+        },
         {//卡牌审核
           name: 'cardpass',
           path: 'cardpass',

@@ -34,7 +34,7 @@
                     </el-form-item>
                     <el-tooltip class="item" effect="dark" content="请尽量完整的输入作品全名！" placement="top">
                         <el-form-item label="作品全名">
-                            <el-input v-model="cardSet.title" @input="changeTitle" @blur="changeTitle" placeholder="请尽量完整的输入作品全名！"></el-input>
+                            <el-input v-model="cardSet.title" placeholder="请尽量完整的输入作品全名！"></el-input>
                         </el-form-item>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="用于卡框，如果和全名一样请点击同上" placement="top">
@@ -46,7 +46,7 @@
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="请尽量完整的输入角色全名！" placement="top">
                         <el-form-item label="角色全名">
-                            <el-input v-model="cardSet.name" @input="changeName" @blur="changeName" placeholder="请尽量完整的输入角色全名！"></el-input>
+                            <el-input v-model="cardSet.name" placeholder="请尽量完整的输入角色全名！"></el-input>
                         </el-form-item>
                     </el-tooltip>
                     <el-tooltip class="item" effect="dark" content="用于卡框，如果和全名一样请点击同上" placement="top">
@@ -366,13 +366,13 @@ export default {
             this.sprite.starSprite  = new PIXI.Sprite(star);
             this.sprite.starSprite.zIndex = 2;
             // 作品
-            this.sprite.titleSprite = new PIXI.Text(this.cardSet.title,{ fontFamily:'Noto Sans SC' ,fontSize: '18px', fill : 0xffffff ,strokeThickness:2,padding:28 });
+            this.sprite.titleSprite = new PIXI.Text(this.cardSet.titleS,{ fontFamily:'Noto Sans SC' ,fontSize: '18px', fill : 0xffffff ,strokeThickness:2,padding:28 });
             this.sprite.titleSprite.anchor.set(0.5,0);
             this.sprite.titleSprite.position.set(202, 480);
             this.sprite.titleSprite.zIndex = 3;
             this.sprite.titleSprite.roundPixels = true;
             // 名字
-            this.sprite.nameSprite = new PIXI.Text(this.cardSet.name,{ fontFamily:'Noto Sans SC' ,fontSize: '22px', fill : 0xffffff ,strokeThickness:2,padding:36 });
+            this.sprite.nameSprite = new PIXI.Text(this.cardSet.nameS,{ fontFamily:'Noto Sans SC' ,fontSize: '22px', fill : 0xffffff ,strokeThickness:2,padding:36 });
             this.sprite.nameSprite.anchor.set(0.5,0);
             this.sprite.nameSprite.position.set(202, 512);
             this.sprite.nameSprite.zIndex = 3;

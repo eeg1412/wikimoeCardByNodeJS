@@ -159,5 +159,8 @@ export default function (api) {
     adminSearchcard(data){
       return api.post('admin/searchcard',data)
     },
+    adminEditcard(data){
+      return api.post('admin/editcard',data)
+    },
   }
 }

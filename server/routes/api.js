@@ -56,6 +56,7 @@ var adminApiNews = require('../api/admin/news');
 var adminApiRenameCardPackage = require('../api/admin/cardPackage');
 var adminApiCreatCard = require('../api/admin/creatcard');
 var adminApiSearchCard = require('../api/admin/searchCard');
+var adminApiEditCard = require('../api/admin/cardEdit');
 
 
 /* GET users listing. */
@@ -118,5 +119,6 @@ router.post('/admin/news', adminApiNews);
 router.post('/admin/renamecardpackage', adminApiRenameCardPackage);
 router.post('/admin/creatcard', adminApiCreatCard);
 router.post('/admin/searchcard', adminApiSearchCard);
+router.post('/admin/editcard', adminApiEditCard);
 
 module.exports = router;
