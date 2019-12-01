@@ -33,11 +33,11 @@
                     <el-button type="primary" icon="el-icon-search" @click="battle(false)">匹配对手（普通）</el-button>
                 </el-tooltip>
             </div>
-            <!-- <div class="wm_battle_btn_box">
+            <div class="wm_battle_btn_box">
                 <el-tooltip class="item" effect="dark" content="匹配竞技点比自己高一些的对手。" placement="top" :enterable="false">
                     <el-button type="primary" icon="el-icon-search" @click="battle(true)">匹配对手（进阶）</el-button>
                 </el-tooltip>
-            </div> -->
+            </div>
             <div class="wm_battle_btn_box">
                 <el-tooltip class="item" effect="dark" content="组建自己的对战卡牌。" placement="top" :enterable="false">
                     <el-button type="primary" icon="el-icon-star-off" @click="goBattleRoute('/battlecard')">组建我的对战卡牌</el-button>
@@ -77,7 +77,7 @@
                                 <el-tooltip class="item" effect="dark" :content="'查看【'+item.data.EmName+'】的对战信息'" placement="top">
                                     <div class="dib wm_set_pointer wm_battlelogs_content" @click="watchUserInfo(false,index)">
                                         <div class="mb5">
-                                            <img class="radius5" :src="item.data.EmMD5?'https://gravatar.loli.net/avatar/'+item.data.EmMD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(item.data.EmName.replace(/[^0-9]/ig,''))%29+'.jpg'" width="45" height="45">
+                                            <img class="radius5" :src="item.data.EmMD5?'https://gravatar.loli.net/avatar/'+item.data.EmMD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(item.data.EmName.replace(/[^0-9]/ig,''))+'.jpg'" width="45" height="45">
                                         </div>
                                         <div :class="{'cRed':item.data.win==0,'cGreen1A7':item.data.win==1}">{{item.data.win | emWin}}<span v-if="item.data.EmGetScore!=0">({{item.data.EmGetScore | setScore}})</span></div>
                                     </div>
@@ -111,7 +111,7 @@
             width="95%"
             >
             <div class="wm_top_info_more_body" v-show="!cardMode">
-                <div><img class="wm_top_moreinfo_avatar_pic" :src="userBattleLogInfo.MD5?'https://gravatar.loli.net/avatar/'+userBattleLogInfo.MD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(userBattleLogInfo.name.replace(/[^0-9]/ig,''))%29+'.jpg'"></div>
+                <div><img class="wm_top_moreinfo_avatar_pic" :src="userBattleLogInfo.MD5?'https://gravatar.loli.net/avatar/'+userBattleLogInfo.MD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(userBattleLogInfo.name.replace(/[^0-9]/ig,''))+'.jpg'"></div>
                 <div class="wm_top_moreinfo_name mt5">{{userBattleLogInfo.name}}</div>
                 <div class="wm_top_moreinfo_body clearfix">
                     <div class="wm_top_moreinfo_box">
