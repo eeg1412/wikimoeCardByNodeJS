@@ -14,7 +14,7 @@ exports.checkScoreRankTimer = async ()=>{
     schedule.scheduleJob('0 5 3 1 * *',()=>{//每月1日3点5分执行
         this.checkScoreRank();
     });
-    // schedule.scheduleJob('0 59 * * * *',()=>{//每月1日3点5分执行
+    // schedule.scheduleJob('0 5 * * * *',()=>{//每月1日3点5分执行
     //     this.checkScoreRank();
     // }); 
 }
@@ -24,6 +24,7 @@ exports.checkScoreRank = async ()=>{
     console.info(
         chalk.yellow('开始结算竞技点，竞技将被锁定！')
     );
+    const maxScore = 10000 //最大竞技点
     global.checkScoreRankIng = true;
     setTimeout(()=>{
         global.checkScoreRankIng = false;
@@ -40,8 +41,8 @@ exports.checkScoreRank = async ()=>{
         const score = item.score;//用户竞技点
         const getCoin = Math.floor(score/500);//每500竞技点1个五円玉
         let newScore = Math.floor(score/250)*250;//新的竞技点
-        if(newScore>6000){
-            newScore = 6000;
+        if(newScore>maxScore){
+            newScore = maxScore;
         }
         // 用户
         const params = {

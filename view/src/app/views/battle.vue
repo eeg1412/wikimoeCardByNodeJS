@@ -8,19 +8,26 @@
         </transition>
         <div class="wm_battle_btn_body">
             <div class="wm_battle_ueseinfo_body">
-                <table class="wm_user_info_table">
+                <table class="wm_user_info_table type_battle">
                     <thead>
                         <tr>
                         <th>胜利</th>
                         <th>战败</th>
                         <th>平局</th>
+                        <th>胜率</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                        <td class="wm_user_level">{{userbattleinfoData.win}}</td>
-                        <td class="wm_user_score">{{userbattleinfoData.lose}}</td>
-                        <td class="wm_user_getcard_count">{{userbattleinfoData.draw}}</td>
+                        <td>{{userbattleinfoData.win}}</td>
+                        <td>{{userbattleinfoData.lose}}</td>
+                        <td>{{userbattleinfoData.draw}}</td>
+                        <td>
+                            <div v-if="userbattleinfoData.win>0">
+                                {{(userbattleinfoData.win/(userbattleinfoData.win+userbattleinfoData.lose+userbattleinfoData.draw)*100).toFixed(2)+'%'}}
+                            </div>
+                            <div v-else>--</div>
+                        </td>
                         </tr>
                     </tbody>
                 </table>
@@ -495,6 +502,9 @@ export default {
 }
 .wm_battle_usercard_no_fight{
     opacity: 0.4;
+}
+.wm_user_info_table.type_battle td,.wm_user_info_table.type_battle th{
+    width: 25%;
 }
 @media ( max-width : 768px) {
     .wm_battlelogs_content{
