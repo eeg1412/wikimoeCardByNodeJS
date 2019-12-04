@@ -279,7 +279,6 @@ function creatAICard(starArr_,allCardDataArr){
             }
         }
     }
-    console.log(cardArr);
     return cardArr;
 }
 // 获取所有卡牌
@@ -356,6 +355,9 @@ module.exports = async function(req, res, next){
     // 获取所有卡牌数据
     // 0全部卡牌，1为1星卡，2为2星卡，3为3星卡以此类推
     const allCardDataArr = await getAllCardInfo();
+
+    // 获取对战次数结算
+    const dataChanceData = utils.battleChance(result);
 
     console.info(
         chalk.green(email+'开始匹配对战对手。IP为：'+IP)
@@ -478,7 +480,7 @@ module.exports = async function(req, res, next){
         if(MyCardIndexCount<200&&!advanced){
             EmCardIndexCount = MyCardIndexCount+utils.randomNum(-550,0);
         }else{
-            EmCardIndexCount = MyCardIndexCount+utils.randomNum(-300,300);
+            EmCardIndexCount = MyCardIndexCount+utils.randomNum(-350,300);
         }
         // 老版进阶加成：EmCardIndexCount = MyCardIndexCount+utils.randomNum(-125,300);
         //给AI设置等级
@@ -602,18 +604,18 @@ module.exports = async function(req, res, next){
         }
     }
     // 计算当天战斗次数
-    let battleOverTimes = 5;//每天最多可以赢几次
-    let dailyBattleTime = Math.round(Number(result.battleStamp)*1000);
-    let myBattleTimes = result.battleDailyCount;//战斗次数
-    let battleOverChance = false;//是否超过当日对战次数
-    let dailyIsToday = false;//对战次数数据是否是当日
-    if(new Date().toDateString()===new Date(dailyBattleTime).toDateString()){//如果是同天
-        if(myBattleTimes>=battleOverTimes){//如果今日已经战斗五次
-            battleOverChance = true;
-        }
-        dailyIsToday = true;
-    }else{
-        myBattleTimes = 0;
+    let battleOverTimes = 6;//最多可以储存多少次对战
+    let dailyBattleTime = dataChanceData.dataTime;
+    let myBattleTimes = dataChanceData.battleChance;//战斗次数
+    let battleOverChance = false;//是否超过对战次数
+    // let dailyIsToday = false;//对战次数数据是否是当日
+    if(myBattleTimes<1){
+        battleOverChance = true;
+    }
+    myBattleTimes = myBattleTimes - 1;
+    // 如果结算后的对战次数剩余5则重新开始计时
+    if(myBattleTimes===5){
+        dailyBattleTime = Math.round(new Date().getTime()/1000);
     }
     // 只获取已经战斗过卡牌的等级
     let MyBattleDataCount = MyBattleData.length;
@@ -671,15 +673,8 @@ module.exports = async function(req, res, next){
             }
             EmGetScore = -getScore;
             getExp = getScore+10;
-            if(dailyIsToday){
-                myBattleTimes = myBattleTimes+1;
-            }else{
-                myBattleTimes = 1;
-            }
-            //如果今日挑战已经胜利5次则赠送50星星
-            if(myBattleTimes===battleOverTimes){
-                battleGetStar = 10*battleOverTimes;
-            }
+            // 如果胜利获得3星星
+            battleGetStar = 3;
             // 写入我方胜利数据
             let myLevle = result.level;
             let MyExp = result.exp+getExp;
@@ -693,7 +688,7 @@ module.exports = async function(req, res, next){
                     star:levelUpStar+battleGetStar
                 },
                 battled:true,
-                battleStamp:Math.round(new Date().getTime()/1000),
+                battleStamp:dailyBattleTime,
                 battleDailyCount:myBattleTimes,
                 score:result.score + getScore,
                 level:levelExp[0],
@@ -739,6 +734,8 @@ module.exports = async function(req, res, next){
             }
             updataParams = {
                 battled:true,
+                battleStamp:dailyBattleTime,
+                battleDailyCount:myBattleTimes,
                 score:myNewScore,
                 ip:IP
             }
@@ -757,14 +754,16 @@ module.exports = async function(req, res, next){
             )
         }else{
             // 如果没有对战过则写入已战斗
+            userFilters = {
+                email:email
+            }
+            updataParams = {
+                battleStamp:dailyBattleTime,
+                battleDailyCount:myBattleTimes,
+                ip:IP
+            }
             if(!result.battled){
-                userFilters = {
-                    email:email
-                }
-                updataParams = {
-                    battled:true,
-                    ip:IP
-                }
+                updataParams["battled"] = true;
             }
             // 平局写入被战斗记录
             if(!AiMode){
@@ -915,6 +914,7 @@ module.exports = async function(req, res, next){
         win:win,
         speed:speed,
         myBattleTimes:myBattleTimes,
+        battleStamp:dailyBattleTime,
         battleOverChance:battleOverChance,
         score:myScore,
         getScore:getScore,

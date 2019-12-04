@@ -32,17 +32,19 @@ module.exports = async function(req, res, next){
         );
         return false;
     }
+
     let email = result.email;
     console.info(
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
+
+    // 获取对战次数结算
+    const dataChanceData = utils.battleChance(result);
+
     // 计算当天战斗次数
-    let battleOverTimes = 5;//每天最多可以赢几次
-    let dailyBattleTime = Math.round(Number(result.battleStamp)*1000);
-    let myBattleTimes = result.battleDailyCount;//战斗次数
-    if(!(new Date().toDateString()===new Date(dailyBattleTime).toDateString())){//如果不是同天
-        myBattleTimes = 0;
-    }
+    let battleOverTimes = 6;//每天最多可以赢几次
+    let dailyBattleTime = Number(dataChanceData.dataTime);
+    let myBattleTimes = dataChanceData.battleChance;//战斗次数
     //查询胜负信息
     let userbattleinfoData_ = await userbattleinfoData.findOne({email:email},'-_id lose win draw battleScoreHistory').catch ((err)=>{
         res.send({
@@ -58,6 +60,7 @@ module.exports = async function(req, res, next){
         code:1,
         battleOverTimes:battleOverTimes,
         myBattleTimes:myBattleTimes,
+        dailyBattleTime:dailyBattleTime,
         userbattleinfoData:userbattleinfoData_,
         score:result.score
     });

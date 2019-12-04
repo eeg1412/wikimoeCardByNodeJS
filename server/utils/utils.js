@@ -9,6 +9,35 @@ var userData = require('./database/user');
 var marketData = require('./database/market');
 var cardData = require('../data/cardData');
 
+// 对战次数统计
+exports.battleChance = (userData_) =>{
+    let battleChanceData = {
+        add:0,
+        dataTime:Number(userData_.battleStamp),
+        battleChance:userData_.battleDailyCount
+    }
+    // 如果剩余对战次数超过6则直接输出数据
+    if(battleChanceData.battleChance>6){
+        return battleChanceData;
+    }
+    let timeNow = Math.round(new Date().getTime()/1000);
+    let timeCha = Math.floor(timeNow - battleChanceData.dataTime);
+    battleChanceData.add = Math.floor(timeCha/3600);//1小时增加1次对战机会
+    if(battleChanceData.add<=0){
+        return battleChanceData;
+    }
+    battleChanceData.dataTime = battleChanceData.dataTime + battleChanceData.add*3600;
+    let newBattleChance = battleChanceData.battleChance + battleChanceData.add;
+    if(newBattleChance<=6){
+        battleChanceData.battleChance = newBattleChance;
+        return battleChanceData;
+    }else{
+        battleChanceData.add = 6 - battleChanceData.battleChance;
+        battleChanceData.battleChance = 6;
+        return battleChanceData;
+    }
+}
+
 // 机器人可疑度检测
 exports.RobotCheck = async (userData_) =>{
     // console.log(userData_.robotCheck)
