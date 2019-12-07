@@ -5,7 +5,7 @@
     <div class="tc">
       <el-select v-model="seledCardPackage" placeholder="选择卡包" class="wm_card_package_sel" :disabled="openList">
         <el-option
-          v-for="item in cardPackage.filter(item =>{return item.starCoinOpen})"
+          v-for="item in cardPackage"
           :key="item.packageId"
           :label="item.name"
           :value="item.packageId">
@@ -107,15 +107,14 @@ export default {
           if(res.data.code==0){
             this.$message.error(res.data.msg);
           }else if(res.data.code==1){
-            this.cardPackage = res.data.data;
-            let nowPackageId = localStorage.getItem("goenCardPackageId") || '0';
-            this.seledCardPackage = '0';
+            this.cardPackage = res.data.data.filter(item =>{return item.starCoinOpen}).reverse();
+            let nowPackageId = localStorage.getItem("goenCardPackageId") || '-1';
+            this.seledCardPackage = this.cardPackage[0].packageId;
+            console.log(this.seledCardPackage);
             // 加个判断如果激活卡包没有维基萌卡包
             for(let i=0;i<this.cardPackage.length;i++){
               if(this.cardPackage[i].packageId===nowPackageId){
-                if(this.cardPackage[i].starCoinOpen){
-                  this.seledCardPackage = nowPackageId;
-                }
+                this.seledCardPackage = nowPackageId;
                 break;
               }
             }

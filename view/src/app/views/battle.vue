@@ -2,40 +2,49 @@
     <div class="common_body">
         <userTop ref="userTop" />
         <h5 class="common_title type_shop">卡牌对战</h5>
-        <div class="tc">Tip:每日对战次数达标后可以获得星星奖励哦！</div>
+        <div class="tc">Tip:每小时能回复1次对战机会，最多累加{{battleOverTimes}}次机会！</div>
         <transition name="el-fade-in-linear">
             <battle :battleData="battleData" v-if="battleSence" @gameover="gameover"></battle>
         </transition>
         <div class="wm_battle_btn_body">
             <div class="wm_battle_ueseinfo_body">
-                <table class="wm_user_info_table">
+                <table class="wm_user_info_table type_battle">
                     <thead>
                         <tr>
                         <th>胜利</th>
                         <th>战败</th>
                         <th>平局</th>
+                        <th>胜率</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                        <td class="wm_user_level">{{userbattleinfoData.win}}</td>
-                        <td class="wm_user_score">{{userbattleinfoData.lose}}</td>
-                        <td class="wm_user_getcard_count">{{userbattleinfoData.draw}}</td>
+                        <td>{{userbattleinfoData.win}}</td>
+                        <td>{{userbattleinfoData.lose}}</td>
+                        <td>{{userbattleinfoData.draw}}</td>
+                        <td>
+                            <div v-if="userbattleinfoData.win>0">
+                                {{(userbattleinfoData.win/(userbattleinfoData.win+userbattleinfoData.lose+userbattleinfoData.draw)*100).toFixed(2)+'%'}}
+                            </div>
+                            <div v-else>--</div>
+                        </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div class="wm_battle_today_v">竞技点：{{myScore}}</div>
-            <div class="wm_battle_today_v">今日已获胜：{{myBattleTimes}}/{{battleOverTimes}}</div>
+            <div class="wm_battle_today_v">对战机会：{{myBattleTimes}}/{{battleOverTimes}}</div>
+            <div v-if="battleCD>0" class="wm_battle_cd_body"><el-progress :show-text="false" :stroke-width="2" :percentage="percentageSum(battleCD,timeNow)" :color="customColorMethod"></el-progress></div>
+            <div v-if="battleCD>0" class="wm_battle_timedown">{{SumTimeMinSec(battleCD,timeNow)}}</div>
             <div class="mt10"><el-checkbox v-model="skipBattle" @change="changeSkipBattle">跳过战斗动画</el-checkbox></div>
             <div class="wm_battle_btn_box">
                 <el-tooltip class="item" effect="dark" content="匹配与自己竞技点相近的对手。" placement="top" :enterable="false">
-                    <el-button type="primary" icon="el-icon-search" @click="battle(false)">匹配对手（普通）</el-button>
+                    <el-button type="primary" icon="el-icon-search" ref="battleBtnA" @click="battle(false)">匹配对手（普通）</el-button>
                 </el-tooltip>
             </div>
             <div class="wm_battle_btn_box">
                 <el-tooltip class="item" effect="dark" content="匹配竞技点比自己高一些的对手。" placement="top" :enterable="false">
-                    <el-button type="primary" icon="el-icon-search" @click="battle(true)">匹配对手（进阶）</el-button>
+                    <el-button type="primary" icon="el-icon-search" @click="battle(true)" ref="battleBtnB">匹配对手（进阶）</el-button>
                 </el-tooltip>
             </div>
             <div class="wm_battle_btn_box">
@@ -157,11 +166,14 @@ import VeLine from 'v-charts/lib/line.common'
 export default {
   data() {
     return {
+        counter:null,
+        battleCD:0,
+        timeNow:Math.round(new Date().getTime()/1000),
         cardMode:false,
         txDays:new Date().getDate(),
         dialogVisible:false,
         userBattleLogInfo:{
-            name:'123',
+            name:'',
             MD5:'',
             ADSHP:[0,0,0,0],
             cardIndex:0,
@@ -241,16 +253,67 @@ export default {
       this.$emit('l2dMassage','这里可以挑战大佬并获取竞技点！同时还可以组建自己的对战卡组和升级自己的卡牌！');
       this.searchBattleInfo();
       this.searchbattlelogs(1);
+      // 禁止按钮的回车事件
+      this.$refs.battleBtnB.$el.onkeydown= (e) =>{
+            let _key=window.event.keyCode;
+            if(_key===13){
+             return false;
+            }
+        }
+       this.$refs.battleBtnA.$el.onkeydown= (e)=>{
+            let _key=window.event.keyCode;
+            if(_key===13){
+             return false;
+            }
+        }
       //测试胜率
     //   for(let i=0;i<1000;i++){
     //       this.battle(false)
     //   }
   },
   methods: {
+      SumTimeMinSec(battleCD,timeNow){
+        const count = battleCD - timeNow;
+        let minutes = '00';
+        let seconds = '00'
+        if (count <= -1 || this.myBattleTimes>=this.battleOverTimes) {
+            return minutes + ':' + seconds;
+        }
+        seconds = count % 60
+        minutes = Math.floor(count / 60)
+
+        if (minutes < 10) {
+        minutes = `0${minutes}`
+        }
+        if (seconds < 10) {
+        seconds = `0${seconds}`
+        }
+        return minutes + ':' + seconds;
+      },
+      percentageSum(battleCD,timeNow){
+          let timeSum = (1-((battleCD - timeNow)/3600))*100;
+          if(this.myBattleTimes>=this.battleOverTimes){
+              timeSum = 100;
+          }else if(timeSum>100){
+              timeSum = 100;
+          }else if(timeSum<0){
+              timeSum = 0;
+          }
+          return timeSum;
+      },
+      customColorMethod(percentage) {
+        if (percentage < 30) {
+          return '#909399';
+        } else if (percentage < 70) {
+          return '#e6a23c';
+        } else {
+          return '#67c23a';
+        }
+      },
       closeUserInfoDig(){
           this.cardMode = false;
           this.userBattleLogInfo = {
-            name:'123',
+            name:'',
             MD5:'',
             ADSHP:[0,0,0,0],
             cardIndex:0,
@@ -333,6 +396,19 @@ export default {
       changeSkipBattle(val){
           localStorage.setItem("skipBattle",val);
       },
+      countdown() {
+        this.counter = setInterval(() => {
+            this.timeNow = Math.round(new Date().getTime()/1000);
+            if(this.timeNow>=this.battleCD){
+                if(this.myBattleTimes>=this.battleOverTimes){
+                    clearInterval(this.counter);
+                }else{
+                    this.myBattleTimes++;
+                    this.battleCD = this.battleCD +3600;
+                }
+            }
+        }, 1000)
+      },
       searchBattleInfo(){
         let params = {
             token:this.token
@@ -345,6 +421,13 @@ export default {
                 this.myBattleTimes = res.data.myBattleTimes;
                 this.battleOverTimes = res.data.battleOverTimes;
                 this.myScore = res.data.score;
+                this.battleCD = res.data.dailyBattleTime + 3600;
+                this.timeNow = Math.round(new Date().getTime()/1000);
+                clearInterval(this.counter);
+                // 开始倒计时
+                if(this.myBattleTimes<this.battleOverTimes){
+                    this.countdown();
+                }
                 if(res.data.userbattleinfoData){
                     this.userbattleinfoData = res.data.userbattleinfoData;
                     const battleScoreHistory = res.data.userbattleinfoData.battleScoreHistory;
@@ -392,17 +475,10 @@ export default {
         }
         if(this.battleData.battleGetStar>0){
             this.$notify.info({
-                title: '获得对战奖励！',
-                duration: 10000,
-                dangerouslyUseHTMLString: true,
-                message: '您已达成今日的对战获胜次数，获得了<span class="cOrange">'+this.battleData.battleGetStar+'</span>颗星星！'
-            });
-        }else if(!this.battleData.battleOverChance&&this.battleData.win===1){
-            this.$notify.info({
                 title: '恭喜获胜！',
                 duration: 10000,
                 dangerouslyUseHTMLString: true,
-                message: '今日已获胜<span class="cRed">'+this.battleData.myBattleTimes+'/'+this.battleData.battleOverTimes+'</span>次，再获胜<span class="cRed">'+(this.battleData.battleOverTimes-this.battleData.myBattleTimes)+'</span>次就可以获得星星奖励啦！'
+                message: '获得了<span class="cOrange">'+this.battleData.battleGetStar+'</span>颗星星！'
             });
         }
       },
@@ -444,7 +520,7 @@ export default {
                     if(this.battleData.win===0){
                         battleText = '您'+this.winCheck(this.battleData.win)+this.battleData.EmName+'，'+'失去了'+Math.abs(this.battleData.getScore)+'点竞技点。';
                     }
-                    this.$alert(battleText+(this.battleData.battleOverChance?'（由于已经超过今日最大胜利次数，此次战斗不结算竞技点和经验值。）':''), '战斗结果').then(() => {
+                    this.$alert(battleText+(this.battleData.battleOverChance?'（由于已经没有对战机会了，此次战斗不结算竞技点和经验值。）':''), '战斗结果').then(() => {
                         this.gameover();
                     }).catch(action => {
                         this.gameover();
@@ -459,6 +535,9 @@ export default {
             }
         });
       }
+  },
+  beforeDestroy(){
+    clearInterval(this.counter)
   }
 }
 </script>
@@ -495,6 +574,16 @@ export default {
 }
 .wm_battle_usercard_no_fight{
     opacity: 0.4;
+}
+.wm_user_info_table.type_battle td,.wm_user_info_table.type_battle th{
+    width: 25%;
+}
+.wm_battle_cd_body{
+    width: 130px;
+    margin: -5px auto 3px auto;
+}
+.wm_battle_timedown{
+    font-size: 10px;
 }
 @media ( max-width : 768px) {
     .wm_battlelogs_content{

@@ -27,7 +27,10 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 
 ### 关于更新
 
-1. 如果是更新的话，请注意不要覆盖/server/config/config.json，如果覆盖将会导致配置失效。
+1. 备份【server】目录下除了【node_modules】文件夹的所有目录。
+2. 备份数据库。
+3. 在[releases](https://github.com/eeg1412/wikimoeCardByNodeJS/releases)下载最新的版本。
+4. 除非特殊说明，请不要覆盖【server/config】下的文件以及【server/bin/nodejs.wikimoe.com-chain.pem】和【server/bin/nodejs.wikimoe.com-key.pem】两个文件。
 
 ### v1.2.1更新至v2.0.0的方法
 
