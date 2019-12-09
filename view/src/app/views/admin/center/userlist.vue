@@ -80,6 +80,13 @@
       </template>
     </el-table-column>
     <el-table-column
+      width="180px"
+      label="注册时间">
+      <template slot-scope="scope">
+        <span>{{scope.row._id | capitalize}}</span>
+      </template>
+    </el-table-column>
+    <el-table-column
       prop="ip"
       label="IP">
     </el-table-column>
@@ -129,6 +136,13 @@ export default {
   },
   mounted() {
     this.getuserInfo();
+  },
+  filters: {
+    capitalize(value) {
+      var date = new Date(parseInt(value.substring(0,8),16)*1000);
+      var tt = [date.getFullYear(), ((date.getMonth()+1)<10?'0'+(date.getMonth()+1):date.getMonth()+1), (date.getDate()<10?'0'+date.getDate():date.getDate())].join('-') + '  ' +[(date.getHours()<10?'0'+date.getHours():date.getHours()), (date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes()), (date.getSeconds()<10?'0'+date.getSeconds():date.getSeconds())].join(':');
+      return tt;
+    }
   },
   methods: {
     sortChange(column){

@@ -778,6 +778,17 @@ module.exports = async function(req, res, next){
         //胜负统计
         let userbattleinfoDataUpdata = {};
         let emuserbattleinfoDataUpdata = {};
+        // 安全起见再判断下是不是在更新竞技点
+        if(global.checkScoreRankIng){
+            res.send({
+                code:0,
+                msg:'系统正在结算竞技点中，请十分钟后再来尝试吧！！'
+            });
+            console.info(
+                chalk.green('因为竞技点正在结算，无法成功对战，IP为：'+IP)
+            )
+            return false;
+        }
         if(win===1){
             userbattleinfoDataUpdata = {$inc:{win:1}};
             emuserbattleinfoDataUpdata = {$inc:{lose:1}};

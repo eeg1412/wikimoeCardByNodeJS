@@ -14,7 +14,7 @@ exports.checkScoreRankTimer = async ()=>{
     schedule.scheduleJob('0 5 3 1 * *',()=>{//每月1日3点5分执行
         this.checkScoreRank();
     });
-    // schedule.scheduleJob('0 5 * * * *',()=>{//每月1日3点5分执行
+    // schedule.scheduleJob('00 27 * * * *',()=>{//每月1日3点5分执行
     //     this.checkScoreRank();
     // }); 
 }
@@ -36,7 +36,7 @@ exports.checkScoreRank = async ()=>{
     const coinRankDecay = global.myAppConfig.battleRankGetItemDecay;
     //let preScore = -1;
     let rank = 1;
-    userData.findUserMany({},'-__v',{score:-1,cardIndexCount:-1}).then(users=>users.forEach((item,index)=>{
+    userData.findUserMany({},'-__v',{score:-1,cardIndexCount:-1}).then(users=>users.forEach( async (item,index)=>{
         // 计算给与多少五円玉
         const score = item.score;//用户竞技点
         const getCoin = Math.floor(score/500);//每500竞技点1个五円玉
@@ -75,49 +75,66 @@ exports.checkScoreRank = async ()=>{
             coinAdd = coinAdd-coinRankDecay;
             rank++;
         }
-        if(score>0){
-            // 写入历史
-            const timeNow = Math.floor(new Date().getTime()/86400000);
-            let update_ = {
-                $push:{
-                    battleScoreHistory:{
-                    time:timeNow,
-                    score:score
-                }}
-            }
-            userbattleinfoData.findOneAndUpdate(params,update_).catch ((err)=>{
-                res.send({
-                    code:0,
-                    msg:'内部错误请联系管理员！'
-                });
-                console.error(
-                    chalk.red('数据库更新错误！')
-                );
-                throw err;
-            })
-            // 写入用户数据
-            userData.updataUser(params,{score:newScore,battled:false}).catch ((err)=>{
-                res.send({
-                    code:0,
-                    msg:'内部错误请联系管理员！'
-                });
-                console.error(
-                    chalk.red('数据库更新错误！')
-                );
-                throw err;
-            })
-        }else{
-            userData.updataUser(params,{score:0,battled:false}).catch ((err)=>{
-                res.send({
-                    code:0,
-                    msg:'内部错误请联系管理员！'
-                });
-                console.error(
-                    chalk.red('数据库更新错误！')
-                );
-                throw err;
-            })
+        // 查询对战记录
+        let battleWinLose = {
+            win:0,
+            lose:0,
+            draw:0
         }
+        const battleWLDData = await userbattleinfoData.findOne(params).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            throw err;
+        });
+        if(battleWLDData){
+            battleWinLose = {
+                win:battleWLDData.win,
+                lose:battleWLDData.lose,
+                draw:battleWLDData.draw
+            }
+        }
+        // 写入历史
+        const timeNow = Math.floor(new Date().getTime()/86400000);
+        let update_ = {
+            win:0,
+            lose:0,
+            draw:0,
+            $push:{
+                battleScoreHistory:{
+                time:timeNow,
+                win:battleWinLose.win,
+                lose:battleWinLose.lose,
+                draw:battleWinLose.draw,
+                score:score
+            }}
+        }
+        userbattleinfoData.findOneAndUpdate(params,update_).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            throw err;
+        })
+        // 写入用户数据
+        userData.updataUser(params,{score:newScore,battled:false}).catch ((err)=>{
+            res.send({
+                code:0,
+                msg:'内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库更新错误！')
+            );
+            throw err;
+        });
+        
     }))
 }
 // 1.3.x升级卡包数据

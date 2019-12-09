@@ -200,15 +200,19 @@ export default {
       },
       chartSettings:{
         labelMap: {
-          'score': '竞技点'
+          'score': '竞技点',
+          'win': '胜利',
+          'lose': '战败',
+          'draw': '平局',
+          'pre':'胜率'
         },
       },
       chartData: {
-        columns: ['time','score'],
+        columns: ['time','score','win','lose','draw','pre'],
         rows: [
         ]
       },
-      colors: ['#FF4C4C']
+      colors: ['#FF4C4C','#BF0B3B','#238C2A','#F2B90C','#1835D9']
     }
   },
   components: {
@@ -445,9 +449,17 @@ export default {
                             timeCount = 1;
                         }
                         preTime = time.getMonth();
+                        let battleWinPre =  (battleScoreHistory[i].win || 0) + (battleScoreHistory[i].lose || 0) + (battleScoreHistory[i].draw || 0);
+                        if(battleWinPre>0){
+                            battleWinPre = battleScoreHistory[i].win/battleWinPre;
+                        }
                         const hisData = {
                             time:timeStr,
                             score:battleScoreHistory[i].score,
+                            win:battleScoreHistory[i].win || '-',
+                            lose:battleScoreHistory[i].lose || '-',
+                            draw:battleScoreHistory[i].draw || '-',
+                            pre:battleWinPre || '-',
                         }
                         this.chartData['rows'].push(hisData);
                     }
