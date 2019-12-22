@@ -253,6 +253,14 @@ export default {
             type: 'success'
           });
         }
+        if(data.levelUpStar>0){
+          this.$notify.info({
+            title: '升级啦！',
+            message: '恭喜您升级啦，作为奖励获得'+data.levelUpStar+'颗星星！',
+            duration:13000
+          });
+          this.$refs.userTop.getUserInfo();
+        }
         this.shake();
       }else if(data.code==900){
         // 查询用户

@@ -637,7 +637,7 @@ exports.doDemining = async (demInfo,useTool,centerInfo,userInfo,socketData,socke
         }
         // 生成用户数据
         let levle = result_.level;
-        getExp = 10+demNum+starAdd;
+        getExp = 10+demNumAll+starAdd;
         let exp = result_.exp+getExp;
         let levelExp = utils.levelCheck(levle,exp);
         levelUpStar = levelExp[2]*30;
