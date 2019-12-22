@@ -1,5 +1,9 @@
 var config = require('config-lite')(__dirname);
 global.myAppConfig = config;//全局设置变量
+global.demining = {
+    onlinePlayer:[],
+    loaing:true
+};//全局矿场信息
 var db = require('./mongodb/db');
 var express = require('express');
 var path = require('path');

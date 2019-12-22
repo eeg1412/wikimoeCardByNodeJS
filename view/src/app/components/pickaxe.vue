@@ -12,7 +12,10 @@
         <div class="wm_card_pickaxe_ico">
             <img :src="'/static/otherImg/pickaxe/Pickaxe'+type+'.png'" />
         </div>
-        <div class="wm_card_pickaxe_par">
+        <div class="wm_card_pickaxe_par" v-if="type>=3">
+            <div class="wm_card_demining_time_body">×{{itemCount}}</div>
+        </div>
+        <div class="wm_card_pickaxe_par" v-else>
             <div class="wm_card_demining_time_body" v-if="min=='00'&&sec=='00'">完成！</div>
             <div class="wm_card_demining_time_body" v-else><span class="wm_card_demining_time_num">{{min}}</span><span>:</span><span class="wm_card_demining_time_num">{{sec}}</span><span></span></div>
             <!-- <el-progress :percentage="70" :show-text="false" :stroke-width="2" :status="null"></el-progress> -->
@@ -37,6 +40,10 @@ export default {
             default:0
         },
         timeNow:{//服务器时间
+            type:Number,
+            default:0
+        },
+        itemCount:{//道具数量
             type:Number,
             default:0
         }
@@ -100,6 +107,12 @@ export default {
               return '银镐';
           }else if(this.type===2){
               return '金镐';
+          }else if(this.type===3){
+              return '星星镐';
+          }else if(this.type===4){
+              return '宝石镐';
+          }else if(this.type===5){
+              return '保罗炸弹';
           }
       },
       pickContent(){
@@ -109,6 +122,12 @@ export default {
               return '银质的镐，制作需要半小时，挖出来的星星矿和宝石至少比铁镐多！';
           }else if(this.type===2){
               return '制作工艺非常难的镐，制作需要一小时，金镐能最大程度减少挖掘对星星矿和宝石造成的破坏，所以挖出来的星星矿和宝石的产量非常高！';
+          }else if(this.type===3){
+              return '仅能挖出星星的镐，挖出来的星星略微比金镐多！';
+          }else if(this.type===4){
+              return '仅能挖出宝石的镐，挖出来的宝石略微比金镐多！';
+          }else if(this.type===5){
+              return '感受保罗的愤怒吧！能一次性轰开3×3片矿区，但是因为其爆炸力惊人，只能保留少量的宝石，星星则完全被炸毁！';
           }
       }
   },

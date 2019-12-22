@@ -274,6 +274,8 @@ export default {
         return '银镐';
       }else if(value==2){
         return '金镐';
+      }else if(value==3){
+        return '星星镐';
       }else{
         return '';
       }
