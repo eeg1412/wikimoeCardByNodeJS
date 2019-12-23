@@ -41,6 +41,10 @@ exports.deletGuessCard = async function (parmas) {
     // document查询
     return await guessCardModel.deleteOne(parmas);
 }
+exports.deletGuessCardMany = async function (parmas) {
+    // document查询
+    return await guessCardModel.deleteMany(parmas);
+}
 // 创建新的猜卡
 exports.creatNewGuessCard = async ()=>{
     console.info(
@@ -118,7 +122,7 @@ exports.deleteOldGuessCard = async ()=>{
     let delParmas = {
         time:{$lt:time-720},
     }
-    this.deletGuessCard(delParmas).catch((err)=>{
+    this.deletGuessCardMany(delParmas).catch((err)=>{
         console.error(
             chalk.red('数据库查询错误！')
         );

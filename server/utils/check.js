@@ -212,7 +212,7 @@ exports.deletOldUserGuessCard = async ()=>{
     console.info(
         chalk.green('删除旧的用户猜卡数据!')
     )
-    userGuessCard.deleUserGuessCard(delParmas).catch((err)=>{
+    userGuessCard.deleUserGuessCardMany(delParmas).catch((err)=>{
         console.error(
             chalk.red('数据库查询错误！')
         );

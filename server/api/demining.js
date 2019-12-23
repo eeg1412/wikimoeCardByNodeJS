@@ -618,7 +618,7 @@ exports.doDemining = async (demInfo,useTool,centerInfo,userInfo,socketData,socke
                         let itemList = mapData[mapType].high;
                         getItem = itemList[utils.randomNum(0,itemList.length-1)];
                     }
-                    getItemNum = demNum+2;//获得道具数量
+                    getItemNum = thisDemNum+2;//获得道具数量
                     // 乘以后台的系数
                     getItemNum = getItemNum*global.myAppConfig.deminingItemRatio;
                     if(getItemObj['item.'+getItem]){
