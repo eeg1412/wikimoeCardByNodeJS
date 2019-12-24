@@ -195,20 +195,20 @@ module.exports = async function(req, res, next){
                 if(!validator.isInt(config_.battleRankGetItem.toString(),{ min:1 })){
                     res.send({
                         code:0,
-                        msg:'竞技第一名额外获得五円玉的数量必须是大于1的数字'
+                        msg:'竞技第一名额外获得结缘币的数量必须是大于1的数字'
                     });
                     console.info(
-                        chalk.yellow(IP+'竞技第一名额外获得五円玉的数量必须是大于1的数字')
+                        chalk.yellow(IP+'竞技第一名额外获得结缘币的数量必须是大于1的数字')
                     );
                     return false;
                 }
                 if(!validator.isInt(config_.battleRankGetItemDecay.toString(),{ min:1 })){
                     res.send({
                         code:0,
-                        msg:'后面陆续获得五円玉的衰减数量必须是大于1的数字'
+                        msg:'后面陆续获得结缘币的衰减数量必须是大于1的数字'
                     });
                     console.info(
-                        chalk.yellow(IP+'后面陆续获得五円玉的衰减数量必须是大于1的数字')
+                        chalk.yellow(IP+'后面陆续获得结缘币的衰减数量必须是大于1的数字')
                     );
                     return false;
                 }
@@ -267,8 +267,8 @@ module.exports = async function(req, res, next){
                 creatCardStar:Number(config_.creatCardStar),//制卡审核通过后获得的星星
                 creatCardWait:Number(config_.creatCardWait),//单用户最多等待审核的制卡
                 useMarketCardCount:Number(config_.useMarketCardCount),//集齐多少种卡牌后能在市场卖卡
-                battleRankGetItem:Number(config_.battleRankGetItem),//竞技第一名额外获得五円玉的数量
-                battleRankGetItemDecay:Number(config_.battleRankGetItemDecay),//后面陆续获得五円玉的衰减数量
+                battleRankGetItem:Number(config_.battleRankGetItem),//竞技第一名额外获得结缘币的数量
+                battleRankGetItemDecay:Number(config_.battleRankGetItemDecay),//后面陆续获得结缘币的衰减数量
                 donateImgUrl:config_.donateImgUrl || '',//捐赠图片URL地址
                 creatCardExplainUrl:config_.creatCardExplainUrl || '',//制卡说明图片URL地址
                 QQunURL:config_.QQunURL || '',//加群链接

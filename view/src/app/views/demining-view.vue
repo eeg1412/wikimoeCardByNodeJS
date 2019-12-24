@@ -430,6 +430,9 @@ export default {
       return c;
     },
     openNode(x,y,num,openNow){
+      if(this.loading){
+        return false;
+      }
       if(num>=0){
         return false;
       }

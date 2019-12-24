@@ -37,9 +37,9 @@ exports.checkScoreRank = async ()=>{
     //let preScore = -1;
     let rank = 1;
     userData.findUserMany({},'-__v',{score:-1,cardIndexCount:-1}).then(users=>users.forEach( async (item,index)=>{
-        // 计算给与多少五円玉
+        // 计算给与多少结缘币
         const score = item.score;//用户竞技点
-        const getCoin = Math.floor(score/500);//每500竞技点1个五円玉
+        const getCoin = Math.floor(score/500);//每500竞技点1个结缘币
         let newScore = Math.floor(score/250)*250;//新的竞技点
         if(newScore>maxScore){
             newScore = maxScore;
@@ -53,7 +53,7 @@ exports.checkScoreRank = async ()=>{
             const time = Math.round(new Date().getTime()/1000);
             const canGetItem = getCoin+(coinAdd<0?0:coinAdd);
             const saveParams = {
-                text:'恭喜，您在本次的竞技中取得了'+score+'点竞技点，排名第'+rank+'名。共获得'+canGetItem+'个【五円玉】，请注意查收！',
+                text:'恭喜，您在本次的竞技中取得了'+score+'点竞技点，排名第'+rank+'名。共获得'+canGetItem+'个【结缘币】，请注意查收！',
                 title:'竞技点结算奖励',
                 time:time,
                 endTime:time+2592000,

@@ -791,6 +791,9 @@ exports.mine = async function(socket,data){
         }else if(data.type=='open'){
             if(!validator.isInt(data.tool+'',{ min: 0, max: 5 })){
                 socket.emit('demining',{code:4,msg:'挖矿工具参数有误！',time:data.time});
+                console.info(
+                    chalk.yellow(data.email+'的工具参数有误，传了'+data.tool+'。'+'IP为：'+data.IP)
+                )
                 return false;
             }
             data.tool = Math.floor(data.tool);

@@ -13,18 +13,24 @@
       </div>
       <div class="wm_card_menu_text">教程</div>
     </div>
-    <div class="wm_card_menu_box" @click="login('/dailygetitem')" v-if="$route.path!='/dailygetitem'" @mouseenter="$wikimoecard.l2dMassage('每日签到可以获得丰厚的奖励喔！')" @mouseleave="$wikimoecard.l2dMassageClose">
-      <div class="wm_card_menu_ico">
-        <img src="../../assets/images/menu/qiandao.png" width="100%" height="100%" />
-      </div>
-      <div class="wm_card_menu_text">签到</div>
-    </div>
     <router-link tag="div" to="/reg" class="wm_card_menu_box" v-if="$route.path!='/reg' && !token">
       <div class="wm_card_menu_ico" @mouseenter="$wikimoecard.l2dMassage('注册了账号才能抽卡哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
         <img src="../../assets/images/menu/reg.png" width="100%" height="100%" />
       </div>
       <div class="wm_card_menu_text">注册</div>
     </router-link>
+    <div class="wm_card_menu_box" @click="login('/')" v-if="!token" @mouseenter="$wikimoecard.l2dMassage('登录账号才能游戏哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/login.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">登录</div>
+    </div>
+    <div class="wm_card_menu_box" @click="login('/dailygetitem')" v-if="$route.path!='/dailygetitem'" @mouseenter="$wikimoecard.l2dMassage('每日签到可以获得丰厚的奖励喔！')" @mouseleave="$wikimoecard.l2dMassageClose">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/qiandao.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">签到</div>
+    </div>
     <div class="wm_card_menu_box" @click="login('/demining')" v-if="$route.path!='/demining'" @mouseenter="$wikimoecard.l2dMassage('矿场可以挖到商店抽卡用到的星星和升级卡牌所需要的材料哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/kuangchang.jpg" width="100%" height="100%" />
@@ -67,7 +73,7 @@
       </div>
       <div class="wm_card_menu_text">公告</div>
     </div>
-    <div class="wm_card_menu_box" @click="login('/goen')" v-if="$route.path!='/goen'" @mouseenter="$wikimoecard.l2dMassage('通过竞技点获得的五円玉可以在这里进行结缘哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
+    <div class="wm_card_menu_box" @click="login('/goen')" v-if="$route.path!='/goen'" @mouseenter="$wikimoecard.l2dMassage('通过竞技点获得的结缘币可以在这里进行结缘哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/goen.png" width="100%" height="100%" />
       </div>
@@ -415,6 +421,8 @@ export default {
             }else{
               sessionStorage.setItem("token",resData.token);
             }
+            this.loginShow = false;
+            this.token = resData.token;
             this.goLink();
           }
       })
