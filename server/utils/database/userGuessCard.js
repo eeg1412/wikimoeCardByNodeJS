@@ -37,3 +37,7 @@ exports.deleUserGuessCard = async function (parmas) {
     // document查询
     return await userGuessCardModel.deleteOne(parmas);
 }
+exports.deleUserGuessCardMany = async function (parmas) {
+    // document查询
+    return await userGuessCardModel.deleteMany(parmas);
+}

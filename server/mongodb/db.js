@@ -8,9 +8,15 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 
 db.once('open' ,() => {
-	console.log(
+	console.info(
     chalk.green('连接数据库成功')
   );
+  setTimeout(()=>{
+    global.demining.loaing = false;
+    console.info(
+      chalk.green('矿场开启！')
+    );
+  },15000);
   checkStat.checkGuessCard();
   checkStat.checkRank();
   checkStat.checkScoreRankTimer();

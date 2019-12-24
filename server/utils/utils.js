@@ -53,7 +53,8 @@ exports.RobotCheck = async (userData_) =>{
         }
         let updataParams = {
             robotCheck:true,
-            captchaLock:true
+            captchaLock:true,
+            robotCheckTime:Math.round(new Date().getTime()/1000)
         }
         await userData.updataUser(filters,updataParams).catch ((err)=>{
             console.error(

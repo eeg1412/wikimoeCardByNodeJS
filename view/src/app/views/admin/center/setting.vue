@@ -44,11 +44,11 @@
     <el-form-item label="使用市场收集率限制">
       <el-input-number v-model="form.useMarketCardCount" label="集齐多少种卡牌后能使用市场" :min="1"></el-input-number>
     </el-form-item>
-    <el-form-item label="竞技榜单五円玉基数">
-      <el-input-number v-model="form.battleRankGetItem" label="竞技第一名额外获得五円玉的数量" :min="1"></el-input-number>
+    <el-form-item label="竞技榜单结缘币基数">
+      <el-input-number v-model="form.battleRankGetItem" label="竞技第一名额外获得结缘币的数量" :min="1"></el-input-number>
     </el-form-item>
-    <el-form-item label="竞技榜单五円玉基数衰减">
-      <el-input-number v-model="form.battleRankGetItemDecay" label="竞技榜单五円玉基数衰减" :min="1"></el-input-number>
+    <el-form-item label="竞技榜单结缘币基数衰减">
+      <el-input-number v-model="form.battleRankGetItemDecay" label="竞技榜单结缘币基数衰减" :min="1"></el-input-number>
     </el-form-item>
     <el-form-item label="捐赠图片URL地址">
       <el-input v-model="form.donateImgUrl" placeholder="捐赠图片URL地址（选填）"></el-input>
@@ -96,8 +96,8 @@ export default {
           creatCardStar:'',//制卡审核通过后获得的星星
           creatCardWait:'',//单用户最多等待审核的制卡
           useMarketCardCount:'',//集齐多少种卡牌后能在市场交易
-          battleRankGetItem:'',//竞技第一名额外获得五円玉的数量
-          battleRankGetItemDecay:'',//后面陆续获得五円玉的衰减数量
+          battleRankGetItem:'',//竞技第一名额外获得结缘币的数量
+          battleRankGetItemDecay:'',//后面陆续获得结缘币的衰减数量
           donateImgUrl:'',//捐赠图片URL地址
           creatCardExplainUrl:'',//制卡说明图片URL地址
           QQunURL:'',//加群链接
@@ -135,8 +135,8 @@ export default {
           this.form.creatCardStar = resData.creatCardStar || '100';//制卡审核通过后获得的星星
           this.form.creatCardWait = resData.creatCardWait || '20';//单用户最多等待审核的制卡
           this.form.useMarketCardCount = resData.useMarketCardCount || '30';//集齐多少种卡牌后能在市场卖卡
-          this.form.battleRankGetItem = resData.battleRankGetItem || '100';//竞技第一名额外获得五円玉的数量
-          this.form.battleRankGetItemDecay = resData.battleRankGetItemDecay || '10';//后面陆续获得五円玉的衰减数量
+          this.form.battleRankGetItem = resData.battleRankGetItem || '100';//竞技第一名额外获得结缘币的数量
+          this.form.battleRankGetItemDecay = resData.battleRankGetItemDecay || '10';//后面陆续获得结缘币的衰减数量
           this.form.donateImgUrl = resData.donateImgUrl || '';//捐赠图片URL地址
           this.form.creatCardExplainUrl = resData.creatCardExplainUrl || '';//制卡说明图片URL地址
           this.form.QQunURL = resData.QQunURL || '';//加群链接

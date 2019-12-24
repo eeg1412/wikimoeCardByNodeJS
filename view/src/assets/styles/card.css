@@ -970,8 +970,8 @@ transform:translate(0) rotate(0deg)
     bottom: 5px;
     border-radius: 5px;
     left: 50%;
-    transform:translateX(-108px);
-    width: 216px;
+    transform:translateX(-120px);
+    width: 240px;
     height:62px;
     box-shadow: 0 0px 5px rgba(0,0,0,0.3);
 }

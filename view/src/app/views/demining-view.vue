@@ -3,7 +3,7 @@
   <userTop ref="userTop" />
   <div class="common_body">
     <h5 class="common_title type_demining">
-      <el-tooltip placement="bottom">
+      <el-tooltip placement="bottom" :enterable="false">
         <div slot="content">
           <div v-if="!mineInfo">
             <div class="wm_demining_hight_item_list_body tc">数据加载中...</div>
@@ -18,13 +18,29 @@
         <span class="wm_set_pointer">星星矿场</span>
       </el-tooltip>
     </h5>
-    <h6 class="common_title_tips type_dec type_demining">当前在线:{{onlineUser}}人</h6>
+    <h6 class="common_title_tips type_dec type_demining">当前在线:{{onlineUser}}人 
+      <el-tooltip class="item" effect="dark" content="查看在线玩家" :enterable="false" placement="top"><i class="el-icon-notebook-2 wm_set_pointer" @click="openUserInfo"></i></el-tooltip>
+    </h6>
     <div class="wm_card_demining_tool_body" v-if="userData">
-      <div @click="selPickChange(0)"><pickaxe :type="0" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[0])" ref="pick0"></pickaxe></div>
-      <div @click="selPickChange(1)"><pickaxe :type="1" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[1])" ref="pick1"></pickaxe></div>
-      <div @click="selPickChange(2)"><pickaxe :type="2" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[2])" ref="pick2"></pickaxe></div>
+      <hooper class="wm_demin_tool_hooper">
+        <slide>
+          <div class="wm_demin_tool_hooper_item_body clearfix">
+            <div @click="selPickChange(0)"><pickaxe :type="0" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[0])" ref="pick0"></pickaxe></div>
+            <div @click="selPickChange(1)"><pickaxe :type="1" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[1])" ref="pick1"></pickaxe></div>
+            <div @click="selPickChange(2)"><pickaxe :type="2" :sel="selPick" :timeNow="userData.timeNow" :timeEnd="Number(userData.deminingStamp[2])" ref="pick2"></pickaxe></div>
+          </div>
+        </slide>
+        <slide>
+          <div class="wm_demin_tool_hooper_item_body clearfix">
+            <div @click="selPickChange(3)"><pickaxe :type="3" :sel="selPick" ref="pick3" :itemCount="userData.userItemTools[0]"></pickaxe></div>
+            <div @click="selPickChange(4)"><pickaxe :type="4" :sel="selPick" ref="pick4" :itemCount="userData.userItemTools[1]"></pickaxe></div>
+            <div @click="selPickChange(5)"><pickaxe :type="5" :sel="selPick" ref="pick5" :itemCount="userData.userItemTools[2]"></pickaxe></div>
+          </div>
+        </slide>
+        <hooper-navigation slot="hooper-addons"></hooper-navigation>
+      </hooper>
     </div>
-    <div class="wm_card_demining_table_box">
+    <div class="wm_card_demining_table_box" :class="{'shake-hard':shakeCss}">
       <div v-if="!mineInfo" class="wm_card_demining_table_loading">
         矿场数据加载中...如果长时间无反应请刷新。
       </div>
@@ -48,6 +64,40 @@
     <menuView></menuView>
   </div>
   <captcha @captchaShow="captchaDigShow" @send="sendCaptcha" :codeDigShow="captchaShow" v-if="captchaShow" ref="captch"></captcha>
+  <!-- 在线用户开始 -->
+  <el-dialog
+    title="在线用户"
+    :visible.sync="userDialog"
+    :lock-scroll="false"
+    :append-to-body="true"
+    class="reg_code_dialog"
+    width="100%">
+    <div class="wm_menu_news_body">
+      <div v-if="userList.length<=0" class="pt15 pb15 tc">暂无在线用户</div>
+      <div v-else>
+        <div v-for="(item,index) in userList" :key="index" class="wm_dem_ueser_item">
+          <div class="wm_dem_ueser_img"><img class="wm_card_get_list_avatar_pic" :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" width="45" height="45"></div>
+          <div>
+            <div>昵称：{{item.nickName}}</div>
+            <div>登陆时间：{{item.loginTime | capitalize}}</div>
+          </div>
+        </div>
+      </div>
+      <el-pagination
+        small
+        layout="prev, pager, next"
+        :total="userTotal"
+        @current-change="userPageChange"
+        :current-page.sync="userPage"
+        :page-size="5"
+        class="wm_menu_news_page">
+      </el-pagination>
+    </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="userDialog=false">关闭</el-button>
+    </span>
+  </el-dialog>
+  <!-- 在线用户结束 -->
 </div>
 </template>
 
@@ -61,6 +111,12 @@ import captcha from '../components/captcha.vue';
 import itemData from '../../../../server/data/item';
 import mapData from '../../../../server/data/deminingMap';
 import {authApi} from "../api";
+import {
+  Hooper,
+  Slide,
+  Navigation as HooperNavigation
+  } from 'hooper';
+import 'hooper/dist/hooper.css';
 
 export default {
   data() {
@@ -78,28 +134,38 @@ export default {
       socket:null,
       mineMap:[],
       mineInfo:null,
-      selBlock:null,
+      selBlock:[],
+      selBlockCenter:null,
       token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
       userData:null,
       openTime:null,
       selPick:0,
       loading:false,
       onlineUser:0,
-      nextPickFlag:true
+      nextPickFlag:true,
+      userPage:1,
+      userList:[],
+      userTotal:0,
+      userDialog:false,
+      shakeTimer:null,
+      shakeCss:false,
     }
   },
   components: {
     menuView,
     pickaxe,
     userTop,
-    captcha
+    captcha,
+    Hooper,
+    Slide,
+    HooperNavigation
   },
   mounted() {
     this.$emit('l2dMassage','这里挖到游戏的通货【星星】和升级卡牌所需要的材料。显示的数字暗示周围的星星数量。请注意每种镐的产出不一样哦！');
     let socketurl = window.location.hostname;
     let port = window.location.port;
-    this.socket = io.connect('//'+socketurl+':'+port);
-    // this.socket = io.connect('//'+socketurl+':3000');
+    this.socket = io.connect('//'+socketurl+':'+port+'?dt='+this.token);
+    // this.socket = io.connect('//'+socketurl+':3000?dt='+this.token);
     this.socket.on('userCount',(data)=>{
       this.onlineUser = data.userCount;
     });
@@ -147,13 +213,63 @@ export default {
           });
           this.$refs.userTop.getUserInfo();
         }
-        this.$message({
-          dangerouslyUseHTMLString: true,
-          showClose: true,
-          duration:10000,
-          message:'您挖到了<span class="cOrange">'+itemData[data.getItem].name+'×'+data.getItemNum+'</span>，同时探测器显示周围有<span class="cOrange">'+data.demNum+'</span>片星星矿！',
-          type: 'success'
-        });
+        if(data.getItem){
+          this.$message({
+            dangerouslyUseHTMLString: true,
+            showClose: true,
+            duration:10000,
+            message:'您挖到了<span class="cOrange">'+itemData[data.getItem].name+'×'+data.getItemNum+'</span>，同时探测器显示周围有<span class="cOrange">'+data.demNum+'</span>片星星矿！',
+            type: 'success'
+          });
+        }else{
+          this.$message({
+            dangerouslyUseHTMLString: true,
+            showClose: true,
+            duration:10000,
+            message:'很可惜，您什么都没有获得，请仔细观察下周围的数字吧！',
+            type: 'success'
+          });
+        }
+        
+      }else if(data.code==205){ //使用炸弹
+        //开地图
+        const openList = data.openInfoList;
+        for(let i=0;i<openList.length;i++){
+          const thisOpenData = openList[i];
+          this.upDateMapData(thisOpenData.x,thisOpenData.y,thisOpenData.md5,thisOpenData.num);
+        }
+        const itemList = Object.entries(data.boomItemList);
+        let getHtml = '';
+        for(let i=0;i<itemList.length;i++){
+          getHtml = getHtml + '<span class="cOrange">'+itemData[itemList[i][0]].name+'×'+itemList[i][1]+'</span>、';
+        }
+        if(getHtml!==''){
+          getHtml = getHtml.substr(0, getHtml.length - 1)
+          this.$message({
+            dangerouslyUseHTMLString: true,
+            showClose: true,
+            duration:10000,
+            message:'您炸出了'+getHtml+'！',
+            type: 'success'
+          });
+        }
+        if(data.levelUpStar>0){
+          this.$notify.info({
+            title: '升级啦！',
+            message: '恭喜您升级啦，作为奖励获得'+data.levelUpStar+'颗星星！',
+            duration:13000
+          });
+          this.$refs.userTop.getUserInfo();
+        }
+        this.shake();
+      }else if(data.code==900){
+        // 查询用户
+        this.userList = data.pageUser;
+        this.userTotal = data.userTotal;
+        if(this.page>1&&this.userList.length===0){
+          this.page = 1;
+          this.searchUser();
+        }
       }else if(data.code==4){//您选择的工具还在制作中！
         this.$message(data.msg);
       }else if(data.code==3){//用户信息
@@ -175,10 +291,14 @@ export default {
       }else if(data.code==5){//别人挖矿
       console.log('别人挖矿');
         this.upDateMapData(data.x,data.y,data.md5,data.demNum)
+      }else if(data.code==6){//有人炸矿
+        this.shake();
       }
-      else if(data.code==403){//账号验证错误
-        sessionStorage.removeItem("token");
-        localStorage.removeItem("token");
+      else if(data.code==403 || data.code==406){//账号验证错误
+        if(data.code==403){
+          sessionStorage.removeItem("token");
+          localStorage.removeItem("token");
+        }
         this.$alert(data.msg, '提示', {
           confirmButtonText: '确定',
           showClose:false,
@@ -211,7 +331,42 @@ export default {
       }
     });
   },
+  filters: {
+    capitalize(value) {
+        var date = new Date(parseInt(value*1000));
+        var tt = [date.getFullYear(), ((date.getMonth()+1)<10?'0'+(date.getMonth()+1):date.getMonth()+1), (date.getDate()<10?'0'+date.getDate():date.getDate())].join('-') + '  ' +[(date.getHours()<10?'0'+date.getHours():date.getHours()), (date.getMinutes()<10?'0'+date.getMinutes():date.getMinutes()), (date.getSeconds()<10?'0'+date.getSeconds():date.getSeconds())].join(':');
+        return tt;
+      }
+  },
   methods: {
+    shake(){
+      if(!this.shakeCss){
+        this.shakeCss = true;
+        this.shakeTimer = setTimeout(()=>{
+          this.shakeCss = false;
+        },400)
+      }
+    },
+    userPageChange(p){
+      this.page = p;
+      this.searchUser();
+    },
+    openUserInfo(){
+      this.searchUser();
+      this.userDialog = true;
+    },
+    searchUser(){
+      this.openTime = new Date().getTime();
+      let parmas = {
+          type:'searchPlayer',
+          page:this.page,
+          token:this.token,
+          time:this.openTime
+      }
+      showLoading();
+      this.loading = true;
+      this.socket.emit('demining',parmas);
+    },
     captchaDigShow(v){
       this.captchaShow = v;
     },
@@ -268,13 +423,16 @@ export default {
           c = c+' is_wmdmstar'
         }
       }else{
-        if(x_y==this.selBlock){
+        if(this.selBlock.indexOf(x_y) !== -1){
           c = 'selected';
         }
       }
       return c;
     },
     openNode(x,y,num,openNow){
+      if(this.loading){
+        return false;
+      }
       if(num>=0){
         return false;
       }
@@ -285,8 +443,8 @@ export default {
       }
       let x_y = x+'_'+y;
       this.openTime = new Date().getTime();
-      if(x_y == this.selBlock || openNow){
-          let parmas = {
+      if(this.selBlockCenter === x_y || openNow){
+        let parmas = {
           type:'open',
           creatTime:this.mineInfo.data.creatTime,
           x:x,
@@ -297,11 +455,34 @@ export default {
         }
         showLoading();
         this.loading = true;
-        this.nextPickFlag = true;
+        this.nextPickFlag = this.selPick<3;
         this.socket.emit('demining',parmas);
-        this.selBlock = null;
+        this.selBlock = [];
+        this.selBlockCenter = null;
       }else{
-        this.selBlock = x_y;
+        if(this.selPick===5){
+          const maxCol = this.mineInfo.data.cols-1;
+          const maxRow = this.mineInfo.data.rows-1;
+          const selBlockGroup = [
+            (x-1>=0?x-1:maxRow)+'_'+(y-1>=0?y-1:maxCol),
+            x+'_'+(y-1>=0?y-1:maxCol),
+            (x+1<=maxRow?x+1:0)+'_'+(y-1>=0?y-1:maxCol),
+            (x-1>=0?x-1:maxRow)+'_'+y,
+            x+'_'+y,
+            (x+1<=maxRow?x+1:0)+'_'+y,
+            (x-1>=0?x-1:maxRow)+'_'+(y+1<=maxCol?y+1:0),
+            x+'_'+(y+1<=maxCol?y+1:0),
+            (x+1<=maxRow?x+1:0)+'_'+(y+1<=maxCol?y+1:0)
+          ];
+          this.selBlock = [];
+          setTimeout(()=>{
+            this.selBlock = selBlockGroup;
+          },40)
+          this.selBlockCenter = x_y;
+        }else{
+          this.selBlock = [x_y];
+          this.selBlockCenter = x_y;
+        }
       }
 
     },
@@ -335,6 +516,7 @@ export default {
   beforeDestroy(){
     this.backFlag = true;
     this.socket.close();
+    clearTimeout(this.shakeTimer);
   }
 }
 </script>
@@ -349,5 +531,195 @@ export default {
 }
 .wm_demining_hight_item_list_img{
   margin: 2px;
+}
+.wm_demin_tool_hooper_item_body{
+  width: 216px;
+  margin: 0 auto;
+}
+.wm_dem_ueser_item{
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+  padding: 5px 0 5px 55px;
+  position: relative;
+  z-index: 1;
+  height: 50px;
+  line-height: 22px;
+}
+.wm_dem_ueser_img{
+  position: absolute;
+  left: 0;
+  top: 5px;
+  z-index: 1;
+  background-color: #ccc;
+}
+.shake-hard {
+  animation-name: shake-hard;
+  animation-duration: 300ms;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+  animation-delay: 0s;
+}
+@keyframes shake-hard {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+  2% {
+    transform: translate(-4px, -9px) rotate(-0.5deg);
+  }
+  4% {
+    transform: translate(-1px, -9px) rotate(-1.5deg);
+  }
+  6% {
+    transform: translate(6px, -1px) rotate(-2.5deg);
+  }
+  8% {
+    transform: translate(5px, 8px) rotate(-0.5deg);
+  }
+  10% {
+    transform: translate(9px, 0px) rotate(2.5deg);
+  }
+  12% {
+    transform: translate(5px, -7px) rotate(-0.5deg);
+  }
+  14% {
+    transform: translate(0px, -1px) rotate(-2.5deg);
+  }
+  16% {
+    transform: translate(-6px, 2px) rotate(-1.5deg);
+  }
+  18% {
+    transform: translate(-5px, 7px) rotate(2.5deg);
+  }
+  20% {
+    transform: translate(-8px, 7px) rotate(-1.5deg);
+  }
+  22% {
+    transform: translate(-9px, 7px) rotate(0.5deg);
+  }
+  24% {
+    transform: translate(-3px, -9px) rotate(3.5deg);
+  }
+  26% {
+    transform: translate(-7px, 8px) rotate(3.5deg);
+  }
+  28% {
+    transform: translate(1px, -2px) rotate(3.5deg);
+  }
+  30% {
+    transform: translate(4px, -2px) rotate(-1.5deg);
+  }
+  32% {
+    transform: translate(7px, -8px) rotate(-1.5deg);
+  }
+  34% {
+    transform: translate(2px, 10px) rotate(-0.5deg);
+  }
+  36% {
+    transform: translate(-1px, 4px) rotate(2.5deg);
+  }
+  38% {
+    transform: translate(-6px, 7px) rotate(3.5deg);
+  }
+  40% {
+    transform: translate(6px, -9px) rotate(3.5deg);
+  }
+  42% {
+    transform: translate(-6px, 10px) rotate(2.5deg);
+  }
+  44% {
+    transform: translate(3px, -5px) rotate(0.5deg);
+  }
+  46% {
+    transform: translate(10px, 0px) rotate(-0.5deg);
+  }
+  48% {
+    transform: translate(9px, -8px) rotate(0.5deg);
+  }
+  50% {
+    transform: translate(9px, -7px) rotate(3.5deg);
+  }
+  52% {
+    transform: translate(4px, 4px) rotate(1.5deg);
+  }
+  54% {
+    transform: translate(-1px, 10px) rotate(0.5deg);
+  }
+  56% {
+    transform: translate(-4px, 3px) rotate(2.5deg);
+  }
+  58% {
+    transform: translate(-3px, 4px) rotate(3.5deg);
+  }
+  60% {
+    transform: translate(-5px, 8px) rotate(2.5deg);
+  }
+  62% {
+    transform: translate(5px, -2px) rotate(3.5deg);
+  }
+  64% {
+    transform: translate(-6px, 8px) rotate(3.5deg);
+  }
+  66% {
+    transform: translate(-2px, 1px) rotate(-2.5deg);
+  }
+  68% {
+    transform: translate(-1px, 0px) rotate(-2.5deg);
+  }
+  70% {
+    transform: translate(3px, -5px) rotate(-2.5deg);
+  }
+  72% {
+    transform: translate(6px, 0px) rotate(-2.5deg);
+  }
+  74% {
+    transform: translate(1px, 7px) rotate(-0.5deg);
+  }
+  76% {
+    transform: translate(2px, -8px) rotate(2.5deg);
+  }
+  78% {
+    transform: translate(6px, 10px) rotate(1.5deg);
+  }
+  80% {
+    transform: translate(4px, 7px) rotate(2.5deg);
+  }
+  82% {
+    transform: translate(-2px, -7px) rotate(1.5deg);
+  }
+  84% {
+    transform: translate(4px, -6px) rotate(-2.5deg);
+  }
+  86% {
+    transform: translate(-5px, -3px) rotate(3.5deg);
+  }
+  88% {
+    transform: translate(8px, -4px) rotate(-1.5deg);
+  }
+  90% {
+    transform: translate(7px, -2px) rotate(-0.5deg);
+  }
+  92% {
+    transform: translate(-4px, 5px) rotate(3.5deg);
+  }
+  94% {
+    transform: translate(-1px, -9px) rotate(2.5deg);
+  }
+  96% {
+    transform: translate(8px, -5px) rotate(3.5deg);
+  }
+  98% {
+    transform: translate(-4px, 8px) rotate(2.5deg);
+  }
+}
+</style>
+<style>
+.wm_card_demining_tool_body .wm_demin_tool_hooper{
+  height: 100%;
+}
+.wm_demin_tool_hooper .hooper-next, .wm_demin_tool_hooper .hooper-prev{
+  padding: 0px;
+}
+.hooper-liveregion{
+  display: none;
 }
 </style>

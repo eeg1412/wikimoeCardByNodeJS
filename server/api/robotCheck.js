@@ -69,12 +69,22 @@ module.exports = async function(req, res, next){
         return false;
     }
     // 验证通过减少可疑值
-    let robot = result.robotRate - 12;
+    const timeNow = Math.round(new Date().getTime()/1000);
+    const userTime = Number(result.robotCheckTime);
+    let timeCha = 0;
+    // 每2分钟减少可疑度的减少
+    if(userTime!==0){
+        timeCha = Math.floor((timeNow - userTime)/120);
+    }
+    if(timeCha>48){
+        timeCha = 48;
+    }
+    let robot = result.robotRate - (12-timeCha);
     let getStar = 0;
     if(robot<0){
         robot = 0;
     }
-    if(robot<global.myAppConfig.robotCheckCanGetStar){
+    if(robot<global.myAppConfig.robotCheckCanGetStar&&timeCha===0){
         getStar = global.myAppConfig.robotCheckStar;
     }
     const params = {

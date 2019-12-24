@@ -41,7 +41,7 @@
           <div class="tc mb10">
             <el-button type="primary" size="small" @click="buy(1,0)">结缘1次</el-button><el-button type="primary" size="small" @click="buy(1,1)">结缘10次</el-button><el-button type="primary" size="small" @click="buy(1,2)">结缘30次</el-button>
           </div>
-          <div class="wm_shop_item_list_text">每次结缘需要1枚<el-tooltip effect="dark" content="【五円玉】通过每个月竞技点结算获得！" placement="top" :enterable="false"><span>【五円玉】</span></el-tooltip><br />(持有:{{myItem['300']||0}})</div>
+          <div class="wm_shop_item_list_text">每次结缘需要1枚<el-tooltip effect="dark" content="【结缘币】通过每个月竞技点结算获得！" placement="top" :enterable="false"><span>【结缘币】</span></el-tooltip><br />(持有:{{myItem['300']||0}})</div>
         </div>
       </div>
     </el-collapse-transition>
@@ -76,7 +76,7 @@ export default {
     userTop
   },
   mounted() {
-    this.$emit('l2dMassage','这里可以使用五円玉来结缘，祝您结到一份好姻缘。');
+    this.$emit('l2dMassage','这里可以使用结缘币来结缘，祝您结到一份好姻缘。');
     window.addEventListener('scroll', this.menuTop);
     this.getCardPackage();
     this.searchuseritem();

@@ -17,11 +17,29 @@ exports.creatNewItemList = function(month,year) {
                 num:30,
                 text:"星星×30"
             }
+        }else if(i===4){ // 每月5号
+            getItem = {
+                item:"400",
+                num:2,
+                text:"星星镐×2"
+            }
+        }else if(i===9){ // 每月10号
+            getItem = {
+                item:"401",
+                num:3,
+                text:"宝石镐×3"
+            }
         }else if(i===14){//每月15日
             getItem = {
                 item:"star",
                 num:300,
                 text:"星星×300"
+            }
+        }else if(i===19){ // 每月20号
+            getItem = {
+                item:"402",
+                num:3,
+                text:"保罗炸弹×3"
             }
         }else if(i===(days-2)){//每月倒数第二天
             getItem = {

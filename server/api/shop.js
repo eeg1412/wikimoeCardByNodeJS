@@ -194,11 +194,11 @@ module.exports = async function(req, res, next){
         }) || {};
         let userItemData = itemData_['item'] || {};//获取道具信息
         let myItemNum = userItemData['300'] || 0;
-        // 判断五円玉够不够
+        // 判断结缘币够不够
         if(myItemNum<price){
             res.send({
                 code:0,
-                msg:'五円玉不足！'
+                msg:'结缘币不足！'
             });
             return false;
         }
@@ -222,7 +222,7 @@ module.exports = async function(req, res, next){
                 databaseCard['card.'+packageId+'.'+cardId] = 1;
             } 
         }
-        // 扣除五円玉
+        // 扣除结缘币
         let itemDataBase = {};//删除的道具
         itemDataBase['item.300'] = -price;
         let updataItemParams = {

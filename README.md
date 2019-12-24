@@ -31,6 +31,9 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 2. 备份数据库。
 3. 在[releases](https://github.com/eeg1412/wikimoeCardByNodeJS/releases)下载最新的版本。
 4. 除非特殊说明，请不要覆盖【server/config】下的文件以及【server/bin/nodejs.wikimoe.com-chain.pem】和【server/bin/nodejs.wikimoe.com-key.pem】两个文件。
+5. 如果遇到无法启动的情况请尝试删除【node_modules】文件夹重新执行【使用方法】中的2-3步。
+
+注意：v1.2.1~v2.2.1 的猜卡有一个无法兑换的BUG，请及时更新至最新版本！
 
 ### v1.2.1更新至v2.0.0的方法
 
@@ -77,8 +80,8 @@ let baseConfig = {
 	creatCardStar:100,//制卡审核通过后获得的星星
 	creatCardWait:20,//单用户最多等待审核的制卡
 	useMarketCardCount:30,//集齐多少种卡牌后能在市场交易
-	battleRankGetItem:100,//竞技第一名额外获得五円玉的数量
-	battleRankGetItemDecay:10,//后面陆续获得五円玉的衰减数量
+	battleRankGetItem:100,//竞技第一名额外获得结缘币的数量
+	battleRankGetItemDecay:10,//后面陆续获得结缘币的衰减数量
 	donateImgUrl:'',//捐赠图片URL地址
 	creatCardExplainUrl:'',//制卡说明图片URL地址
 	QQunURL:'',//加群链接
