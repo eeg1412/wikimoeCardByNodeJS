@@ -25,11 +25,13 @@
       </div>
       <div class="wm_card_menu_text">登录</div>
     </div>
-    <div class="wm_card_menu_box" @click="login('/dailygetitem')" v-if="$route.path!='/dailygetitem'" @mouseenter="$wikimoecard.l2dMassage('每日签到可以获得丰厚的奖励喔！')" @mouseleave="$wikimoecard.l2dMassageClose">
-      <div class="wm_card_menu_ico">
-        <img src="../../assets/images/menu/qiandao.png" width="100%" height="100%" />
-      </div>
-      <div class="wm_card_menu_text">签到</div>
+    <div class="wm_card_menu_box" @click="login('/dailygetitem')" v-if="$route.path!='/dailygetitem' && token" @mouseenter="$wikimoecard.l2dMassage('每日签到可以获得丰厚的奖励喔！')" @mouseleave="$wikimoecard.l2dMassageClose">
+      <el-badge :is-dot="dailygeted?false:true">
+        <div class="wm_card_menu_ico">
+          <img src="../../assets/images/menu/qiandao.png" width="100%" height="100%" />
+        </div>
+        <div class="wm_card_menu_text">签到</div>
+      </el-badge>
     </div>
     <div class="wm_card_menu_box" @click="login('/demining')" v-if="$route.path!='/demining'" @mouseenter="$wikimoecard.l2dMassage('矿场可以挖到商店抽卡用到的星星和升级卡牌所需要的材料哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
@@ -80,7 +82,7 @@
       <div class="wm_card_menu_text">结缘</div>
     </div>
     <div class="wm_card_menu_box" @click="postDialog=true"  @mouseenter="$wikimoecard.l2dMassage('快来看看有没有新的邮件吧！说不定会有意外收获哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
-      <el-badge :is-dot="postTotle?true:false" :max="9" class="item">
+      <el-badge :is-dot="postTotle?true:false">
         <div class="wm_card_menu_ico">
           <img src="../../assets/images/menu/post.png" width="100%" height="100%" />
         </div>
@@ -240,6 +242,7 @@ import itemData from '../../../../server/data/item';
 export default {
   data() {
     return {
+      dailygeted:true,
       menuLink:{
         courseURL:window.$siteConfig.courseURL,
         QQunURL:window.$siteConfig.QQunURL,
@@ -270,6 +273,7 @@ export default {
   mounted() {
     this.getRememberEmail();
     this.getPost();
+    this.dailygetedSearch();
   },
   filters:{
     capitalize: function (value) {
@@ -279,6 +283,39 @@ export default {
     }
   },
   methods: {
+    dailygetedSearch(){
+      // 是否由Token
+      if(!this.token){
+        console.log("无Token,当前无需查询每日任务！");
+        return false;
+      }
+      // 查询是否需要查询每日任务已领取
+      let nextTime = 0;
+      const timeNow = new Date().getTime();
+      let userMD5 = this.getCardMd5();
+      let storageDailyDate = localStorage.getItem(userMD5+'dailygeted');
+      if(storageDailyDate){
+        nextTime = Number(storageDailyDate);
+      }
+      if(nextTime>timeNow){
+        console.log("当前无需查询每日任务！");
+        return false;
+      }
+      const params = {
+        token:this.token,
+      }
+      authApi.dailygetitemmenu(params).then(res => {
+        console.log(res);
+        if(res.data.code==1){
+          this.dailygeted = res.data.geted;
+          if(this.dailygeted){
+            // 写入缓存
+            // this.token.split('.')
+            localStorage.setItem(userMD5+'dailygeted', res.data.nextTime);
+          }
+        }
+      });
+    },
     getPostItem(id){
       const params = {
         token:this.token,
@@ -455,7 +492,12 @@ export default {
       if(!this.routPath){
         return false;
       }
-      this.$router.push({ path:this.routPath});
+      if(this.routPath==='/'){
+        this.getPost();
+        this.dailygetedSearch();
+      }else{
+        this.$router.push({ path:this.routPath});
+      }
     }
   }
 }

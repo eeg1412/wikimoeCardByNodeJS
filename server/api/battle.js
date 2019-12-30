@@ -366,15 +366,15 @@ module.exports = async function(req, res, next){
     // 设一定概率遇到AI
     let AiP = utils.randomNum(1,100);//AI概率因子
     let emData = [];
-    let seeAiP = 40;
-    const hitTime = timeNow-120;
+    let seeAiP = 50;
+    const hitTime = timeNow-3600;// 不重复遇到多少秒之前的敌人
     if(result.level<=15){//新手大概率遇到AI
         console.info(
             chalk.green(email+'是新手，高概率遇到AI。IP为：'+IP)
         )
         seeAiP = 80;
     }
-    if(AiP>seeAiP){//40%概率遇见AI
+    if(AiP>seeAiP){//50%概率遇见AI
         if(advanced){//如果是进阶匹配
             let emScore = {
                 score:{$gte:myScore+500},

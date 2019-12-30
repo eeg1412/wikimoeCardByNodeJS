@@ -72,6 +72,19 @@ module.exports = async function(req, res, next){
     console.info(
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
+    // 获取补签道具数量
+    let itemData_ = await itemDatabase.findOne({email:email}).catch ((err)=>{
+        res.send({
+            code:0,
+            msg:'内部错误请联系管理员！'
+        });
+        console.error(
+            chalk.red('数据库错误！')
+        );
+        throw err;
+    }) || {};
+    let userItemData = itemData_['item'] || {};//获取道具信息
+    let myItemNum = userItemData['201'] || 0;
     //检查每日道具是否过期
     let dailyGetItemJson = fs.readFileSync('./config/cache/dailyGetItem.json', 'utf8');
     dailyGetItemJson=JSON.parse(dailyGetItemJson);
@@ -120,22 +133,70 @@ module.exports = async function(req, res, next){
             daily:dailyGetItemJson,
             getCount:getCount,
             geted:geted,
+            canIssue:myItemNum,
+            data:new Date().getDate(),
             msg:'ok'
         });
         console.info(
             chalk.green('email:'+email+'查询每日签到成功。IP为：'+IP)
         );
     }else if(type==='get'){
+        // 是否是补签
+        let reissue = req.body.reissue;
         //判断今天是不是已经签到过了
         if(geted){
-            res.send({
-                code:0,
-                msg:'今天已经签到过啦！'
-            });
-            console.error(
-                chalk.yellow('email:'+email+'今天已经签到了。IP为：'+IP)
-            );
-            return false;
+            // 如果已经签到了
+            if(reissue){
+                // 判断是否能已经到最大补签
+                const todayDay = timeNow.getDate();
+                console.info(
+                    chalk.yellow('email:'+email+'尝试补签，已经累计签到'+getCount+'次，最多能签到'+todayDay+'次。IP为：'+IP)
+                );
+                if(getCount>=todayDay){
+                    res.send({
+                        code:0,
+                        msg:'不能超过日期补签！'
+                    });
+                    console.error(
+                        chalk.yellow('email:'+email+'尝试补签，日期超了。IP为：'+IP)
+                    );
+                    return false;
+                }
+                // 判断补签道具够不够
+                if(myItemNum<1){
+                    res.send({
+                        code:0,
+                        msg:'您的补签道具不足！'
+                    });
+                    console.error(
+                        chalk.yellow('email:'+email+'尝试补签，但是补签道具不足。IP为：'+IP)
+                    );
+                    return false;
+                }
+                
+            }else{
+                // 如果不是补签
+                res.send({
+                    code:0,
+                    msg:'今天已经签到过啦！'
+                });
+                console.error(
+                    chalk.yellow('email:'+email+'今天已经签到了。IP为：'+IP)
+                );
+                return false;
+            }
+        }else{
+            // 如果判断今天没签到过，则即使使用补签道具也不能补签
+            if(reissue){
+                res.send({
+                    code:0,
+                    msg:'您今天还没签到，不能补签！如页面显示领取，请刷新页面！'
+                });
+                console.error(
+                    chalk.yellow('email:'+email+'没有签到就尝试补签。IP为：'+IP)
+                );
+                return false;
+            }
         }
         let canGetItem = dailyGetItemJson['item'][getCount];
         if(!canGetItem){
@@ -168,7 +229,24 @@ module.exports = async function(req, res, next){
                 );
                 throw err;
             })
-            msgText='签到成功，获得'+canGetItem['text'];
+            msgText=(reissue?'补签':'签到')+'成功，获得'+canGetItem['text'];
+            // 如果补签扣除补签道具
+            if(reissue){
+                // 写入道具
+                let update_ = {
+                    'item.201': myItemNum-1
+                }
+                await itemDatabase.findOneAndUpdate(params,update_).catch ((err)=>{
+                    res.send({
+                        code:0,
+                        msg:'内部错误请联系管理员！'
+                    });
+                    console.error(
+                        chalk.red('数据库更新错误！')
+                    );
+                    throw err;
+                })
+            }
         }else if(canGetItem['item']==='radomItem'){//随机宝石
             let CryItemList = ['11','12','13','14','15','21','22','23','24','25','31','32','33','34','35','41','42','43','44','45','51','52','53','54','55'];
             let randomIndex = utils.randomNum(0,CryItemList.length-1);
@@ -178,6 +256,10 @@ module.exports = async function(req, res, next){
             // 写入道具
             let update_ = {
                 $inc:getItemDataBase
+            }
+            if(reissue){
+                // 写入补签道具+1
+                update_['item.201'] = myItemNum-1;
             }
             await itemDatabase.findOneAndUpdate(params,update_).catch ((err)=>{
                 res.send({
@@ -189,7 +271,7 @@ module.exports = async function(req, res, next){
                 );
                 throw err;
             })
-            msgText='签到成功，获得'+itemInfo[getItemId].name+'×'+canGetItem['num'];
+            msgText=(reissue?'补签':'签到')+'成功，获得'+itemInfo[getItemId].name+'×'+canGetItem['num'];
         }else {//指定道具
             let getItemId = canGetItem['item'];
             //判断道具是否存在
@@ -211,6 +293,10 @@ module.exports = async function(req, res, next){
             let update_ = {
                 $inc:getItemDataBase
             }
+            if(reissue){
+                // 写入补签道具+1
+                update_['item.201'] = myItemNum-1;
+            }
             await itemDatabase.findOneAndUpdate(params,update_).catch ((err)=>{
                 res.send({
                     code:0,
@@ -221,17 +307,20 @@ module.exports = async function(req, res, next){
                 );
                 throw err;
             })
-            msgText='签到成功，获得'+canGetItem['text'];
+            msgText= (reissue?'补签':'签到')+'成功，获得'+canGetItem['text'];
         }
         //写入签到数据
         let dailyUpdate = {
-            count:getCount+1,
-            time:timeNow.getTime()/1000
-        } 
+            count:getCount+1
+        };
+        if(!reissue){
+            dailyUpdate["time"] = timeNow.getTime()/1000;
+        }
         dailyData.findOneAndUpdate(params,dailyUpdate)
         res.send({
             code:1,
             count:getCount+1,
+            canIssue:reissue?myItemNum-1:myItemNum,
             msg:msgText
         });
         let logObject = {

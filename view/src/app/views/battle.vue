@@ -441,7 +441,7 @@ export default {
                     for(let i=0;i<battleScoreHistory.length;i++){
                         const timeMonth = battleScoreHistory[i].time;
                         const time = new Date(parseInt(timeMonth*86400000));
-                        let timeStr = time.getFullYear()+'年'+(time.getMonth())+'月'
+                        let timeStr = time.getFullYear()+'年'+(time.getMonth()+1)+'月'+(time.getDate())+'日'
                         if(preTime===time.getMonth()){
                             timeCount++;
                             timeStr=timeStr+'第'+timeCount+'轮'

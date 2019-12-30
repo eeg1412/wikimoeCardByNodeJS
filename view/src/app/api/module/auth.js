@@ -84,6 +84,9 @@ export default function (api) {
     dailygetitem(data){
       return api.post('dailygetitem',data)
     },
+    dailygetitemmenu(data){
+      return api.post('dailygetitemmenu',data)
+    },
     cardlevelchange(data){
       return api.post('cardlevelchange',data)
     },
