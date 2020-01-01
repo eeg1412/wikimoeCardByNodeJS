@@ -45,6 +45,17 @@ module.exports = async function(req, res, next){
     console.info(
         chalk.green(IP+'的邮箱解析结果为'+email)
     )
+    let time = Math.round(new Date().getTime()/1000);
+    let delParmas = {
+        time:{$lt:time-5184000},
+    }
+    // 删除两月前的数据
+    await marketData.deletMarketLog(delParmas).catch ((err)=>{
+        throw err;
+    });
+    console.info(
+        chalk.green('删除2个月前的市场统计数据成功')
+    )
     let parmas = {
         cardId:cardId
     }

@@ -121,7 +121,14 @@ export default {
       stat:undefined,//卖卡状态
       have:this.$route.query.have,
       extend:{
-        'xAxis.0.axisLabel.rotate': 45
+        xAxis: {
+            axisLabel: {
+                formatter (v) {
+                    return v.split('丨')[0]
+                },
+                rotate:45
+              },
+        }
       },
       chartSettings:{
         labelMap: {
@@ -254,9 +261,24 @@ export default {
             for(let i=0;i<chartDataRow.length;i++){
               chartDataRow[i].time = this.capitalize(chartDataRow[i].time);
             }
-            this.chartData.rows = chartDataRow;
+            const dataCache = {
+                rows:chartDataRow
+            }
+            this.chartData.rows = this.dataConvert(dataCache,"time").rows;
           }
       });
+    },
+    dataConvert (d,index_) {
+      const keys = []
+      let num = 2
+      d.rows.forEach(row => {
+        if (~keys.indexOf(row[index_])) {
+          row[index_] += `丨${num++}`
+        } else {
+          keys.push(row[index_])
+        }
+      })
+      return d
     },
     getstar(){
       let params = {

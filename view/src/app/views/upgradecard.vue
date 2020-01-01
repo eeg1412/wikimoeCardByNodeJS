@@ -86,8 +86,8 @@
                         <table class="wm_levle_card_table">
                             <tbody>
                                 <td>
-                                    <el-tooltip class="item" effect="dark" content="点击去市场查找此卡！" placement="top">
-                                        <div class="wm_level_card_img_body mb10 wm_set_pointer" @click="goMarket(item.cardId,item.star,item.packageId)">
+                                    <el-tooltip class="item" effect="dark" content="点击查看市场和卡牌信息！" placement="top" :enterable="false" :disabled="tootipsDisabled">
+                                        <div class="wm_level_card_img_body mb10 wm_set_pointer" @click="goMarket(item)">
                                             <img :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'" class="w_10 wm_level_card_img">
                                         </div>
                                     </el-tooltip>
@@ -130,7 +130,7 @@
                                     <!-- 未勾选使用碎片 -->
                                     <div class="mb20" v-show="!item.usechip">
                                         <p class="mb10"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{item.leftType | setItemShould}}个【{{itemData_[item.cry+''+item.leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer" :src="'/static/otherImg/item/'+item.cry+''+item.leftType+'.png'"/></el-tooltip>×{{item.leftType | setItemShould}}({{myItem[item.cry+''+item.leftType] || 0}})</p>
-                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">需要{{setCardShould(item.star)}}张【{{item.name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'"/></el-tooltip></div><span>×{{setCardShould(item.star)}}({{item.count}})</span></div>
+                                        <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top" :disabled="tootipsDisabled"><div slot="content" class="wm_upcard_tooltips">需要{{setCardShould(item.star)}}张【{{item.name}}】，除了默认获取途径外还可以从市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'" @click="goMarket(item)" /></el-tooltip></div><span>×{{setCardShould(item.star)}}({{item.count}})</span></div>
                                         <div class="mb10"><div class="wm_level_card_ico_img_body"><el-tooltip placement="top"><div slot="content" class="wm_upcard_tooltips">您未使用碎片，升级将不会消耗【{{itemData_['1'+PrefixInteger_(item.star,2)].name}}】，<br />如果您需要使用碎片来替代缺少的卡牌可以勾选【使用碎片】。<br />碎片可以从【卡牌分解】中获得。</div><img class="wm_level_card_ico_img wm_set_pointer" :src="'/static/otherImg/item/'+'1'+PrefixInteger_(item.star,2)+'.png'"/></el-tooltip></div><span>×0({{myItem['1'+PrefixInteger_(item.star,2)] || 0}})</span></div>
                                     </div>
                                     <!-- 勾选使用碎片 -->
@@ -190,6 +190,7 @@
                 <el-button @click="itemDialog = false">关闭</el-button>
             </span>
         </el-dialog>
+        <cardInfoDialog @cardInfoShow="cardInfoDiaShow" :cardInfoDigShow="cardInfoShow" :cardData="cardData" @buyNewCard="updateMyCard" @updateUserinfo="updateUserinfo"></cardInfoDialog>
     </div>
 </template>
 
@@ -198,6 +199,7 @@ import menuView from '../components/menu.vue';
 import {authApi} from "../api";
 import userTop from '../components/topUserInfo.vue';
 import battle from '../components/battle.vue';
+import cardInfoDialog from "../components/cardInfo"
 import itemData from '../../../../server/data/item';
 import {PrefixInteger,md5Check} from "../../utils/utils";
 import md5_ from 'js-md5';
@@ -205,6 +207,9 @@ import md5_ from 'js-md5';
 export default {
   data() {
     return {
+        tootipsDisabled:false,
+        cardData:null,
+        cardInfoShow:false,
         itemDialog:false,
         token:sessionStorage.getItem("token")?sessionStorage.getItem("token"):localStorage.getItem("token"),
         battleData:null,
@@ -237,7 +242,8 @@ export default {
   components: {
     menuView,
     userTop,
-    battle
+    battle,
+    cardInfoDialog
   },
   filters: {
       setChenggolv(v){
@@ -274,11 +280,25 @@ export default {
       }
   },
   mounted() {
-        this.$emit('l2dMassage','这里可以升级自己的卡牌，所需材料可以在挖矿中获得，卡牌可以通过抽卡或者市场购买获得。如果卡牌不足可以通过卡牌碎片来替代卡牌，卡牌碎片可以通过分解卡牌获得。');
+        this.$emit('l2dMassage','这里可以升级自己的卡牌，所需材料可以在挖矿中获得，卡牌可以通过抽卡、猜卡、结缘或者市场购买获得。如果卡牌不足可以通过卡牌碎片来替代卡牌，卡牌碎片可以通过分解卡牌获得。');
         this.getCardPackage();
         this.apiInit();
   },
   methods: {
+        updateUserinfo(){
+            this.$refs.userTop.getUserInfo();
+        },
+        updateMyCard(){
+            let mycard = new Promise((resolve, reject)=> {
+                this.getMycard(resolve, reject);
+            });
+            Promise.all([mycard]).then((results)=> {
+                this.initData(this.cardPage);
+            })
+        },
+        cardInfoDiaShow(v){
+            this.cardInfoShow = v;
+        },
         apiInit(){
             let battlecard = new Promise((resolve, reject)=> {
                 this.getMyBattleCard(resolve, reject);
@@ -308,18 +328,25 @@ export default {
         chipChange(v){
             this.$forceUpdate();
         },
-        goMarket(cardId,star,packageId){
-            this.$router.push({ 
-                name:'buyCard',
-                query: {
-                    name:'cardId',
-                    text:cardId,
-                    want:1,
-                    wantstar:star,
-                    wantid:cardId,
-                    packageId:packageId
-                }
-            });
+        goMarket(info){
+            console.log(info);
+            this.cardData = {
+                cardId:info.cardId,
+                packageId:info.packageId,
+                name:info.name,
+                title:info.title,
+                star:info.star,
+                cry:info.cry,
+                leftType:info.leftType,
+                rightType:info.rightType,
+                have:info.count,
+                level:info.level
+            }
+            this.cardInfoShow = true;
+            this.tootipsDisabled = true;
+            setTimeout(()=>{
+                this.tootipsDisabled = false;
+            },20)
         },
         goChangeLevel(c){
             let changeCardLvel = c.level;
@@ -424,7 +451,7 @@ export default {
         PrefixInteger_(num,length){
             return PrefixInteger(num,length);
         },
-        initData(){//初始化数据
+        initData(update){//初始化数据
             for(let i=0;i<this.userCardCache.length;i++){
                 this.userCardCache[i].usechip = false;
                 this.userCardCache[i].battle = false;
@@ -442,9 +469,14 @@ export default {
                 }
             }
             // 0卡牌id、1卡牌数量、2卡牌是否出战、3卡牌等级、4卡牌信息、5是否使用碎片
-            this.cardPageChange(1);
+            if(update){
+                this.cardPageChange(this.cardPage);
+            }else{
+                this.cardPageChange(1);
+            }
         },
         cardPageChange(val){
+            console.log('page',val)
             this.pageChangeing = true;
             this.userCard = [];
             let that = this;

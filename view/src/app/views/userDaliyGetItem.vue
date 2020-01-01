@@ -81,7 +81,9 @@ export default {
         }
       });
       this.thisDay = this.thisDay[0];
-      this.thisDay["day"] = thisIndex;
+      if(this.thisDay){
+        this.thisDay["day"] = thisIndex;
+      }
     },
     dailygetitem(){
       let params = {

@@ -505,16 +505,3 @@ export default {
     height: auto;
 }
 </style>
-<style>
-.wm_handbook_info_dialog .el-dialog{
-    max-width: 100%;
-}
-.wm_handbook_info_dialog .el-dialog__body{
-    padding: 10px 20px;
-}
-@media ( max-width : 768px) {
-    .wm_handbook_info_dialog .el-dialog{
-        margin-top: 0!important;
-    }
-}
-</style>
