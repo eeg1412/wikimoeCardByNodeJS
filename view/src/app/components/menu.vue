@@ -51,6 +51,12 @@
       </div>
       <div class="wm_card_menu_text">对战</div>
     </div>
+    <div class="wm_card_menu_box" @click="login('/quest')" v-if="$route.path.indexOf('/quest')==-1" @mouseenter="$wikimoecard.l2dMassage('可以通过完成任务获得丰厚奖励哦！')" @mouseleave="$wikimoecard.l2dMassageClose">
+      <div class="wm_card_menu_ico">
+        <img src="../../assets/images/menu/quest.png" width="100%" height="100%" />
+      </div>
+      <div class="wm_card_menu_text">任务</div>
+    </div>
     <div class="wm_card_menu_box" @click="login('/star/shop')" v-if="$route.path!='/star/shop'" @mouseenter="$wikimoecard.l2dMassage('商店可以增加额外的抽卡机会，推荐新手玩家务必来逛逛！')" @mouseleave="$wikimoecard.l2dMassageClose">
       <div class="wm_card_menu_ico">
         <img src="../../assets/images/menu/shop.png" width="100%" height="100%" />

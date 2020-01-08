@@ -22,6 +22,7 @@ const cardlevelchangeView = () => import(/* webpackChunkName: "dailyGetItemView"
 const creatcardView = () => import(/* webpackChunkName: "dailyGetItemView" */ '@/views/creatcard.vue')
 const guessCardView = () => import(/* webpackChunkName: "guessCardView" */ '@/views/guessCard/index.vue')
 const goenView = () => import(/* webpackChunkName: "goenView" */ '@/views/goen.vue')
+const questView = () => import(/* webpackChunkName: "questView" */ '@/views/quest.vue')
 
 const adminLoginView = () => import(/* webpackChunkName: "adminLoginView" */ '@/views/admin/login-view.vue')
 const adminInstallView = () => import(/* webpackChunkName: "adminInstallView" */ '@/views/admin/install-view.vue')
@@ -98,6 +99,15 @@ const router = new VueRouter({
         admin:false,
       },
       component: goenView
+    },
+    {
+      name: 'quest',
+      path: '/quest',
+      meta:{
+        login:false,
+        admin:false,
+      },
+      component: questView
     },
     {
       path: '/star/market',

@@ -158,6 +158,31 @@
       </el-carousel-item>
       <el-carousel-item>
         <div class="wm_card_rank_item_box" id="wmLevelRankBox">
+          <h5 class="wm_card_chiose_title" id="wm_card_rank_title">任务完成榜</h5>
+          <p class="wm_card_rank_last_updata">
+            最后更新：
+            <span class="wm_card_rank_last_time">{{rankData.time|capitalize}}</span>
+          </p>
+          <div class="wm_card_rank_list">
+            <div class="clearfix wm_card_rank_box" v-for="(item,index) in rankData.questCount" v-bind:key="index" @click="watchInfo(item.md5)">
+              <div class="fl wm_card_rank_text">{{index+1|rankTetx}}</div>
+              <div class="fl wm_card_rank_img">
+                <img
+                  class="wm_card_get_list_avatar_pic"
+                  :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+                  width="45"
+                  height="45"
+                  data-md5="fcd2f50ff3096a29dd37b139b54d81fe"
+                >
+              </div>
+              <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
+              <div class="fr wm_card_rank_point">完成{{item.questCount}}次</div>
+            </div>
+          </div>
+        </div>
+      </el-carousel-item>
+      <el-carousel-item>
+        <div class="wm_card_rank_item_box" id="wmLevelRankBox">
           <h5 class="wm_card_chiose_title" id="wm_card_rank_title">制卡榜</h5>
           <p class="wm_card_rank_last_updata">
             最后更新：

@@ -193,6 +193,12 @@
               <span v-else-if="item.type=='guesscardHaveCard'"
               >我在<span class="wm_card_get_list_card_link" @click="goMenu('/star/guessCard/guess')">星星猜卡</span>中猜中了{{item.data.attackCount}}张卡牌，获得了<span class="wm_card_get_list_card_link" @click="openCardList(item.data.attackCardInfoArr)">猜中的卡牌</span>和{{item.data.getStar}}颗星星！
               </span>
+              <span v-else-if="item.type=='quest'"
+              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/quest')">任务系统</span>中完成了任务【{{item.data.title}}】，获得了{{item.data.msg}}。
+              </span>
+              <span v-else-if="item.type=='treasure'"
+              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/quest')">任务系统</span>中完成了30次任务，{{item.data.msg}}。再接再厉完成更多任务获得更多的奖励！
+              </span>
             </p>
           </div>
         </div>

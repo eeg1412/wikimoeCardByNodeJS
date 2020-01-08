@@ -27,6 +27,8 @@ var users = new Schema({
   guessCardCount:{type: SchemaTypes.Long, default: 0},
   guessStamp:{type: SchemaTypes.Long, default: 0},
   guessDailyCount:{type: Number, default: 0},
+  questCount:{type: SchemaTypes.Long, default: 0},
+  questTreasure:{type: SchemaTypes.Long, default: 0},
   token:{type: String, default: ''},
   ip:String,
   robotRate:{type: Number, default: 0},

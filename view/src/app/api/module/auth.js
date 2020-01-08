@@ -117,6 +117,9 @@ export default function (api) {
     robotcheck(data){
       return api.post('robotcheck',data)
     },
+    quest(data){
+      return api.post('quest',data)
+    },
     admincheckinstall(){
       return api.get('admin/checkinstall')
     },
