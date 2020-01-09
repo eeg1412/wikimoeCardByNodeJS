@@ -40,7 +40,8 @@
               <div class="wm_quest_text">{{item.text}}</div>
               <div class="wm_quest_should_list">
                 <div v-if="item.class==='cardToItem' || item.class==='cardToBattle'">
-                  <div v-for="(items,indexs) in item.should" v-bind:key="indexs" class="dib ml5 mr5 tc wm_set_pointer" @click="openCardInfo(items.card)">
+                  <div v-for="(items,indexs) in item.should" v-bind:key="indexs" class="dib ml5 mr5 tc wm_set_pointer wm_quest_cardlist" @click="openCardInfo(items.card)">
+                    <div class="wm_quest_battlecard" v-if="battleCard.indexOf(items.card.cardId)!==-1">战</div>
                     <img class="wm_quest_should_card" :src="$wikimoecard.url+items.card.packageId+'/'+items.card.cardId+'.jpg'" />
                     <div>{{card[items.card.cardId] | cardCount}}/{{items.number}}</div>
                   </div>
@@ -113,6 +114,7 @@ export default {
       questCount:0,
       questTreasure:0,
       dem:"0",
+      battleCard:[],
       gc:"0",
       itemData_:itemData,
     }
@@ -132,7 +134,7 @@ export default {
     },
     questProgress () {
       let q1 = 30 - ((this.questTreasure+1)*30 - this.questCount);
-      let q = Math.round(q1/30*100);
+      let q = Math.floor(q1/30*100);
       console.log(q1+'test');
       if(q>100){
         q = 100;
@@ -192,6 +194,7 @@ export default {
     },
     setDemP(item){
       let p = (Number(this.dem) -Number(item.mark))/item.should[0].number*100;
+      p = Math.floor(p);
       if(p>100){
         p=100
       }
@@ -199,6 +202,7 @@ export default {
     },
     setGcP(item){
       let p = (Number(this.gc) -Number(item.mark))/item.should[0].number*100;
+      p = Math.floor(p);
       if(p>100){
         p=100
       }
@@ -233,6 +237,7 @@ export default {
               this.dem = res.data.dem;
               this.questCount = Number(res.data.questCount);
               this.questTreasure = Number(res.data.questTreasure);
+              this.battleCard = res.data.battleCard;
               this.$message({
                 message: res.data.msg,
                 type: 'success'
@@ -264,6 +269,7 @@ export default {
               this.dem = res.data.dem;
               this.questCount = Number(res.data.questCount);
               this.questTreasure = Number(res.data.questTreasure);
+              this.battleCard = res.data.battleCard;
               this.$message({
                 message: res.data.msg,
                 type: 'success'
@@ -297,6 +303,7 @@ export default {
               this.dem = res.data.dem;
               this.questCount = Number(res.data.questCount);
               this.questTreasure = Number(res.data.questTreasure);
+              this.battleCard = res.data.battleCard;
               this.$message({
                 message: res.data.msg,
                 type: 'success'
@@ -323,6 +330,7 @@ export default {
               this.dem = res.data.dem;
               this.questCount = Number(res.data.questCount);
               this.questTreasure = Number(res.data.questTreasure);
+              this.battleCard = res.data.battleCard;
             }else if(res.data.code===0){
               this.$message.error(res.data.msg);
             }
@@ -377,5 +385,21 @@ export default {
 .wm_quest_list_body{
   position: relative;
   z-index: 1;
+}
+.wm_quest_cardlist{
+  position: relative;
+  z-index: 1;
+}
+.wm_quest_battlecard {
+    position: absolute;
+    font-size: 12px;
+    line-height: 12px;
+    padding: 3px;
+    background: rgba(255, 76, 76, 0.75);
+    color: #fff;
+    top: 34px;
+    left: 2px;
+    z-index: 1;
+    border-radius: 3px;
 }
 </style>

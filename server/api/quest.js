@@ -628,6 +628,7 @@ class quest {
             gc:this.userInfo.guessCardCount,
             questCount:this.userInfo.questCount,
             questTreasure:this.userInfo.questTreasure,
+            battleCard:this.userInfo.battleCard,
         },'任务接受成功！');
     }
     async changeQuest(){
@@ -673,6 +674,7 @@ class quest {
             gc:this.userInfo.guessCardCount,
             questCount:this.userInfo.questCount,
             questTreasure:this.userInfo.questTreasure,
+            battleCard:this.userInfo.battleCard,
         },'任务放弃成功！');
     }
     async complete(){
@@ -823,6 +825,7 @@ class quest {
             gc:this.userInfo.guessCardCount,
             questCount:this.userInfo.questCount,
             questTreasure:this.userInfo.questTreasure,
+            battleCard:this.userInfo.battleCard,
         },`任务完成！获得了${historyMsg}。`);
         // 写入历史记录
         const timeNow = Math.round(new Date().getTime()/1000);
@@ -971,6 +974,7 @@ module.exports = async function(req, res, next){
             gc:goQuest.userInfo.guessCardCount,
             questCount:goQuest.userInfo.questCount,
             questTreasure:goQuest.userInfo.questTreasure,
+            battleCard:goQuest.userInfo.battleCard,
         },'查询任务列表成功！');
     }else if(type==="accept"){
         await goQuest.acceptQuest();
