@@ -274,6 +274,7 @@ export default {
                 message: res.data.msg,
                 type: 'success'
               });
+              this.updateUserinfo();
             }else if(res.data.code===0){
               this.$message.error(res.data.msg);
             }
