@@ -356,7 +356,7 @@ export default {
   border-top: 1px dashed #cecece;
 }
 .wm_quest_should_list{
-  height: 75px;
+  min-height: 75px;
 }
 .wm_quest_should_card{
   height: 55px;
