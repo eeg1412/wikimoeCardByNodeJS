@@ -10,7 +10,7 @@ exports.findQuestOne = async function (parmas) {
     return await questModel.findOne(parmas).populate('should.card');
 }
 exports.findQuestMany = async function (parmas,getInfo = '-__v') {
-    return await questModel.find(parmas,getInfo).populate('should.card');
+    return await questModel.find(parmas,getInfo).populate('should.card').sort({lock:-1});
 }
 exports.findQuest = async function (pageSize_,page_,parmas,sort,getInfo = '-__v') {
     // document查询

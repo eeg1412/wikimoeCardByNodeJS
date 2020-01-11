@@ -70,7 +70,7 @@
                 <span v-else>已接受，任务不会过期。</span>
               </div>
               <div class="fr">
-                <el-button size="mini" type="info" @click="changeQuest(item._id)">放弃</el-button><el-button size="mini" type="primary" @click="acceptQuest(item._id)" v-if="!item.lock">接受</el-button><el-button size="mini" type="primary" @click="complete(item._id)" v-else>完成</el-button>
+                <el-button size="mini" type="info" @click="changeQuest(item._id)">{{item.lock?"放弃":"更换"}}</el-button><el-button size="mini" type="primary" @click="acceptQuest(item._id)" v-if="!item.lock" plain>接受</el-button><el-button size="mini" type="primary" @click="complete(item._id)" v-else>完成</el-button>
               </div>
             </div>
           </el-card>
@@ -249,7 +249,7 @@ export default {
         });
     },
     changeQuest(id){
-      this.$confirm('确定要放弃任务吗？将会花费150颗星星！', '提示', {
+      this.$confirm('确定要放弃或更换任务吗？将会花费150颗星星！', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         lockScroll:false,

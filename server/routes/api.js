@@ -59,6 +59,7 @@ var adminApiRenameCardPackage = require('../api/admin/cardPackage');
 var adminApiCreatCard = require('../api/admin/creatcard');
 var adminApiSearchCard = require('../api/admin/searchCard');
 var adminApiEditCard = require('../api/admin/cardEdit');
+var adminApiSetRobotRate = require('../api/admin/setRobotRate');
 
 
 /* GET users listing. */
@@ -124,5 +125,6 @@ router.post('/admin/renamecardpackage', adminApiRenameCardPackage);
 router.post('/admin/creatcard', adminApiCreatCard);
 router.post('/admin/searchcard', adminApiSearchCard);
 router.post('/admin/editcard', adminApiEditCard);
+router.post('/admin/setrobotrate', adminApiSetRobotRate);
 
 module.exports = router;

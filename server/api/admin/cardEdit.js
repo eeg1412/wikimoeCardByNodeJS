@@ -22,7 +22,7 @@ module.exports = async function(req, res, next){
     const id_ = req.body.id;
 
     console.info(
-        chalk.green('开始审核卡牌,IP为：'+IP)
+        chalk.green('开始编辑卡牌,IP为：'+IP)
     )
     if(!token){
         res.send({
@@ -128,7 +128,9 @@ module.exports = async function(req, res, next){
         );
         return false;
     });
-    chalk.green('写入卡牌数据成功,IP为：'+IP)
+    console.info(
+        chalk.green('写入卡牌数据成功,IP为：'+IP)
+    );
     // 更改求卡数据
     await wantCardData.updatatWantMany({cardId:cardMongoData.cardId},wantDataParmas).catch ((err)=>{
         res.send({
@@ -140,7 +142,9 @@ module.exports = async function(req, res, next){
         );
         throw err;
     });
-    chalk.green('更改求卡数据成功,IP为：'+IP)
+    console.info(
+        chalk.green('更改求卡数据成功,IP为：'+IP)
+    );
     // 更改市场数据
     await marketData.updataMarketMany({cardId:cardMongoData.cardId},marketDataParmas).catch ((err)=>{
         res.send({
@@ -152,7 +156,9 @@ module.exports = async function(req, res, next){
         );
         throw err;
     });
-    chalk.green('更改市场数据成功,IP为：'+IP)
+    console.info(
+        chalk.green('更改市场数据成功,IP为：'+IP)
+    );
     // 如果更改了立绘
     if(editPic){
         let jpgReg = new RegExp("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/");

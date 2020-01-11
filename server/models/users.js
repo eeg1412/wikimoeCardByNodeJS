@@ -32,6 +32,7 @@ var users = new Schema({
   token:{type: String, default: ''},
   ip:String,
   robotRate:{type: Number, default: 0},
+  setRobotRate:{type: Number, default: 0},
   robotCheckTime:{type: SchemaTypes.Long, default: 0},
   robotCheck:{type: Boolean, default: false},
   captchaLock:{type: Boolean, default: false},

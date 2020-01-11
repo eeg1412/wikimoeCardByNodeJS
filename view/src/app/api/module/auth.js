@@ -168,5 +168,8 @@ export default function (api) {
     adminEditcard(data){
       return api.post('admin/editcard',data)
     },
+    adminSetRobotRate(data){
+      return api.post('admin/setrobotrate',data)
+    },
   }
 }
