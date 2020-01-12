@@ -377,12 +377,11 @@ module.exports = async function(req, res, next){
                 $inc:getItemDataBase
             }
             await itemDatabase.findOneAndUpdate({email:email},update_).catch ((err)=>{
-                socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
                 console.error(
                     chalk.red('数据库更新错误！')
                 );
                 throw err;
-            })
+            });
             // 用户猜卡数据更新
             await userGuessCardData.updataUserGuessCardOne({_id:id},{geted:true}).catch((err)=>{
                 console.error(

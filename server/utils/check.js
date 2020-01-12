@@ -280,6 +280,11 @@ exports.creatRankFile = async ()=>{
     sortData = {guessCardCount:-1};
     let guessCardCount_ =  await userData.findUserInPage(parmas,pageSize_,page_,getParams,sortData);
     newRankData['guessCardCount'] = guessCardCount_['data'];
+    // 查询任务数量
+    getParams = '-_id questCount md5 nickName';
+    sortData = {questCount:-1};
+    let questCount_ =  await userData.findUserInPage(parmas,pageSize_,page_,getParams,sortData);
+    newRankData['questCount'] = questCount_['data'];
     // 更新文件
     let rankData_ = JSON.stringify(newRankData);
     fs.writeFileSync('./config/cache/rank.json', rankData_, 'utf8');

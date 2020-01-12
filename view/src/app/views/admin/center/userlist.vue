@@ -80,6 +80,14 @@
       </template>
     </el-table-column>
     <el-table-column
+      sortable="custom"
+      prop="setRobotRate"
+      label="手动可疑度">
+      <template slot-scope="scope">
+        <span>{{scope.row.setRobotRate}}</span>
+      </template>
+    </el-table-column>
+    <el-table-column
       width="180px"
       label="注册时间">
       <template slot-scope="scope">
@@ -87,12 +95,15 @@
       </template>
     </el-table-column>
     <el-table-column
+      width="140px"
       prop="ip"
       label="IP">
     </el-table-column>
     <el-table-column
+      width="180px"
       label="操作">
       <template slot-scope="scope">
+        <el-button type="text" size="small" @click="setRobotRate(scope.row._id)">增加可疑度</el-button>
         <el-button type="text" size="small" @click="banEmail(scope.row.ban,scope.row._id)">{{scope.row.ban?'解封':'封号'}}</el-button>
         <el-button type="text" size="small" @click="watchCard(scope.row.md5)">卡牌</el-button>
       </template>
@@ -199,6 +210,44 @@ export default {
         }else{
           this.$message.error(res.data.msg);
         }
+      });
+    },
+    setRobotRate(id){
+      this.$prompt('请设置可疑度', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        lockScroll:false,
+        beforeClose: (action, instance, done) => {
+          if(action==="confirm"){
+            const value = instance.inputValue;
+            if(value===null||value===""){
+              this.$message.error("请设置可疑度！");
+              return false;
+            }
+            let params = {
+              token:this.token,
+              id:id,
+              rate:value
+            }
+            authApi.adminSetRobotRate(params).then(res => {
+              console.log(res);
+              if(res.data.code==1){
+                this.$message({
+                  message: res.data.msg,
+                  type: 'success'
+                });
+                this.getuserInfo(this.searchForm);
+                done();
+              }else{
+                this.$message.error(res.data.msg);
+              }
+            });
+          }else{
+            done();
+          }
+        }
+      }).then(({ value }) => {
+      }).catch(() => {      
       });
     },
     banEmail(ban,id){

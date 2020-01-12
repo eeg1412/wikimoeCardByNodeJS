@@ -30,6 +30,7 @@ var apiSearchCardLevel = require('../api/searchCardLevel');
 var apiSearchUserItem = require('../api/searchUserItem');
 var apiUpgradecard = require('../api/upgradecard');
 var apiDailyGetItem = require('../api/dailyGetItem');
+var apiDailyGetItemMenu = require('../api/dailyGetItemMenu');
 var apiCardLevelChange = require('../api/cardLevelChange');
 var apiSearchBattleLogs = require('../api/searchBattleLogs');
 var apiSearchCardPackage = require('../api/searchCardPackage');
@@ -40,6 +41,7 @@ var apiSearchGuessCard = require('../api/searchGuessCard');
 var apiUserGuessCard = require('../api/userGuessCard');
 var apiUserPost = require('../api/post');
 var apiRobotCheck = require('../api/robotCheck');
+var apiQuest = require('../api/quest');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -57,6 +59,7 @@ var adminApiRenameCardPackage = require('../api/admin/cardPackage');
 var adminApiCreatCard = require('../api/admin/creatcard');
 var adminApiSearchCard = require('../api/admin/searchCard');
 var adminApiEditCard = require('../api/admin/cardEdit');
+var adminApiSetRobotRate = require('../api/admin/setRobotRate');
 
 
 /* GET users listing. */
@@ -93,6 +96,7 @@ router.post('/searchcardlevel', apiSearchCardLevel);
 router.post('/searchuseritem', apiSearchUserItem);
 router.post('/upgradecard', apiUpgradecard);
 router.post('/dailygetitem', apiDailyGetItem);
+router.post('/dailygetitemmenu', apiDailyGetItemMenu);
 router.post('/cardlevelchange', apiCardLevelChange);
 router.post('/searchbattlelogs', apiSearchBattleLogs);
 router.post('/uploadcard', apiUploadcard);
@@ -103,6 +107,7 @@ router.post('/searchguesscard', apiSearchGuessCard);
 router.post('/userguesscard', apiUserGuessCard);
 router.post('/userpost', apiUserPost);
 router.post('/robotcheck', apiRobotCheck);
+router.post('/quest', apiQuest);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);
@@ -120,5 +125,6 @@ router.post('/admin/renamecardpackage', adminApiRenameCardPackage);
 router.post('/admin/creatcard', adminApiCreatCard);
 router.post('/admin/searchcard', adminApiSearchCard);
 router.post('/admin/editcard', adminApiEditCard);
+router.post('/admin/setrobotrate', adminApiSetRobotRate);
 
 module.exports = router;

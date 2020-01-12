@@ -9,6 +9,18 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 一款由玩家自由DIY卡牌的卡牌收集游戏。
 
 ### 特色系统
+#### 日常抽卡
+![](https://github.com/eeg1412/wikimoeCardByNodeJS/wiki/images/home/2.gif)
+#### 玩家DIY自制卡牌
+![](https://github.com/eeg1412/wikimoeCardByNodeJS/wiki/images/home/1.gif)
+#### 排位对战
+![](https://github.com/eeg1412/wikimoeCardByNodeJS/wiki/images/home/3.gif)
+#### 商店抽卡
+![](https://github.com/eeg1412/wikimoeCardByNodeJS/wiki/images/home/4.gif)
+#### 矿场挖矿
+![](https://github.com/eeg1412/wikimoeCardByNodeJS/wiki/images/home/5.gif)
+
+### 所有系统
 
 - [x] 日常抽卡
 - [x] 每日签到
@@ -19,6 +31,7 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 - [x] 等级转换
 - [x] 商店抽卡
 - [x] 整点猜卡
+- [x] 任务系统
 - [x] 卡牌自由交易市场
 - [x] 卡牌分解
 - [x] 卡牌图鉴鉴赏
@@ -48,6 +61,14 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 9. 浏览器进入/cardinstall，对网站进行配置。
 
 注意：必须是v1.2.1版本才能使用上面的升级方法！如果低于v1.2.1的话请先更新至该版本！
+
+### 修复卡牌2055的名称问题
+
+ 1. 更新前请务必备份原先的文件和数据库！！！！
+ 2. 确保当前版本是2.3.1。
+ 3. 如果当前路径不在服务端则`cd server`切换至服务端。
+ 4. `npm install`更新依赖。
+ 5. `npm run fixcard2055`对卡牌2055进行更改。
 
 ### 使用方法
 

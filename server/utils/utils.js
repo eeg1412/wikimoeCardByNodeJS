@@ -44,7 +44,7 @@ exports.RobotCheck = async (userData_) =>{
     if(userData_.robotCheck){
         return true;
     }
-    let baseRobotCheck = 10+userData_.robotRate;
+    let baseRobotCheck = 10+userData_.robotRate+userData_.setRobotRate;
     let radomCheck = this.randomNum(1, 100);
     // console.log(radomCheck,baseRobotCheck)
     if(baseRobotCheck>radomCheck){

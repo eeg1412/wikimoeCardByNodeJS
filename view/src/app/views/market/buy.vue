@@ -68,8 +68,8 @@
       </transition>
       <transition name="el-fade-in-linear">
         <div class="wm_mycard_list" v-if="cardList.length>0">
-            <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in cardList" v-bind:key="index+1" @click="buyCard(item)">
-                <div class="wm_getcard_img_box">
+            <div class="wm_market_mycard_item type_mobile" v-for="(item,index) in cardList" v-bind:key="index+1">
+                <div class="wm_getcard_img_box" @click="buyCard(item)">
                   <div class="wm_getcard_img_checked" v-if="haveCardCheck(item.cardId)>0"><i class="el-icon-check"></i></div>
                   <img class="wm_getcard_img" :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'">
                 </div>
@@ -177,7 +177,7 @@ export default {
       });
     },
     wantCard(){
-      let params = {
+        let params = {
             token:this.token,
             price:this.price,
             captcha:this.captcha,
@@ -370,5 +370,9 @@ export default {
 }
 .wm_market_buy_search_slot_input{
   width: 240px;
+}
+.wm_market_buy_button_group{
+  display: block;
+  margin-top: 5px;
 }
 </style>

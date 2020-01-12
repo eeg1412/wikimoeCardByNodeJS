@@ -1,7 +1,7 @@
 <template>
     <div class="common_body">
         <userTop ref="userTop" />
-        <h5 class="common_title type_shop">设置出战卡牌</h5>
+        <h5 class="common_title type_shop">设置出战卡牌 <el-tooltip class="item" effect="dark" content="查看配卡帮助" placement="top"><i class="el-icon-collection wm_set_pointer" @click="openTips"></i></el-tooltip></h5>
         <div id="battlecardTable">
             <table class="wm_user_info_table type_battlecard">
             <thead>

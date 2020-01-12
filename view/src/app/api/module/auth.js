@@ -84,6 +84,9 @@ export default function (api) {
     dailygetitem(data){
       return api.post('dailygetitem',data)
     },
+    dailygetitemmenu(data){
+      return api.post('dailygetitemmenu',data)
+    },
     cardlevelchange(data){
       return api.post('cardlevelchange',data)
     },
@@ -113,6 +116,9 @@ export default function (api) {
     },
     robotcheck(data){
       return api.post('robotcheck',data)
+    },
+    quest(data){
+      return api.post('quest',data)
     },
     admincheckinstall(){
       return api.get('admin/checkinstall')
@@ -161,6 +167,9 @@ export default function (api) {
     },
     adminEditcard(data){
       return api.post('admin/editcard',data)
+    },
+    adminSetRobotRate(data){
+      return api.post('admin/setrobotrate',data)
     },
   }
 }

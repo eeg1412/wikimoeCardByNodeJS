@@ -185,13 +185,19 @@
               >我在<span class="wm_card_get_list_card_link" @click="goMenu('/creatcard')">卡牌工坊</span>制作的{{item.data.star}}星卡牌——出自作品《{{item.data.title}}》的<span class="wm_card_get_list_card_link" @click="openImg($wikimoecard.url+item.data.packageId+'/'+item.data.cardId+'.jpg')">{{item.data.name}}</span>，通过了审核，获得了100颗星星的奖励！应该过不了多久大家就能抽到我制作的卡牌了吧！
               </span>
               <span v-else-if="item.type=='guesscard'"
-              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/star/guessCard/guess')">星星猜卡</span>中猜了<span class="wm_card_get_list_card_link" @click="openCardList(item.data.card)">这6张卡牌</span>，希望运气爆棚中个大奖，大家也快来一起猜卡吧，一夜暴富就在这一下！
+              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/star/guessCard/guess')">星星猜卡</span>中，猜了<span class="wm_card_get_list_card_link" @click="openCardList(item.data.card)">这6张卡牌</span>，希望运气爆棚中个大奖，大家也快来一起猜卡吧，一夜暴富就在这一下！
               </span>
               <span v-else-if="item.type=='guesscardNoCard'"
               >我虽然在<span class="wm_card_get_list_card_link" @click="goMenu('/star/guessCard/guess')">星星猜卡</span>中没有猜中卡牌，但是我也获得了{{item.data.itemName}}×2，希望下次能中一个大奖！
               </span>
               <span v-else-if="item.type=='guesscardHaveCard'"
               >我在<span class="wm_card_get_list_card_link" @click="goMenu('/star/guessCard/guess')">星星猜卡</span>中猜中了{{item.data.attackCount}}张卡牌，获得了<span class="wm_card_get_list_card_link" @click="openCardList(item.data.attackCardInfoArr)">猜中的卡牌</span>和{{item.data.getStar}}颗星星！
+              </span>
+              <span v-else-if="item.type=='quest'"
+              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/quest')">任务系统</span>中完成了任务【{{item.data.title}}】，获得了{{item.data.msg}}。
+              </span>
+              <span v-else-if="item.type=='treasure'"
+              >我在<span class="wm_card_get_list_card_link" @click="goMenu('/quest')">任务系统</span>中完成了30次任务，{{item.data.msg}}。再接再厉完成更多任务获得更多的奖励！
               </span>
             </p>
           </div>
