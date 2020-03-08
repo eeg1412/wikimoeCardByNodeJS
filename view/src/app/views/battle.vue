@@ -532,7 +532,7 @@ export default {
                     if(this.battleData.win===0){
                         battleText = '您'+this.winCheck(this.battleData.win)+this.battleData.EmName+'，'+'失去了'+Math.abs(this.battleData.getScore)+'点竞技点。';
                     }
-                    this.$alert(battleText+(this.battleData.battleOverChance?'（由于已经没有对战机会了，此次战斗不结算竞技点和经验值。）':''), '战斗结果').then(() => {
+                    this.$alert(battleText+(this.battleData.battleOverChance?'（由于已经没有对战机会了，此次战斗不结算竞技点和经验值。）':''), '战斗结果',{lockScroll:false}).then(() => {
                         this.gameover();
                     }).catch(action => {
                         this.gameover();

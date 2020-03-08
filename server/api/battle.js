@@ -480,7 +480,7 @@ module.exports = async function(req, res, next){
         if(MyCardIndexCount<200&&!advanced){
             EmCardIndexCount = MyCardIndexCount+utils.randomNum(-550,0);
         }else{
-            EmCardIndexCount = MyCardIndexCount+utils.randomNum(-350,300);
+            EmCardIndexCount = MyCardIndexCount+utils.randomNum(-400,300);
         }
         // 老版进阶加成：EmCardIndexCount = MyCardIndexCount+utils.randomNum(-125,300);
         //给AI设置等级

@@ -1,6 +1,6 @@
 {
   "name": "wikimoecard",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "private": true,
   "scripts": {
     "start": "nodemon --delay 60 -e pem,key --watch bin ./bin/www",
