@@ -43,7 +43,7 @@
                   <div v-for="(items,indexs) in item.should" v-bind:key="indexs" class="dib ml5 mr5 tc wm_set_pointer wm_quest_cardlist" @click="openCardInfo(items.card)">
                     <div class="wm_quest_battlecard" v-if="battleCard.indexOf(items.card.cardId)!==-1">战</div>
                     <img class="wm_quest_should_card" :src="$wikimoecard.url+items.card.packageId+'/'+items.card.cardId+'.jpg'" />
-                    <div>{{card[items.card.cardId] | cardCount}}/{{items.number}}</div>
+                    <div><span :class="{'cRed':card[items.card.cardId]===0,'cOrange':(card[items.card.cardId]-1<items.number&&card[items.card.cardId]!==0),'cGreen1A7':card[items.card.cardId]-1>=items.number}">{{card[items.card.cardId] | cardCount}}</span>/{{items.number}}</div>
                   </div>
                 </div>
                 <div v-else>
@@ -152,7 +152,10 @@ export default {
       let cc = c;
       cc = cc - 1;
       if(cc<0){
-        cc = 0;
+        cc = '无';
+      }
+      if(cc>99){
+        cc = '99+';
       }
       return cc;
     }

@@ -1,5 +1,5 @@
 <template>
-<div>
+<div class="wm_admin_body">
   <el-container class="wmcard_admin_center">
     <el-header class="wmcard_admin_header"><router-link to="/cardadmin/center" class="wmcard_admin_header_link">维基萌抽卡管理后台</router-link></el-header>
 

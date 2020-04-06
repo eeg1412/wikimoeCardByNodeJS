@@ -857,22 +857,22 @@ class quest {
             {
                 type:"item",
                 itemId:300,
-                number:1
+                number:10
             },
             {
                 type:"item",
                 itemId:402,
-                number:2
+                number:20
             },
             {
                 type:"item",
                 itemId:106,
-                number:2
+                number:20
             },
             {
                 type:"item",
                 itemId:105,
-                number:6
+                number:60
             }
         ];
         const thisTreasure = treasureList[utils.randomNum(0,treasureList.length-1)];
