@@ -14,7 +14,8 @@ import live2d from './components/live2d.vue';
 export default {
   data() {
     return {
-      scrollTop:0
+      scrollTop:0,
+      scrollChangeFlag:true,
     }
   },
   methods: {
@@ -22,12 +23,19 @@ export default {
       this.$refs.l2d.showMessage(text);
     },
     bgChange(){
-      this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      if(this.scrollChangeFlag){
+        console.log("change");
+        this.scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+        this.scrollChangeFlag = false;
+        setTimeout(()=>{
+          this.scrollChangeFlag = true;
+        },100);
+      }
     }
   },
   mounted() {
     document.title = window.$siteConfig.browserTitle;
-    window.addEventListener('scroll', this.bgChange)
+    window.addEventListener('scroll', this.bgChange);
   },
   components: {
     live2d
