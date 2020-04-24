@@ -2,6 +2,7 @@
 
 # compiled output
 /view/dist
+/view3/dist
 /view/tmp
 /view/out-tsc
 /view/public

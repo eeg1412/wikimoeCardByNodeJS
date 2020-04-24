@@ -1,0 +1,29 @@
+.wmcard_admin_center{
+  min-height: 100vh;
+}
+.wmcard_admin_center .el-menu{
+  min-height: 100%;
+}
+.wmcard_admin_header{
+  height: 60px;
+  line-height: 60px;
+  color: #fff;
+  background-color: #000;
+}
+.wmcard_admin_header_link{
+  color: #fff;
+}
+.wmcard_admincenter_common_right_body{
+  min-width: 600px;
+}
+.wmcard_user_page{
+  text-align: center;
+  padding: 20px 0;
+}
+/* 新闻 */
+.wmcard_admincenter_news_text{
+  white-space:nowrap; 
+	overflow:hidden; 
+  text-overflow:ellipsis;
+  max-width: 250px;
+}
