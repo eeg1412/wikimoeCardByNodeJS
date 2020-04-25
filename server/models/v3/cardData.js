@@ -9,7 +9,10 @@ var cardData = new Schema({
     cry: Number,
     title: String,
     name: String,
-    packageId: String,
+    packageId: {
+        type: Schema.Types.ObjectId,
+        ref: 'v3GameCardPackages'
+    },
     auther: String,
     md5: String,
     disabled: Boolean,

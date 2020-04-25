@@ -1,12 +1,13 @@
-var utils = require('../../../utils/utils');
-var adminUtils = require('../../../utils/admin/adminUtils');
-var adminUtilsDatabase = require('../../../utils/database/adminAccount');
-var cardPackageDatabase = require('../../../utils/database/cardPackage');
-var cardDataDatabase = require('../../../utils/database/cardData');
-var cardData = require('../../../data/cardData.json');
-var chalk = require('chalk');
-var validator = require('validator');
-var md5 = require('md5-node');
+const utils = require('../../../utils/utils');
+const adminUtils = require('../../../utils/admin/adminUtils');
+const adminUtilsDatabase = require('../../../utils/database/adminAccount');
+const cardPackageDatabase = require('../../../utils/database/cardPackage');
+const cardDataDatabase = require('../../../utils/database/cardData');
+const cardData = require('../../../data/cardData.json');
+const chalk = require('chalk');
+const validator = require('validator');
+const fs = require('fs');
+const md5 = require('md5-node');
 
 module.exports = async function (req, res, next) {
     let IP = utils.getUserIp(req);
@@ -289,6 +290,33 @@ module.exports = async function (req, res, next) {
             };
             adminUtilsDatabase.saveAdminAccount(adminParams);
             adminUtils.writeGlobalOpt(opt);
+            // 创建初始卡包
+            let packageParams = {
+                name: '维基萌卡包',
+                open: true,
+                guessOpen: true,
+                starCoinOpen: true,
+                starShopOpen: true,
+                oneStar: 0,
+                twoStar: 0,
+                threeStar: 0,
+                fourStar: 0,
+                fiveStar: 0,
+                sixStar: 0,
+                allCardCount: 0,
+                disabledCardCount: 0,
+            }
+            const packageData = await cardPackageDatabase.saveCardPackage(packageParams).catch((err) => {
+                res.send({
+                    code: 0,
+                    msg: '内部错误请联系管理员！'
+                });
+                console.error(
+                    chalk.red('数据库更新错误！')
+                );
+                throw err;
+            })
+            const packageId = packageData._id;
             // 创建初始卡牌
             // 获取卡牌数据
             let cardData_ = cardData['cardData']
@@ -298,6 +326,7 @@ module.exports = async function (req, res, next) {
             let four = 0;
             let five = 0;
             let six = 0;
+            let allCardCount = 0;
             for (var index in cardData_) {
                 let thisCard = cardData_[index]
                 let cardDataParams = {
@@ -308,10 +337,11 @@ module.exports = async function (req, res, next) {
                     cry: thisCard.cry,
                     title: thisCard.title,
                     name: thisCard.name,
-                    packageId: '0',
+                    packageId: packageId,
                     auther: '广树',
                     md5: 'fbb31d99a24cf9a56c48b44dd0797d22'
                 }
+                allCardCount++;
                 if (thisCard.star == 1) {
                     one++
                 } else if (thisCard.star == 2) {
@@ -336,27 +366,20 @@ module.exports = async function (req, res, next) {
                     throw err;
                 })
                 const cardId = cardData._id;
-
+                fs.copyFileSync(`./public/card/0/${Number(index)}.jpg`, `./public/card/cardIMG/${cardId}.jpg`);
                 console.info(
                     chalk.green('写入卡牌：' + cardId + '成功！')
                 );
             }
-            // 创建初始卡包
-            let packageParams = {
-                name: '维基萌卡包',
-                packageId: '0',
-                open: true,
-                guessOpen: true,
-                starCoinOpen: true,
-                starShopOpen: true,
+            await cardPackageDatabase.updataCardPackage({ _id: packageId }, {
                 oneStar: one,
                 twoStar: two,
                 threeStar: three,
                 fourStar: four,
                 fiveStar: five,
                 sixStar: six,
-            }
-            await cardPackageDatabase.saveCardPackage(packageParams).catch((err) => {
+                allCardCount: allCardCount,
+            }).catch((err) => {
                 res.send({
                     code: 0,
                     msg: '内部错误请联系管理员！'
@@ -366,6 +389,9 @@ module.exports = async function (req, res, next) {
                 );
                 throw err;
             })
+            console.info(
+                chalk.green('卡包更新成功！')
+            );
             res.send({
                 code: 1,
                 msg: '安装成功'
