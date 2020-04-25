@@ -26,6 +26,7 @@ function configData () {
 		useMarketCardCount: 30,//集齐多少种卡牌后能在市场交易
 		battleRankGetItem: 100,//竞技第一名额外获得五円玉的数量
 		battleRankGetItemDecay: 10,//后面陆续获得五円玉的衰减数量
+		deminingCount: 3,//最多同时存在多少矿场
 		donateImgUrl: '',//捐赠图片URL地址
 		creatCardExplainUrl: '',//制卡说明图片URL地址
 		QQunURL: '',//加群链接
@@ -33,6 +34,9 @@ function configData () {
 		browserTitle: '维基萌抽卡',//浏览器标签标题
 		siteTitle: '维基萌抽卡',//网站标题
 
+		// 以下设置请勿修改
+		MAX_INT32: 2147483647,
+		MAX_INTJS: 9007199254740991,
 	}
 	let myConfig = fs.readFileSync('./config/config.json', 'utf8');
 	myConfig = JSON.parse(myConfig);
