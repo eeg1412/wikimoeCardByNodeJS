@@ -7,7 +7,7 @@
 /view/out-tsc
 /view/public
 /server/public/userCreatCard/*
-
+/server/public/card/*
 /server/log/*/*.log
 
 # dependencies
