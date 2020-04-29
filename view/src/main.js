@@ -18,7 +18,7 @@ import VueClipboard from 'vue-clipboard2';
 import moment from 'moment';
 
 Vue.prototype.$wikimoecard = {
-  "url": "/card/"
+  "url": "/card/cardIMG/"
 };
 Vue.prototype.$wikimoecard.l2dMassage = function () {
   console.log('live2d还在加载...');

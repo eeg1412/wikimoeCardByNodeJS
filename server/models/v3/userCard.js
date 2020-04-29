@@ -9,9 +9,18 @@ var v3UserCards = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'v3GameCardDatas'
       },
-      cardLevel: Number,
-      cardEXP: Number,
-      creatDate: Date,
+      cardLevel: {
+        type: Number,
+        default: 0
+      },
+      cardEXP: {
+        type: Number,
+        default: 0
+      },
+      creatDate: {
+        type: Date,
+        default: Date.now
+      },
       getDate: {
         type: Date,
         default: Date.now

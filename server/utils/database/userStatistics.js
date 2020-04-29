@@ -1,7 +1,7 @@
 var userStatisticsModel = require('../../models/v3/userStatistics');
 exports.findOneAndUpdate = async function (conditions, update) {
     let options = {
-        upsert: true
+        upsert: false
     }
     return await userStatisticsModel.findOneAndUpdate(conditions, update, options);
 }
@@ -14,4 +14,10 @@ exports.save = async function (parmas) {
     var newData = new userStatisticsModel(parmas);
     // document保存
     return await newData.save()
+}
+
+exports.updateOne = async function (filters, parmas) {
+    // document查询
+    const dataRes = await userStatisticsModel.updateOne(filters, parmas);
+    return dataRes;
 }

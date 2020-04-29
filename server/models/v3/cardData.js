@@ -15,7 +15,7 @@ var cardData = new Schema({
     },
     auther: String,
     md5: String,
-    disabled: Boolean,
+    disabled: { type: Boolean, default: false },
 });
 
 module.exports = mongoose.model('v3GameCardDatas', cardData);

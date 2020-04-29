@@ -13,9 +13,9 @@
                        class="wm_card_package_sel"
                        slot="prepend">
               <el-option v-for="item in cardPackage.filter(item =>{return item.open})"
-                         :key="item.packageId"
+                         :key="item._id"
                          :label="item.name"
-                         :value="item.packageId">
+                         :value="item._id">
               </el-option>
             </el-select>
           </el-input>
@@ -209,7 +209,7 @@
                 </span>
                 <span v-else-if="item.type=='dailyCard'">我抽中了出自作品《{{item.data.title}}》的{{item.data.star}}星卡<span class="wm_card_get_list_card_link"
                         :class="item.data.star>=6?'wm_six_star_card_shake':''"
-                        @click="openImg($wikimoecard.url+item.data.packageId+'/'+item.data.cardId+'.jpg')">{{item.data.name}}</span>。
+                        @click="openImg($wikimoecard.url+item.data.cardId+'.jpg')">{{item.data.name}}</span>。
                   {{item.data.star|cardStarText}}
                 </span>
                 <span v-else-if="item.type=='demining'">我用{{item.data.pickaxe | pickaxeName}}在<span class="wm_card_get_list_card_link"
@@ -315,7 +315,7 @@ export default {
   data () {
     return {
       siteTitle: window.$siteConfig.siteTitle,
-      userPackage: '0',
+      userPackage: '加载中',
       userCardCountNow: {},
       seledCardPackage: '加载中',
       cardPackage: [],
@@ -410,13 +410,17 @@ export default {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           this.cardPackage = res.data.data;
-          let nowPackageId = localStorage.getItem("dailyCardPackageId") || '0';
-          this.seledCardPackage = '0';
-          for (let i = 0; i < this.cardPackage.length; i++) {
-            if (this.cardPackage[i].packageId === nowPackageId) {
-              if (this.cardPackage[i].open) {
-                this.seledCardPackage = nowPackageId;
-              }
+          // 每日抽卡的卡包
+          const dailyCardPackage = this.cardPackage.filter(item => { return item.open });
+          // 获取缓存中已选择的卡包
+          let nowPackageId = localStorage.getItem("dailyCardPackageId");
+          // 默认选择卡包
+          this.seledCardPackage = dailyCardPackage[0] ? dailyCardPackage[0]._id : "未设置卡包";
+          this.userPackage = this.cardPackage[0] ? this.cardPackage[0]._id : "未设置卡包";
+          // 判断是否有已选择的卡包
+          for (let i = 0; i < dailyCardPackage.length; i++) {
+            if (dailyCardPackage[i]._id === nowPackageId) {
+              this.seledCardPackage = nowPackageId;
               break;
             }
           }
@@ -429,7 +433,7 @@ export default {
     closeUserInfo () {
       this.userCard = null;
       this.userCardCache = null;
-      this.userPackage = '0';
+      this.userPackage = this.cardPackage[0] ? this.cardPackage[0]._id : "未设置卡包";
       this.userCardCountNow = {};
     },
     openCardList (cardArr) {
@@ -681,7 +685,10 @@ export default {
         } else if (res.data.code == 1) {
           this.rememberEmail();
           let resData = res.data;
-          let getCardSrcArr = [this.$wikimoecard.url + resData.packageId + '/' + resData.cardChoiseList[0] + '.jpg', this.$wikimoecard.url + resData.packageId + '/' + resData.cardChoiseList[1] + '.jpg', this.$wikimoecard.url + resData.packageId + '/' + resData.cardChoiseList[2] + '.jpg'];
+          let getCardSrcArr = [
+            this.$wikimoecard.url + resData.cardChoiseList[0] + '.jpg',
+            this.$wikimoecard.url + resData.cardChoiseList[1] + '.jpg',
+            this.$wikimoecard.url + resData.cardChoiseList[2] + '.jpg'];
           showLoading();
           new Promise((resolve, reject) => {
             loadingImg(getCardSrcArr, resolve, reject);

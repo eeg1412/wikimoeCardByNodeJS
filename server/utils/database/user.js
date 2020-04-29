@@ -6,9 +6,11 @@ exports.saveUser = async function (parmas) {
     // document保存
     return await users.save()
 }
-exports.findUser = async function (parmas) {
+exports.findUser = async function (parmas, populate = []) {
     // document查询
-    return await usersModel.findOne(parmas);
+    // [{ path: 'userCard' }, { path: 'statistics' }]
+
+    return await usersModel.findOne(parmas).populate(populate);
 }
 exports.findUserMany = async function (parmas, getInfo = '-__v', sortData = { '_id': -1 }) {
     return await usersModel.find(parmas, getInfo).sort(sortData);
@@ -20,12 +22,12 @@ exports.findUserNotAll = async function (parmas, notParams) {
 exports.updataUser = async function (filters, parmas, updateIndex) {
     // document查询
     let upRes = await usersModel.updateOne(filters, parmas);
-    if (updateIndex) {
-        let upCountRes = await utils.setCardCount(filters.email);
-        if (!upCountRes) {
-            throw '更新获取卡牌收集率失败';
-        }
-    }
+    // if (updateIndex) {
+    //     let upCountRes = await utils.setCardCount(filters.email);
+    //     if (!upCountRes) {
+    //         throw '更新获取卡牌收集率失败';
+    //     }
+    // }
     return upRes
 }
 exports.updataUserMany = async function (filters, parmas) {
