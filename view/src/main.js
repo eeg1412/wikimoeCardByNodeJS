@@ -13,19 +13,22 @@ import App from '@/App'
 import './assets/styles/index.css';
 import './assets/styles/card.css';
 import SequentialEntrance from 'vue-sequential-entrance'
-import 'vue-sequential-entrance/vue-sequential-entrance.css'
-import VueClipboard from 'vue-clipboard2'
+import 'vue-sequential-entrance/vue-sequential-entrance.css';
+import VueClipboard from 'vue-clipboard2';
+import moment from 'moment';
 
 Vue.prototype.$wikimoecard = {
-  "url":"/card/"
+  "url": "/card/"
 };
-Vue.prototype.$wikimoecard.l2dMassage = function(){
+Vue.prototype.$wikimoecard.l2dMassage = function () {
   console.log('live2d还在加载...');
 };
 window.$l2dMotion = {};
-Vue.prototype.$wikimoecard.l2dMassageClose = function(){
+Vue.prototype.$wikimoecard.l2dMassageClose = function () {
   console.log('live2d还在加载...');
 };
+moment.locale('zh-cn');
+Vue.prototype.$moment = moment;
 
 Vue.use(VueClipboard)
 Vue.use(SequentialEntrance);

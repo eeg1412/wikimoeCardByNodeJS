@@ -21,6 +21,7 @@
     "element-ui": "^2.13.0",
     "hooper": "^0.3.4",
     "js-md5": "^0.7.3",
+    "moment": "^2.24.0",
     "pixi.js": "^5.0.3",
     "socket.io-client": "^2.2.0",
     "v-charts": "^1.19.0",
