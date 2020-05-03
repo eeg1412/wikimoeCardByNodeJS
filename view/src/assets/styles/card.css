@@ -442,6 +442,18 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
     padding: 5px;
     width: 33.33333%;
 }
+.watch_img{
+  position: relative;
+  z-index: 1;
+}
+.wm_watch_isSparkle{
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
 .watch_img img{
     max-width: 100%;
 }

@@ -127,9 +127,9 @@
                        class="wm_card_package_sel"
                        @change="getUserCard(nowUserInfo.md5,false)">
               <el-option v-for="item in cardPackage"
-                         :key="item.packageId"
+                         :key="item._id"
                          :label="item.name"
-                         :value="item.packageId">
+                         :value="item._id">
               </el-option>
             </el-select>
           </div>
@@ -140,19 +140,21 @@
           <sequential-entrance delay="100"
                                tag="div">
             <div v-for="(item,index) in userCard"
-                 v-bind:key="index+1"
+                 v-bind:key="item.cardData._id + index"
                  class="wm_getcard_box">
-              <img class="wm_getcard_img"
-                   :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'"
-                   @click="openImg($wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg')">
-              <br>
-              <span class="wm_card_nums">×{{userPackageNow[item.cardId]}}</span>
+              <div>
+                <cardImg :src="$wikimoecard.url+item.cardData._id+'.jpg'"
+                         :isSparkle="item.isSparkle>0"
+                         @cardClick="openImg"></cardImg>
+              </div>
+
+              <span class="wm_card_nums">×{{item.count}}</span>
             </div>
           </sequential-entrance>
           <el-pagination small
                          layout="prev, pager, next"
                          :total="cardTotle"
-                         @current-change="cardPageChange"
+                         @current-change="onCardPageChange"
                          :current-page.sync="cardPage"
                          :page-size="20"
                          class="my_card_page">
@@ -310,6 +312,7 @@ import menuView from '../components/menu.vue';
 import topNews from '../components/topNews.vue';
 import userTop from '../components/topUserInfo.vue';
 import rank from '../components/rank.vue';
+import cardImg from '../components/cardImg.vue';
 import md5 from 'js-md5';
 export default {
   data () {
@@ -333,7 +336,7 @@ export default {
       seled: false,//已经翻过了
       restartDisabled: true,//重启按钮是否可用
       userCard: null,//用户当前页卡牌
-      userCardCache: null,//用户卡牌
+      userCardCache: [],//用户卡牌
       userCardCount: {},
       cardPage: 1,//当前卡牌页码
       cardTotle: 0,//一共多少
@@ -353,7 +356,8 @@ export default {
     menuView,
     topNews,
     userTop,
-    rank
+    rank,
+    cardImg
   },
   filters: {
     pickaxeName (value) {
@@ -432,7 +436,8 @@ export default {
     },
     closeUserInfo () {
       this.userCard = null;
-      this.userCardCache = null;
+      this.userCardCache = [];
+      this.cardPage = 1;
       this.userPackage = this.cardPackage[0] ? this.cardPackage[0]._id : "未设置卡包";
       this.userCardCountNow = {};
     },
@@ -534,8 +539,12 @@ export default {
         }
       });
     },
-    openImg (imgsrc) {
-      this.$alert('<div class="watch_img"><img src="' + imgsrc + '" /></div>', '查看卡牌', {
+    openImg (imgsrc, isSparkle) {
+      this.$alert(
+        `<div class="watch_img">
+          <img src="${imgsrc}" />
+          ${isSparkle ? `<img class="wm_watch_isSparkle" src="/static/img/isSparkle.png">` : ""}
+        </div>`, '查看卡牌', {
         dangerouslyUseHTMLString: true,
         lockScroll: false
       });
@@ -543,11 +552,11 @@ export default {
     logPageChange (val) {
       this.getLog(val);
     },
-    cardPageChange (val, noGoTop) {
-      let userCard_ = this.userCardCache.slice((val - 1) * 20, val * 20);
+    cardPageChange (val = null, noGoTop) {
+      let userCard_ = this.userCardCache;
       let userCardSrc = [];
       for (let i = 0; i < userCard_.length; i++) {
-        let userCardSrcItem = this.$wikimoecard.url + this.userPackage + '/' + userCard_[i].cardId + '.jpg';
+        let userCardSrcItem = this.$wikimoecard.url + userCard_[i].cardData._id + '.jpg';
         userCardSrc.push(userCardSrcItem);
       }
       showLoading();
@@ -566,7 +575,7 @@ export default {
             scrollToTop(topSet + topNewsHeight, 200);
           }
           hideLoading();
-          this.userPackageNow = { ...this.userCardCount };
+          // this.userPackageNow = { ...this.userCardCount };
           this.userCard = userCard_;
         }, 250);
       }).catch((reason) => {
@@ -583,30 +592,38 @@ export default {
         this.getUserCard(md5);
       }, 0)
     },
+    // 用户卡牌页码改变
+    onCardPageChange () {
+      this.getUserCard(this.nowUserInfo.md5);
+    },
     getUserCard (md5, noGoTop) {
       if (!md5Check(md5)) {
         this.$message.error('用户信息有误！');
         return false;
       }
-      authApi.searchcard({ md5: md5, packageId: this.userPackage }).then(res => {
+      authApi.searchcard({
+        md5: md5,
+        packageId: this.userPackage,
+        page: this.cardPage
+      }).then(res => {
         console.log(res);
         if (res.data.code == 0) {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           let resData = res.data;
-          if (resData.cardIndexCount > 0) {
+          if (resData.cardCount > 0) {
             this.userCardCache = res.data.card || [];
-            this.userCardCache = this.userCardCache.sort((a, b) => {
-              if (b.star != a.star) {
-                return b.star - a.star;
-              } else {
-                return b.cardId - a.cardId;
-              }
-            })
-            this.cardPage = 1;
-            this.cardTotle = this.userCardCache.length;
-            this.cardPageChange(1, noGoTop);
-            this.userCardCount = res.data.cardCount;
+            // this.userCardCache = this.userCardCache.sort((a, b) => {
+            //   if (b.star != a.star) {
+            //     return b.star - a.star;
+            //   } else {
+            //     return b.cardId - a.cardId;
+            //   }
+            // })
+
+            this.cardTotle = resData.cardCount;
+            this.cardPageChange(null, noGoTop);
+            // this.userCardCount = res.data.cardCount;
             this.nowUserInfo = {
               tx: 'https://gravatar.loli.net/avatar/' + resData.md5 + '?s=100&d=mm&r=g&d=robohash&days=' + this.txDays,//头像地址
               score: resData.score,//竞技点
