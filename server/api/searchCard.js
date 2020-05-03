@@ -14,14 +14,7 @@ module.exports = async function (req, res, next) {
     let packageId = req.body.packageId || '';
     let page = Number(req.body.page) || 1;
     if (!validator.isMongoId(packageId + '')) {
-        res.send({
-            code: 0,
-            msg: '卡包有误！'
-        });
-        console.info(
-            chalk.yellow(req.body.email + '传参(卡包ID)有误！IP为：' + IP)
-        );
-        return false;
+        packageId = '';
     }
     if (!validator.isInt(page + '', { min: 1 })) {
         page = 1;
@@ -83,9 +76,8 @@ module.exports = async function (req, res, next) {
                 'cardData.star': -1,
                 'cardData._id': -1,
             },
-            {
-                'cardData.packageId': ObjectId(packageId)
-            }
+            packageId === '' ? {} : { 'cardData.packageId': ObjectId(packageId) }
+
         ).catch((err) => {
             res.send({
                 code: 0,

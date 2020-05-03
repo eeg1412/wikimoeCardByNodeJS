@@ -165,9 +165,10 @@
     <el-dialog title="分享卡牌信息"
                :visible.sync="shareDialog"
                class="reg_code_dialog"
+               :close-on-click-modal="false"
                width="100%">
       <el-input v-model="shareUrl"
-                disabled
+                readonly
                 class="copyShareUrl">
       </el-input>
       <span slot="footer"
@@ -318,10 +319,16 @@ export default {
   data () {
     return {
       siteTitle: window.$siteConfig.siteTitle,
-      userPackage: '加载中',
+      userPackage: '全部卡包',
       userCardCountNow: {},
       seledCardPackage: '加载中',
       cardPackage: [],
+      playerCardPackage: [
+        {
+          _id: "全部卡包",
+          name: "全部卡包"
+        }
+      ],
       txDays: new Date().getDate(),
       token: sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token"),
       shareDialog: false,
@@ -414,13 +421,20 @@ export default {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           this.cardPackage = res.data.data;
+          // 玩家信息卡包
+          this.playerCardPackage = res.data.data;
+          this.cardPackage.unshift(
+            {
+              _id: "全部卡包",
+              name: "全部卡包"
+            }
+          )
           // 每日抽卡的卡包
           const dailyCardPackage = this.cardPackage.filter(item => { return item.open });
           // 获取缓存中已选择的卡包
           let nowPackageId = localStorage.getItem("dailyCardPackageId");
           // 默认选择卡包
           this.seledCardPackage = dailyCardPackage[0] ? dailyCardPackage[0]._id : "未设置卡包";
-          this.userPackage = this.cardPackage[0] ? this.cardPackage[0]._id : "未设置卡包";
           // 判断是否有已选择的卡包
           for (let i = 0; i < dailyCardPackage.length; i++) {
             if (dailyCardPackage[i]._id === nowPackageId) {
@@ -438,7 +452,7 @@ export default {
       this.userCard = null;
       this.userCardCache = [];
       this.cardPage = 1;
-      this.userPackage = this.cardPackage[0] ? this.cardPackage[0]._id : "未设置卡包";
+      this.userPackage = "全部卡包";
       this.userCardCountNow = {};
     },
     openCardList (cardArr) {

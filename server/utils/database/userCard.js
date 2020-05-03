@@ -21,13 +21,13 @@ exports.findAndCountUserCard = async function (filters, pageSize = 20, page = 1,
                 isSparkle: {
                     $sum: { $cond: ["$cardList.isSparkle", 1, 0] }
                 },
-                cardList: { "$addToSet": "$cardList" }
+                cardID: { "$first": "$cardList.cardID" }
             }
         },
         {
             $lookup: {
                 "from": "v3gamecarddatas",
-                "localField": "cardList.cardID",
+                "localField": "cardID",
                 "foreignField": "_id",
                 "as": "cardData"
             }
