@@ -262,7 +262,7 @@ exports.tokenCheck = async function (token) {
         });
     });
 };
-exports.tokenCheckAndEmail = async function (token) {
+exports.tokenCheckAndEmail = async function (token, populate) {
     let tokenDecode = await this.tokenCheck(token).catch((err) => {
         console.info(
             chalk.yellow('登录信息已失效！')
@@ -282,7 +282,7 @@ exports.tokenCheckAndEmail = async function (token) {
     let params = {
         email: email
     }
-    let result = await userData.findUser(params).catch((err) => {
+    let result = await userData.findUser(params, populate).catch((err) => {
         res.send({
             code: 0,
             msg: '内部错误请联系管理员！'

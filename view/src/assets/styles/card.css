@@ -77,6 +77,25 @@ body::-webkit-scrollbar-thumb:hover {
 .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-thumb:hover {
   background-color: #bbb
 }
+
+.el-table--scrollable-x .el-table__body-wrapper::-webkit-scrollbar-track-piece {
+  background: #eee
+}
+
+.el-table--scrollable-x .el-table__body-wrapper::-webkit-scrollbar {
+  width: 6px;
+  height: 6px
+}
+
+.el-table--scrollable-x .el-table__body-wrapper::-webkit-scrollbar-thumb {
+  height: 40px;
+  border-radius: 4px;
+  background-color: #A5A5A5
+}
+
+.el-table--scrollable-x .el-table__body-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: #bbb
+}
 body{
   cursor: url(/static/cur/default.cur),default;
   background-image: url(../images/bg/bg_dot.png);
@@ -317,6 +336,14 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
   z-index: 10000!important;
 }
 /* 卡牌 */
+.wm_isSparkleMode{
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
 .wm_card_remember_body {
     text-align: center;
     margin-top: 8px;

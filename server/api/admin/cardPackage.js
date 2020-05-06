@@ -3,139 +3,147 @@ var utils = require('../../utils/utils');
 var cardPackageData = require('../../utils/database/cardPackage');
 // var cardData = require('../../utils/database/cardData');
 var adminUtils = require('../../utils/admin/adminUtils');
-var fs = require('fs');
+const validator = require('validator');
 
-module.exports = async function(req, res, next){
+module.exports = async function (req, res, next) {
     let IP = utils.getUserIp(req);
     let token = req.body.token;
     let type = req.body.type;
     console.info(
-        chalk.green('开始卡包处理,IP为：'+IP)
+        chalk.green('开始卡包处理,IP为：' + IP)
     )
-    if(!token){
+    if (!token) {
         res.send({
-            code:402,
-            msg:'验证已失效'
+            code: 402,
+            msg: '验证已失效'
         });
         console.info(
-            chalk.yellow('token为空,IP为：'+IP)
+            chalk.yellow('token为空,IP为：' + IP)
         )
         return false;
     }
-    let resultAdmin = await adminUtils.checkAdmin(token,IP);
-    if(!resultAdmin){
+    let resultAdmin = await adminUtils.checkAdmin(token, IP);
+    if (!resultAdmin) {
         res.send({
-            code:402,
-            msg:'账户信息已失效，请重新登录！'
+            code: 402,
+            msg: '账户信息已失效，请重新登录！'
         });
         console.info(
-            chalk.yellow('token解析失败,IP为：'+IP)
+            chalk.yellow('token解析失败,IP为：' + IP)
         )
         return false;
     }
-    
+
     let adminAccount = resultAdmin.account;
-    if(type==='add'){
+    if (type === 'add') {
         let name = req.body.name;
-        if(!name){
+        if (!name) {
             res.send({
-                code:0,
-                msg:'请输入卡包名！'
+                code: 0,
+                msg: '请输入卡包名！'
             });
             console.info(
-                chalk.yellow('改卡包名参数有误！,IP为：'+IP)
+                chalk.yellow('改卡包名参数有误！,IP为：' + IP)
             )
             return false;
         }
         console.info(
-            chalk.green(adminAccount+'开始增加卡包,IP为：'+IP)
+            chalk.green(adminAccount + '开始增加卡包,IP为：' + IP)
         )
         //获取一共多少种卡包
-        let cardpackageCount = await cardPackageData.findCardPackageCount({}).catch((err)=>{
-            res.send({
-                code:0,
-                msg:'内部错误请联系管理员！'
-            });
-            console.error(
-                chalk.red('数据库查询错误！')
-            );
-            throw err;
-        });
-        console.info(
-            chalk.green('当前有'+cardpackageCount+'种卡包。')
-        )
-        let newPackageId = cardpackageCount+1;
+        // let cardpackageCount = await cardPackageData.findCardPackageCount({}).catch((err)=>{
+        //     res.send({
+        //         code:0,
+        //         msg:'内部错误请联系管理员！'
+        //     });
+        //     console.error(
+        //         chalk.red('数据库查询错误！')
+        //     );
+        //     throw err;
+        // });
+        // console.info(
+        //     chalk.green('当前有'+cardpackageCount+'种卡包。')
+        // )
+        // let newPackageId = cardpackageCount+1;
         let params = {
-            name:name,
-            open:false,
-            packageId:newPackageId
+            name: name,
         }
-        await cardPackageData.saveCardPackage(params).catch((err)=>{
+        await cardPackageData.saveCardPackage(params).catch((err) => {
             res.send({
-                code:0,
-                msg:'内部错误请联系管理员！'
+                code: 0,
+                msg: '内部错误请联系管理员！'
             });
             console.error(
                 chalk.red('数据库查询错误！')
             );
             throw err;
         });
-        fs.mkdirSync('./public/card/'+newPackageId)
+        // fs.mkdirSync('./public/card/'+newPackageId)
         res.send({
-            code:1,
-            msg:'增加卡包成功！'
+            code: 1,
+            msg: '增加卡包成功！'
         });
         console.info(
-            chalk.green(adminAccount+'增卡包成功,IP为：'+IP)
+            chalk.green(adminAccount + '增卡包成功,IP为：' + IP)
         )
         let logObj = {
-            text:'使用管理员账号'+adminAccount+'增加了卡包。《'+params.name+'》',
-            ip:IP
+            text: '使用管理员账号' + adminAccount + '增加了卡包。《' + params.name + '》',
+            ip: IP
         }
         adminUtils.adminWriteLog(logObj);
-    }else if(type==='edit'){
+    } else if (type === 'edit') {
         let name = req.body.name;
-        if(!name){
+        if (!name) {
             res.send({
-                code:0,
-                msg:'请输入卡包名！'
+                code: 0,
+                msg: '请输入卡包名！'
             });
             console.info(
-                chalk.yellow('改卡包名参数有误！,IP为：'+IP)
+                chalk.yellow('改卡包名参数有误！,IP为：' + IP)
             )
             return false;
         }
         console.info(
-            chalk.green(adminAccount+'开始改卡包名,IP为：'+IP)
+            chalk.green(adminAccount + '开始改卡包名,IP为：' + IP)
         )
         let _id = req.body._id;
-        let params = {
-            _id:_id
-        }
-        let resault = await cardPackageData.findCardPackageOne(params).catch((err)=>{
+        if (!validator.isMongoId(_id + '')) {
             res.send({
-                code:0,
-                msg:'内部错误或者卡包ID有误！'
+                code: 0,
+                msg: '无该卡包！'
+            });
+            console.info(
+                chalk.yellow('不存在卡包' + _id + ',IP为：' + IP)
+            )
+            return false;
+        }
+        let params = {
+            _id: _id
+        }
+        let resault = await cardPackageData.findCardPackageOne(params).catch((err) => {
+            res.send({
+                code: 0,
+                msg: '内部错误或者卡包ID有误！'
             });
             console.error(
                 chalk.red(err)
             );
             return false;
         });
-        if(!resault){
+        if (!resault) {
             res.send({
-                code:0,
-                msg:'无该卡包！'
+                code: 0,
+                msg: '无该卡包！'
             });
             return false;
         }
         let params_ = {
-            name:name,
+            name: name,
         }
-        await cardPackageData.updataCardPackage(params,params_).catch((err)=>{
+        await cardPackageData.updataCardPackage(params, params_).catch((err) => {
             res.send({
-                code:0,
-                msg:'内部错误请联系管理员！'
+                code: 0,
+                msg: '内部错误请联系管理员！'
             });
             console.error(
                 chalk.red('数据库查询错误！')
@@ -143,70 +151,80 @@ module.exports = async function(req, res, next){
             throw err;
         });
         res.send({
-            code:1,
-            msg:'修改成功！'
+            code: 1,
+            msg: '修改成功！'
         });
         let logObj = {
-            text:'使用管理员账号'+adminAccount+'修改了卡包名。新卡包名：《'+params_.name+'》',
-            ip:IP
+            text: '使用管理员账号' + adminAccount + '修改了卡包名。新卡包名：《' + params_.name + '》',
+            ip: IP
         }
         adminUtils.adminWriteLog(logObj);
         console.info(
-            chalk.green(adminAccount+'改卡包名成功,IP为：'+IP)
+            chalk.green(adminAccount + '改卡包名成功,IP为：' + IP)
         )
-    }else if(type==='daily' || type==='shop' || type==='guess' || type==='starCoin'){
-        let open = req.body.open?true:false;
+    } else if (type === 'daily' || type === 'shop' || type === 'guess' || type === 'starCoin') {
+        let open = req.body.open ? true : false;
         console.info(
-            chalk.green(adminAccount+'开始打开或关闭卡包,IP为：'+IP)
+            chalk.green(adminAccount + '开始打开或关闭卡包,IP为：' + IP)
         )
         let _id = req.body._id;
-        let params = {
-            _id:_id
-        }
-        let resault = await cardPackageData.findCardPackageOne(params).catch((err)=>{
+        if (!validator.isMongoId(_id + '')) {
             res.send({
-                code:0,
-                msg:'内部错误或者卡包ID有误！'
+                code: 0,
+                msg: '无该卡包！'
+            });
+            console.info(
+                chalk.yellow('不存在卡包' + _id + ',IP为：' + IP)
+            )
+            return false;
+        }
+        let params = {
+            _id: _id
+        }
+        let resault = await cardPackageData.findCardPackageOne(params).catch((err) => {
+            res.send({
+                code: 0,
+                msg: '内部错误或者卡包ID有误！'
             });
             console.error(
                 chalk.red(err)
             );
             return false;
         });
-        if(!resault){
+        if (!resault) {
             res.send({
-                code:0,
-                msg:'无该卡包！'
+                code: 0,
+                msg: '无该卡包！'
             });
             return false;
         }
         // 校验每种卡包是否符合要求
-        if(!open){
-            if(resault.packageId=='0'){
-                res.send({
-                    code:0,
-                    msg:'基础卡包无法开关！'
-                });
-                return false;
-            }
-        }
-        if(type==='daily'){
-            if(open){
-                if((resault.oneStar+resault.twoStar+resault.threeStar)<3 || resault.fourStar<3 || resault.fiveStar<3 || resault.sixStar<3){
+        // if (!open) {
+        //     if (resault.packageId == '0') {
+        //         res.send({
+        //             code: 0,
+        //             msg: '基础卡包无法开关！'
+        //         });
+        //         return false;
+        //     }
+        // }
+        if (type === 'daily') {
+            if (open) {
+                if ((resault.oneStar + resault.twoStar + resault.threeStar) < 3 || resault.fourStar < 3 || resault.fiveStar < 3 || resault.sixStar < 3) {
                     res.send({
-                        code:0,
-                        msg:'卡包卡牌数量不足，无法开启！'
+                        code: 0,
+                        msg: '卡包卡牌数量不足，无法开启！'
                     });
                     return false;
                 }
             }
         }
-        if(type==='starCoin'||type==='shop'||type==='guess'){
-            if(open){
-                if((resault.oneStar+resault.twoStar+resault.threeStar)<1 || resault.fourStar<1 || resault.fiveStar<1 || resault.sixStar<1){
+        if (type === 'starCoin' || type === 'shop' || type === 'guess') {
+            if (open) {
+                if ((resault.oneStar + resault.twoStar + resault.threeStar) < 1 || resault.fourStar < 1 || resault.fiveStar < 1 || resault.sixStar < 1) {
                     res.send({
-                        code:0,
-                        msg:'卡包卡牌数量不足，无法开启！'
+                        code: 0,
+                        msg: '卡包卡牌数量不足，无法开启！'
                     });
                     return false;
                 }
@@ -214,28 +232,28 @@ module.exports = async function(req, res, next){
         }
         // 设置每种卡包开关
         let params_ = {}
-        if(type==='daily'){
+        if (type === 'daily') {
             params_ = {
-                open:open,
+                open: open,
             }
-        }else if(type==='shop'){
+        } else if (type === 'shop') {
             params_ = {
-                starShopOpen:open,
+                starShopOpen: open,
             }
-        }else if(type==='guess'){
+        } else if (type === 'guess') {
             params_ = {
-                guessOpen:open,
+                guessOpen: open,
             }
-        }else if(type==='starCoin'){
+        } else if (type === 'starCoin') {
             params_ = {
-                starCoinOpen:open,
+                starCoinOpen: open,
             }
         }
         // 写入数据库
-        await cardPackageData.updataCardPackage(params,params_).catch((err)=>{
+        await cardPackageData.updataCardPackage(params, params_).catch((err) => {
             res.send({
-                code:0,
-                msg:'内部错误请联系管理员！'
+                code: 0,
+                msg: '内部错误请联系管理员！'
             });
             console.error(
                 chalk.red('数据库查询错误！')
@@ -243,29 +261,29 @@ module.exports = async function(req, res, next){
             throw err;
         });
         res.send({
-            code:1,
-            msg:'修改成功！'
+            code: 1,
+            msg: '修改成功！'
         });
         let logObj = {
-            text:'使用管理员账号'+adminAccount+(open?'打开':'关闭')+'卡包名：《'+resault.name+'》,类别：'+type,
-            ip:IP
+            text: '使用管理员账号' + adminAccount + (open ? '打开' : '关闭') + '卡包名：《' + resault.name + '》,类别：' + type,
+            ip: IP
         }
         adminUtils.adminWriteLog(logObj);
         console.info(
-            chalk.green(adminAccount+'卡包开关成功,IP为：'+IP)
+            chalk.green(adminAccount + '卡包开关成功,IP为：' + IP)
         )
-    }else{
+    } else {
         res.send({
-            code:0,
-            msg:'参数有误！'
+            code: 0,
+            msg: '参数有误！'
         });
         let logObj = {
-            text:'使用管理员账号'+adminAccount+'使用了不正确的新闻参数！',
-            ip:IP
+            text: '使用管理员账号' + adminAccount + '使用了不正确的新闻参数！',
+            ip: IP
         }
         adminUtils.adminWriteLog(logObj);
         console.info(
-            chalk.green(adminAccount+'参数有误,IP为：'+IP)
+            chalk.green(adminAccount + '参数有误,IP为：' + IP)
         )
     }
 }

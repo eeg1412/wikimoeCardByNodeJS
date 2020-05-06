@@ -5,6 +5,7 @@ var apiDailycard = require('../api/dailyCard');
 var apiReg = require('../api/reg');
 var apiFind = require('../api/find');
 var apiSearchCard = require('../api/searchCard');
+var apiSearchCardList = require('../api/searchCardList');
 var apiSearchCardByToken = require('../api/searchCardByToken');
 var apiSearchLog = require('../api/searchLog');
 var apiCaptcha = require('../api/captcha');
@@ -63,7 +64,7 @@ var adminApiSetRobotRate = require('../api/admin/setRobotRate');
 
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
 router.get('/captcha', apiCaptcha);
@@ -74,6 +75,7 @@ router.post('/dailycard', apiDailycard);
 router.post('/reg', apiReg);
 router.post('/find', apiFind);
 router.post('/searchcard', apiSearchCard);
+router.post('/searchcardlist', apiSearchCardList);
 router.post('/searchcardbytoken', apiSearchCardByToken);
 router.post('/searchlog', apiSearchLog);
 router.post('/sendmail', apiSendMail);

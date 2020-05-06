@@ -125,7 +125,7 @@
             <el-select v-model="userPackage"
                        placeholder="选择卡包"
                        class="wm_card_package_sel"
-                       @change="getUserCard(nowUserInfo.md5,false)">
+                       @change="getUserCardPackageChange(nowUserInfo.md5,false)">
               <el-option v-for="item in cardPackage"
                          :key="item._id"
                          :label="item.name"
@@ -267,7 +267,7 @@
                 </span>
                 <span v-else-if="item.type=='UCC'">我在<span class="wm_card_get_list_card_link"
                         @click="goMenu('/creatcard')">卡牌工坊</span>制作的{{item.data.star}}星卡牌——出自作品《{{item.data.title}}》的<span class="wm_card_get_list_card_link"
-                        @click="openImg($wikimoecard.url+item.data.packageId+'/'+item.data.cardId+'.jpg')">{{item.data.name}}</span>，通过了审核，获得了100颗星星的奖励！应该过不了多久大家就能抽到我制作的卡牌了吧！
+                        @click="openImg($wikimoecard.url+item.data.cardID+'.jpg')">{{item.data.name}}</span>，通过了审核，获得了100颗星星的奖励！应该过不了多久大家就能抽到我制作的卡牌了吧！
                 </span>
                 <span v-else-if="item.type=='guesscard'">我在<span class="wm_card_get_list_card_link"
                         @click="goMenu('/star/guessCard/guess')">星星猜卡</span>中，猜了<span class="wm_card_get_list_card_link"
@@ -414,6 +414,11 @@ export default {
     this.getCardPackage();
   },
   methods: {
+    // 
+    getUserCardPackageChange (md5, top) {
+      this.cardPage = 1;
+      this.getUserCard(md5, top);
+    },
     getCardPackage () {
       authApi.searchcardpackage().then(res => {
         console.log(res);
@@ -678,17 +683,6 @@ export default {
       this.$refs.cardListBody.children[1].classList.remove("no-selectedcard");
       this.$refs.cardListBody.children[2].classList.remove("no-selectedcard");
       this.cardIsRotate = [false, false, false];
-      // this.userCard = null;//用户当前页卡牌
-      // this.userCardCache = null;//用户卡牌
-      // this.cardPage = 1;//当前卡牌页码
-      // this.cardTotle = 0;//一共多少
-      // this.nowUserInfo = {
-      //   tx:'',//头像地址
-      //   score:0,//竞技点
-      //   level:0,//等级
-      //   cardCol:0,//收集卡牌
-      //   nickName:''
-      // };//当前用户信息
       setTimeout(() => {
         this.getCardList = ['', '', ''];
         this.seled = false;
@@ -775,7 +769,7 @@ export default {
         } else if (res.data.code == 3) {
           this.$message.error(res.data.msg);
           this.rememberEmail();
-          this.getUserCard(emailMD5, true);
+          // this.getUserCard(emailMD5, true);
         }
       })
     }

@@ -90,7 +90,7 @@ module.exports = async function (req, res, next) {
         });
         res.send({
             code: 1,
-            res: result,
+            // res: result,
             card: myCard.cardList,
             cardCount: myCard.cardCount,
             md5: result.md5,
