@@ -15,8 +15,8 @@ module.exports = async function (req, res, next) {
     const leftType = Number(req.body.leftType);
     const rightType = Number(req.body.rightType);
     const cry = Number(req.body.cry);
-    const title = req.body.title + "";
-    const name = req.body.name + "";
+    const title = req.body.title || "";
+    const name = req.body.name || "";
     const have = Number(req.body.have);
     // 参数检查
     const starReg = /^[0-6]{1}$/
@@ -34,7 +34,7 @@ module.exports = async function (req, res, next) {
         });
         return false;
     }
-    if (title.length > 255 || name.length > 255) {
+    if ((title + "").length > 255 || (name + "").length > 255) {
         console.info(
             chalk.yellow(IP + '角色名或者作品名字数过多！')
         )

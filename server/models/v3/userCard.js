@@ -33,6 +33,10 @@ var v3UserCards = new Schema({
         type: Boolean,
         default: false
       },
+      isSell: {
+        type: Boolean,
+        default: false
+      },
     }], default: []
   },
   sharedEXP: { type: Number, default: 0 },
