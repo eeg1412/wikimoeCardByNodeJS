@@ -13,6 +13,7 @@
           <div class="wm_creatcard_btn_body">
             <el-button size="mini"
                        type="primary"
+                       :disabled="cardPackage.length <= 0"
                        @click="creatCardNoText">生成投稿</el-button>
             <el-button size="mini"
                        type="primary"
@@ -265,7 +266,7 @@ export default {
         leftTypeSprite: null,
         rightTypeSprite: null,
       },
-      seledCardPackage: '0',
+      seledCardPackage: '加载中...',
       cardPackage: [],
       imageUrl: '',
       creatCardInfo: [],
@@ -295,7 +296,13 @@ export default {
         if (res.data.code == 0) {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
-          this.cardPackage = res.data.data;
+          this.cardPackage = res.data.data.filter(item => item.submitOpen);
+          if (this.cardPackage.length > 0) {
+            this.seledCardPackage = this.cardPackage[0].packageId;
+          } else {
+            this.seledCardPackage = '当前未开放制卡!';
+          }
+
         }
       });
     },

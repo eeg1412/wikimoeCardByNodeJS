@@ -9,7 +9,7 @@
     <footer class="tc powerdby">Powered by <a class="wm_set_pointer"
          title="访问维基萌主页"
          href="https://www.wikimoe.com/"
-         target="_blank">wikimoe</a> (Ver.2.3.3)</footer>
+         target="_blank">wikimoe</a> (Ver.2.4.0)</footer>
   </div>
 </template>
 
