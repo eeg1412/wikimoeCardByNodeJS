@@ -133,9 +133,16 @@ exports.marketDataCalc = async function (cardId) {
                 chalk.green(cardId + '检查最高最低和上次一样吗？')
             );
             if (newLog[0][0].lowPrice == lowPrice && newLog[0][0].highPrice == highPrice) {
+                const logId = newLog[0][0]["_id"];
                 console.info(
-                    chalk.green(cardId + '最高最低和上次一样。')
+                    chalk.green(cardId + '最高最低和上次一样。' + '记录ID为' + logId)
                 );
+                const parmas = {
+                    time: time,
+                }
+                await marketData.updataMarketLog({ _id: logId }, parmas).catch((err) => {
+                    throw err;
+                });
                 return false;
             }
         }
@@ -146,13 +153,6 @@ exports.marketDataCalc = async function (cardId) {
             highPrice: highPrice
         }
         await marketData.saveMarketLog(parmas).catch((err) => {
-            throw err;
-        });
-        let delParmas = {
-            time: { $lt: time - 5184000 },
-        }
-        // 删除两月前的数据
-        await marketData.deletMarketLog(delParmas).catch((err) => {
             throw err;
         });
         console.info(

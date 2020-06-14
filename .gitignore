@@ -47,3 +47,4 @@ testem.log
 Thumbs.db
 
 /server/log/access/*.gz
+/server/log/application/*.gz

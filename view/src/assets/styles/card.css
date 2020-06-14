@@ -1740,3 +1740,13 @@ img.wm_demining_img {
       margin-top: 0!important;
   }
 }
+
+/* footer */
+.powerdby {
+  margin: 30px 0 30px 0;
+  height: 24px;
+  line-height: 24px;
+}
+.powerdby a {
+  color: inherit;
+}

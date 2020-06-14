@@ -6,10 +6,8 @@
          :style="{'background-position':'center ' + scrollTop/10 + 'px'}"></div>
     <div class="wm_bg_2"
          :style="{'background-position':'center ' + scrollTop/4 + 'px'}"></div>
-    <footer class="tc powerdby">Powered by <a class="wm_set_pointer"
-         title="访问维基萌主页"
-         href="https://www.wikimoe.com/"
-         target="_blank">wikimoe</a> (Ver.2.4.0)</footer>
+    <footer class="tc powerdby"><span v-html="info"></span> {{version}}
+    </footer>
   </div>
 </template>
 
@@ -21,6 +19,8 @@ export default {
     return {
       scrollTop: 0,
       scrollChangeFlag: true,
+      version: "(Ver.2.4.1)",
+      info: atob("UG93ZXJlZCBieSA8YSBjbGFzcz0nd21fc2V0X3BvaW50ZXInIGhyZWY9J2h0dHBzOi8vd3d3Lndpa2ltb2UuY29tLycgdGFyZ2V0PSdfYmxhbmsnPndpa2ltb2U8L2E+")
     }
   },
   methods: {
@@ -49,12 +49,4 @@ export default {
 </script>
 
 <style scoped>
-.powerdby {
-  margin: 30px 0 30px 0;
-  height: 24px;
-  line-height: 24px;
-}
-.powerdby a {
-  color: inherit;
-}
 </style>
