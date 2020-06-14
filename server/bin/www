@@ -10,7 +10,13 @@ let https = require("https");
 let demining = require('../api/demining');
 let fs = require("fs");
 const chalk = require('chalk');
+const cheerio = require('cheerio');
 
+// creat HTML
+const $ = cheerio.load(fs.readFileSync('public/index.html', 'utf8'));
+const footerHTML = fs.readFileSync('templete/footer.html', 'utf8');
+$('#wm_index_footer').html(footerHTML);
+fs.writeFileSync("public/index.html", $.html());
 /**
  * Get port from environment and store in Express.
  */
@@ -20,18 +26,18 @@ var port = normalizePort(global.myAppConfig.port || '3000');
  * Create HTTP server.
  */
 var server = null;
-if(global.myAppConfig.https){
+if (global.myAppConfig.https) {
   const httpsOption = {
-    key : fs.readFileSync(global.myAppConfig.keyFileSrc),
+    key: fs.readFileSync(global.myAppConfig.keyFileSrc),
     cert: fs.readFileSync(global.myAppConfig.certFileSrc)
   }
-  server = https.createServer(httpsOption,app).listen(global.myAppConfig.sslPort,'0.0.0.0');
-  http.createServer(function (req,res) {
-    res.writeHead(301,{'Location':global.myAppConfig.site})
+  server = https.createServer(httpsOption, app).listen(global.myAppConfig.sslPort, '0.0.0.0');
+  http.createServer(function (req, res) {
+    res.writeHead(301, { 'Location': global.myAppConfig.site })
     res.end();
-  }).listen(global.myAppConfig.port,'0.0.0.0');
-}else{
-  server = http.createServer(app).listen(global.myAppConfig.port,'0.0.0.0');
+  }).listen(global.myAppConfig.port, '0.0.0.0');
+} else {
+  server = http.createServer(app).listen(global.myAppConfig.port, '0.0.0.0');
 }
 var io = require('socket.io')(server);
 
@@ -44,69 +50,69 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 io.on('connection', async (socket) => {
-  if(global.demining.loaing){
+  if (global.demining.loaing) {
     // 数据库准备中
-    socket.emit('demining',{code:406,msg:'矿场正在重启，请稍后再试!'});
+    socket.emit('demining', { code: 406, msg: '矿场正在重启，请稍后再试!' });
     socket.disconnect();
     return false;
   }
   let token = socket.handshake.query.dt;
   // console.log("dt",token);
-  const userData = await demining.login(token,socket).catch ((err)=>{
+  const userData = await demining.login(token, socket).catch((err) => {
     throw err;
   });
-  if(userData.status){
+  if (userData.status) {
     // 用户验证通过
     // 判断是否有同样的用户在线
     const socketId = socket.id;
     const userEmail = userData.userInfo.email;
     const inPlayerList = global.demining.onlinePlayer.filter(item => item.email === userEmail);
-    if(inPlayerList.length>0){//如果有同样的用户在线
-      for(let i=0;i<inPlayerList.length;i++){
+    if (inPlayerList.length > 0) {//如果有同样的用户在线
+      for (let i = 0; i < inPlayerList.length; i++) {
         // 循环让这些账号下线
         const playerConnected = io.sockets.connected[inPlayerList[i].socketId];
-        if(playerConnected){
+        if (playerConnected) {
           console.info(
-            chalk.yellow(inPlayerList[i].email+"被顶号，强制下线")
+            chalk.yellow(inPlayerList[i].email + "被顶号，强制下线")
           )
-          socket.to(inPlayerList[0].socketId).emit('demining',{code:406,msg:'有同样的账号登陆了矿场，请注意账号安全！'} );
+          socket.to(inPlayerList[0].socketId).emit('demining', { code: 406, msg: '有同样的账号登陆了矿场，请注意账号安全！' });
           playerConnected.disconnect();
         }
       }
     }
     const newPlayer = {
-      email:userEmail,
-      md5:userData.userInfo.md5,
-      nickName:userData.userInfo.nickName,
-      loginTime:Math.round(new Date().getTime()/1000),
-      socketId:socketId
+      email: userEmail,
+      md5: userData.userInfo.md5,
+      nickName: userData.userInfo.nickName,
+      loginTime: Math.round(new Date().getTime() / 1000),
+      socketId: socketId
     }
     global.demining.onlinePlayer.push(newPlayer);
     console.info(
-      chalk.green(userEmail+"登陆挖矿服务器!IP为:"+userData.IP)
+      chalk.green(userEmail + "登陆挖矿服务器!IP为:" + userData.IP)
     )
     // 发送在线人数
-    io.sockets.emit('userCount', { userCount: global.demining.onlinePlayer.length});
-    socket.on('demining',  (data) => {
+    io.sockets.emit('userCount', { userCount: global.demining.onlinePlayer.length });
+    socket.on('demining', (data) => {
       // console.log('deminging');
       // console.log(data);
-      
+
       // 处理挖矿逻辑
-      demining.mine(socket,data);
+      demining.mine(socket, data);
     });
-    socket.on('disconnect', function() {
+    socket.on('disconnect', function () {
       console.info(
-        chalk.green(userEmail+"下线！")
+        chalk.green(userEmail + "下线！")
       )
       global.demining.onlinePlayer = global.demining.onlinePlayer.filter(item => item.socketId !== socketId);
       io.sockets.emit('userCount', { userCount: global.demining.onlinePlayer.length });
     });
-  }else{
+  } else {
     // 用户验证失败
     console.info(
-      chalk.yellow(userData.IP+"登陆挖矿服务器失败,Token有误!")
+      chalk.yellow(userData.IP + "登陆挖矿服务器失败,Token有误!")
     )
-    socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！'});
+    socket.emit('demining', { code: 403, msg: '账户信息已失效，请重新登录！' });
     socket.disconnect();
   }
 });
@@ -114,7 +120,7 @@ io.on('connection', async (socket) => {
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
+function normalizePort (val) {
   var port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -134,7 +140,7 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
+function onError (error) {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -162,7 +168,7 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+function onListening () {
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr

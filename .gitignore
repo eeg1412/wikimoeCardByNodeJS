@@ -45,3 +45,6 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+/server/log/access/*.gz
+/server/log/application/*.gz
