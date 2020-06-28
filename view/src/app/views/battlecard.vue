@@ -585,6 +585,7 @@ export default {
           if (res.data.data.length === 20) {
             let myBattleCardData = res.data.data;
             let myBattleCardId = res.data.cardId;
+            Object.assign(this.myCardLevel, res.data.cardLevelData);
             // 让数据按照卡组顺序排列
             myBattleCardData.sort((a, b) => {
               if (myBattleCardId.indexOf(a.cardId) === -1 && myBattleCardId.indexOf(b.cardId) === -1) {
@@ -614,7 +615,7 @@ export default {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           if (res.data.data) {
-            this.myCardLevel = res.data.data;
+            Object.assign(this.myCardLevel, res.data.data);
           }
           this.getMycard();
         }
@@ -627,7 +628,7 @@ export default {
         } else if (res.data.code == 1) {
           let resData = res.data;
           this.cardIndexCount = res.data.cardIndexCount || 0;
-          this.myCardLevel = res.data.cardLevelData;
+          // this.myCardLevel = res.data.cardLevelData;
           if (res.data.cardIndexCount > 0) {
             this.userCardCache = res.data.card || [];
             this.cardPage = 1;

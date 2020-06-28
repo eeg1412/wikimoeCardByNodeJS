@@ -58,27 +58,27 @@ function setCardShould (v, l = 0) {
     switch (v) {
         case 1:
             shouldCardBase = 3;
-            shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
+            shouldCard = shouldCardBase + ((shouldCardBase) * shouldCoe);
             break;
         case 2:
             shouldCardBase = 3;
-            shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
+            shouldCard = shouldCardBase + ((shouldCardBase) * shouldCoe);
             break;
         case 3:
             shouldCardBase = 15;
-            shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
+            shouldCard = shouldCardBase + ((shouldCardBase) * shouldCoe);
             break;
         case 4:
             shouldCardBase = 5;
-            shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
+            shouldCard = shouldCardBase + ((shouldCardBase) * shouldCoe);
             break;
         case 5:
             shouldCardBase = 3;
-            shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
+            shouldCard = shouldCardBase + ((shouldCardBase) * shouldCoe);
             break;
         case 6:
             shouldCardBase = 1;
-            shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
+            shouldCard = shouldCardBase + ((shouldCardBase) * shouldCoe);
             break;
     }
     return Math.round(shouldCard);
