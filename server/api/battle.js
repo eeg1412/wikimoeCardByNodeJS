@@ -59,227 +59,227 @@ const usersModel = require('../models/users');
 
 
 
-class battle {
-    constructor(result) {
-        this.AiMode = false;
-        this.MyBattleCard = result.battleCard;
-        this.MyBattleCardArr_ = [];
-        this.cardOtherData = {};
-        this.EmBattleCard = [];
-        this.EmBattleCardArr_ = [];
-        this.MyCardStarCount = [0, 0, 0, 0, 0, 0]//我的卡牌星级个数统计
-        this.MyStarAll = 0;//我的所以卡牌加起来的星级
-        this.MyCryCount = [0, 0, 0, 0, 0];//我的卡牌属性个数统计
-        this.MyADSHP = [0, 0, 0, 0];//我的攻、防、速、血
-        this.MyCardIndexCount = result.cardIndexCount;//卡牌收集率
-        this.myCardLevel = {};//卡牌等级
-        this.EmCardStarCount = [0, 0, 0, 0, 0, 0];//对方卡牌星级个数统计
-        this.EmCryCount = [0, 0, 0, 0, 0];//对方卡牌属性个数统计
-        this.EmStarAll = 0;//对方所以卡牌加起来的星级
-        this.EmADSHP = [0, 0, 0, 0];//对方的攻、防、速、血
-        this.EmCardIndexCount = 0;
-        this.emCardLevel = {};//卡牌等级
-        this.win = 2;
-        this.noDieWin = false;//血没扣完的胜负
-    }
-    // 结算胜负
-    isWin (MyADSHP, EmADSHP) {
-        if (MyADSHP[3] <= 0 && EmADSHP[3] <= 0) {
-            return 2;//平局
-        } else if (EmADSHP[3] <= 0) {
-            return 1;//赢
-        } else if (MyADSHP[3] <= 0) {
-            return 0;//输
-        } else {
-            return 3;
-        }
-    }
-    // 对战
-    cardBattle (AttackADSHP, AttackCard, DefendEmADSHP, DefendCard) {
-        // 主动技能：
-        // 特7：我方攻击前攻击力临时+x*10%、敌方攻击时防御力临时+x*10%
-        // 魔2：敌方攻击后反弹攻击造成的伤害的20%
-        // 物1：我方攻击前攻击力临时+x*10%
-        // 防3：敌方攻击前防御力临时+x*10%
-        // 治4：我方攻击前我方HP+x*10%
-        // 支6：敌方攻击前临时产生x*20%的临时HP
-        // 妨5：使对方的主动技能失效
-        // 克制表属性克制为火→风→水→火 暗→水火风 光→暗
+// class battle {
+//     constructor(result) {
+//         this.AiMode = false;
+//         this.MyBattleCard = result.battleCard;
+//         this.MyBattleCardArr_ = [];
+//         this.cardOtherData = {};
+//         this.EmBattleCard = [];
+//         this.EmBattleCardArr_ = [];
+//         this.MyCardStarCount = [0, 0, 0, 0, 0, 0]//我的卡牌星级个数统计
+//         this.MyStarAll = 0;//我的所以卡牌加起来的星级
+//         this.MyCryCount = [0, 0, 0, 0, 0];//我的卡牌属性个数统计
+//         this.MyADSHP = [0, 0, 0, 0];//我的攻、防、速、血
+//         this.MyCardIndexCount = result.cardIndexCount;//卡牌收集率
+//         this.myCardLevel = {};//卡牌等级
+//         this.EmCardStarCount = [0, 0, 0, 0, 0, 0];//对方卡牌星级个数统计
+//         this.EmCryCount = [0, 0, 0, 0, 0];//对方卡牌属性个数统计
+//         this.EmStarAll = 0;//对方所以卡牌加起来的星级
+//         this.EmADSHP = [0, 0, 0, 0];//对方的攻、防、速、血
+//         this.EmCardIndexCount = 0;
+//         this.emCardLevel = {};//卡牌等级
+//         this.win = 2;
+//         this.noDieWin = false;//血没扣完的胜负
+//     }
+//     // 结算胜负
+//     isWin (MyADSHP, EmADSHP) {
+//         if (MyADSHP[3] <= 0 && EmADSHP[3] <= 0) {
+//             return 2;//平局
+//         } else if (EmADSHP[3] <= 0) {
+//             return 1;//赢
+//         } else if (MyADSHP[3] <= 0) {
+//             return 0;//输
+//         } else {
+//             return 3;
+//         }
+//     }
+//     // 对战
+//     cardBattle (AttackADSHP, AttackCard, DefendEmADSHP, DefendCard) {
+//         // 主动技能：
+//         // 特7：我方攻击前攻击力临时+x*10%、敌方攻击时防御力临时+x*10%
+//         // 魔2：敌方攻击后反弹攻击造成的伤害的20%
+//         // 物1：我方攻击前攻击力临时+x*10%
+//         // 防3：敌方攻击前防御力临时+x*10%
+//         // 治4：我方攻击前我方HP+x*10%
+//         // 支6：敌方攻击前临时产生x*20%的临时HP
+//         // 妨5：使对方的主动技能失效
+//         // 克制表属性克制为火→风→水→火 暗→水火风 光→暗
 
-        // 20190516修改
-        // 物：攻= +攻*10%*星级
-        // 防：防= +防*10%*星级
-        // 支：产生对方伤害*10*星级的护盾
-        // 特：攻=攻*6%*星级、防=攻*6%*星级
-        // 治：SAN = +攻*10*星级
-        // 魔：反弹对方伤害的10%*星级
+//         // 20190516修改
+//         // 物：攻= +攻*10%*星级
+//         // 防：防= +防*10%*星级
+//         // 支：产生对方伤害*10*星级的护盾
+//         // 特：攻=攻*6%*星级、防=攻*6%*星级
+//         // 治：SAN = +攻*10*星级
+//         // 魔：反弹对方伤害的10%*星级
 
-        // 克：增伤10%*星级差(最多10%)
-        // 被克：防御减少10%*星级差(最多10%)
-        let cryKe = {
-            '1': [3],
-            '2': [1],
-            '3': [2],
-            '4': [5],
-            '5': [4]
-        }
-        let AttackRightType = AttackCard.rightType;
-        // let AttackCry = AttackCard.cry;
-        let AttackA = AttackADSHP[0];
-        let AttackD = AttackADSHP[1];
-        let AttackHP = AttackADSHP[3];
-        // let AttackShield = 0;//临时护盾
-        let AttackStar = AttackCard.star;//攻击卡牌的星级
-        let AttackAddHP = 0;//加血多少
+//         // 克：增伤10%*星级差(最多10%)
+//         // 被克：防御减少10%*星级差(最多10%)
+//         let cryKe = {
+//             '1': [3],
+//             '2': [1],
+//             '3': [2],
+//             '4': [5],
+//             '5': [4]
+//         }
+//         let AttackRightType = AttackCard.rightType;
+//         // let AttackCry = AttackCard.cry;
+//         let AttackA = AttackADSHP[0];
+//         let AttackD = AttackADSHP[1];
+//         let AttackHP = AttackADSHP[3];
+//         // let AttackShield = 0;//临时护盾
+//         let AttackStar = AttackCard.star;//攻击卡牌的星级
+//         let AttackAddHP = 0;//加血多少
 
-        let DefendRightType = DefendCard.rightType;
-        // let DefendCry = DefendCard.cry;
-        let DefendA = DefendEmADSHP[0];
-        let DefendD = DefendEmADSHP[1];
-        let DefendHP = DefendEmADSHP[3];
-        let DefendShield = 0;//临时护盾
-        let DefendStar = DefendCard.star;//防守卡牌的星级
+//         let DefendRightType = DefendCard.rightType;
+//         // let DefendCry = DefendCard.cry;
+//         let DefendA = DefendEmADSHP[0];
+//         let DefendD = DefendEmADSHP[1];
+//         let DefendHP = DefendEmADSHP[3];
+//         let DefendShield = 0;//临时护盾
+//         let DefendStar = DefendCard.star;//防守卡牌的星级
 
-        // 攻击方攻击前
-        if (DefendRightType !== 5) {
-            if (AttackRightType === 1) {
-                AttackA = AttackA + Math.floor(AttackA * 0.1 * AttackStar);
-            } else if (AttackRightType === 7) {
-                AttackA = AttackA + Math.floor(AttackA * 0.06 * AttackStar);
-            } else if (AttackRightType === 4) {
-                AttackAddHP = Math.floor(AttackA * 0.05 * AttackStar + AttackD * 0.06 * AttackStar);//治 SAN+攻*5%*星级 + 防*6%*星级
-                AttackHP = AttackHP + AttackAddHP;
-            } else if (AttackRightType === 5) {
-                DefendD = DefendD - Math.floor(DefendD * 0.01 * AttackStar);
-            }
-        }
-        // 攻击前结算属性相克
-        let ke = cryKe[AttackCard.cry].indexOf(DefendCard.cry);
-        let beike = cryKe[DefendCard.cry].indexOf(AttackCard.cry);
-        if (ke !== -1) {//克制增伤
-            let starCha = AttackStar - DefendStar//星级差
-            if (starCha < 1) {
-                starCha = 1;
-            }
-            AttackA = AttackA + Math.floor(AttackA * 0.1 * starCha);
-        }
-        if (beike !== -1) {//被克减伤
-            let starCha = DefendStar - AttackStar//星级差
-            if (starCha < 1) {
-                starCha = 1;
-            }
-            DefendD = DefendD + Math.floor(DefendD * 0.1 * starCha);
-        }
-        // 防守方接受攻击前
-        if (AttackRightType !== 5) {
-            if (DefendRightType === 3) {
-                DefendD = DefendD + Math.floor(DefendD * 0.16 * DefendStar);//防 +防*16%*星级
-            } else if (DefendRightType === 7) {
-                DefendD = DefendD + Math.floor(DefendD * 0.12 * DefendStar);//特 +防*12%*星级
-            } else if (DefendRightType === 6) {
-                DefendShield = Math.floor(AttackA * 0.065 * DefendStar + DefendD * 0.03 * DefendStar);//支 敌方攻击力*6.5%*星级 + 防*3%*星级
-            }
-        }
-        // 开始攻击
-        let AttackPow = AttackA - DefendD - DefendShield;
-        if (AttackPow < 0) {
-            AttackPow = 0;
-        }
-        // 结算扣血
-        DefendHP = DefendHP - AttackPow;
-        // 结算伤害反弹
-        let DefendPow = 0;
-        if (DefendRightType === 2 && AttackRightType !== 5) {
-            DefendPow = Math.floor(AttackPow * 0.10 * DefendStar);
-            AttackHP = AttackHP - DefendPow;
-        }
-        // 防止HP为负数
-        if (DefendHP < 0) {
-            DefendHP = 0;
-        }
-        if (AttackHP < 0) {
-            AttackHP = 0;
-        }
-        return [AttackPow, AttackHP, DefendPow, DefendHP, AttackAddHP];
-    }
-    // 出战卡牌信息写入
-    setBattleCardInfo (cardArr, allCardDataArr) {
-        let myCardData = allCardDataArr[0];
-        myCardData = myCardData.filter(item => cardArr.indexOf(item.cardId) !== -1)
-        myCardData.sort((a, b) => {
-            if (cardArr.indexOf(a.cardId) === -1 && cardArr.indexOf(b.cardId) === -1) {
-                return 1
-            } else if (cardArr.indexOf(a.cardId) !== -1 && cardArr.indexOf(b.cardId) === -1) {
-                return -1
-            } else if (cardArr.indexOf(a.cardId) === -1 && cardArr.indexOf(b.cardId) !== -1) {
-                return 1
-            }
-            return cardArr.indexOf(a.cardId) - cardArr.indexOf(b.cardId)
-        })
-        return myCardData;
-    }
-    // 统计星级
-    starCount (cardArr) {
-        let starArr = [0, 0, 0, 0, 0, 0];
-        let starCount_ = 0;
-        for (let i = 0; i < cardArr.length; i++) {
-            let star = cardArr[i].star - 1;
-            starArr[star] = starArr[star] + 1;
-            starCount_ = starCount_ + star + 1;
-        }
-        return [starArr, starCount_];
-    }
-    // 统计水晶
-    cryCount (cardArr) {
-        let cryArr = [0, 0, 0, 0, 0]
-        for (let i = 0; i < cardArr.length; i++) {
-            let cry = cardArr[i].cry - 1;
-            cryArr[cry] = cryArr[cry] + 1;
-        }
-        return cryArr;
-    }
-    // 统计攻防速血
-    setADSHP (cardArr, starArr, starCount, cryArr, cardIndexCount, cardLevel) {
-        let x = starCount;//初始化x为星星的数量
-        // 如果是1、2、3、4、5、6顺子排列的卡牌则攻击力和防御力和血的x+20
-        let minStarCount = Math.min.apply(null, starArr);
-        if (minStarCount > 2) {
-            minStarCount = 2;
-        }
-        let cardCountPlus = Math.floor(cardIndexCount / 25);//每25收集率x+1
-        x = x + minStarCount * 20 + cardCountPlus;
-        // 每三种同属性的卡牌攻击力和防御力和血的x+1
-        // 同属性加成废止
-        // for(let i=0;i<cryArr.length;i++){
-        //     let cryPlusX = Math.floor(cryArr[i]/3);
-        //     x = x + cryPlusX;
-        // }
-        // 攻击=x*100 防=x*50 血=x*200
-        let A = x * 100;
-        let D = x * 50;
-        let HP = x * 500;
-        // 设置速度
-        let S = 0;
-        for (let j = 0; j < cardArr.length; j++) {
-            //速4
-            let leftType = cardArr[j].leftType;
-            let level = cardLevel[cardArr[j].cardId] || 0;
-            if (leftType === 4) {
-                S = S + 1 + level * 1;
-            } else if (leftType === 1) {//全1
-                A = A + 50 + level * 50;
-                D = D + 25 + level * 25;
-            } else if (leftType === 2) {//兵2
-                A = A + 100 + level * 100;
-            } else if (leftType === 3) {//盾3
-                D = D + 50 + level * 50;
-            } else if (leftType === 5) {//爱5
-                HP = HP + 500 + level * 500;
-            }
-        }
-        return [A, D, S, HP];
-    }
-}
+//         // 攻击方攻击前
+//         if (DefendRightType !== 5) {
+//             if (AttackRightType === 1) {
+//                 AttackA = AttackA + Math.floor(AttackA * 0.1 * AttackStar);
+//             } else if (AttackRightType === 7) {
+//                 AttackA = AttackA + Math.floor(AttackA * 0.06 * AttackStar);
+//             } else if (AttackRightType === 4) {
+//                 AttackAddHP = Math.floor(AttackA * 0.05 * AttackStar + AttackD * 0.06 * AttackStar);//治 SAN+攻*5%*星级 + 防*6%*星级
+//                 AttackHP = AttackHP + AttackAddHP;
+//             } else if (AttackRightType === 5) {
+//                 DefendD = DefendD - Math.floor(DefendD * 0.01 * AttackStar);
+//             }
+//         }
+//         // 攻击前结算属性相克
+//         let ke = cryKe[AttackCard.cry].indexOf(DefendCard.cry);
+//         let beike = cryKe[DefendCard.cry].indexOf(AttackCard.cry);
+//         if (ke !== -1) {//克制增伤
+//             let starCha = AttackStar - DefendStar//星级差
+//             if (starCha < 1) {
+//                 starCha = 1;
+//             }
+//             AttackA = AttackA + Math.floor(AttackA * 0.1 * starCha);
+//         }
+//         if (beike !== -1) {//被克减伤
+//             let starCha = DefendStar - AttackStar//星级差
+//             if (starCha < 1) {
+//                 starCha = 1;
+//             }
+//             DefendD = DefendD + Math.floor(DefendD * 0.1 * starCha);
+//         }
+//         // 防守方接受攻击前
+//         if (AttackRightType !== 5) {
+//             if (DefendRightType === 3) {
+//                 DefendD = DefendD + Math.floor(DefendD * 0.16 * DefendStar);//防 +防*16%*星级
+//             } else if (DefendRightType === 7) {
+//                 DefendD = DefendD + Math.floor(DefendD * 0.12 * DefendStar);//特 +防*12%*星级
+//             } else if (DefendRightType === 6) {
+//                 DefendShield = Math.floor(AttackA * 0.065 * DefendStar + DefendD * 0.03 * DefendStar);//支 敌方攻击力*6.5%*星级 + 防*3%*星级
+//             }
+//         }
+//         // 开始攻击
+//         let AttackPow = AttackA - DefendD - DefendShield;
+//         if (AttackPow < 0) {
+//             AttackPow = 0;
+//         }
+//         // 结算扣血
+//         DefendHP = DefendHP - AttackPow;
+//         // 结算伤害反弹
+//         let DefendPow = 0;
+//         if (DefendRightType === 2 && AttackRightType !== 5) {
+//             DefendPow = Math.floor(AttackPow * 0.10 * DefendStar);
+//             AttackHP = AttackHP - DefendPow;
+//         }
+//         // 防止HP为负数
+//         if (DefendHP < 0) {
+//             DefendHP = 0;
+//         }
+//         if (AttackHP < 0) {
+//             AttackHP = 0;
+//         }
+//         return [AttackPow, AttackHP, DefendPow, DefendHP, AttackAddHP];
+//     }
+//     // 出战卡牌信息写入
+//     setBattleCardInfo (cardArr, allCardDataArr) {
+//         let myCardData = allCardDataArr[0];
+//         myCardData = myCardData.filter(item => cardArr.indexOf(item.cardId) !== -1)
+//         myCardData.sort((a, b) => {
+//             if (cardArr.indexOf(a.cardId) === -1 && cardArr.indexOf(b.cardId) === -1) {
+//                 return 1
+//             } else if (cardArr.indexOf(a.cardId) !== -1 && cardArr.indexOf(b.cardId) === -1) {
+//                 return -1
+//             } else if (cardArr.indexOf(a.cardId) === -1 && cardArr.indexOf(b.cardId) !== -1) {
+//                 return 1
+//             }
+//             return cardArr.indexOf(a.cardId) - cardArr.indexOf(b.cardId)
+//         })
+//         return myCardData;
+//     }
+//     // 统计星级
+//     starCount (cardArr) {
+//         let starArr = [0, 0, 0, 0, 0, 0];
+//         let starCount_ = 0;
+//         for (let i = 0; i < cardArr.length; i++) {
+//             let star = cardArr[i].star - 1;
+//             starArr[star] = starArr[star] + 1;
+//             starCount_ = starCount_ + star + 1;
+//         }
+//         return [starArr, starCount_];
+//     }
+//     // 统计水晶
+//     cryCount (cardArr) {
+//         let cryArr = [0, 0, 0, 0, 0]
+//         for (let i = 0; i < cardArr.length; i++) {
+//             let cry = cardArr[i].cry - 1;
+//             cryArr[cry] = cryArr[cry] + 1;
+//         }
+//         return cryArr;
+//     }
+//     // 统计攻防速血
+//     setADSHP (cardArr, starArr, starCount, cryArr, cardIndexCount, cardLevel) {
+//         let x = starCount;//初始化x为星星的数量
+//         // 如果是1、2、3、4、5、6顺子排列的卡牌则攻击力和防御力和血的x+20
+//         let minStarCount = Math.min.apply(null, starArr);
+//         if (minStarCount > 2) {
+//             minStarCount = 2;
+//         }
+//         let cardCountPlus = Math.floor(cardIndexCount / 25);//每25收集率x+1
+//         x = x + minStarCount * 20 + cardCountPlus;
+//         // 每三种同属性的卡牌攻击力和防御力和血的x+1
+//         // 同属性加成废止
+//         // for(let i=0;i<cryArr.length;i++){
+//         //     let cryPlusX = Math.floor(cryArr[i]/3);
+//         //     x = x + cryPlusX;
+//         // }
+//         // 攻击=x*100 防=x*50 血=x*200
+//         let A = x * 100;
+//         let D = x * 50;
+//         let HP = x * 500;
+//         // 设置速度
+//         let S = 0;
+//         for (let j = 0; j < cardArr.length; j++) {
+//             //速4
+//             let leftType = cardArr[j].leftType;
+//             let level = cardLevel[cardArr[j].cardId] || 0;
+//             if (leftType === 4) {
+//                 S = S + 1 + level * 1;
+//             } else if (leftType === 1) {//全1
+//                 A = A + 50 + level * 50;
+//                 D = D + 25 + level * 25;
+//             } else if (leftType === 2) {//兵2
+//                 A = A + 100 + level * 100;
+//             } else if (leftType === 3) {//盾3
+//                 D = D + 50 + level * 50;
+//             } else if (leftType === 5) {//爱5
+//                 HP = HP + 500 + level * 500;
+//             }
+//         }
+//         return [A, D, S, HP];
+//     }
+// }
 
 
 // 结算胜负

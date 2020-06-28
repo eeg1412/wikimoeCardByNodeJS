@@ -217,20 +217,20 @@
                       <p class="mb10">
                         <el-tooltip placement="top">
                           <div slot="content"
-                               class="wm_upcard_tooltips">需要{{item.leftType | setItemShould}}个【{{itemData_[item.cry+''+item.leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer"
+                               class="wm_upcard_tooltips">需要{{itemShould(item.leftType,item.level)}}个【{{itemData_[item.cry+''+item.leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer"
                                :src="'/static/otherImg/item/'+item.cry+''+item.leftType+'.png'" />
-                        </el-tooltip>×{{item.leftType | setItemShould}}({{myItem[item.cry+''+item.leftType] || 0}})
+                        </el-tooltip>×{{itemShould(item.leftType,item.level)}}({{myItem[item.cry+''+item.leftType] || 0}})
                       </p>
                       <div class="mb10">
                         <div class="wm_level_card_ico_img_body">
                           <el-tooltip placement="top"
                                       :disabled="tootipsDisabled">
                             <div slot="content"
-                                 class="wm_upcard_tooltips">需要{{setCardShould(item.star)}}张【{{item.name}}】，除了默认获取途径外还可以从市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer"
+                                 class="wm_upcard_tooltips">需要{{setCardShould(item.star,item.level)}}张【{{item.name}}】，除了默认获取途径外还可以从市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer"
                                  :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'"
                                  @click="goMarket(item)" />
                           </el-tooltip>
-                        </div><span>×{{setCardShould(item.star)}}({{item.count}})</span>
+                        </div><span>×{{setCardShould(item.star,item.level)}}({{item.count}})</span>
                       </div>
                       <div class="mb10">
                         <div class="wm_level_card_ico_img_body">
@@ -248,34 +248,34 @@
                       <p class="mb10">
                         <el-tooltip placement="top">
                           <div slot="content"
-                               class="wm_upcard_tooltips">需要{{item.leftType | setItemShould}}个【{{itemData_[item.cry+''+item.leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer"
+                               class="wm_upcard_tooltips">需要{{itemShould(item.leftType,item.level)}}个【{{itemData_[item.cry+''+item.leftType].name}}】，可通过挖矿获得。</div><img class="wm_level_card_item_img wm_set_pointer"
                                :src="'/static/otherImg/item/'+item.cry+''+item.leftType+'.png'" />
-                        </el-tooltip>×{{item.leftType | setItemShould}}({{myItem[item.cry+''+item.leftType] || 0}})
+                        </el-tooltip>×{{itemShould(item.leftType,item.level)}}({{myItem[item.cry+''+item.leftType] || 0}})
                       </p>
                       <div class="mb10">
                         <div class="wm_level_card_ico_img_body">
                           <el-tooltip placement="top">
                             <div slot="content"
-                                 class="wm_upcard_tooltips">需要{{item.count>setCardShould(item.star)?setCardShould(item.star):item.count}}张【{{item.name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer"
+                                 class="wm_upcard_tooltips">需要{{item.count>setCardShould(item.star,item.level)?setCardShould(item.star,item.level):item.count}}张【{{item.name}}】，可通过抽卡或者市场交易获得。</div><img class="wm_level_card_ico_img wm_set_pointer"
                                  :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'" />
                           </el-tooltip>
-                        </div><span>×{{item.count>setCardShould(item.star)?setCardShould(item.star):item.count}}({{item.count}})</span>
+                        </div><span>×{{item.count>setCardShould(item.star,item.level)?setCardShould(item.star,item.level):item.count}}({{item.count}})</span>
                       </div>
                       <div class="mb10">
                         <div class="wm_level_card_ico_img_body">
                           <el-tooltip placement="top">
                             <div slot="content"
-                                 class="wm_upcard_tooltips">需要{{item.count>setCardShould(item.star)?0:(setCardShould(item.star)-item.count)*3}}个【{{itemData_['1'+PrefixInteger_(item.star,2)].name}}】，<br />碎片可以从【卡牌分解】中获得。</div><img class="wm_level_card_ico_img wm_set_pointer"
+                                 class="wm_upcard_tooltips">需要{{item.count>setCardShould(item.star,item.level)?0:(setCardShould(item.star,item.level)-item.count)*3}}个【{{itemData_['1'+PrefixInteger_(item.star,2)].name}}】，<br />碎片可以从【卡牌分解】中获得。</div><img class="wm_level_card_ico_img wm_set_pointer"
                                  :src="'/static/otherImg/item/'+'1'+PrefixInteger_(item.star,2)+'.png'" />
                           </el-tooltip>
-                        </div><span>×{{item.count>setCardShould(item.star)?0:(setCardShould(item.star)-item.count)*3}}({{myItem['1'+PrefixInteger_(item.star,2)] || 0}})</span>
+                        </div><span>×{{item.count>setCardShould(item.star,item.level)?0:(setCardShould(item.star,item.level)-item.count)*3}}({{myItem['1'+PrefixInteger_(item.star,2)] || 0}})</span>
                       </div>
                     </div>
                     <div class="mb20">
                       <el-checkbox v-model="item.usechip"
                                    @change="chipChange">使用碎片</el-checkbox>
                     </div>
-                    <p class="mb10">成功率:{{[item.level,item.leftType] | setChenggolv}}%</p>
+                    <!-- <p class="mb10">成功率:{{[item.level,item.leftType] | setChenggolv}}%</p> -->
                     <div class="mt20 pb10">
                       <el-dropdown split-button
                                    type="primary"
@@ -439,6 +439,30 @@ export default {
     this.apiInit();
   },
   methods: {
+    itemShould (leftType, level = 0) {
+      let addCoe = 0;
+      if (level > 19) { //假如等级大于20则需要的矿石数量会增加
+        addCoe = level - 19;
+      }
+      let itemCount = 0;
+      if (leftType == 1) {
+        const itemCountBase = 45;
+        itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
+      } else if (leftType == 2) {
+        const itemCountBase = 60;
+        itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
+      } else if (leftType == 3) {
+        const itemCountBase = 30;
+        itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
+      } else if (leftType == 4) {
+        const itemCountBase = 60;
+        itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
+      } else if (leftType == 5) {
+        const itemCountBase = 150;
+        itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
+      }
+      return Math.round(itemCount);
+    },
     updateUserinfo () {
       this.$refs.userTop.getUserInfo();
     },
@@ -521,29 +545,40 @@ export default {
         this.$message('您的等级转换道具不足！');
       }
     },
-    setCardShould (v) {
+    setCardShould (v, l = 0) {
       let shouldCard = 0;
+      let shouldCoe = 0;
+      let shouldCardBase = 0;
+      if (l > 19) {
+        shouldCoe = l - 19;
+      }
       switch (v) {
         case 1:
-          shouldCard = 4;
+          shouldCardBase = 4;
+          shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
           break;
         case 2:
-          shouldCard = 4;
+          shouldCardBase = 4;
+          shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
           break;
         case 3:
-          shouldCard = 16;
+          shouldCardBase = 16;
+          shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
           break;
         case 4:
-          shouldCard = 6;
+          shouldCardBase = 6;
+          shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
           break;
         case 5:
-          shouldCard = 4;
+          shouldCardBase = 4;
+          shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
           break;
         case 6:
-          shouldCard = 2;
+          shouldCardBase = 2;
+          shouldCard = shouldCardBase + ((shouldCardBase - 1) * shouldCoe);
           break;
       }
-      return shouldCard;
+      return Math.round(shouldCard);
     },
     openItemBag () {
       //查看有没有道具
@@ -561,6 +596,7 @@ export default {
       this.$confirm('升级将消耗卡牌和道具，是否继续?', '提示', {
         confirmButtonText: '升级',
         cancelButtonText: '取消',
+        lockScroll: false,
         type: 'warning'
       }).then(() => {
         let params = {

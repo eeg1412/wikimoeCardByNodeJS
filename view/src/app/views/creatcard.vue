@@ -447,9 +447,9 @@ export default {
         const w = imageObj.width;
         const h = imageObj.height;
         if (w < 396 || h < 556) {
-          this.$message.error('选择的立绘尺寸过小，请重新选择！');
+          this.$message.error('选择的立绘尺寸过小，请重新选择！立绘宽度不能小于396px，高度不能小于556px！');
         } else if (w > (396 * 2) && h > (556 * 2)) {
-          this.$message.error('选择的立绘尺寸过大，请先使用制图软件进行缩放！');
+          this.$message.error('选择的立绘尺寸过大，请先使用制图软件进行缩放！立绘宽度不能超过792px，高度不能超过1112px！');
         } else {
           this.sprite.CGSprite.texture = PIXI.Texture.from(this.imageUrl);
           this.sprite.CGSprite.position.set(198, 278);
