@@ -144,6 +144,11 @@
           </el-form-item>
         </el-form>
       </div>
+      <div>
+        <div class="tc">
+          已收集：{{cardCountSum(cardCount)}}/{{cardBook.length}}
+        </div>
+      </div>
       <el-collapse-transition>
         <div class="wm_mycard_list"
              v-if="userCard.length>0">
@@ -175,58 +180,18 @@
         </el-pagination>
       </div>
     </div>
-    <el-dialog title="卡牌详情"
-               :visible.sync="dialogCard"
-               :lock-scroll="false"
-               :append-to-body="true"
-               class="wm_handbook_info_dialog"
-               width="852px">
-      <el-row :gutter="20">
-        <el-col :sm="12"
-                :xs="24">
-          <div>
-            <img class="wm_handbook_info_img wm_set_pointer"
-                 :src="this.$wikimoecard.url+cardData.packageId+'/'+cardData.cardId+'.jpg'"
-                 @click="goMarket" />
-          </div>
-        </el-col>
-        <el-col :sm="12"
-                :xs="24">
-          <div class="f20 mb10 mt10 wm_handbook_cardname tc">{{cardData.name}}</div>
-          <div class="wm_handbook_cardinfo_body">
-            <div class="wm_handbook_cardinfo_item">卡牌编号：{{cardData.cardId}}</div>
-            <div class="wm_handbook_cardinfo_item">出自作品：《{{cardData.title}}》</div>
-            <div class="wm_handbook_cardinfo_item">星星等级：{{cardData.star}}星</div>
-            <div class="wm_handbook_cardinfo_item">水晶属性：{{cardData.cry | cry}}</div>
-            <div class="wm_handbook_cardinfo_item">被动属性：{{cardData.leftType | leftType}}</div>
-            <div class="wm_handbook_cardinfo_item">主动技能：{{cardData.rightType | rightType}}</div>
-            <div class="wm_handbook_cardinfo_item">拥有卡牌：{{cardData.have || '0'}}张</div>
-          </div>
-          <div class="wm_handbook_cardinfo_body mt20">卡牌提供：<el-tooltip placement="top">
-              <div slot="content"
-                   class="tc"><img class="wm_handbook_auther_tx"
-                     :src="'https://gravatar.loli.net/avatar/'+cardData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" />
-                <div class="mt5">{{cardData.auther}}</div>
-              </div>
-              <span class="dib">{{cardData.auther}}</span>
-            </el-tooltip>
-          </div>
-          <el-button type="primary"
-                     class="w_10 mt20"
-                     @click="goMarket">购卡或求购</el-button>
-        </el-col>
-      </el-row>
-      <span slot="footer"
-            class="dialog-footer">
-        <el-button @click="dialogCard = false">关闭</el-button>
-      </span>
-    </el-dialog>
+    <cardInfoDialog @cardInfoShow="cardInfoDiaShow"
+                    :cardInfoDigShow="dialogCard"
+                    :cardData="cardItemData"
+                    @buyNewCard="updateMyCard"
+                    @updateUserinfo="updateUserinfo"></cardInfoDialog>
     <menuView></menuView>
   </div>
 </template>
 
 <script>
 import menuView from '../components/menu.vue';
+import cardInfoDialog from "../components/cardInfo"
 import { authApi } from "../api";
 import userTop from '../components/topUserInfo.vue';
 import { PrefixInteger, md5Check } from "../../utils/utils";
@@ -235,6 +200,7 @@ import md5_ from 'js-md5';
 export default {
   data () {
     return {
+      cardItemData: null,
       txDays: new Date().getDate(),
       cardData: {},
       dialogCard: false,
@@ -261,7 +227,8 @@ export default {
   },
   components: {
     menuView,
-    userTop
+    userTop,
+    cardInfoDialog
   },
   created () {
     console.log(this.searchForm.title);
@@ -272,6 +239,31 @@ export default {
     this.$emit('l2dMassage', '这里可以查看自己已经收集到的卡牌。');
   },
   methods: {
+    updateUserinfo () {
+      this.$refs.userTop.getUserInfo();
+    },
+    updateMyCard () {
+      this.getUserCard();
+    },
+    cardInfoDiaShow (v) {
+      this.dialogCard = v;
+    },
+    cardCountSum (count) {
+      const obj = count;
+      let arr = [];
+      for (let key in obj) {
+        if (!obj.hasOwnProperty(key)) {
+          continue;
+        }
+        const cardCount = obj[key];
+        if (cardCount > 0) {
+          let item = {};
+          item[key] = obj[key];
+          arr.push(item);
+        }
+      }
+      return arr.length;
+    },
     changepackageId () {
       this.searchForm = {
         star: '0',
@@ -297,6 +289,7 @@ export default {
     },
     openCardInfo (data) {
       this.dialogCard = true;
+      this.cardItemData = data;
       this.cardData = data;
     },
     goMarket () {

@@ -57,7 +57,8 @@ module.exports = async function (req, res, next) {
     });
     if (type === 'search') {
         let star = isNaN(Math.round(req.body.star)) ? 0 : Math.round(req.body.star);
-        let isMy = isNaN(Math.round(req.body.my)) ? 0 : Math.round(req.body.my);
+        let isMy = req.body.my;
+        const packageId = req.body.packageId || "-1";
         pageSize = 10;
         //查询未过期的
         let params = {
@@ -66,8 +67,13 @@ module.exports = async function (req, res, next) {
         if (star) {
             params['star'] = star;
         }
-        if (isMy === 1) {
+        if (isMy === "1") {
             params['email'] = email;
+        } else {
+            params['email'] = { $nin: [email] };
+        }
+        if (packageId != "-1") {
+            params['packageId'] = packageId;
         }
         let getParams = '-__v -_id -email'
         let resault = await wantCardData.findWantCard(pageSize, page, params, getParams).catch((err) => {
@@ -80,8 +86,21 @@ module.exports = async function (req, res, next) {
             );
             throw err;
         });
+        let myCardList = {};
+        resault[0].forEach((item) => {
+            const itemCardId = item.cardId;
+            const itemPackageId = item.packageId;
+            try {
+                const cardCount = result.card[itemPackageId][itemCardId] || 0;
+                myCardList[itemCardId] = cardCount;
+            }
+            catch (e) {
+                myCardList[itemCardId] = 0;
+            }
+        });
         res.send({
             code: 1,
+            myCardList: myCardList,
             data: resault[0],
             total: resault[1],
             msg: 'ok'
