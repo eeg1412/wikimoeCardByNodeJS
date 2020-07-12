@@ -629,6 +629,7 @@ export default {
           let resData = res.data;
           this.cardIndexCount = res.data.cardIndexCount || 0;
           // this.myCardLevel = res.data.cardLevelData;
+          Object.assign(this.myCardLevel, res.data.cardLevelData);
           if (res.data.cardIndexCount > 0) {
             this.userCardCache = res.data.card || [];
             this.cardPage = 1;
