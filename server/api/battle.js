@@ -51,11 +51,14 @@
 
 const utils = require('../utils/utils');
 const userData = require('../utils/database/user');
+const AiDataBase = require('../utils/database/ais');
 const userbattleinfoData = require('../utils/database/userbattleinfo');
 const battleLogsData = require('../utils/database/battleLogs');
 const chalk = require('chalk');
 const cardData = require('../utils/database/cardData');
 const usersModel = require('../models/users');
+const AisModel = require('../models/ais');
+const _ = require('lodash');
 
 
 
@@ -295,16 +298,36 @@ function isWin (MyADSHP, EmADSHP) {
     }
 }
 // 对战
-function cardBattle (AttackADSHP, AttackCard, DefendEmADSHP, DefendCard) {
+function cardBattle (AttackADSHP, AttackCard, DefendEmADSHP, DefendCard, AttackBuff, AttackDebuff, DefendBuff, DefendDebuff) {
     // 主动技能：
-    // 特7：我方攻击前攻击力临时+x*10%、敌方攻击时防御力临时+x*10%
-    // 魔2：敌方攻击后反弹攻击造成的伤害的20%
-    // 物1：我方攻击前攻击力临时+x*10%
-    // 防3：敌方攻击前防御力临时+x*10%
-    // 治4：我方攻击前我方HP+x*10%
-    // 支6：敌方攻击前临时产生x*20%的临时HP
-    // 妨5：使对方的主动技能失效
-    // 克制表属性克制为火→风→水→火 暗→水火风 光→暗
+    // 物1
+    // 魔2
+    // 防3
+    // 治4：解除异常状态，恢复攻+8%*星级的SAN，接下来2回合恢复攻的14%的SAN
+    // 妨5
+    // 支6
+    // 特7
+
+    //红1
+    //蓝2
+    //绿3
+    //光4
+    //暗5
+
+    // buff
+    // 回血buff:1
+    // 加攻防buff:2
+
+    // debuff
+    // 烧伤:1
+    // 冻伤:2
+    // 毒:3
+    // 混乱:4
+    // 恐惧:5
+
+
+
+    // 克制表属性克制为火→风→水→火 光←→暗
 
     // 20190516修改
     // 物：攻= +攻*10%*星级
@@ -324,13 +347,14 @@ function cardBattle (AttackADSHP, AttackCard, DefendEmADSHP, DefendCard) {
         '5': [4]
     }
     let AttackRightType = AttackCard.rightType;
-    // let AttackCry = AttackCard.cry;
+    let AttackCry = AttackCard.cry;
     let AttackA = AttackADSHP[0];
     let AttackD = AttackADSHP[1];
     let AttackHP = AttackADSHP[3];
     // let AttackShield = 0;//临时护盾
     let AttackStar = AttackCard.star;//攻击卡牌的星级
     let AttackAddHP = 0;//加血多少
+    let AttackCanSkill = true;
 
     let DefendRightType = DefendCard.rightType;
     // let DefendCry = DefendCard.cry;
@@ -339,60 +363,160 @@ function cardBattle (AttackADSHP, AttackCard, DefendEmADSHP, DefendCard) {
     let DefendHP = DefendEmADSHP[3];
     let DefendShield = 0;//临时护盾
     let DefendStar = DefendCard.star;//防守卡牌的星级
+    let DefendCanSkill = true;
 
     // 攻击方攻击前
-    if (DefendRightType !== 5) {
-        if (AttackRightType === 1) {
-            AttackA = AttackA + Math.floor(AttackA * 0.1 * AttackStar);
-        } else if (AttackRightType === 7) {
-            AttackA = AttackA + Math.floor(AttackA * 0.06 * AttackStar);
+    // 如果为妨，结算是否成功发动
+    if (DefendRightType === 5) {
+        const DefendFangYinZi = utils.randomNum(1, 100);
+        const DefendFangRange = 16 * DefendStar;
+        if (DefendFangYinZi < DefendFangRange) {
+            AttackCanSkill = false;
+        }
+    }
+
+    if (AttackCanSkill) {
+        if (AttackRightType === 1 || AttackRightType === 2) {
+            AttackA = AttackA + Math.floor(AttackA * 0.09 * AttackStar);
+        } else if (AttackRightType === 3) {
+            AttackA = Math.floor(AttackD * 0.30 * AttackStar);
         } else if (AttackRightType === 4) {
-            AttackAddHP = Math.floor(AttackA * 0.05 * AttackStar + AttackD * 0.06 * AttackStar);//治 SAN+攻*5%*星级 + 防*6%*星级
+            // 治疗清空debuff
+            AttackDebuff = [];
+            AttackAddHP = Math.floor(AttackA * 0.08 * AttackStar);
             AttackHP = AttackHP + AttackAddHP;
+            const newBuff = {
+                id: 1,
+                count: 2,
+                star: AttackStar,
+                isNew: true
+            }
+            AttackBuff.push(newBuff);
         } else if (AttackRightType === 5) {
-            DefendD = DefendD - Math.floor(DefendD * 0.01 * AttackStar);
+            DefendD = DefendD - Math.floor(DefendD * 0.1 * (7 - AttackStar));
+        } else if (AttackRightType === 6) {
+            const newBuff = {
+                id: 2,
+                count: 1,
+                star: AttackStar,
+                isNew: true
+            }
+            AttackBuff.push(newBuff);
+        } else if (AttackRightType === 7) {
+            const newDeBuff = {
+                id: AttackCry,
+                count: 2,
+                star: AttackStar,
+                isNew: true
+            }
+            DefendDebuff.push(newDeBuff);
         }
     }
-    // 攻击前结算属性相克
-    let ke = cryKe[AttackCard.cry].indexOf(DefendCard.cry);
-    let beike = cryKe[DefendCard.cry].indexOf(AttackCard.cry);
-    if (ke !== -1) {//克制增伤
-        let starCha = AttackStar - DefendStar//星级差
-        if (starCha < 1) {
-            starCha = 1;
+    // 如果攻击方的主动技能为物，则攻防不会受到属性影响
+    if (AttackRightType !== 1) {
+        // 攻击前结算属性相克
+        let ke = cryKe[AttackCard.cry].indexOf(DefendCard.cry);
+        let beike = cryKe[DefendCard.cry].indexOf(AttackCard.cry);
+        // 如果攻击方为魔，则加成为1
+        let moAdd = AttackRightType === 2 ? 1 : 0;
+        if (ke !== -1) {//克制增伤
+            let starCha = AttackStar - DefendStar//星级差
+            if (starCha < 1) {
+                starCha = 1;
+            }
+            starCha = starCha + moAdd;
+            AttackA = AttackA + Math.floor(AttackA * 0.1 * starCha);
         }
-        AttackA = AttackA + Math.floor(AttackA * 0.1 * starCha);
-    }
-    if (beike !== -1) {//被克减伤
-        let starCha = DefendStar - AttackStar//星级差
-        if (starCha < 1) {
-            starCha = 1;
+        if (beike !== -1) {//被克减伤
+            let starCha = DefendStar - AttackStar//星级差
+            if (starCha < 1) {
+                starCha = 1;
+            }
+            DefendD = DefendD + Math.floor(DefendD * 0.1 * starCha);
         }
-        DefendD = DefendD + Math.floor(DefendD * 0.1 * starCha);
     }
+
+    // 如果为妨，结算是否成功发动
+    if (AttackRightType === 5) {
+        const AttackFangYinZi = utils.randomNum(1, 100);
+        const AttackFangRange = 16 * AttackStar;
+        if (AttackFangYinZi < AttackFangRange) {
+            DefendCanSkill = false;
+        }
+    }
+
     // 防守方接受攻击前
-    if (AttackRightType !== 5) {
-        if (DefendRightType === 3) {
-            DefendD = DefendD + Math.floor(DefendD * 0.16 * DefendStar);//防 +防*16%*星级
-        } else if (DefendRightType === 7) {
-            DefendD = DefendD + Math.floor(DefendD * 0.12 * DefendStar);//特 +防*12%*星级
-        } else if (DefendRightType === 6) {
-            DefendShield = Math.floor(AttackA * 0.065 * DefendStar + DefendD * 0.03 * DefendStar);//支 敌方攻击力*6.5%*星级 + 防*3%*星级
+    // ...
+    // 结算buff
+    // 结算攻击方buff
+    for (let i = 0; i < AttackBuff.length; i++) {
+        const isNew = AttackBuff[i].isNew;
+        if (!isNew) {
+            const id = AttackBuff[i].id;
+            const star = AttackBuff[i].star;
+            if (id === 1) {
+                const plusAddHP = Math.floor(AttackADSHP[0] * 0.04 * star);
+                AttackAddHP = AttackAddHP + plusAddHP;
+                AttackHP = AttackHP + plusAddHP;
+            } else if (id === 2) {
+                AttackA = Math.floor(AttackA + AttackA * (0.11 * star));
+            }
         }
     }
+    // 结算防守方的buff
+    for (let i = 0; i < DefendBuff.length; i++) {
+        const isNew = DefendBuff[i].isNew;
+        if (!isNew) {
+            const id = DefendBuff[i].id;
+            const star = DefendBuff[i].star;
+            if (id === 2) {
+                DefendD = Math.floor(DefendD + DefendD * (0.02 * star));
+            }
+        }
+    }
+
+
+
     // 开始攻击
     let AttackPow = AttackA - DefendD - DefendShield;
+    if (DefendCanSkill) {
+        if (DefendRightType === 3) {
+            AttackPow = Math.floor(AttackPow * (1 - 0.1 * DefendStar));
+        }
+    }
     if (AttackPow < 0) {
         AttackPow = 0;
     }
     // 结算扣血
     DefendHP = DefendHP - AttackPow;
-    // 结算伤害反弹
+    // 结算伤害反弹或者debuff造成的伤害
     let DefendPow = 0;
-    if (DefendRightType === 2 && AttackRightType !== 5) {
-        DefendPow = Math.floor(AttackPow * 0.10 * DefendStar);
-        AttackHP = AttackHP - DefendPow;
+    // if (DefendRightType === 2 && AttackRightType !== 5) {
+    //     DefendPow = Math.floor(AttackPow * 0.10 * DefendStar);
+    //     AttackHP = AttackHP - DefendPow;
+    // }
+    // 结算debuff造成的伤害
+    for (let i = 0; i < AttackDebuff.length; i++) {
+        const isNew = AttackDebuff[i].isNew;
+        if (!isNew) {
+            const id = AttackDebuff[i].id;
+            const star = AttackDebuff[i].star;
+            if (id === 1) {
+                DefendPow = Math.floor(DefendPow + DefendEmADSHP[0] * (AttackCry === 3 ? 0.065 : 0.06) * star);
+            } else if (id === 2) {
+                DefendPow = Math.floor(DefendPow + DefendEmADSHP[0] * (AttackCry === 1 ? 0.065 : 0.06) * star);
+            } else if (id === 3) {
+                DefendPow = Math.floor(DefendPow + DefendEmADSHP[0] * (AttackCry === 2 ? 0.065 : 0.06) * star);
+            } else if (id === 4) {
+                DefendPow = Math.floor(DefendPow + AttackADSHP[0] * (AttackCry === 5 ? 0.065 : 0.06) * star);
+            } else if (id === 5) {
+                DefendPow = Math.floor(DefendPow + AttackADSHP[0] * (AttackCry === 4 ? 0.065 : 0.06) * star);
+            }
+        }
     }
+    AttackHP = AttackHP - DefendPow;
+
+
     // 防止HP为负数
     if (DefendHP < 0) {
         DefendHP = 0;
@@ -400,7 +524,7 @@ function cardBattle (AttackADSHP, AttackCard, DefendEmADSHP, DefendCard) {
     if (AttackHP < 0) {
         AttackHP = 0;
     }
-    return [AttackPow, AttackHP, DefendPow, DefendHP, AttackAddHP];
+    return [AttackPow, AttackHP, DefendPow, DefendHP, AttackAddHP, AttackBuff, AttackDebuff, DefendBuff, DefendDebuff, AttackCanSkill, DefendCanSkill];
 }
 // 寻找对手
 async function searchEm (parmas) {
@@ -411,6 +535,25 @@ async function searchEm (parmas) {
         .skip(utils.randomNum(0, total - 1))
         .limit(1);
     return data;
+}
+// 寻找Ai
+async function searchAi (parmas) {
+    let query = AisModel.find(parmas);
+    let total = await query.countDocuments();
+    let data = await query
+        .find()
+        .skip(utils.randomNum(0, total - 1))
+        .limit(1);
+    return data;
+}
+// 写入Ai
+function writeAi (parmas) {
+    AiDataBase.saveAi(parmas).catch((err) => {
+        console.error(
+            chalk.red('数据库更新错误！')
+        );
+        throw err;
+    });
 }
 // 出战卡牌信息写入
 async function setBattleCardInfo (cardArr, allCardDataArr) {
@@ -467,7 +610,7 @@ function setADSHP (cardArr, starArr, starCount, cryArr, cardIndexCount, cardLeve
     // 攻击=x*100 防=x*50 血=x*200
     let A = x * 100;
     let D = x * 50;
-    let HP = x * 500;
+    let HP = x * 1150;
     // 设置速度
     let S = 0;
     for (let j = 0; j < cardArr.length; j++) {
@@ -484,7 +627,7 @@ function setADSHP (cardArr, starArr, starCount, cryArr, cardIndexCount, cardLeve
         } else if (leftType === 3) {//盾3
             D = D + 50 + level * 50;
         } else if (leftType === 5) {//爱5
-            HP = HP + 500 + level * 500;
+            HP = HP + 1150 + level * 1150;
         }
     }
     return [A, D, S, HP];
@@ -583,6 +726,15 @@ module.exports = async function (req, res, next) {
 
     // 获取对战次数结算
     const dataChanceData = utils.battleChance(result);
+    // 计算当天战斗次数
+    let battleOverTimes = 6;//最多可以储存多少次对战
+    let dailyBattleTime = dataChanceData.dataTime;
+    let myBattleTimes = dataChanceData.battleChance;//战斗次数
+    let battleOverChance = false;//是否超过对战次数
+    // let dailyIsToday = false;//对战次数数据是否是当日
+    if (myBattleTimes < 1) {
+        battleOverChance = true;
+    }
 
     console.info(
         chalk.green(email + '开始匹配对战对手。IP为：' + IP)
@@ -624,6 +776,8 @@ module.exports = async function (req, res, next) {
     }
     // 初始化一些信息
     let AiMode = emData.length > 0 ? false : true;//没有对手的话进入ai模式
+    let AiData = [];
+    let AiInfo = {};
     // 初始化个人信息
     let MyName = result.nickName;
     let MyMD5 = result.md5;
@@ -699,22 +853,49 @@ module.exports = async function (req, res, next) {
         console.info(
             chalk.green(email + '无匹配的情况下给一个AI。IP为：' + IP)
         )
-        EmBattleCard = creatAICard(MyCardStarCount, allCardDataArr);
-        // EmBattleCard = EmBattleCard.sort(cardSort);
-        EmName = '自动书记人偶' + utils.randomNum(0, 99) + '号';
-        if (MyCardIndexCount < 200 && !advanced) {
-            EmCardIndexCount = MyCardIndexCount + utils.randomNum(-550, 0);
-        } else {
-            EmCardIndexCount = MyCardIndexCount + utils.randomNum(-400, 300);
+        // 匹配一个合适的AI
+        let emMinScore = myScore - 500 < 0 ? 0 : myScore - 500;
+        let emMaxScore = myScore + 750;
+        let AiScore = {
+            score: { $gte: emMinScore, $lte: emMaxScore },
+            email: { $ne: email },
+            battleHitStamp: { $lte: hitTime },
+            cardIndexCount: { $gte: 20 }
+        };
+        let searchAiP = utils.randomNum(1, 100);//AI概率因子
+        if (searchAiP > 50) {
+            AiData = await searchAi(AiScore);
         }
-        // 老版进阶加成：EmCardIndexCount = MyCardIndexCount+utils.randomNum(-125,300);
-        //给AI设置等级
-        let myCardLevelArr = Object.entries(myCardLevel);
-        //打乱卡牌数组
-        EmBattleCardRadomArr = [...EmBattleCard]
-        EmBattleCardRadomArr.sort(function () { return Math.random() > 0.5 ? -1 : 1; });
-        for (let i = 0; i < myCardLevelArr.length; i++) {
-            emCardLevel[EmBattleCardRadomArr[i]] = myCardLevelArr[i][1];
+        if (AiData.length > 0) {
+            // 有符合要求的AI
+            const thisAi = AiData[0];
+            EmBattleCard = thisAi.battleCard;
+            EmName = '人形高达' + utils.randomNum(0, 99) + '号';
+            EmCardIndexCount = thisAi.cardIndexCount;
+            emCardLevel = thisAi.cardLevel || {};
+        } else {
+            // 没有符合要求的AI创建新AI
+            // 给ai设置信息
+            EmBattleCard = creatAICard(MyCardStarCount, allCardDataArr);
+            // EmBattleCard = EmBattleCard.sort(cardSort);
+            EmName = '自动书记人偶' + utils.randomNum(0, 99) + '号';
+            if (MyCardIndexCount < 200 && !advanced) {
+                EmCardIndexCount = MyCardIndexCount + utils.randomNum(-550, 0);
+            } else {
+                EmCardIndexCount = MyCardIndexCount + utils.randomNum(-400, 400);
+            }
+            // 老版进阶加成：EmCardIndexCount = MyCardIndexCount+utils.randomNum(-125,300);
+            //给AI设置等级
+            let myCardLevelArr = Object.entries(myCardLevel);
+            //打乱卡牌数组
+            let EmBattleCardRadomArr = [...EmBattleCard];
+            EmBattleCardRadomArr.sort(function () { return Math.random() > 0.5 ? -1 : 1; });
+            for (let i = 0; i < myCardLevelArr.length; i++) {
+                emCardLevel[EmBattleCardRadomArr[i]] = myCardLevelArr[i][1];
+            }
+            AiInfo["battleCard"] = _.cloneDeep(EmBattleCard);
+            AiInfo["cardLevel"] = _.cloneDeep(emCardLevel);
+            AiInfo["cardIndexCount"] = EmCardIndexCount;
         }
     } else {
         // 有匹配设置对方的卡牌
@@ -771,6 +952,10 @@ module.exports = async function (req, res, next) {
     let MyBattleData = [];
     let EmBattleData = [];
     let speed = 1;//1为我方打，0为对方打
+    let MyBuff = [];
+    let MyDebuff = [];
+    let EmBuff = [];
+    let EmDebuff = [];
     if (MyADSHP[2] < EmADSHP[2]) {
         speed = 0;
     } else if (MyADSHP[2] === EmADSHP[2]) {
@@ -779,18 +964,26 @@ module.exports = async function (req, res, next) {
     for (let i = 0; i < 20; i++) {//最多不超过20局
         if (speed) {//如果我方速度快
             // 我方攻击
-            let MybattleDataRound = cardBattle(MyADSHP, MyBattleCard[i], EmADSHP, EmBattleCard[i]);
+            let MybattleDataRound = cardBattle(MyADSHP, MyBattleCard[i], EmADSHP, EmBattleCard[i], MyBuff, MyDebuff, EmBuff, EmDebuff);
             MyADSHP[3] = MybattleDataRound[1];
             EmADSHP[3] = MybattleDataRound[3];
+            MyBuff = _.cloneDeep(MybattleDataRound[5]);
+            MyDebuff = _.cloneDeep(MybattleDataRound[6]);
+            EmBuff = _.cloneDeep(MybattleDataRound[7]);
+            EmDebuff = _.cloneDeep(MybattleDataRound[8]);
             MyBattleData.push(MybattleDataRound);
             win = isWin(MyADSHP, EmADSHP);
             if (win !== 3) {
                 break;
             }
             // 对方攻击
-            let EmbattleDataRound = cardBattle(EmADSHP, EmBattleCard[i], MyADSHP, MyBattleCard[i]);
+            let EmbattleDataRound = cardBattle(EmADSHP, EmBattleCard[i], MyADSHP, MyBattleCard[i], EmBuff, EmDebuff, MyBuff, MyDebuff,);
             MyADSHP[3] = EmbattleDataRound[3];
             EmADSHP[3] = EmbattleDataRound[1];
+            MyBuff = _.cloneDeep(EmbattleDataRound[7]);
+            MyDebuff = _.cloneDeep(EmbattleDataRound[8]);
+            EmBuff = _.cloneDeep(EmbattleDataRound[5]);
+            EmDebuff = _.cloneDeep(EmbattleDataRound[6]);
             EmBattleData.push(EmbattleDataRound);
             win = isWin(MyADSHP, EmADSHP);
             if (win !== 3) {
@@ -798,24 +991,76 @@ module.exports = async function (req, res, next) {
             }
         } else {
             // 对方攻击
-            let EmbattleDataRound = cardBattle(EmADSHP, EmBattleCard[i], MyADSHP, MyBattleCard[i]);
+            let EmbattleDataRound = cardBattle(EmADSHP, EmBattleCard[i], MyADSHP, MyBattleCard[i], EmBuff, EmDebuff, MyBuff, MyDebuff);
             MyADSHP[3] = EmbattleDataRound[3];
             EmADSHP[3] = EmbattleDataRound[1];
+            MyBuff = _.cloneDeep(EmbattleDataRound[7]);
+            MyDebuff = _.cloneDeep(EmbattleDataRound[8]);
+            EmBuff = _.cloneDeep(EmbattleDataRound[5]);
+            EmDebuff = _.cloneDeep(EmbattleDataRound[6]);
             EmBattleData.push(EmbattleDataRound);
             win = isWin(MyADSHP, EmADSHP);
             if (win !== 3) {
                 break;
             }
             // 我方攻击
-            let MybattleDataRound = cardBattle(MyADSHP, MyBattleCard[i], EmADSHP, EmBattleCard[i]);
+            let MybattleDataRound = cardBattle(MyADSHP, MyBattleCard[i], EmADSHP, EmBattleCard[i], MyBuff, MyDebuff, EmBuff, EmDebuff);
             MyADSHP[3] = MybattleDataRound[1];
             EmADSHP[3] = MybattleDataRound[3];
+            MyBuff = _.cloneDeep(MybattleDataRound[5]);
+            MyDebuff = _.cloneDeep(MybattleDataRound[6]);
+            EmBuff = _.cloneDeep(MybattleDataRound[7]);
+            EmDebuff = _.cloneDeep(MybattleDataRound[8]);
             MyBattleData.push(MybattleDataRound);
             win = isWin(MyADSHP, EmADSHP);
             if (win !== 3) {
                 break;
             }
         }
+        // buff与debuff回合衰减
+        for (let i = 0; i < MyBuff.length; i++) {
+            const isNew = MyBuff[i].isNew;
+            const count = MyBuff[i].count;
+            if (isNew) {
+                MyBuff[i].isNew = false;
+            } else {
+                MyBuff[i].count = count - 1;
+            }
+        }
+        MyBuff = MyBuff.filter(item => item.count > 0);
+
+        for (let i = 0; i < MyDebuff.length; i++) {
+            const isNew = MyDebuff[i].isNew;
+            const count = MyDebuff[i].count;
+            if (isNew) {
+                MyDebuff[i].isNew = false;
+            } else {
+                MyDebuff[i].count = count - 1;
+            }
+        }
+        MyDebuff = MyDebuff.filter(item => item.count > 0);
+
+        for (let i = 0; i < EmBuff.length; i++) {
+            const isNew = EmBuff[i].isNew;
+            const count = EmBuff[i].count;
+            if (isNew) {
+                EmBuff[i].isNew = false;
+            } else {
+                EmBuff[i].count = count - 1;
+            }
+        }
+        EmBuff = EmBuff.filter(item => item.count > 0);
+
+        for (let i = 0; i < EmDebuff.length; i++) {
+            const isNew = EmDebuff[i].isNew;
+            const count = EmDebuff[i].count;
+            if (isNew) {
+                EmDebuff[i].isNew = false;
+            } else {
+                EmDebuff[i].count = count - 1;
+            }
+        }
+        EmDebuff = EmDebuff.filter(item => item.count > 0);
     }
     if (win === 3) {//打完还是3需要根据HP扣血情况判断
         if (MyADSHP[3] > EmADSHP[3] && (EmADSHP[3] / EmADSHP_[3]) < 0.8) {
@@ -827,15 +1072,6 @@ module.exports = async function (req, res, next) {
         } else {
             win = 2;
         }
-    }
-    // 计算当天战斗次数
-    let battleOverTimes = 6;//最多可以储存多少次对战
-    let dailyBattleTime = dataChanceData.dataTime;
-    let myBattleTimes = dataChanceData.battleChance;//战斗次数
-    let battleOverChance = false;//是否超过对战次数
-    // let dailyIsToday = false;//对战次数数据是否是当日
-    if (myBattleTimes < 1) {
-        battleOverChance = true;
     }
     myBattleTimes = myBattleTimes - 1;
     // 如果结算后的对战次数剩余5则重新开始计时
@@ -875,8 +1111,14 @@ module.exports = async function (req, res, next) {
         let updataParams = null;
         let EmUserFilters = null;
         let EmUpdataParams = null;
+        let AiUserFilters = null;
+        let AiUpdataParams = null;
         if (AiMode) {//如果是AI模式则竞技点与自己一样
-            EmScore = MyScore;
+            if (AiData.length > 0) {
+                EmScore = AiData[0].score;
+            } else {
+                EmScore = MyScore;
+            }
             // if(advanced){
             //     EmScore = EmScore+70;
             // }
@@ -920,17 +1162,29 @@ module.exports = async function (req, res, next) {
                 exp: levelExp[1],
                 ip: IP
             }
+            let EmNewScore = EmScore + EmGetScore;
+            if (EmNewScore < 0) {//防止竞技点小于0
+                EmNewScore = 0;
+            }
             if (!AiMode) {
-                let EmNewScore = EmScore + EmGetScore;
-                if (EmNewScore < 0) {//防止竞技点小于0
-                    EmNewScore = 0;
-                }
                 EmUserFilters = {
                     email: emData.email
                 }
                 EmUpdataParams = {
                     score: EmNewScore,
                     battleHitStamp: timeNow
+                }
+            } else if (AiData.length > 0) {
+                // ai数据写入
+                AiUserFilters = {
+                    _id: AiData[0]._id
+                }
+                AiUpdataParams = {
+                    score: EmNewScore,
+                    battleHitStamp: timeNow,
+                    $inc: {
+                        loseCount: 1
+                    }
                 }
             }
             console.info(
@@ -964,8 +1218,8 @@ module.exports = async function (req, res, next) {
                 score: myNewScore,
                 ip: IP
             }
+            let EmNewScore = EmScore + EmGetScore;
             if (!AiMode) {
-                let EmNewScore = EmScore + EmGetScore;
                 EmUserFilters = {
                     email: emData.email
                 }
@@ -973,6 +1227,23 @@ module.exports = async function (req, res, next) {
                     score: EmNewScore,
                     battleHitStamp: timeNow
                 }
+            } else if (AiData.length > 0) {
+                // ai数据写入
+                AiUserFilters = {
+                    _id: AiData[0]._id
+                }
+                AiUpdataParams = {
+                    score: EmNewScore,
+                    battleHitStamp: timeNow,
+                    loseCount: 0
+                }
+            } else if (AiMode && AiData.length <= 0) {
+                // 创建一个AI到库中
+                AiInfo["creatDate"] = timeNow;
+                AiInfo["battleHitStamp"] = timeNow;
+                AiInfo["score"] = EmNewScore;
+                AiInfo["loseCount"] = 0;
+                writeAi(AiInfo);
             }
             console.info(
                 chalk.green(email + '战败。IP为：' + IP)
@@ -998,6 +1269,22 @@ module.exports = async function (req, res, next) {
                 EmUpdataParams = {
                     battleHitStamp: timeNow
                 }
+            } else if (AiData.length > 0) {
+                // ai数据写入
+                AiUserFilters = {
+                    _id: AiData[0]._id
+                }
+                AiUpdataParams = {
+                    battleHitStamp: timeNow,
+                    loseCount: 0
+                }
+            } else if (AiMode && AiData.length <= 0) {
+                // 创建一个AI到库中
+                AiInfo["creatDate"] = timeNow;
+                AiInfo["battleHitStamp"] = timeNow;
+                AiInfo["score"] = EmScore;
+                AiInfo["loseCount"] = 0;
+                writeAi(AiInfo);
             }
         }
         //胜负统计
@@ -1071,6 +1358,34 @@ module.exports = async function (req, res, next) {
                 throw err;
             })
         }
+        if (AiUserFilters) {
+            // 如果有更新AI数据
+            // 判断AI连输
+            if (AiData[0].loseCount >= 9 && win === 1) {
+                // 十连输删除该AI
+                await AiDataBase.deleteAiOne(AiUserFilters).catch((err) => {
+                    res.send({
+                        code: 0,
+                        msg: '内部错误请联系管理员！'
+                    });
+                    console.error(
+                        chalk.red('数据库更新错误！')
+                    );
+                    throw err;
+                });
+            } else {
+                await AiDataBase.updataAi(AiUserFilters, AiUpdataParams).catch((err) => {
+                    res.send({
+                        code: 0,
+                        msg: '内部错误请联系管理员！'
+                    });
+                    console.error(
+                        chalk.red('数据库更新错误！')
+                    );
+                    throw err;
+                });
+            }
+        }
         // 写入战斗记录
         let battleLogsParams = {
             aEmail: email,
@@ -1098,7 +1413,7 @@ module.exports = async function (req, res, next) {
                 getExp: getExp,
                 EmGetScore: EmGetScore,
                 EmCardIndexCount: EmCardIndexCount,
-                ver: 1
+                ver: 2
             }
         }
         battleLogsData.saveBattleLog(battleLogsParams).catch((err) => {

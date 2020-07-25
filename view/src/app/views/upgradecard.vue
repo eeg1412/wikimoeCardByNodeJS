@@ -203,9 +203,9 @@
                         <div slot="content"
                              class="tc"
                              v-else-if="item.leftType==5">
-                          <p class="mb5">每升一级SAN+500</p>
-                          <p class="mb5">当前SAN+{{item.level*500}}</p>
-                          <p class="mb5">下一级SAN+{{item.level*500+500}}</p>
+                          <p class="mb5">每升一级SAN+1150</p>
+                          <p class="mb5">当前SAN+{{item.level*1150}}</p>
+                          <p class="mb5">下一级SAN+{{item.level*1150+1150}}</p>
                         </div>
                         <span class="wm_set_pointer">查看属性加成</span>
                       </el-tooltip>
@@ -458,7 +458,7 @@ export default {
         const itemCountBase = 60;
         itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
       } else if (leftType == 5) {
-        const itemCountBase = 150;
+        const itemCountBase = 345;
         itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
       }
       return Math.round(itemCount);
