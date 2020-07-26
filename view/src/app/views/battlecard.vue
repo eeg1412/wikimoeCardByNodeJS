@@ -66,8 +66,7 @@
                      handle=".handle">
             <div class="wm_battlecard_list_box"
                  v-for="(item,index) in myCard"
-                 v-bind:key="index+1"
-                 @click="selcard(index)">
+                 v-bind:key="index+1">
               <el-tooltip class="item"
                           effect="dark"
                           content="拖动改变卡牌发动顺序"
@@ -75,8 +74,94 @@
                 <div class="wm_battlecard_list_move handle"><i class="el-icon-rank cRed"></i></div>
               </el-tooltip>
               <div class="wm_battlecard_level cRed"
-                   v-if="item">Lv.{{myBattleCardLevel[item.cardId]?myBattleCardLevel[item.cardId]+1:1}}</div>
-              <div class="wm_battlecard_list_number">{{index+1}}</div>
+                   v-if="item">Lv.{{myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1}}</div>
+              <div class="wm_battlecard_cardtip cRed"
+                   v-if="item">
+                <el-popover placement="top"
+                            width="300"
+                            trigger="click">
+                  <div class="wm_battlecard_cardtip_body">
+                    <p v-if="item.cry === 1">
+                      <span>【红火】</span><br>
+                      <span>与蓝水卡牌对战时会处于劣势，与绿风卡牌对战时会处于优势</span>
+                    </p>
+                    <p v-else-if="item.cry === 2">
+                      <span>【蓝水】</span><br>
+                      <span>与绿风卡牌对战时会处于劣势，与红火卡牌对战时会处于优势</span>
+                    </p>
+                    <p v-else-if="item.cry === 3">
+                      <span>【绿风】</span><br>
+                      <span>与红火卡牌对战时会处于劣势，与蓝水卡牌对战时会处于优势</span>
+                    </p>
+                    <p v-else-if="item.cry === 4">
+                      <span>【光】</span><br>
+                      <span>与暗卡牌相互克制</span>
+                    </p>
+                    <p v-else-if="item.cry === 5">
+                      <span>【暗】</span><br>
+                      <span>与光卡牌相互克制</span>
+                    </p>
+
+                    <p v-if="item.leftType === 1">
+                      <span>【全能】</span><br>
+                      <span>攻+{{50*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}、防+{{25*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}</span>
+                    </p>
+                    <p v-else-if="item.leftType === 2">
+                      <span>【兵攻】</span><br>
+                      <span>攻+{{100*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}</span>
+                    </p>
+                    <p v-else-if="item.leftType === 3">
+                      <span>【盾防】</span><br>
+                      <span>防+{{50*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}</span>
+                    </p>
+                    <p v-else-if="item.leftType === 4">
+                      <span>【速度】</span><br>
+                      <span>速+{{1*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}</span>
+                    </p>
+                    <p v-else-if="item.leftType === 5">
+                      <span>【爱心】</span><br>
+                      <span>SAN+{{1150*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}</span>
+                    </p>
+
+                    <p v-if="item.rightType === 1">
+                      <span>【物】</span><br>
+                      <span>攻击增加{{9*item.star}}%，并转换为物理攻击，攻防不会受到属性加减</span>
+                    </p>
+                    <p v-else-if="item.rightType === 2">
+                      <span>【魔】</span><br>
+                      <span>攻击增加{{9*item.star}}%，并转换为强力魔法攻击，攻防会很大程度受到属性影响</span>
+                    </p>
+                    <p v-else-if="item.rightType === 3">
+                      <span>【防】</span><br>
+                      <span>抵消{{10*item.star}}%*的伤害，并造成防御力的{{40*item.star}}%的攻击</span>
+                    </p>
+                    <p v-else-if="item.rightType === 4">
+                      <span>【治】</span><br>
+                      <span>解除异常状态，恢复攻的{{8*item.star}}%的SAN，接下来2回合恢复攻的{{4*item.star}}%的SAN</span>
+                    </p>
+                    <p v-else-if="item.rightType === 5">
+                      <span>【妨】</span><br>
+                      <span>使对方技能无效，概率为{{16*item.star}}%，降低对方{{10*(7-item.star)}}%的防御</span>
+                    </p>
+                    <p v-else-if="item.rightType === 6">
+                      <span>【支】</span><br>
+                      <span>下回合攻击增加{{11*item.star}}%*星级，防御力增加{{2*item.star}}%</span>
+                    </p>
+                    <p v-else-if="item.rightType === 7">
+                      <span>【特】</span><br>
+                      <span v-if="item.cry === 1">造成2回合持续伤害效果，伤害为攻的{{6*item.star}}%，如果卡牌为绿风则伤害为攻的{{6.5*item.star}}%</span>
+                      <span v-else-if="item.cry === 2">造成2回合持续伤害效果，伤害为攻的{{6*item.star}}%，如果卡牌为红火则伤害为攻的{{6.5*item.star}}%</span>
+                      <span v-else-if="item.cry === 3">造成2回合持续伤害效果，伤害为攻的{{6*item.star}}%，如果卡牌为蓝水则伤害为攻的{{6.5*item.star}}%</span>
+                      <span v-else-if="item.cry === 4">造成2回合的持续伤害效果效果，伤害为对方攻的{{6*item.star}}%，如果卡牌为暗则伤害为攻的{{6.5*item.star}}%</span>
+                      <span v-else-if="item.cry === 5">造成2回合的持续伤害效果，伤害为对方攻的{{6*item.star}}%，如果卡牌为光则伤害为攻的{{6.5*item.star}}%</span>
+                    </p>
+                  </div>
+                  <i class="el-icon-info pl5 pr5 wm_battlecard_cardtip_ico"
+                     slot="reference"></i>
+                </el-popover>
+              </div>
+              <div class="wm_battlecard_list_number"
+                   @click="selcard(index,$event)">{{index+1}}</div>
               <div v-if="item!==null"><img class="wm_getcard_img"
                      :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'"></div>
             </div>
@@ -208,11 +293,96 @@
           <div class="wm_market_mycard_item type_mobile"
                v-for="(item,index) in userCard"
                v-bind:key="index"
-               :class="ifCardId===item.cardId?'card_sel_pikapika':''"
-               @click="seledCard(item.cardId,item)">
+               :class="ifCardId===item.cardId?'card_sel_pikapika':''">
             <img class="wm_getcard_img"
-                 :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'">
+                 :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'"
+                 @click="seledCard(item.cardId,item)">
             <div class="wm_battlecard_level cRed">Lv.{{myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1}}</div>
+            <div class="wm_battlecard_cardtip cRed"
+                 v-if="item">
+              <el-popover placement="top"
+                          width="300"
+                          trigger="click">
+                <div class="wm_battlecard_cardtip_body">
+                  <p v-if="item.cry === 1">
+                    <span>【红火】</span><br>
+                    <span>与蓝水卡牌对战时会处于劣势，与绿风卡牌对战时会处于优势</span>
+                  </p>
+                  <p v-else-if="item.cry === 2">
+                    <span>【蓝水】</span><br>
+                    <span>与绿风卡牌对战时会处于劣势，与红火卡牌对战时会处于优势</span>
+                  </p>
+                  <p v-else-if="item.cry === 3">
+                    <span>【绿风】</span><br>
+                    <span>与红火卡牌对战时会处于劣势，与蓝水卡牌对战时会处于优势</span>
+                  </p>
+                  <p v-else-if="item.cry === 4">
+                    <span>【光】</span><br>
+                    <span>与暗卡牌相互克制</span>
+                  </p>
+                  <p v-else-if="item.cry === 5">
+                    <span>【暗】</span><br>
+                    <span>与光卡牌相互克制</span>
+                  </p>
+
+                  <p v-if="item.leftType === 1">
+                    <span>【全能】</span><br>
+                    <span>攻+{{50*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}、防+{{25*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}</span>
+                  </p>
+                  <p v-else-if="item.leftType === 2">
+                    <span>【兵攻】</span><br>
+                    <span>攻+{{100*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}</span>
+                  </p>
+                  <p v-else-if="item.leftType === 3">
+                    <span>【盾防】</span><br>
+                    <span>防+{{50*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}</span>
+                  </p>
+                  <p v-else-if="item.leftType === 4">
+                    <span>【速度】</span><br>
+                    <span>速+{{1*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}</span>
+                  </p>
+                  <p v-else-if="item.leftType === 5">
+                    <span>【爱心】</span><br>
+                    <span>SAN+{{1150*(myCardLevel[item.cardId]?myCardLevel[item.cardId]+1:1)}}</span>
+                  </p>
+
+                  <p v-if="item.rightType === 1">
+                    <span>【物】</span><br>
+                    <span>攻击增加{{9*item.star}}%，并转换为物理攻击，攻防不会受到属性加减</span>
+                  </p>
+                  <p v-else-if="item.rightType === 2">
+                    <span>【魔】</span><br>
+                    <span>攻击增加{{9*item.star}}%，并转换为强力魔法攻击，攻防会很大程度受到属性影响</span>
+                  </p>
+                  <p v-else-if="item.rightType === 3">
+                    <span>【防】</span><br>
+                    <span>抵消{{10*item.star}}%*的伤害，并造成防御力的{{40*item.star}}%的攻击</span>
+                  </p>
+                  <p v-else-if="item.rightType === 4">
+                    <span>【治】</span><br>
+                    <span>解除异常状态，恢复攻的{{8*item.star}}%的SAN，接下来2回合恢复攻的{{4*item.star}}%的SAN</span>
+                  </p>
+                  <p v-else-if="item.rightType === 5">
+                    <span>【妨】</span><br>
+                    <span>使对方技能无效，概率为{{16*item.star}}%，降低对方{{10*(7-item.star)}}%的防御</span>
+                  </p>
+                  <p v-else-if="item.rightType === 6">
+                    <span>【支】</span><br>
+                    <span>下回合攻击增加{{11*item.star}}%*星级，防御力增加{{2*item.star}}%</span>
+                  </p>
+                  <p v-else-if="item.rightType === 7">
+                    <span>【特】</span><br>
+                    <span v-if="item.cry === 1">造成2回合持续伤害效果，伤害为攻的{{6*item.star}}%，如果卡牌为绿风则伤害为攻的{{6.5*item.star}}%</span>
+                    <span v-else-if="item.cry === 2">造成2回合持续伤害效果，伤害为攻的{{6*item.star}}%，如果卡牌为红火则伤害为攻的{{6.5*item.star}}%</span>
+                    <span v-else-if="item.cry === 3">造成2回合持续伤害效果，伤害为攻的{{6*item.star}}%，如果卡牌为蓝水则伤害为攻的{{6.5*item.star}}%</span>
+                    <span v-else-if="item.cry === 4">造成2回合的持续伤害效果效果，伤害为对方攻的{{6*item.star}}%，如果卡牌为暗则伤害为攻的{{6.5*item.star}}%</span>
+                    <span v-else-if="item.cry === 5">造成2回合的持续伤害效果，伤害为对方攻的{{6*item.star}}%，如果卡牌为光则伤害为攻的{{6.5*item.star}}%</span>
+                  </p>
+                </div>
+                <i class="el-icon-info pl5 pr5 wm_battlecard_cardtip_ico"
+                   slot="reference"></i>
+              </el-popover>
+            </div>
           </div>
         </div>
         <div class="wm_battlecard_nocard"
@@ -251,6 +421,39 @@
       </el-dropdown>
     </div>
     <menuView></menuView>
+    <el-dialog title="配卡说明"
+               :visible.sync="tipDialog"
+               class="reg_code_dialog"
+               :lock-scroll="false"
+               :close-on-click-modal="false"
+               width="100%">
+      <div>
+        <hooper class="wm_battlecard_watch_hooper">
+          <slide>
+            <div class="wm_battlecard_watch_tips"><img src="/static/battlecardTip/1.jpg" /></div>
+          </slide>
+          <slide>
+            <div class="wm_battlecard_watch_tips"><img src="/static/battlecardTip/2.jpg" /></div>
+          </slide>
+          <slide>
+            <div class="wm_battlecard_watch_tips"><img src="/static/battlecardTip/3.jpg" /></div>
+          </slide>
+          <slide>
+            <div class="wm_battlecard_watch_tips"><img src="/static/battlecardTip/4.jpg" /></div>
+          </slide>
+          <slide>
+            <div class="wm_battlecard_watch_tips"><img src="/static/battlecardTip/5.jpg" /></div>
+          </slide>
+          <hooper-pagination slot="hooper-addons"
+                             mode="fraction"></hooper-pagination>
+        </hooper>
+      </div>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button type="primary"
+                   @click="tipDialog = false">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -260,11 +463,18 @@ import { PrefixInteger, md5Check, scrollToTop } from "../../utils/utils";
 import { authApi } from "../api";
 import userTop from '../components/topUserInfo.vue';
 import md5_ from 'js-md5';
-import draggable from 'vuedraggable'
+import draggable from 'vuedraggable';
+import {
+  Hooper,
+  Slide,
+  Pagination as HooperPagination
+} from 'hooper';
+import 'hooper/dist/hooper.css';
 
 export default {
   data () {
     return {
+      tipDialog: false,
       fixedTable: false,
       cardIndexCount: 0,
       ifCardId: null,//当前暂时选择的卡ID
@@ -294,7 +504,10 @@ export default {
   components: {
     menuView,
     userTop,
-    draggable
+    draggable,
+    Hooper,
+    Slide,
+    HooperPagination
   },
   created () {
     this.getMyBattleCard();
@@ -340,10 +553,11 @@ export default {
       scrollTop > offsetTop ? this.fixedTable = true : this.fixedTable = false;
     },
     openTips () {
-      this.$alert('<div class="watch_tips"><img src="/static/otherImg/battletips.png" /></div>', '配卡说明', {
-        dangerouslyUseHTMLString: true,
-        lockScroll: false
-      });
+      // this.$alert('<div class="watch_tips"><img src="/static/otherImg/battletips.png" /></div>', '配卡说明', {
+      //   dangerouslyUseHTMLString: true,
+      //   lockScroll: false
+      // });
+      this.tipDialog = true;
     },
     saveCard () {
       let params = {
@@ -406,7 +620,7 @@ export default {
         // 攻击=x*100 防=x*50 血=x*200
         let A = x * 100;
         let D = x * 50;
-        let HP = x * 500;
+        let HP = x * 1150;
         console.log(cardCountPlus);
         // 设置速度
         let S = 0;
@@ -424,7 +638,7 @@ export default {
           } else if (leftType === 3) {//盾3
             D = D + 50 + level * 50;
           } else if (leftType === 5) {//爱5
-            HP = HP + 500 + level * 500;
+            HP = HP + 1150 + level * 1150;
           }
         }
         return [A, D, S, HP];
@@ -456,7 +670,8 @@ export default {
       this.ifCardId = null;
       this.ifADSHPSUM = [0, 0, 0, 0]
     },
-    selcard (i) {
+    selcard (i, e) {
+      console.log(e);
       this.cardPage = 1;
       this.cardPageChange(1);
       this.selIndex = i;
@@ -734,6 +949,24 @@ export default {
   z-index: 3;
   border: 1px solid rgba(255, 83, 100, 0.6);
 }
+.wm_battlecard_cardtip {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.9);
+  height: 20px;
+  line-height: 20px;
+  left: 5px;
+  bottom: 30px;
+  border-radius: 3px;
+  z-index: 3;
+  border: 1px solid rgba(255, 83, 100, 0.6);
+}
+.wm_battlecard_cardtip_ico {
+  height: 100%;
+  line-height: 20px;
+}
+.wm_battlecard_cardtip_body p {
+  margin-bottom: 5px;
+}
 .wm_battlecard_table_fixed_body {
   position: fixed;
   left: 0;
@@ -749,6 +982,16 @@ export default {
   width: 100%;
   max-width: 980px;
 }
+.wm_battlecard_watch_tips {
+  height: 100%;
+  text-align: center;
+}
+.wm_battlecard_watch_tips img {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
+}
 @media (max-width: 768px) {
   .wm_battlecard_list_box {
     width: 88px;
@@ -762,5 +1005,8 @@ export default {
 <style>
 .wm_battlecard_more .popper__arrow {
   display: none;
+}
+.wm_battlecard_watch_hooper .hooper-pagination {
+  bottom: -30px;
 }
 </style>

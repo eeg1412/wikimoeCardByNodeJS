@@ -43,7 +43,7 @@ function setItemShould (leftType, level = 0) {
         const itemCountBase = 60;
         itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
     } else if (leftType == 5) {
-        const itemCountBase = 150;
+        const itemCountBase = 345;
         itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
     }
     return Math.round(itemCount);
