@@ -379,7 +379,7 @@ function cardBattle (AttackADSHP, AttackCard, DefendEmADSHP, DefendCard, AttackB
         if (AttackRightType === 1 || AttackRightType === 2) {
             AttackA = AttackA + Math.floor(AttackA * 0.09 * AttackStar);
         } else if (AttackRightType === 3) {
-            AttackA = Math.floor(AttackD * 0.30 * AttackStar);
+            AttackA = Math.floor(AttackD * 0.40 * AttackStar);
         } else if (AttackRightType === 4) {
             // 治疗清空debuff
             AttackDebuff = [];

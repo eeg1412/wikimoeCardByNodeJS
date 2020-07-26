@@ -133,7 +133,7 @@
                     </p>
                     <p v-else-if="item.rightType === 3">
                       <span>【防】</span><br>
-                      <span>抵消{{10*item.star}}%*的伤害，并造成防御力的{{30*item.star}}%的攻击</span>
+                      <span>抵消{{10*item.star}}%*的伤害，并造成防御力的{{40*item.star}}%的攻击</span>
                     </p>
                     <p v-else-if="item.rightType === 4">
                       <span>【治】</span><br>
@@ -356,7 +356,7 @@
                   </p>
                   <p v-else-if="item.rightType === 3">
                     <span>【防】</span><br>
-                    <span>抵消{{10*item.star}}%*的伤害，并造成防御力的{{30*item.star}}%的攻击</span>
+                    <span>抵消{{10*item.star}}%*的伤害，并造成防御力的{{40*item.star}}%的攻击</span>
                   </p>
                   <p v-else-if="item.rightType === 4">
                     <span>【治】</span><br>
