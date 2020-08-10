@@ -289,7 +289,10 @@ export default {
   },
   methods: {
     wantCardSend (captcha) {
-      console.log(captcha);
+      if (this.wantCardList.length === 0) {
+        this.$message.error("未选择卡牌！");
+        return false;
+      }
       // 求卡
       let params = {
         token: this.token,
