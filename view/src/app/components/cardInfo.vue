@@ -332,10 +332,14 @@ export default {
           if (res.data.code == 0) {
             this.$message.error(res.data.msg);
           } else if (res.data.code == 1) {
-            this.$message({
-              message: res.data.msg,
-              type: 'success'
-            });
+            if (res.data.error.length > 0) {
+              this.$message.error(res.data.error[0]["info"]);
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: 'success'
+              });
+            }
             this.captchaShow = false;
           }
         });

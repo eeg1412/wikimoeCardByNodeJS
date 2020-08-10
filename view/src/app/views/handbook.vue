@@ -145,8 +145,37 @@
         </el-form>
       </div>
       <div>
-        <div class="tc">
+        <div class="tc"
+             v-show="!wantCardManyMode">
           已收集：{{cardCountSum(cardCount)}}/{{cardBook.length}}
+          <el-button type="text"
+                     @click="wantCardManyMode = true">批量求卡</el-button>
+        </div>
+        <div v-show="wantCardManyMode">
+          <div class="tc">
+            <span>
+              <el-button size="mini"
+                         @click="wantCardDialog()"
+                         type="primary">提交求卡（{{wantCardList.length}}/60）</el-button>
+            </span>
+            <span>
+              <el-button size="mini"
+                         @click="quitWantCardList">退出求卡</el-button>
+            </span>
+          </div>
+          <div class="tc mt10">
+            <span>
+              <el-button size="mini"
+                         type="info"
+                         @click="selectPage">本页全选</el-button>
+            </span>
+            <span>
+              <el-button size="mini"
+                         type="info"
+                         @click="clearWantCardList">清空选择</el-button>
+            </span>
+
+          </div>
         </div>
       </div>
       <el-collapse-transition>
@@ -156,11 +185,18 @@
           <div class="wm_market_mycard_item type_mobile"
                v-for="(item,index) in userCard"
                v-bind:key="index"
-               :class="item.have?'have':''"
-               @click="openCardInfo(item)"
                @mouseover="$wikimoecard.l2dMassage('点击卡牌可以查看卡牌并且发起求购哦！')">
             <img class="wm_getcard_img"
+                 :class="item.have?'have':''"
+                 @click="openCardInfo(item)"
                  :src="$wikimoecard.url+item.packageId+'/'+item.cardId+'.jpg'">
+            <el-collapse-transition>
+              <div v-show="wantCardManyMode"
+                   class="mt5">
+                <el-checkbox :value="wantCardListSel(item.cardId)"
+                             @change="checked =>tryWantCard(checked,item)">求卡</el-checkbox>
+              </div>
+            </el-collapse-transition>
           </div>
         </div>
       </el-collapse-transition>
@@ -185,6 +221,14 @@
                     :cardData="cardItemData"
                     @buyNewCard="updateMyCard"
                     @updateUserinfo="updateUserinfo"></cardInfoDialog>
+    <marketCardList title="批量求卡"
+                    tip="Tip:求购信息有效期为3天。"
+                    :cardList="wantCardList"
+                    :setStar="true"
+                    :cardPackage="cardPackage"
+                    @del="delWantCardList"
+                    @send="wantCardSend"
+                    ref="marketCardList"></marketCardList>
     <menuView></menuView>
   </div>
 </template>
@@ -192,14 +236,18 @@
 <script>
 import menuView from '../components/menu.vue';
 import cardInfoDialog from "../components/cardInfo"
+import marketCardList from "../components/marketCardList"
 import { authApi } from "../api";
 import userTop from '../components/topUserInfo.vue';
-import { PrefixInteger, md5Check } from "../../utils/utils";
+import { PrefixInteger, md5Check, unique } from "../../utils/utils";
 import md5_ from 'js-md5';
+import _ from 'lodash';
 
 export default {
   data () {
     return {
+      wantCardList: [],
+      wantCardManyMode: false,
       cardItemData: null,
       txDays: new Date().getDate(),
       cardData: {},
@@ -228,7 +276,8 @@ export default {
   components: {
     menuView,
     userTop,
-    cardInfoDialog
+    cardInfoDialog,
+    marketCardList
   },
   created () {
     console.log(this.searchForm.title);
@@ -239,6 +288,130 @@ export default {
     this.$emit('l2dMassage', '这里可以查看自己已经收集到的卡牌。');
   },
   methods: {
+    wantCardSend (captcha) {
+      console.log(captcha);
+      // 求卡
+      let params = {
+        token: this.token,
+        captcha: captcha,
+        type: "list",
+        cardList: _.map(this.wantCardList, _.partialRight(_.pick, ["cardId", "price"]))
+      }
+      authApi.wantcard(params).then(res => {
+        if (res.data.code == 0) {
+          this.$message.error(res.data.msg);
+        } else if (res.data.code == 1) {
+          if (res.data.error.length === 0) {
+            this.$message({
+              message: `${res.data.success.length}张卡牌求卡成功！`,
+              type: 'success'
+            });
+            this.$refs.marketCardList.closeDialog();
+            this.wantCardList = [];
+          } else {
+            this.$message.error(`${res.data.error.length}张卡牌求卡失败！`);
+            const errorCard = _.intersectionBy(this.wantCardList, res.data.error, 'cardId');
+            this.wantCardList = errorCard;
+            // this.$forceUpdate();
+            this.$nextTick(() => {
+              this.$refs.marketCardList.reloadData();
+            });
+          }
+        }
+        this.$refs.marketCardList.captchaUpdata();
+      });
+    },
+    wantCardDialog () {
+      if (this.wantCardList.length === 0) {
+        this.$message.error("未选择卡牌！");
+        return false;
+      }
+      this.$refs.marketCardList.openDialog();
+    },
+    quitWantCardList () {
+      this.wantCardList = [];
+      this.wantCardManyMode = false
+    },
+    clearWantCardList () {
+      this.wantCardList = [];
+    },
+    selectPage () {
+      let listCache = _.cloneDeep(this.wantCardList);
+      this.userCard.forEach(card => {
+        const cardInfo = {
+          cardId: card.cardId,
+          name: card.name,
+          packageId: card.packageId,
+          star: card.star,
+          title: card.title,
+          price: this.minPriceCal(card.star)
+        };
+        listCache.push(cardInfo);
+      });
+      listCache = _.uniqBy(listCache, 'cardId');
+      if (listCache.length > 60) {
+        this.$message.error("最多只能选择60张卡牌！");
+      } else {
+        this.wantCardList = _.cloneDeep(listCache);
+        this.$forceUpdate();
+      }
+    },
+    tryWantCard (v, card) {
+      // console.log(v, card);
+      if (v) {
+        if (this.wantCardList.length >= 60) {
+          this.$message.error("最多只能选择60张卡牌！");
+          return false;
+        }
+        const cardInfo = {
+          cardId: card.cardId,
+          name: card.name,
+          packageId: card.packageId,
+          star: card.star,
+          title: card.title,
+          price: this.minPriceCal(card.star)
+        };
+        this.wantCardList.push(cardInfo);
+        this.wantCardList = _.uniqBy(this.wantCardList, 'cardId');
+        this.$forceUpdate();
+      } else {
+        // const i = this.wantCardList.indexOf(cardId);
+        _.remove(this.wantCardList, { cardId: card.cardId });
+        this.$forceUpdate();
+      }
+    },
+    delWantCardList (id) {
+      _.remove(this.wantCardList, { cardId: id });
+      this.$forceUpdate();
+    },
+    wantCardListSel (cardId) {
+      const i = _.findIndex(this.wantCardList, { 'cardId': cardId });
+      if (i < 0) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    getPackageName (packageId) {
+      const packageInfo = _.find(this.cardPackage, { 'packageId': packageId });
+      if (packageInfo) {
+        return packageInfo.name;
+      } else {
+        return "";
+      }
+    },
+    minPriceCal (s) {
+      // 计算最低售价
+      if (s == 6) {
+        return 600;
+      } else if (s == 5) {
+        return 200;
+      } else if (s == 4) {
+        return 90;
+      } else {
+        return 30;
+      }
+    },
     updateUserinfo () {
       this.$refs.userTop.getUserInfo();
     },

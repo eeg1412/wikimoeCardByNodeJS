@@ -269,9 +269,10 @@ module.exports = async function (req, res, next) {
         };
         adminUtils.writeGlobalOpt(opt);
         fs.writeFileSync("templete/footer.html", config_.footer || "", 'utf8');
-        const $ = cheerio.load(fs.readFileSync('public/index.html', 'utf8'));
+        const $ = cheerio.load(fs.readFileSync('public/index.html', 'utf8'), { decodeEntities: false });
         const footerHTML = fs.readFileSync('templete/footer.html', 'utf8');
         $('#wm_index_footer').html(footerHTML);
+        $('title').text(global.myAppConfig.browserTitle || "维基萌抽卡");
         fs.writeFileSync("public/index.html", $.html());
         res.send({
             code: 1,
