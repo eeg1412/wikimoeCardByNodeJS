@@ -316,6 +316,10 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
 .el-loading-mask.is-fullscreen{
   z-index: 10000!important;
 }
+.wm_card_user_tx_45{
+  width: 45px;
+  height: 45px;
+}
 /* 卡牌 */
 .wm_card_remember_body {
     text-align: center;
