@@ -8,6 +8,8 @@
 /server/public/userCreatCard/*
 /server/public/card/*
 /server/log/*/*.log
+/server/data/cache/gravatar/*
+/server/public/userTx/*
 
 # dependencies
 /view/node_modules

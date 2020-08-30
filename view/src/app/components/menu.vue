@@ -172,6 +172,7 @@
       </div>
       <div class="wm_card_menu_box"
            @click="postDialog=true"
+           v-if="token"
            @mouseenter="$wikimoecard.l2dMassage('快来看看有没有新的邮件吧！说不定会有意外收获哦！')"
            @mouseleave="$wikimoecard.l2dMassageClose">
         <el-badge :is-dot="postTotle?true:false">
@@ -201,7 +202,7 @@
            @mouseenter="$wikimoecard.l2dMassage('点击可以查看自己的卡牌信息。')"
            @mouseleave="$wikimoecard.l2dMassageClose">
         <div class="wm_card_menu_ico">
-          <img :src="'https://gravatar.loli.net/avatar/'+getCardMd5()+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+          <img :src="'/api/gravatar.png?md5='+getCardMd5()"
                class="wm_card_menu_ico_my"
                width="100%"
                height="100%" />
@@ -443,6 +444,9 @@ export default {
     }
   },
   methods: {
+    resetToken () {
+      this.token = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token");
+    },
     dailygetedSearch () {
       // 是否由Token
       if (!this.token) {
@@ -494,6 +498,7 @@ export default {
           } catch (e) { }
           this.getPost();
         } else {
+          this.getPost();
           this.$message.error(res.data.msg);
         }
       });
@@ -620,6 +625,7 @@ export default {
           }
           this.loginShow = false;
           this.token = resData.token;
+          this.$emit('addToken');
           this.goLink();
         }
       })

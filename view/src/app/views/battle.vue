@@ -128,7 +128,7 @@
                          @click="watchUserInfo(true,index)">
                       <div class="mb5">
                         <img class="radius5"
-                             :src="'https://gravatar.loli.net/avatar/'+item.data.MyMD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+                             :src="'/api/gravatar.png?md5='+item.data.MyMD5"
                              width="45"
                              height="45">
                       </div>
@@ -144,7 +144,7 @@
                          @click="watchUserInfo(false,index)">
                       <div class="mb5">
                         <img class="radius5"
-                             :src="item.data.EmMD5?'https://gravatar.loli.net/avatar/'+item.data.EmMD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(item.data.EmName.replace(/[^0-9]/ig,''))+'.jpg'"
+                             :src="item.data.EmMD5?'/api/gravatar.png?md5='+item.data.EmMD5:'/static/robotTx/'+Number(item.data.EmName.replace(/[^0-9]/ig,''))+'.jpg'"
                              width="45"
                              height="45">
                       </div>
@@ -184,7 +184,7 @@
       <div class="wm_top_info_more_body"
            v-show="!cardMode">
         <div><img class="wm_top_moreinfo_avatar_pic"
-               :src="userBattleLogInfo.MD5?'https://gravatar.loli.net/avatar/'+userBattleLogInfo.MD5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays:'/static/robotTx/'+Number(userBattleLogInfo.name.replace(/[^0-9]/ig,''))+'.jpg'"></div>
+               :src="userBattleLogInfo.MD5?'/api/gravatar.png?md5='+userBattleLogInfo.MD5:'/static/robotTx/'+Number(userBattleLogInfo.name.replace(/[^0-9]/ig,''))+'.jpg'"></div>
         <div class="wm_top_moreinfo_name mt5">{{userBattleLogInfo.name}}</div>
         <div class="wm_top_moreinfo_body clearfix">
           <div class="wm_top_moreinfo_box">

@@ -97,7 +97,7 @@
                           placement="top">
                 <div slot="content"
                      class="tc"><img class="wm_handbook_auther_tx"
-                       :src="'https://gravatar.loli.net/avatar/'+cardData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" />
+                       :src="'/api/gravatar.png?md5='+cardData.md5" />
                   <div class="mt5">{{cardData.auther}}</div>
                 </div><span class="dib">{{cardData.auther}}</span>
               </el-tooltip>
@@ -332,10 +332,14 @@ export default {
           if (res.data.code == 0) {
             this.$message.error(res.data.msg);
           } else if (res.data.code == 1) {
-            this.$message({
-              message: res.data.msg,
-              type: 'success'
-            });
+            if (res.data.error.length > 0) {
+              this.$message.error(res.data.error[0]["info"]);
+            } else {
+              this.$message({
+                message: res.data.msg,
+                type: 'success'
+              });
+            }
             this.captchaShow = false;
           }
         });
