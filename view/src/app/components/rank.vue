@@ -27,10 +27,9 @@
               <div class="fl wm_card_rank_text">{{index+1|rankTetx}}</div>
               <div class="fl wm_card_rank_img">
                 <img class="wm_card_get_list_avatar_pic"
-                     :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+                     :src="'/api/gravatar.png?md5='+item.md5"
                      width="45"
-                     height="45"
-                     data-md5="95f3c59f0990cb8bb2888d49997e5579">
+                     height="45">
               </div>
               <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
               <div class="fr wm_card_rank_point">{{item.cardIndexCount}}种卡牌</div>
@@ -56,10 +55,9 @@
               <div class="fl wm_card_rank_text">{{index+1|rankTetx}}</div>
               <div class="fl wm_card_rank_img">
                 <img class="wm_card_get_list_avatar_pic"
-                     :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+                     :src="'/api/gravatar.png?md5='+item.md5"
                      width="45"
-                     height="45"
-                     data-md5="fcd2f50ff3096a29dd37b139b54d81fe">
+                     height="45">
               </div>
               <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
               <div class="fr wm_card_rank_point">{{item.star|setBigNum}}颗星星</div>
@@ -85,10 +83,9 @@
               <div class="fl wm_card_rank_text">{{index+1|rankTetx}}</div>
               <div class="fl wm_card_rank_img">
                 <img class="wm_card_get_list_avatar_pic"
-                     :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+                     :src="'/api/gravatar.png?md5='+item.md5"
                      width="45"
-                     height="45"
-                     data-md5="fcd2f50ff3096a29dd37b139b54d81fe">
+                     height="45">
               </div>
               <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
               <div class="fr wm_card_rank_point">{{item.deminingStarCount|setBigNum}}颗星星</div>
@@ -114,10 +111,9 @@
               <div class="fl wm_card_rank_text">{{index+1|rankTetx}}</div>
               <div class="fl wm_card_rank_img">
                 <img class="wm_card_get_list_avatar_pic"
-                     :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+                     :src="'/api/gravatar.png?md5='+item.md5"
                      width="45"
-                     height="45"
-                     data-md5="fdce61cf9cc17461b2bccec659480671">
+                     height="45">
               </div>
               <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
               <div class="fr wm_card_rank_point">{{item.score}}点</div>
@@ -143,10 +139,9 @@
               <div class="fl wm_card_rank_text">{{index+1|rankTetx}}</div>
               <div class="fl wm_card_rank_img">
                 <img class="wm_card_get_list_avatar_pic"
-                     :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+                     :src="'/api/gravatar.png?md5='+item.md5"
                      width="45"
-                     height="45"
-                     data-md5="fcd2f50ff3096a29dd37b139b54d81fe">
+                     height="45">
               </div>
               <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
               <div class="fr wm_card_rank_point">{{item.guessCardCount|setBigNum}}张卡牌</div>
@@ -172,10 +167,9 @@
               <div class="fl wm_card_rank_text">{{index+1|rankTetx}}</div>
               <div class="fl wm_card_rank_img">
                 <img class="wm_card_get_list_avatar_pic"
-                     :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+                     :src="'/api/gravatar.png?md5='+item.md5"
                      width="45"
-                     height="45"
-                     data-md5="fcd2f50ff3096a29dd37b139b54d81fe">
+                     height="45">
               </div>
               <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
               <div class="fr wm_card_rank_point">{{item.level}}级</div>
@@ -200,10 +194,9 @@
               <div class="fl wm_card_rank_text">{{index+1|rankTetx}}</div>
               <div class="fl wm_card_rank_img">
                 <img class="wm_card_get_list_avatar_pic"
-                     :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+                     :src="'/api/gravatar.png?md5='+item.md5"
                      width="45"
-                     height="45"
-                     data-md5="fcd2f50ff3096a29dd37b139b54d81fe">
+                     height="45">
               </div>
               <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
               <div class="fr wm_card_rank_point">完成{{item.questCount}}次</div>
@@ -228,10 +221,9 @@
               <div class="fl wm_card_rank_text">{{index+1|rankTetx}}</div>
               <div class="fl wm_card_rank_img">
                 <img class="wm_card_get_list_avatar_pic"
-                     :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+                     :src="'/api/gravatar.png?md5='+item.md5"
                      width="45"
-                     height="45"
-                     data-md5="fcd2f50ff3096a29dd37b139b54d81fe">
+                     height="45">
               </div>
               <div class="fl wm_card_nickname_text">{{item.nickName}}</div>
               <div class="fr wm_card_rank_point">制卡{{item.UCC}}种</div>

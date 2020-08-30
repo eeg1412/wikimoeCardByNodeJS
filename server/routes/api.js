@@ -42,6 +42,7 @@ var apiUserGuessCard = require('../api/userGuessCard');
 var apiUserPost = require('../api/post');
 var apiRobotCheck = require('../api/robotCheck');
 var apiQuest = require('../api/quest');
+var apiUploadTx = require('../api/uploadTx');
 
 var adminApiCheckInstall = require('../api/admin/install/checkInstall');
 var adminApiInstall = require('../api/admin/install/install');
@@ -63,7 +64,7 @@ var adminApiSetRobotRate = require('../api/admin/setRobotRate');
 
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
 router.get('/captcha', apiCaptcha);
@@ -108,6 +109,7 @@ router.post('/userguesscard', apiUserGuessCard);
 router.post('/userpost', apiUserPost);
 router.post('/robotcheck', apiRobotCheck);
 router.post('/quest', apiQuest);
+router.post('/uploadtx', apiUploadTx);
 
 router.get('/admin/checkinstall', adminApiCheckInstall);
 router.post('/admin/install', adminApiInstall);

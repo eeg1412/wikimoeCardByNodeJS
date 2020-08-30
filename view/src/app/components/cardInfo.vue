@@ -97,7 +97,7 @@
                           placement="top">
                 <div slot="content"
                      class="tc"><img class="wm_handbook_auther_tx"
-                       :src="'https://gravatar.loli.net/avatar/'+cardData.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays" />
+                       :src="'/api/gravatar.png?md5='+cardData.md5" />
                   <div class="mt5">{{cardData.auther}}</div>
                 </div><span class="dib">{{cardData.auther}}</span>
               </el-tooltip>

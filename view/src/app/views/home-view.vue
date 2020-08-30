@@ -1,5 +1,8 @@
 <template>
   <div class="common_body">
+    <userTop ref="userTop"
+             v-if="token"
+             @removeToken="resetToken()" />
     <h5 class="wm_card_chiose_title">{{siteTitle}}</h5>
     <div class="wm_card_email_body">
       <transition name="el-fade-in-linear">
@@ -161,6 +164,8 @@
       </transition>
     </div>
     <el-dialog title="分享卡牌信息"
+               :lock-scroll="false"
+               :close-on-click-modal="false"
                :visible.sync="shareDialog"
                class="reg_code_dialog"
                width="100%">
@@ -175,7 +180,8 @@
                    @click="copyUrl">复制</el-button>
       </span>
     </el-dialog>
-    <menuView ref="menu"></menuView>
+    <menuView ref="menu"
+              @addToken="resetToken()"></menuView>
     <rank @watchInfo="watchRank"></rank>
     <div class="wm_card_get_list_body"
          v-if="logList.length>0"
@@ -194,7 +200,7 @@
                           placement="top"
                           :hide-after="3000">
                 <img class="wm_card_get_list_avatar_pic"
-                     :src="'https://gravatar.loli.net/avatar/'+item.md5+'?s=100&amp;d=mm&amp;r=g&amp;d=robohash&days='+txDays"
+                     :src="'/api/gravatar.png?md5='+item.md5"
                      width="45"
                      height="45">
               </el-tooltip>
@@ -403,6 +409,10 @@ export default {
     this.getCardPackage();
   },
   methods: {
+    resetToken () {
+      this.token = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token");
+      this.$refs.menu.resetToken();
+    },
     getCardPackage () {
       authApi.searchcardpackage().then(res => {
         console.log(res);
@@ -559,7 +569,7 @@ export default {
             if (windowWidth <= 768) {
               topSet = 410;
             }
-            scrollToTop(topSet + topNewsHeight, 200);
+            scrollToTop(topSet + topNewsHeight - 40, 200);
           }
           hideLoading();
           this.userPackageNow = { ...this.userCardCount };
@@ -604,7 +614,7 @@ export default {
             this.cardPageChange(1, noGoTop);
             this.userCardCount = res.data.cardCount;
             this.nowUserInfo = {
-              tx: 'https://gravatar.loli.net/avatar/' + resData.md5 + '?s=100&d=mm&r=g&d=robohash&days=' + this.txDays,//头像地址
+              tx: '/api/gravatar.png?md5=' + resData.md5,//头像地址
               score: resData.score,//竞技点
               level: resData.level,//等级
               cardCol: resData.cardIndexCount,//收集卡牌

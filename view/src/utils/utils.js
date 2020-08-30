@@ -1,4 +1,15 @@
 import { Loading, Message } from 'element-ui';
+//用户头像
+export const userTx = function (md5) {
+    const md5Str = md5 || "";
+    let txUrl = "";
+    if (md5Str && md5Str.length > 6) {
+        const userMD5Last6 = md5.substring(md5.length - 6, md5.length);
+        const userMD5Fix = Number("0x" + userMD5Last6);
+        txUrl = "/static/userTx/" + userMD5Fix % 31 + ".png";
+    }
+    return txUrl;
+}
 //数组去重
 export const unique = function (arr) {
     if (!Array.isArray(arr)) {

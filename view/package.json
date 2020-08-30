@@ -18,7 +18,7 @@
   "dependencies": {
     "axios": "^0.18.1",
     "echarts": "^4.2.1",
-    "element-ui": "^2.13.0",
+    "element-ui": "^2.13.2",
     "hooper": "^0.3.4",
     "js-md5": "^0.7.3",
     "lodash": "^4.17.19",
