@@ -45,3 +45,7 @@ exports.findAiInPage = async function (parmas = {}, pageSize_ = 5, page_ = 1, ge
     };
     return res;
 }
+exports.deletAisMany = async function (parmas) {
+    // document查询
+    return await AisModel.deleteMany(parmas);
+}
