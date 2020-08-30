@@ -8,6 +8,7 @@ const cardPackageData = require('../utils/database/cardPackage');
 const userbattleinfoData = require('../utils/database/userbattleinfo');
 const itemDatabase = require('../utils/database/item');
 const userPost = require('../utils/database/userPost');
+const ais = require('../utils/database/ais');
 
 // 月结算竞技点日程表
 exports.checkScoreRankTimer = async () => {
@@ -32,6 +33,16 @@ exports.checkScoreRank = async () => {
             chalk.yellow('竞技锁定结束！')
         );
     }, 600000)
+    // 删除AI数据
+    console.info(
+        chalk.green('删除AI数据！')
+    );
+    ais.deletAisMany({}).catch((err) => {
+        console.error(
+            chalk.red('数据库更新错误！')
+        );
+        throw err;
+    });
     let coinAdd = global.myAppConfig.battleRankGetItem;
     const coinRankDecay = global.myAppConfig.battleRankGetItemDecay;
     //let preScore = -1;
@@ -63,10 +74,6 @@ exports.checkScoreRank = async () => {
                 email: item.email
             };
             userPost.saveUserPost(saveParams).catch((err) => {
-                res.send({
-                    code: 0,
-                    msg: '内部错误，更新失败！'
-                });
                 console.error(
                     chalk.red('数据库更新错误！')
                 );
@@ -82,10 +89,6 @@ exports.checkScoreRank = async () => {
             draw: 0
         }
         const battleWLDData = await userbattleinfoData.findOne(params).catch((err) => {
-            res.send({
-                code: 0,
-                msg: '内部错误请联系管理员！'
-            });
             console.error(
                 chalk.red('数据库更新错误！')
             );
@@ -115,10 +118,6 @@ exports.checkScoreRank = async () => {
             }
         }
         userbattleinfoData.findOneAndUpdate(params, update_).catch((err) => {
-            res.send({
-                code: 0,
-                msg: '内部错误请联系管理员！'
-            });
             console.error(
                 chalk.red('数据库更新错误！')
             );
@@ -126,18 +125,11 @@ exports.checkScoreRank = async () => {
         })
         // 写入用户数据
         userData.updataUser(params, { score: newScore, battled: false }).catch((err) => {
-            res.send({
-                code: 0,
-                msg: '内部错误请联系管理员！'
-            });
             console.error(
                 chalk.red('数据库更新错误！')
             );
             throw err;
         });
-        // 删除AI数据
-
-
     }))
 }
 // 1.3.x升级卡包数据
