@@ -181,15 +181,15 @@ module.exports = async function (req, res, next) {
             return false;
         }
         // 校验每种卡包是否符合要求
-        if (!open && type !== 'submitOpen') {
-            if (resault.packageId == '0') {
-                res.send({
-                    code: 0,
-                    msg: '基础卡包无法开关！'
-                });
-                return false;
-            }
-        }
+        // if (!open && type !== 'submitOpen') {
+        //     if (resault.packageId == '0') {
+        //         res.send({
+        //             code: 0,
+        //             msg: '基础卡包无法开关！'
+        //         });
+        //         return false;
+        //     }
+        // }
         if (type === 'daily') {
             if (open) {
                 if ((resault.oneStar + resault.twoStar + resault.threeStar) < 3 || resault.fourStar < 3 || resault.fiveStar < 3 || resault.sixStar < 3) {
@@ -206,6 +206,88 @@ module.exports = async function (req, res, next) {
                     res.send({
                         code: 0,
                         msg: '卡包卡牌数量不足，无法开启！'
+                    });
+                    return false;
+                }
+            }
+        }
+        if (!open) {
+            let type_ = {}
+            if (type === 'daily') {
+                type_ = {
+                    open: true,
+                }
+            } else if (type === 'shop') {
+                type_ = {
+                    starShopOpen: true,
+                }
+            } else if (type === 'guess') {
+                type_ = {
+                    guessOpen: true,
+                }
+            } else if (type === 'starCoin') {
+                type_ = {
+                    starCoinOpen: true,
+                }
+            } else if (type === 'submitOpen') {
+                type_ = {
+                    submitOpen: true,
+                }
+            }
+            // 查询开放的卡包
+            const resaultPackage = await cardPackageData.findCardPackageMany(type_).catch((err) => {
+                console.error(
+                    chalk.red(err)
+                );
+                return false;
+            });
+            if (type === 'daily' || type === 'starCoin' || type === 'shop' || type === 'guess') {
+                if (resaultPackage.length <= 1) {
+                    res.send({
+                        code: 0,
+                        msg: '起码要有1种卡包开放！'
+                    });
+                    return false;
+                }
+            }
+            if (type === 'guess') {
+                let starSix = 0;
+                let starFive = 0;
+                let starFour = 0;
+                let starThree = 0;
+                resaultPackage.forEach((item) => {
+                    starSix = starSix + item.sixStar;
+                    starFive = starFive + item.fiveStar;
+                    starFour = starFour + item.fourStar;
+                    starThree = starThree + item.threeStar + item.twoStar + item.oneStar;
+                });
+                starSix = starSix - resault.sixStar;
+                starFive = starFive - resault.fiveStar;
+                starFour = starFour - resault.fourStar;
+                starThree = starThree - resault.threeStar - resault.twoStar - resault.oneStar;
+                // 判断卡牌够不够
+                if (starSix < 1) {
+                    res.send({
+                        code: 0,
+                        msg: '起码要有1张6星卡！'
+                    });
+                    return false;
+                } else if (starFive < 2) {
+                    res.send({
+                        code: 0,
+                        msg: '起码要有2张5星卡'
+                    });
+                    return false;
+                } else if (starFour < 5) {
+                    res.send({
+                        code: 0,
+                        msg: '起码要有5张4星卡！'
+                    });
+                    return false;
+                } else if (starThree < 42) {
+                    res.send({
+                        code: 0,
+                        msg: '起码要有42张3星及其以下的卡！'
                     });
                     return false;
                 }
@@ -233,6 +315,10 @@ module.exports = async function (req, res, next) {
             params_ = {
                 submitOpen: open,
             }
+        }
+        // 判断关闭的时候是否合格
+        if (!open) {
+
         }
         // 写入数据库
         await cardPackageData.updataCardPackage(params, params_).catch((err) => {
