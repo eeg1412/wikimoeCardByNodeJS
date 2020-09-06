@@ -306,7 +306,7 @@
                        layout="prev, pager, next"
                        :total="postTotle"
                        @current-change="postPageChange"
-                       :current-page.sync="postPage"
+                       :current-page="postPage"
                        :page-size="20"
                        class="wm_menu_news_page">
         </el-pagination>
@@ -399,11 +399,17 @@ import { authApi } from "../api";
 import { mailCheck, passwordCheck } from "../../utils/utils";
 import md5_ from 'js-md5';
 import itemData from '../../../../server/data/item';
+import { mapState, mapActions, mapMutations } from "vuex"
 
 export default {
+  props: {
+    getInfoMode: {
+      type: Boolean,
+      default: true
+    },
+  },
   data () {
     return {
-      dailygeted: true,
       menuLink: {
         courseURL: window.$siteConfig.courseURL,
         QQunURL: window.$siteConfig.QQunURL,
@@ -418,9 +424,6 @@ export default {
       newsList: null,
       page: 1,
       totle: 0,
-      postPage: 1,
-      postList: [],
-      postTotle: 0,
       postDialog: false,
       itemData_: itemData,
       form: {
@@ -433,8 +436,16 @@ export default {
   },
   mounted () {
     this.getRememberEmail();
-    this.getPost();
-    this.dailygetedSearch();
+    if (this.getInfoMode) {
+      this.getPost();
+      this.dailygetedSearch();
+    }
+  },
+  computed: {
+    ...mapState(
+      "app",
+      ["dailygeted", "postList", "postTotle", "postPage"]
+    ),
   },
   filters: {
     capitalize: function (value) {
@@ -444,6 +455,15 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(
+      "app",
+      {
+        setDailygeted: "setDailygeted",
+        setPostList: "setPostList",
+        setPostTotle: "setPostTotle",
+        setPostPage: "setPostPage"
+      }
+    ),
     resetToken () {
       this.token = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token");
     },
@@ -471,7 +491,7 @@ export default {
       authApi.dailygetitemmenu(params).then(res => {
         console.log(res);
         if (res.data.code == 1) {
-          this.dailygeted = res.data.geted;
+          this.setDailygeted(res.data.geted);
           if (this.dailygeted) {
             // 写入缓存
             // this.token.split('.')
@@ -512,10 +532,10 @@ export default {
       authApi.userpost(params).then(res => {
         console.log(res);
         if (res.data.code == 1) {
-          this.postList = res.data.data;
-          this.postTotle = res.data.totle;
+          this.setPostList(res.data.data);
+          this.setPostTotle(res.data.totle);
           if (this.postList.length <= 0 && this.postPage > 1) {
-            this.postPage = 1;
+            this.setPostPage(1);
             this.getPost();
           }
         } else {
@@ -547,7 +567,7 @@ export default {
       this.getNews();
     },
     postPageChange (p) {
-      this.postPage = p;
+      this.setPostPage(p);
       this.getPost();
     },
     getNews () {

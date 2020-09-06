@@ -649,6 +649,54 @@ function creatAICard (starArr_, allCardDataArr) {
     }
     return cardArr;
 }
+// 统计总COST
+function countCost (level, cardList) {
+    let cost = 0;
+    Object.keys(level).forEach((key) => {
+        const leftType = cardList.find(element => element.cardId === key).leftType;
+        for (let i = 0; i < level[key]; i++) {
+            cost = cost + setCostShould(leftType, i);
+        }
+    });
+    return cost;
+}
+// AI卡牌COST
+function setCostShould (leftType, level = 0) {
+    let addCoe = 0;
+    if (level > 20) { //假如等级大于20则需要的矿石数量会增加
+        addCoe = level - 20;
+    }
+    let itemCount = 0;
+    if (leftType == 1) {
+        const itemCountBase = 45;
+        itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
+    } else if (leftType == 2) {
+        const itemCountBase = 60;
+        itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
+    } else if (leftType == 3) {
+        const itemCountBase = 30;
+        itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
+    } else if (leftType == 4) {
+        const itemCountBase = 60;
+        itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
+    } else if (leftType == 5) {
+        const itemCountBase = 345;
+        itemCount = itemCountBase + (itemCountBase / 5 * addCoe);
+    }
+    return Math.round(itemCount);
+}
+// 设置AI等级
+function creatAILevel (cardList, cost) {
+    let allCost = cost;
+    let level = {};
+    while (allCost > 25) {
+        const addLevelCard = cardList[utils.randomNum(0, 19)];
+        let cardLevel = (level[addLevelCard.cardId] || 0) + 1;
+        level[addLevelCard.cardId] = cardLevel;
+        allCost = allCost - setCostShould(addLevelCard.leftType, cardLevel);
+    }
+    return level;
+}
 // 获取所有卡牌
 async function getAllCardInfo () {
     let allCardArr = [];
@@ -776,6 +824,7 @@ module.exports = async function (req, res, next) {
     }
     // 初始化一些信息
     let AiMode = emData.length > 0 ? false : true;//没有对手的话进入ai模式
+    let AiShouldSetLevel = false;
     let AiData = [];
     let AiInfo = {};
     // 初始化个人信息
@@ -882,19 +931,20 @@ module.exports = async function (req, res, next) {
             if (MyCardIndexCount < 200 && !advanced) {
                 EmCardIndexCount = MyCardIndexCount + utils.randomNum(-550, 0);
             } else {
-                EmCardIndexCount = MyCardIndexCount + utils.randomNum(-400, 400);
+                EmCardIndexCount = MyCardIndexCount + utils.randomNum(-300, 200);
             }
             // 老版进阶加成：EmCardIndexCount = MyCardIndexCount+utils.randomNum(-125,300);
             //给AI设置等级
-            let myCardLevelArr = Object.entries(myCardLevel);
-            //打乱卡牌数组
-            let EmBattleCardRadomArr = [...EmBattleCard];
-            EmBattleCardRadomArr.sort(function () { return Math.random() > 0.5 ? -1 : 1; });
-            for (let i = 0; i < myCardLevelArr.length; i++) {
-                emCardLevel[EmBattleCardRadomArr[i]] = myCardLevelArr[i][1];
-            }
+            AiShouldSetLevel = true;
+            // let myCardLevelArr = Object.entries(myCardLevel);
+            // //打乱卡牌数组
+            // let EmBattleCardRadomArr = [...EmBattleCard];
+            // EmBattleCardRadomArr.sort(function () { return Math.random() > 0.5 ? -1 : 1; });
+            // for (let i = 0; i < myCardLevelArr.length; i++) {
+            //     emCardLevel[EmBattleCardRadomArr[i]] = myCardLevelArr[i][1];
+            // }
             AiInfo["battleCard"] = _.cloneDeep(EmBattleCard);
-            AiInfo["cardLevel"] = _.cloneDeep(emCardLevel);
+            // AiInfo["cardLevel"] = _.cloneDeep(emCardLevel);
             AiInfo["cardIndexCount"] = EmCardIndexCount;
         }
     } else {
@@ -937,6 +987,12 @@ module.exports = async function (req, res, next) {
     // 设置对方出战卡牌信息
     EmBattleCardArr_ = [...EmBattleCard]
     EmBattleCard = await setBattleCardInfo(EmBattleCard, allCardDataArr);
+    if (AiShouldSetLevel) {
+        // 统计卡牌的cost
+        const levelCost = countCost(myCardLevel, MyBattleCard);
+        emCardLevel = creatAILevel(EmBattleCard, levelCost);
+        AiInfo["cardLevel"] = _.cloneDeep(emCardLevel);
+    }
     // 对方卡牌星级统计
     let EmCardStarRes = starCount(EmBattleCard);
     EmCardStarCount = EmCardStarRes[0];
