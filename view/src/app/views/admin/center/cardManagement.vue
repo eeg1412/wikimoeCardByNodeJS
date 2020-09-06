@@ -117,6 +117,7 @@
            ref="cardList">
         <el-table :data="cardBook"
                   border
+                  current-row-key="_id"
                   style="width: 100%">
           <el-table-column prop="cardId"
                            label="卡面"

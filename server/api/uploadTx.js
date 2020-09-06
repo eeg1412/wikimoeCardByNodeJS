@@ -77,7 +77,7 @@ module.exports = async function (req, res, next) {
             console.log(filepath);
             res.send({
                 code: 1,
-                msg: '头像上传成功！'
+                msg: '头像上传成功！如果遇到头像没有刷新，可能是因为缓存，请等待一段时间后再刷新页面！'
             });
         }
     });

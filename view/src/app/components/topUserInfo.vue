@@ -114,7 +114,7 @@
            v-show="openMenu">
         <div class="wm_top_moreinfo_menu_close"><i class="el-icon-close"
              @click="openMenu = false"></i></div>
-        <menuView></menuView>
+        <menuView :getInfoMode="false"></menuView>
       </div>
     </el-collapse-transition>
   </div>
@@ -317,6 +317,8 @@ export default {
           localStorage.removeItem("token");
           this.$emit('removeToken');
           this.$router.replace('/');
+        } else if (res.data.code == 403) {
+          this.$emit('removeToken');
         }
       });
     },

@@ -326,7 +326,7 @@ exports.emailCheck = function (email) {
 }
 //检查密码格式
 exports.passwordCheck = function (password) {
-    return /^\d{4,8}$/.test(password)//4-8位纯数字
+    return /^[\w_-]{4,16}$/.test(password)//4-16位英数字下划线减号
 }
 //检查昵称格式
 exports.nickNameCheck = function (nickName) {

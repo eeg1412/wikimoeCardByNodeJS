@@ -104,6 +104,12 @@
         <el-input v-model="form.siteTitle"
                   placeholder="网站标题"></el-input>
       </el-form-item>
+      <el-form-item label="屏蔽词汇(英语逗号隔开)">
+        <el-input type="textarea"
+                  :rows="5"
+                  v-model="form.hiddenWords"
+                  placeholder="用于注册时的昵称屏蔽词"></el-input>
+      </el-form-item>
       <el-form-item label="底部信息">
         <el-input type="textarea"
                   :rows="5"
@@ -148,6 +154,7 @@ export default {
         browserTitle: '维基萌抽卡',//浏览器标签标题
         siteTitle: '维基萌抽卡',//网站标题
         footer: "",
+        hiddenWords: "",
       },
       token: sessionStorage.getItem("adminToken") ? sessionStorage.getItem("adminToken") : localStorage.getItem("adminToken"),
     }
@@ -188,6 +195,7 @@ export default {
           this.form.browserTitle = resData.browserTitle || '';//浏览器标签标题
           this.form.siteTitle = resData.siteTitle || '';//网站标题
           this.form.footer = resData.footer || '';//底部信息
+          this.form.hiddenWords = resData.hiddenWords || '';//屏蔽词汇
         } else {
           this.$message.error(res.data.msg);
         }

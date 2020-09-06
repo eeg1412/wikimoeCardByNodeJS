@@ -45,6 +45,8 @@ module.exports = async function (req, res, next) {
         myConfig = JSON.parse(myConfig);
         const footerHTML = fs.readFileSync('templete/footer.html', 'utf8');
         myConfig["footer"] = footerHTML;
+        const hiddenWords = fs.readFileSync('./data/hiddenWords.txt', 'utf8');
+        myConfig["hiddenWords"] = hiddenWords;
         res.send({
             code: 1,
             data: myConfig,
@@ -274,6 +276,7 @@ module.exports = async function (req, res, next) {
         $('#wm_index_footer').html(footerHTML);
         $('title').text(global.myAppConfig.browserTitle || "维基萌抽卡");
         fs.writeFileSync("public/index.html", $.html());
+        fs.writeFileSync('./data/hiddenWords.txt', config_.hiddenWords || "", 'utf8');
         res.send({
             code: 1,
             msg: '修改配置成功'
