@@ -317,6 +317,8 @@ export default {
           localStorage.removeItem("token");
           this.$emit('removeToken');
           this.$router.replace('/');
+        } else if (res.data.code == 403) {
+          this.$emit('removeToken');
         }
       });
     },

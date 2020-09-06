@@ -645,6 +645,8 @@ export default {
           }
           this.loginShow = false;
           this.token = resData.token;
+          this.form.password = "";
+          this.form.captcha = "";
           this.$emit('addToken');
           this.goLink();
         }
