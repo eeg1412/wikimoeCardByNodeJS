@@ -4,7 +4,7 @@ const md5 = require('md5-node');
 const utils = require('../utils/utils');
 const chalk = require('chalk');
 const userData = require('../utils/database/user');
-const oldUsersModel = require('../models/oldUsers');
+const itemDatabase = require('../utils/database/item');
 const jwt = require('jsonwebtoken');
 const Mint = require('mint-filter').default;
 const fs = require('fs');
@@ -141,50 +141,15 @@ module.exports = async function (req, res, next) {
             )
             return false;
         } else {
-            // 查询旧版数据
-            var oldData = await oldUsersModel.findOne({ md5: md5(email) }, function (err, result) {
-                if (err) {
-                    throw err;
-                } else {
-                    if (result) {
-                        return result;
-                    }
-                }
-            });
             var creatAccountData = {
                 email: email,
                 nickName: nickName,
                 password: md5(password),
                 md5: md5(email),
-                star: 780,
+                star: 0,
                 battled: false,
                 battleHitStamp: 0,
                 ip: IP
-            }
-            if (oldData) {
-                let BouerseStar = 0;
-                if (oldData.bouerse) {
-                    let oldBouerse = JSON.parse(oldData.bouerse);
-                    for (var i in oldBouerse) {
-                        BouerseStar = BouerseStar + oldBouerse[i].have * 35;//股票每股35转换为星星
-                    }
-                }
-                creatAccountData['star'] = Number(oldData.starCount) + BouerseStar + 1250;//老账户送1250星星
-                creatAccountData['score'] = Number(oldData.score);
-                creatAccountData['level'] = Number(oldData.level);
-                creatAccountData['exp'] = Number(oldData.exp);
-                creatAccountData['deminingStarCount'] = Number(oldData.deminingStarStarCount);
-                let oldCardId = oldData.cardID.split(',');
-                let oldCardCount = oldData.cardCount.split(',');
-                let oldCard = {};
-                for (let i = 0; i < oldCardId.length; i++) {
-                    oldCard[Number(oldCardId[i])] = Number(oldCardCount[i])
-                }
-                creatAccountData['card'] = {};
-                creatAccountData['card']['0'] = oldCard;
-                let userCardCache = Object.entries(oldCard);
-                let cardTotle = userCardCache.length;
-                creatAccountData['cardIndexCount'] = cardTotle;
             }
             let content = { email: email }; // 要生成token的主题信息
             let secretOrPrivateKey = global.myAppConfig.JWTSecret; // 这是加密的key（密钥）
@@ -197,7 +162,7 @@ module.exports = async function (req, res, next) {
             var user = new usersModel(creatAccountData);
 
             // document保存
-            user.save(function (err) {
+            user.save(async function (err) {
                 if (err) {
                     res.send({
                         code: 0,
@@ -205,6 +170,22 @@ module.exports = async function (req, res, next) {
                     });
                     throw err
                 } else {
+                    // 赠送结缘币
+                    let updateStarCoin = {
+                        $inc: {
+                            "item.300": 30
+                        }
+                    }
+                    await itemDatabase.findOneAndUpdate(content, updateStarCoin).catch((err) => {
+                        res.send({
+                            code: 0,
+                            msg: '内部错误请联系管理员！'
+                        });
+                        console.error(
+                            chalk.red('数据库更新错误！')
+                        );
+                        throw err;
+                    });
                     let logObject = {
                         email: email,
                         md5: md5(email),

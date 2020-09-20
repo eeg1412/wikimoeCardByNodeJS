@@ -1,4 +1,25 @@
 import { Loading, Message } from 'element-ui';
+//卡包排序
+export const packageSort = function (cardPackage, sort, sortType) {
+    let cardPackage_ = cardPackage;
+    console.log(cardPackage, sort);
+    const sortInfoRaw = sort.find((item) => item.type === sortType);
+    if (sortInfoRaw) {
+        const sortInfo = sortInfoRaw.packageSortList;
+        cardPackage_.sort((a, b) => {
+            if (sortInfo.indexOf(a._id) === -1 && sortInfo.indexOf(b._id) === -1) {
+                return 1
+            } else if (sortInfo.indexOf(a._id) !== -1 && sortInfo.indexOf(b._id) === -1) {
+                return -1
+            } else if (sortInfo.indexOf(a._id) === -1 && sortInfo.indexOf(b._id) !== -1) {
+                return 1
+            }
+            return sortInfo.indexOf(a._id) - sortInfo.indexOf(b._id)
+        })
+    };
+
+    return cardPackage_;
+}
 //用户头像
 export const userTx = function (md5) {
     const md5Str = md5 || "";

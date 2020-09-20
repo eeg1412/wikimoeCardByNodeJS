@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import { PrefixInteger, scrollToTop } from "../../../utils/utils";
+import { PrefixInteger, scrollToTop, packageSort } from "../../../utils/utils";
 import md5_ from 'js-md5';
 import { authApi } from "../../api";
 
@@ -169,12 +169,14 @@ export default {
       return "加载中..."
     },
     getCardPackage () {
-      authApi.searchcardpackage().then(res => {
+      authApi.searchcardpackage({ sortType: "default" }).then(res => {
         console.log(res);
         if (res.data.code == 0) {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           this.cardPackage = res.data.data;
+          // 给卡包排序
+          this.cardPackage = packageSort(this.cardPackage, res.data.sortData, "default");
           this.cardPackage.unshift({
             name: "全部",
             packageId: "-1"

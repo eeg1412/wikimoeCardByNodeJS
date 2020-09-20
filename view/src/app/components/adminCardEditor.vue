@@ -368,7 +368,7 @@ export default {
           return false;
         }
         //   检测出自简称字数有没有过多
-        if (this.sprite.titleSprite.width > 125) {
+        if (this.sprite.titleSprite.width > 128) {
           this.$message.error('作品简称字数过多，请检查！');
           return false;
         }

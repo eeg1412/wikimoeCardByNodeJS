@@ -30,8 +30,8 @@ module.exports = async function (req, res, next) {
         let myCard = result.card || {};
         let card = myCard[packageId];
         let battleCardCount = {};
-        if (card) {
-            const battleCard = result.battleCard || [];
+        const battleCard = result.battleCard || [];
+        if (card || (battleOnly && battleCard.length > 0)) {
             let haveCardId = [];
             if (battleOnly) {
                 haveCardId = battleCard.map(Number);

@@ -1188,9 +1188,9 @@ module.exports = async function (req, res, next) {
             } else if (getScore > 90) {//最多获得90竞技点
                 getScore = 90;
             }
-            if (advanced && getScore >= 90) {
-                getScore = 120;
-            }
+            // if (advanced && getScore >= 90) {
+            //     getScore = 120;
+            // }
             if (noDieWin) {//如果没打死对方按比例加成
                 getScore = Math.round(getScore * (1 - EmADSHP[3] / EmADSHP_[3]))
             }
@@ -1253,9 +1253,9 @@ module.exports = async function (req, res, next) {
             } else if (getScore < -90) {//最多扣90分
                 getScore = -90;
             }
-            if (advanced && getScore <= -90) {
-                getScore = -120;
-            }
+            // if (advanced && getScore <= -90) {
+            //     getScore = -120;
+            // }
             if (noDieWin) {//如果没打死对方按比例加成
                 getScore = Math.round(getScore * (1 - MyADSHP[3] / MyADSHP_[3]))
             }

@@ -241,7 +241,7 @@
 
 <script>
 import { authApi } from "../../../api";
-import { mailCheck } from "../../../../utils/utils";
+import { mailCheck, packageSort } from "../../../../utils/utils";
 import adminCardEditor from '../../../components/adminCardEditor.vue';
 export default {
   data () {
@@ -395,12 +395,14 @@ export default {
       });
     },
     getCardPackage () {
-      authApi.searchcardpackage().then(res => {
+      authApi.searchcardpackage({ sortType: "default" }).then(res => {
         console.log(res);
         if (res.data.code == 0) {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           this.cardPackage = res.data.data;
+          // 给卡包排序
+          this.cardPackage = packageSort(this.cardPackage, res.data.sortData, "default");
           this.cardPackage.unshift({ packageId: '-1', name: '全部卡包' });
         }
       });

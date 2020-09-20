@@ -459,7 +459,7 @@
 
 <script>
 import menuView from '../components/menu.vue';
-import { PrefixInteger, md5Check, scrollToTop } from "../../utils/utils";
+import { PrefixInteger, md5Check, scrollToTop, packageSort } from "../../utils/utils";
 import { authApi } from "../api";
 import userTop from '../components/topUserInfo.vue';
 import md5_ from 'js-md5';
@@ -497,8 +497,11 @@ export default {
       },
       myCardLevel: {},
       myBattleCardLevel: {},
-      seledCardPackage: '0',
-      cardPackage: [],
+      seledCardPackage: '-1',
+      cardPackage: [{
+        name: "加载中...",
+        packageId: "-1"
+      }],
     }
   },
   components: {
@@ -510,7 +513,6 @@ export default {
     HooperPagination
   },
   created () {
-    this.getMyBattleCard();
     this.getCardPackage();
   },
   mounted () {
@@ -519,13 +521,18 @@ export default {
   },
   methods: {
     getCardPackage () {
-      authApi.searchcardpackage().then(res => {
+      authApi.searchcardpackage({ sortType: "default" }).then(res => {
         console.log(res);
         if (res.data.code == 0) {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           this.cardPackage = res.data.data;
-          this.seledCardPackage = '0';
+          // 给卡包排序
+          this.cardPackage = packageSort(this.cardPackage, res.data.sortData, "default");
+          if (this.cardPackage.length > 0 && this.seledCardPackage === "-1") {
+            this.seledCardPackage = this.cardPackage[0].packageId;
+          };
+          this.getMyBattleCard();
         }
       });
     },

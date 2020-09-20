@@ -28,11 +28,11 @@
         <el-button @click="backIndex">返回首页</el-button>
       </el-form-item>
     </el-form>
-    <el-dialog title="请输入验证码"
+    <el-dialog title="请输入计算结果"
                :visible.sync="codeShow"
                class="reg_code_dialog"
                width="100%">
-      <el-input placeholder="请输入验证码"
+      <el-input placeholder="请输入计算结果"
                 v-model="form.captcha"
                 type="tel">
         <template slot="append"><img class="reg_code_img"

@@ -1,9 +1,12 @@
 var chalk = require('chalk');
 var utils = require('../../utils/utils');
 var cardPackageData = require('../../utils/database/cardPackage');
+const cardPackageSortData = require('../../utils/database/cardPackageSort');
 // var cardData = require('../../utils/database/cardData');
 var adminUtils = require('../../utils/admin/adminUtils');
 var fs = require('fs');
+const _ = require('lodash');
+const validator = require('validator');
 
 module.exports = async function (req, res, next) {
     let IP = utils.getUserIp(req);
@@ -35,7 +38,80 @@ module.exports = async function (req, res, next) {
     }
 
     let adminAccount = resultAdmin.account;
-    if (type === 'add') {
+    if (type === 'sort') {
+        const sortType = req.body.sortType || "";
+        const sortList = req.body.sortList || [];
+        const sortTypeList = ["default", "open", "starShopOpen", "guessOpen", "starCoinOpen", "submitOpen"];
+        if (sortTypeList.indexOf(sortType) < 0) {
+            res.send({
+                code: 0,
+                msg: '不存在该类型排序！'
+            });
+            console.info(
+                chalk.yellow('给卡包排序，但是不存在该类型排序,IP为：' + IP)
+            )
+            return false;
+        }
+        // 检查列表数据
+        if (!_.isArray(sortList)) {
+            res.send({
+                code: 0,
+                msg: '排序列表不正确！'
+            });
+            console.info(
+                chalk.yellow('给卡包排序，但是排序列表不正确,IP为：' + IP)
+            )
+            return false;
+        }
+        let idIsError = false;
+        for (let i = 0; i < sortList.length; i++) {
+            const isId = validator.isMongoId(sortList[i] + "");
+            if (!isId) {
+                idIsError = true;
+                break;
+            }
+        }
+        if (idIsError) {
+            res.send({
+                code: 0,
+                msg: '排序列表数据不正确！'
+            });
+            console.info(
+                chalk.yellow('给卡包排序，但是排序列表数据不正确,IP为：' + IP)
+            )
+            return false;
+        }
+        const conditions = {
+            type: sortType
+        }
+        const update = {
+            packageSortList: sortList
+        }
+        await cardPackageSortData.findOneAndUpdate(conditions, update).catch((err) => {
+            res.send({
+                code: 0,
+                msg: '内部错误请联系管理员！'
+            });
+            console.error(
+                chalk.red('数据库查询错误！')
+            );
+            throw err;
+        });
+
+        res.send({
+            code: 1,
+            msg: '修改成功！'
+        });
+        let logObj = {
+            text: '使用管理员账号' + adminAccount + '修改了卡包排序！类型为：' + sortType,
+            ip: IP
+        }
+        adminUtils.adminWriteLog(logObj);
+        console.info(
+            chalk.green(adminAccount + '修改卡包排序成功,IP为：' + IP)
+        )
+
+    } else if (type === 'add') {
         let name = req.body.name;
         if (!name) {
             res.send({

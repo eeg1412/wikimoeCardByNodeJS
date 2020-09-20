@@ -43,7 +43,7 @@
             <div class="wm_top_moreinfo_label">累计挖矿：{{userData.deminingStarCount}}</div>
           </div>
           <div class="wm_top_moreinfo_box">
-            <div class="wm_top_moreinfo_label">收集量：{{userData.cardIndexCount}}</div>
+            <div class="wm_top_moreinfo_label">卡种量：{{userData.cardIndexCount}}</div>
           </div>
           <div class="wm_top_moreinfo_box">
             <div class="wm_top_moreinfo_label">猜中卡牌：{{userData.guessCardCount}}</div>

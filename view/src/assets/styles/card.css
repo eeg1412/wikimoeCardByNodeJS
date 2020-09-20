@@ -309,6 +309,12 @@ input[type=tel], input[type=text],input[type=number],input[type=password]{-webki
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
 }
+.card-3d-newicon{
+  animation-name: pikapikaZero;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
 .common_title_tips{
   text-align: center;
   font-size: 14px;
@@ -1139,6 +1145,18 @@ img.wm_demining_img {
 
   50% {
     opacity: 0.45;
+  }
+  100%{
+    opacity: 1;
+  }
+}
+@keyframes pikapikaZero {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
   }
   100%{
     opacity: 1;
