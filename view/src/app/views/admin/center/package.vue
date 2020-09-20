@@ -1,12 +1,58 @@
 <template>
   <div class="wmcard_admincenter_common_right_body">
-    <div class="clearfix">
+    <div class="clearfix"
+         v-if="sortMode"
+         key="sortOn">
+      <el-button class="fr"
+                 @click="sortMode = false">返回</el-button>
+      <!-- <el-button class="fr mr10"
+                 type="primary">提交</el-button> -->
+      <el-select v-model="sortType"
+                 class="fr mr10"
+                 @change="packageSortSet"
+                 placeholder="请选择">
+        <el-option v-for="item in sortOptions"
+                   :key="item.value"
+                   :label="item.label"
+                   :value="item.value">
+        </el-option>
+      </el-select>
+    </div>
+    <div class="clearfix"
+         v-else
+         key="sortFalse">
       <el-button class="fr"
                  type="primary"
                  @click="newPackage">创建卡包</el-button>
+      <el-button class="fr mr10"
+                 type="primary"
+                 @click="openSortMode()">更改排序</el-button>
+    </div>
+    <div class="mt15"
+         v-if="sortMode">
+      <draggable ghost-class="wmcard_admincenter_package_sort_ghost"
+                 v-model="sortData">
+        <div v-for="item in sortData"
+             :key="item._id"
+             class="wmcard_admincenter_package_sort_item">
+          <i class="el-icon-rank mr15 cRed"></i>
+          <div class="dib mr15">卡包名：{{item.name}}</div>
+          <div class="dib"
+               v-if="sortType!=='default'">是否开启：<el-switch :value="item[sortType]"
+                       active-color="#13ce66"
+                       inactive-color="#ff4949"
+                       disabled>
+            </el-switch>
+          </div>
+        </div>
+      </draggable>
+      <el-button class="fr mt15"
+                 type="primary"
+                 @click="sendSort()">提交</el-button>
     </div>
     <el-table :data="tableData"
-              style="width: 100%">
+              style="width: 100%"
+              v-else>
       <el-table-column prop="name"
                        label="卡包名">
       </el-table-column>
@@ -117,10 +163,43 @@
 </template>
 
 <script>
+import { packageSort } from "../../../../utils/utils";
 import { authApi } from "../../../api";
+import draggable from 'vuedraggable';
+import _ from 'lodash';
 export default {
   data () {
     return {
+      sortInfo: [],
+      sortData: [],
+      sortOptions: [
+        {
+          label: "普通排序",
+          value: "default"
+        },
+        {
+          label: "日常抽卡排序",
+          value: "open"
+        },
+        {
+          label: "星星商店排序",
+          value: "starShopOpen"
+        },
+        // {
+        //   label: "猜卡排序",
+        //   value: "guessOpen"
+        // },
+        {
+          label: "结缘排序",
+          value: "starCoinOpen"
+        },
+        {
+          label: "制卡排序",
+          value: "submitOpen"
+        }
+      ],
+      sortType: "default",
+      sortMode: false,
       name: '',
       dialogVisible: false,
       id: '',
@@ -129,6 +208,9 @@ export default {
       token: sessionStorage.getItem("adminToken") ? sessionStorage.getItem("adminToken") : localStorage.getItem("adminToken"),
     }
   },
+  components: {
+    draggable,
+  },
   mounted () {
     this.getCardPackage();
   },
@@ -136,6 +218,38 @@ export default {
 
   },
   methods: {
+    sendSort () {
+      let idList = [];
+      this.sortData.forEach((item) => {
+        idList.push(item._id);
+      });
+      let paramas = {
+        token: this.token,
+        sortType: this.sortType,
+        sortList: idList,
+        type: 'sort'
+      };
+      authApi.renamecardpackage(paramas).then(res => {
+        console.log(res);
+        if (res.data.code == 0) {
+          this.$message.error(res.data.msg);
+        } else if (res.data.code == 1) {
+          this.$message({
+            message: res.data.msg,
+            type: 'success'
+          });
+          this.getCardPackage();
+        }
+      });
+    },
+    openSortMode () {
+      this.packageSortSet();
+      this.sortMode = true;
+    },
+    packageSortSet () {
+      this.sortData = _.cloneDeep(this.tableData);
+      this.sortData = packageSort(this.sortData, this.sortInfo, this.sortType);
+    },
     openPackage (open, id, type) {
       let paramas = {
         token: this.token,
@@ -197,6 +311,7 @@ export default {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           this.tableData = res.data.data;
+          this.sortInfo = res.data.sortData || [];
         }
       });
     },
@@ -204,3 +319,16 @@ export default {
 }
 </script>
 
+<style scoped>
+.wmcard_admincenter_package_sort_item {
+  padding: 10px;
+  border-top: 1px solid #ccc;
+  cursor: url(/static/cur/move.cur), move;
+}
+</style>
+<style>
+.wmcard_admincenter_package_sort_ghost {
+  opacity: 0.5;
+  background: #ccc;
+}
+</style>

@@ -15,7 +15,7 @@
                   placeholder="请输入密码"></el-input>
       </el-form-item>
       <el-form-item label="验证码">
-        <el-input placeholder="请输入验证码"
+        <el-input placeholder="请输入计算结果"
                   v-model="form.captcha"
                   type="tel">
           <template slot="append"><img class="reg_code_img"

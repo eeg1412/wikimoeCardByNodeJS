@@ -234,6 +234,7 @@ import menuView from '../components/menu.vue';
 import userTop from '../components/topUserInfo.vue';
 import captcha from "../components/captcha"
 import { authApi } from "../api";
+import { packageSort } from "../../utils/utils";
 
 export default {
   data () {
@@ -291,12 +292,14 @@ export default {
   },
   methods: {
     getCardPackage () {
-      authApi.searchcardpackage().then(res => {
+      authApi.searchcardpackage({ sortType: "submitOpen" }).then(res => {
         console.log(res);
         if (res.data.code == 0) {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           this.cardPackage = res.data.data.filter(item => item.submitOpen);
+          // 给卡包排序
+          this.cardPackage = packageSort(this.cardPackage, res.data.sortData, "submitOpen");
           if (this.cardPackage.length > 0) {
             this.seledCardPackage = this.cardPackage[0].packageId;
           } else {
@@ -404,7 +407,7 @@ export default {
         return false;
       }
       //   检测出自简称字数有没有过多
-      if (this.sprite.titleSprite.width > 125) {
+      if (this.sprite.titleSprite.width > 128) {
         this.$message.error('作品简称字数过多，请检查！');
         return false;
       }

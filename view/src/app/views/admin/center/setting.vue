@@ -65,7 +65,7 @@
                          label="单用户最多等待审核的制卡"
                          :min="1"></el-input-number>
       </el-form-item>
-      <el-form-item label="使用市场收集率限制">
+      <el-form-item label="使用市场卡种量限制">
         <el-input-number v-model="form.useMarketCardCount"
                          label="集齐多少种卡牌后能使用市场"
                          :min="1"></el-input-number>

@@ -33,11 +33,11 @@
         <el-button @click="backIndex">返回首页</el-button>
       </el-form-item>
     </el-form>
-    <el-dialog title="请输入验证码"
+    <el-dialog title="请输入计算结果"
                :visible.sync="codeShow"
                class="reg_code_dialog"
                width="100%">
-      <el-input placeholder="请输入验证码"
+      <el-input placeholder="请输入计算结果"
                 v-model="form.captcha"
                 type="tel">
         <template slot="append"><img class="reg_code_img"
@@ -151,7 +151,7 @@ export default {
         } else if (res.data.code == 1) {
           let resData = res.data;
           sessionStorage.setItem("token", resData.token);
-          this.$alert('恭喜您，注册成功并获得了新人福利！可以在【商店】中查看！', '提示', {
+          this.$alert('恭喜您，注册成功并获得了新人福利！可以在【结缘】中进行抽卡！', '提示', {
             confirmButtonText: '确定',
             showClose: false,
             callback: action => {

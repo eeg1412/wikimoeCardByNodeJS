@@ -49,6 +49,7 @@
           <rotate3DCard trigger="custom"
                         v-model="cardIsRotate[0]"
                         direction="row"
+                        :isNew="dailyCardIsNew[0]"
                         :cardSrc="getCardList[0]">
             <slot name="cz"></slot>
             <slot name="cf"></slot>
@@ -61,6 +62,7 @@
           <rotate3DCard trigger="custom"
                         v-model="cardIsRotate[1]"
                         direction="row"
+                        :isNew="dailyCardIsNew[1]"
                         :cardSrc="getCardList[1]">
             <slot name="cz"></slot>
             <slot name="cf"></slot>
@@ -73,6 +75,7 @@
           <rotate3DCard trigger="custom"
                         v-model="cardIsRotate[2]"
                         direction="row"
+                        :isNew="dailyCardIsNew[2]"
                         :cardSrc="getCardList[2]">
             <slot name="cz"></slot>
             <slot name="cf"></slot>
@@ -113,7 +116,7 @@
               <tr>
                 <th>等级</th>
                 <th>竞技点</th>
-                <th>收集量</th>
+                <th>卡种量</th>
               </tr>
             </thead>
             <tbody>
@@ -310,7 +313,7 @@
 
 <script>
 import { authApi } from "../api";
-import { scrollToTop, mailCheck, PrefixInteger, md5Check, loadingImg, showLoading, hideLoading } from "../../utils/utils";
+import { scrollToTop, mailCheck, PrefixInteger, md5Check, loadingImg, showLoading, hideLoading, packageSort } from "../../utils/utils";
 import rotate3DCard from '../components/rotateCard.vue';
 import menuView from '../components/menu.vue';
 import topNews from '../components/topNews.vue';
@@ -351,7 +354,10 @@ export default {
         nickName: '',
         cardCount: 0,
         md5: ''
-      }//当前用户信息
+      },//当前用户信息
+      dailyCardIsNew: [false, false, false],
+      cancelImgPromise: null,
+      cancelDailyPromise: null,
     }
   },
   components: {
@@ -414,21 +420,31 @@ export default {
       this.$refs.menu.resetToken();
     },
     getCardPackage () {
-      authApi.searchcardpackage().then(res => {
+      authApi.searchcardpackage({ sortType: "open" }).then(res => {
         console.log(res);
         if (res.data.code == 0) {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           this.cardPackage = res.data.data;
-          let nowPackageId = localStorage.getItem("dailyCardPackageId") || '0';
-          this.seledCardPackage = '0';
-          for (let i = 0; i < this.cardPackage.length; i++) {
-            if (this.cardPackage[i].packageId === nowPackageId) {
-              if (this.cardPackage[i].open) {
-                this.seledCardPackage = nowPackageId;
-              }
-              break;
+          let nowPackageId = localStorage.getItem("dailyCardPackageId");
+          this.seledCardPackage = '';
+          // 给卡包排序
+          this.cardPackage = packageSort(this.cardPackage, res.data.sortData, "open");
+          // 如果缓存中存在默认卡牌ID
+          if (nowPackageId) {
+            const seledCardPackageInfo = this.cardPackage.find((item) => {
+              return item.packageId === nowPackageId && item.open;
+            });
+            if (seledCardPackageInfo) {
+              this.seledCardPackage = seledCardPackageInfo.packageId;
             }
+          }
+          const openPackage = this.cardPackage.find((item) => {
+            return item.open;
+          })
+          if (this.seledCardPackage === "" && openPackage) {
+            // 如果没有默认选中的卡包则获取第一个卡包
+            this.seledCardPackage = openPackage.packageId;
           }
         }
       });
@@ -559,8 +575,12 @@ export default {
       showLoading();
       new Promise((resolve, reject) => {
         loadingImg(userCardSrc, resolve, reject);
+        this.cancelImgPromise = () => {
+          reject("canceled");
+        }
       }).then((result) => {
         this.userCard = null;
+        hideLoading();
         setTimeout(() => {
           if (!noGoTop) {
             let topNewsHeight = this.$refs.topNews.$el.clientHeight ? this.$refs.topNews.$el.clientHeight + 20 : 0;
@@ -571,14 +591,17 @@ export default {
             }
             scrollToTop(topSet + topNewsHeight - 40, 200);
           }
-          hideLoading();
           this.userPackageNow = { ...this.userCardCount };
           this.userCard = userCard_;
         }, 250);
+        this.cancelImgPromise = null;
       }).catch((reason) => {
         console.log(reason);
         hideLoading();
-        this.$message.error('图片资源加载失败');
+        if (reason !== "canceled") {
+          this.$message.error('图片资源加载失败');
+        }
+        this.cancelImgPromise = null;
       });
     },
     PrefixInteger_ (num, length) {
@@ -653,6 +676,7 @@ export default {
       this.$refs.cardListBody.children[1].classList.remove("no-selectedcard");
       this.$refs.cardListBody.children[2].classList.remove("no-selectedcard");
       this.cardIsRotate = [false, false, false];
+      this.dailyCardIsNew = [false, false, false];
       // this.userCard = null;//用户当前页卡牌
       // this.userCardCache = null;//用户卡牌
       // this.cardPage = 1;//当前卡牌页码
@@ -691,12 +715,17 @@ export default {
         } else if (res.data.code == 1) {
           this.rememberEmail();
           let resData = res.data;
+          this.dailyCardIsNew[resData.choiseIndex] = resData.isNew;
           let getCardSrcArr = [this.$wikimoecard.url + resData.packageId + '/' + resData.cardChoiseList[0] + '.jpg', this.$wikimoecard.url + resData.packageId + '/' + resData.cardChoiseList[1] + '.jpg', this.$wikimoecard.url + resData.packageId + '/' + resData.cardChoiseList[2] + '.jpg'];
           showLoading();
           new Promise((resolve, reject) => {
             loadingImg(getCardSrcArr, resolve, reject);
+            this.cancelDailyPromise = () => {
+              reject("canceled");
+            }
           }).then((result) => {
             hideLoading();
+            this.cancelDailyPromise = null;
             this.seled = true;
             // this.getUserCard(emailMD5,true);
             this.$set(this.getCardList, 0, getCardSrcArr[0]);
@@ -727,8 +756,11 @@ export default {
             }
           }).catch((reason) => {
             console.log(reason);
+            this.cancelDailyPromise = null;
             hideLoading();
-            this.$message.error('图片资源加载失败');
+            if (reason !== "canceled") {
+              this.$message.error('图片资源加载失败');
+            }
           });
         } else if (res.data.code == 2) {
           this.$confirm('您尚未注册，是否进入注册页？', '提示', {
@@ -750,6 +782,14 @@ export default {
           this.getUserCard(emailMD5, true);
         }
       })
+    }
+  },
+  beforeDestroy () {
+    if (this.cancelImgPromise) {
+      this.cancelImgPromise();
+    }
+    if (this.cancelDailyPromise) {
+      this.cancelDailyPromise();
     }
   }
 }

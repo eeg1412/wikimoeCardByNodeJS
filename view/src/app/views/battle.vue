@@ -201,7 +201,7 @@
           </div>
           <div class="wm_top_moreinfo_box"
                v-if="userBattleLogInfo.MD5">
-            <div class="wm_top_moreinfo_label">收集率：{{userBattleLogInfo.cardIndex}}</div>
+            <div class="wm_top_moreinfo_label">卡种：{{userBattleLogInfo.cardIndex}}</div>
           </div>
         </div>
       </div>

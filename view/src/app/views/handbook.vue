@@ -239,7 +239,7 @@ import cardInfoDialog from "../components/cardInfo"
 import marketCardList from "../components/marketCardList"
 import { authApi } from "../api";
 import userTop from '../components/topUserInfo.vue';
-import { PrefixInteger, md5Check, unique } from "../../utils/utils";
+import { PrefixInteger, md5Check, unique, packageSort } from "../../utils/utils";
 import md5_ from 'js-md5';
 import _ from 'lodash';
 
@@ -269,8 +269,13 @@ export default {
         name: decodeURIComponent(this.$route.query.name || ''),
       },
       loading: true,
-      seledCardPackage: this.$route.query.packageId || '0',
-      cardPackage: [],
+      seledCardPackage: this.$route.query.packageId || '-1',
+      cardPackage: [
+        {
+          name: "加载中...",
+          packageId: "-1"
+        }
+      ],
     }
   },
   components: {
@@ -282,7 +287,6 @@ export default {
   created () {
     console.log(this.searchForm.title);
     this.getCardPackage();
-    this.getUserCard();
   },
   mounted () {
     this.$emit('l2dMassage', '这里可以查看自己已经收集到的卡牌。');
@@ -454,12 +458,18 @@ export default {
       this.getUserCard();
     },
     getCardPackage () {
-      authApi.searchcardpackage().then(res => {
+      authApi.searchcardpackage({ sortType: "default" }).then(res => {
         console.log(res);
         if (res.data.code == 0) {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           this.cardPackage = res.data.data;
+          // 给卡包排序
+          this.cardPackage = packageSort(this.cardPackage, res.data.sortData, "default");
+          if (this.cardPackage.length > 0 && this.seledCardPackage === "-1") {
+            this.seledCardPackage = this.cardPackage[0].packageId;
+          };
+          this.getUserCard();
         }
       });
     },

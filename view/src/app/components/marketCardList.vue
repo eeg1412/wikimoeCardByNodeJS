@@ -72,7 +72,7 @@
       <span slot="footer"
             class="dialog-footer">
         <div class="dib">
-          <el-input placeholder="请输入验证码"
+          <el-input placeholder="请输入计算结果"
                     v-model="captcha"
                     type="tel">
             <template slot="prepend"><img class="reg_code_img"

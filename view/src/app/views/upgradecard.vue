@@ -354,7 +354,7 @@ import userTop from '../components/topUserInfo.vue';
 import battle from '../components/battle.vue';
 import cardInfoDialog from "../components/cardInfo"
 import itemData from '../../../../server/data/item';
-import { PrefixInteger, md5Check } from "../../utils/utils";
+import { PrefixInteger, md5Check, packageSort } from "../../utils/utils";
 import md5_ from 'js-md5';
 
 export default {
@@ -388,8 +388,13 @@ export default {
       myCardLevel: {},
       itemData_: itemData,
       myItem: {},
-      seledCardPackage: '0',
-      cardPackage: [],
+      seledCardPackage: '-1',
+      cardPackage: [
+        {
+          name: "加载中...",
+          packageId: "-1"
+        }
+      ],
       battleMode: true,
     }
   },
@@ -436,7 +441,6 @@ export default {
   mounted () {
     this.$emit('l2dMassage', '这里可以升级自己的卡牌，所需材料可以在挖矿中获得，卡牌可以通过抽卡、猜卡、结缘或者市场购买获得。如果卡牌不足可以通过卡牌碎片来替代卡牌，卡牌碎片可以通过分解卡牌获得。');
     this.getCardPackage();
-    this.apiInit();
   },
   methods: {
     itemShould (leftType, level = 0) {
@@ -493,13 +497,18 @@ export default {
       })
     },
     getCardPackage () {
-      authApi.searchcardpackage().then(res => {
+      authApi.searchcardpackage({ sortType: "default" }).then(res => {
         console.log(res);
         if (res.data.code == 0) {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           this.cardPackage = res.data.data;
-          this.seledCardPackage = '0';
+          // 给卡包排序
+          this.cardPackage = packageSort(this.cardPackage, res.data.sortData, "default");
+          if (this.cardPackage.length > 0 && this.seledCardPackage === "-1") {
+            this.seledCardPackage = this.cardPackage[0].packageId;
+          };
+          this.apiInit();
         }
       });
     },
@@ -535,7 +544,7 @@ export default {
           query: {
             from: c.cardId,
             item: changeItem,
-            packageId: this.seledCardPackage,
+            packageId: c.packageId,
             leftType: c.leftType,
             star: c.star,
             fromLevel: c.level

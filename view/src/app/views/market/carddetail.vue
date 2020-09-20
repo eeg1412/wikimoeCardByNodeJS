@@ -18,7 +18,7 @@
         </div>
         <div class="wm_market_card_datail_captcha"
              v-if="type=='buy'">
-          <el-input placeholder="请输入验证码"
+          <el-input placeholder="请输入计算结果"
                     v-model="captcha"
                     type="tel">
             <template slot="append"><img class="reg_code_img"
@@ -48,7 +48,7 @@
           <div class="wm_market_card_datail_tips"
                v-if="stat==1 || stat==0">您将获得：{{price | getPrice}} 星星</div>
           <div class="wm_market_card_datail_captcha">
-            <el-input placeholder="请输入验证码"
+            <el-input placeholder="请输入计算结果"
                       v-model="captcha"
                       type="tel">
               <template slot="append"><img class="reg_code_img"
