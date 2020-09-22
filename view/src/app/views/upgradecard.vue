@@ -371,31 +371,31 @@ export default {
       battleOverTimes: '--',
       itemData_: itemData,
       userCardCache: null,
-      cardPage: 1,
+      cardPage: Number(this.$route.query.page) || 1,
       cardTotle: 0,
       userCard: [],
       pageChangeing: false,
       searchForm: {
-        star: '0',
-        cry: '0',
-        rightType: '0',
-        leftType: '0',
-        battle: '2',
-        sort: '0'
+        star: this.$route.query.star || '0',
+        cry: this.$route.query.cry || '0',
+        rightType: this.$route.query.rightType || '0',
+        leftType: this.$route.query.leftType || '0',
+        battle: this.$route.query.battle || '2',
+        sort: this.$route.query.sort || '0'
       },
       myBattleCard: [],
       myCardCount: {},
       myCardLevel: {},
       itemData_: itemData,
       myItem: {},
-      seledCardPackage: '-1',
+      seledCardPackage: this.$route.query.packageId || '-1',
       cardPackage: [
         {
           name: "加载中...",
           packageId: "-1"
         }
       ],
-      battleMode: true,
+      battleMode: this.$route.query.battleMode === "false" ? false : true,
     }
   },
   components: {
@@ -493,7 +493,7 @@ export default {
       });
       // 同时执行p1和p2，并在它们都完成后执行then:
       Promise.all([battlecard, mycard, myItem]).then((results) => {
-        this.initData();
+        this.initData(this.cardPage);
       })
     },
     getCardPackage () {
@@ -539,6 +539,17 @@ export default {
       let changeCardLvel = c.level;
       let changeItem = this.myItem['200'];
       if (changeItem > 0) {
+        const upgradeDataJSON = JSON.stringify({
+          page: this.cardPage,
+          star: this.searchForm.star,
+          cry: this.searchForm.cry,
+          rightType: this.searchForm.rightType,
+          leftType: this.searchForm.leftType,
+          battle: this.searchForm.battle,
+          sort: this.searchForm.sort,
+          packageId: this.seledCardPackage,
+          battleMode: String(this.battleMode),
+        })
         this.$router.push({
           path: '/cardlevelchange',
           query: {
@@ -547,7 +558,8 @@ export default {
             packageId: c.packageId,
             leftType: c.leftType,
             star: c.star,
-            fromLevel: c.level
+            fromLevel: c.level,
+            upgradeData: btoa(upgradeDataJSON)
           }
         });
       } else {
@@ -788,6 +800,23 @@ export default {
         this.userCard = userCard_;
         this.pageChangeing = false;
       }, 300);
+      this.routerReplace();
+    },
+    routerReplace () {
+      this.$router.replace({
+        name: 'upgradecard',
+        query: {
+          page: this.cardPage,
+          star: this.searchForm.star,
+          cry: this.searchForm.cry,
+          rightType: this.searchForm.rightType,
+          leftType: this.searchForm.leftType,
+          battle: this.searchForm.battle,
+          sort: this.searchForm.sort,
+          packageId: this.seledCardPackage,
+          battleMode: String(this.battleMode),
+        }
+      });
     },
     searchuseritem (resolve, reject) {
       let params = {

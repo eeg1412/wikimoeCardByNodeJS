@@ -543,7 +543,7 @@ export default {
       });
     },
     goCouse () {
-      window.open(this.menuLink.courseURL || 'https://www.wikimoe.com/?post=228', '_blank');
+      window.open(this.menuLink.courseURL || 'https://gitee.com/eeg1412/wikimoe-card-player-tutorial/blob/master/README.md', '_blank');
     },
     getCardMd5 () {
       let md5 = '';
