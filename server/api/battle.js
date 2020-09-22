@@ -722,6 +722,7 @@ module.exports = async function (req, res, next) {
     let token = req.body.token;
     let advanced = req.body.advanced;
     let timeNow = Math.round(new Date().getTime() / 1000);
+    const aiMinScore = 7000;
     if (global.checkScoreRankIng) {
         res.send({
             code: 0,
@@ -811,7 +812,7 @@ module.exports = async function (req, res, next) {
             emData = await searchEm(emScore);
         } else {
             let emMinScore = myScore - 500 < 0 ? 0 : myScore - 500;
-            let emMaxScore = myScore + 750;
+            let emMaxScore = myScore + 500;
             let emScore = {
                 score: { $gte: emMinScore, $lte: emMaxScore },
                 email: { $ne: email },
@@ -904,7 +905,7 @@ module.exports = async function (req, res, next) {
         )
         // 匹配一个合适的AI
         let emMinScore = myScore - 500 < 0 ? 0 : myScore - 500;
-        let emMaxScore = myScore + 750;
+        let emMaxScore = myScore + 500;
         let AiScore = {
             score: { $gte: emMinScore, $lte: emMaxScore },
             email: { $ne: email },
@@ -912,7 +913,8 @@ module.exports = async function (req, res, next) {
             cardIndexCount: { $gte: 20 }
         };
         let searchAiP = utils.randomNum(1, 100);//AI概率因子
-        if (searchAiP > 50) {
+        if (searchAiP > 50 && myScore > aiMinScore) {
+            // 如果竞技点大于9000会有概率遇到人形高达
             AiData = await searchAi(AiScore);
         }
         if (AiData.length > 0) {
@@ -932,6 +934,9 @@ module.exports = async function (req, res, next) {
                 EmCardIndexCount = MyCardIndexCount + utils.randomNum(-550, 0);
             } else {
                 EmCardIndexCount = MyCardIndexCount + utils.randomNum(-300, 200);
+            }
+            if (EmCardIndexCount < 20) {
+                EmCardIndexCount = 20;
             }
             // 老版进阶加成：EmCardIndexCount = MyCardIndexCount+utils.randomNum(-125,300);
             //给AI设置等级
@@ -1293,7 +1298,7 @@ module.exports = async function (req, res, next) {
                     battleHitStamp: timeNow,
                     loseCount: 0
                 }
-            } else if (AiMode && AiData.length <= 0) {
+            } else if (AiMode && AiData.length <= 0 && myScore >= aiMinScore) {
                 // 创建一个AI到库中
                 AiInfo["creatDate"] = timeNow;
                 AiInfo["battleHitStamp"] = timeNow;
@@ -1334,7 +1339,7 @@ module.exports = async function (req, res, next) {
                     battleHitStamp: timeNow,
                     loseCount: 0
                 }
-            } else if (AiMode && AiData.length <= 0) {
+            } else if (AiMode && AiData.length <= 0 && myScore >= aiMinScore) {
                 // 创建一个AI到库中
                 AiInfo["creatDate"] = timeNow;
                 AiInfo["battleHitStamp"] = timeNow;
@@ -1417,8 +1422,8 @@ module.exports = async function (req, res, next) {
         if (AiUserFilters) {
             // 如果有更新AI数据
             // 判断AI连输
-            if (AiData[0].loseCount >= 9 && win === 1) {
-                // 十连输删除该AI
+            if ((AiData[0].loseCount >= 9 && win === 1) || (AiUpdataParams["score"] || aiMinScore) < aiMinScore) {
+                // 十连输或者竞技点低于9000删除该AI
                 await AiDataBase.deleteAiOne(AiUserFilters).catch((err) => {
                     res.send({
                         code: 0,
@@ -1469,7 +1474,7 @@ module.exports = async function (req, res, next) {
                 getExp: getExp,
                 EmGetScore: EmGetScore,
                 EmCardIndexCount: EmCardIndexCount,
-                ver: 2
+                ver: 3
             }
         }
         battleLogsData.saveBattleLog(battleLogsParams).catch((err) => {

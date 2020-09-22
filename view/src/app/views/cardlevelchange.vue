@@ -248,8 +248,15 @@ export default {
               message: res.data.msg,
               type: 'success'
             });
+            const upgradeData = this.$route.query.upgradeData;
+            let backQuery = {};
+            if (upgradeData) {
+              const JSONSTR = atob(upgradeData);
+              backQuery = JSON.parse(JSONSTR);
+            }
             this.$router.replace({
-              path: '/upgradecard'
+              path: '/upgradecard',
+              query: backQuery
             });
           }
         });

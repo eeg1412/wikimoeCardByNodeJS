@@ -444,6 +444,9 @@
           <slide>
             <div class="wm_battlecard_watch_tips"><img src="/static/battlecardTip/5.jpg" /></div>
           </slide>
+          <slide>
+            <div class="wm_battlecard_watch_tips"><img src="/static/battlecardTip/6.jpg" /></div>
+          </slide>
           <hooper-pagination slot="hooper-addons"
                              mode="fraction"></hooper-pagination>
         </hooper>
@@ -549,6 +552,8 @@ export default {
     },
     clearBattleCard () {
       this.myCard = [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null];
+      this.ADSHP = this.sumADSHP(this.myCard);
+      this.restIf();
     },
     tableFixed () {
       let el = document.getElementById('battlecardTable');
@@ -584,8 +589,8 @@ export default {
         }
       });
     },
-    sumADSHP (cardArr) {
-      let myCardInfo = cardArr.filter((item) => {
+    sumADSHP (getCardArr) {
+      let myCardInfo = getCardArr.filter((item) => {
         return item !== null;
       });
       console.log(myCardInfo);
@@ -597,61 +602,57 @@ export default {
       //         myCardInfo.push(cardInfo);
       //     }
       // }
-      if (myCardInfo.length > 0) {
-        let cardArr = myCardInfo;
-        let starArr = [0, 0, 0, 0, 0, 0];
-        let starCount = 0;
-        let cryArr = [0, 0, 0, 0, 0];
-        for (let i = 0; i < cardArr.length; i++) {
-          let star = cardArr[i].star - 1;
-          starArr[star] = starArr[star] + 1;
-          starCount = starCount + star + 1;
-          let cry = cardArr[i].cry - 1;
-          cryArr[cry] = cryArr[cry] + 1;
-        }
-        let x = starCount;//初始化x为星星的数量
-        console.log(x);
-        // 如果是1、2、3、4、5、6顺子排列的卡牌则攻击力和防御力和血的x+20
-        let minStarCount = Math.min.apply(null, starArr);
-        if (minStarCount > 2) {
-          minStarCount = 2;
-        }
-        let cardCountPlus = 0;
-        cardCountPlus = Math.floor(this.cardIndexCount / 25);//每25收集率x+1
-        x = x + minStarCount * 20 + cardCountPlus;
-        // 每三种同属性的卡牌攻击力和防御力和血的x+1
-        // for(let i=0;i<cryArr.length;i++){
-        //     let cryPlusX = Math.floor(cryArr[i]/3);
-        //     x = x + cryPlusX;
-        // }
-        // 攻击=x*100 防=x*50 血=x*200
-        let A = x * 100;
-        let D = x * 50;
-        let HP = x * 1150;
-        console.log(cardCountPlus);
-        // 设置速度
-        let S = 0;
-        for (let j = 0; j < cardArr.length; j++) {
-          //速4
-          let leftType = cardArr[j].leftType;
-          let level = this.myCardLevel[cardArr[j].cardId] || 0;
-          if (leftType === 4) {
-            S = S + 1 + level * 1;
-          } else if (leftType === 1) {//全1
-            A = A + 50 + level * 50;
-            D = D + 25 + level * 25;
-          } else if (leftType === 2) {//兵2
-            A = A + 100 + level * 100;
-          } else if (leftType === 3) {//盾3
-            D = D + 50 + level * 50;
-          } else if (leftType === 5) {//爱5
-            HP = HP + 1150 + level * 1150;
-          }
-        }
-        return [A, D, S, HP];
-      } else {
-        return [0, 0, 0, 0];
+      let cardArr = myCardInfo;
+      let starArr = [0, 0, 0, 0, 0, 0];
+      let starCount = 0;
+      let cryArr = [0, 0, 0, 0, 0];
+      for (let i = 0; i < cardArr.length; i++) {
+        let star = cardArr[i].star - 1;
+        starArr[star] = starArr[star] + 1;
+        starCount = starCount + star + 1;
+        let cry = cardArr[i].cry - 1;
+        cryArr[cry] = cryArr[cry] + 1;
       }
+      let x = starCount;//初始化x为星星的数量
+      console.log(x);
+      // 如果是1、2、3、4、5、6顺子排列的卡牌则攻击力和防御力和血的x+20
+      let minStarCount = Math.min.apply(null, starArr);
+      if (minStarCount > 2) {
+        minStarCount = 2;
+      }
+      let cardCountPlus = 0;
+      cardCountPlus = Math.floor(this.cardIndexCount / 25);//每25收集率x+1
+      x = x + minStarCount * 20 + cardCountPlus;
+      // 每三种同属性的卡牌攻击力和防御力和血的x+1
+      // for(let i=0;i<cryArr.length;i++){
+      //     let cryPlusX = Math.floor(cryArr[i]/3);
+      //     x = x + cryPlusX;
+      // }
+      // 攻击=x*100 防=x*50 血=x*200
+      let A = x * 100;
+      let D = x * 50;
+      let HP = x * 1150;
+      console.log(cardCountPlus);
+      // 设置速度
+      let S = 0;
+      for (let j = 0; j < cardArr.length; j++) {
+        //速4
+        let leftType = cardArr[j].leftType;
+        let level = this.myCardLevel[cardArr[j].cardId] || 0;
+        if (leftType === 4) {
+          S = S + 1 + level * 1;
+        } else if (leftType === 1) {//全1
+          A = A + 50 + level * 50;
+          D = D + 25 + level * 25;
+        } else if (leftType === 2) {//兵2
+          A = A + 100 + level * 100;
+        } else if (leftType === 3) {//盾3
+          D = D + 50 + level * 50;
+        } else if (leftType === 5) {//爱5
+          HP = HP + 1150 + level * 1150;
+        }
+      }
+      return [A, D, S, HP];
     },
     seledCard (i, item) {
       if (i === this.ifCardId) {

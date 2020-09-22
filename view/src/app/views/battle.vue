@@ -199,8 +199,7 @@
           <div class="wm_top_moreinfo_box">
             <div class="wm_top_moreinfo_label">SAN：{{userBattleLogInfo.ADSHP[3]}}</div>
           </div>
-          <div class="wm_top_moreinfo_box"
-               v-if="userBattleLogInfo.MD5">
+          <div class="wm_top_moreinfo_box">
             <div class="wm_top_moreinfo_label">卡种：{{userBattleLogInfo.cardIndex}}</div>
           </div>
         </div>
@@ -407,7 +406,7 @@ export default {
       return PrefixInteger(num, length);
     },
     watchUserInfo (a, index) {
-      if (this.battleLogs[index].data.ver !== 2) {
+      if (this.battleLogs[index].data.ver !== 3) {
         this.$message.error('该战斗数据版本过旧，无法查看。');
         return false;
       }
@@ -438,7 +437,7 @@ export default {
       if (this.replayMode) {
         return false;
       }
-      if (this.battleLogs[index].data.ver !== 2) {
+      if (this.battleLogs[index].data.ver !== 3) {
         this.$message.error('该回放版本过旧，无法回放。');
         return false;
       }
