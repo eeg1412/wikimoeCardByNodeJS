@@ -803,6 +803,7 @@ module.exports = async function (req, res, next) {
     if (AiP > seeAiP) {//50%概率遇见AI
         if (advanced) {//如果是进阶匹配
             let emScore = {
+                ban: 0,
                 score: { $gte: myScore + 500 },
                 email: { $ne: email },
                 battleHitStamp: { $lte: hitTime },
@@ -814,6 +815,7 @@ module.exports = async function (req, res, next) {
             let emMinScore = myScore - 500 < 0 ? 0 : myScore - 500;
             let emMaxScore = myScore + 500;
             let emScore = {
+                ban: 0,
                 score: { $gte: emMinScore, $lte: emMaxScore },
                 email: { $ne: email },
                 battleHitStamp: { $lte: hitTime },

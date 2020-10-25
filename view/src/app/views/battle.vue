@@ -109,7 +109,7 @@
     <div class="wm_battle_logs_body"
          v-if="battleLogs.length>0">
       <h5 class="common_title type_shop">对战记录</h5>
-      <div class="tc">Tip:仅记录最近一周的对战记录。</div>
+      <div class="tc">Tip:对战记录会不定时删除。</div>
       <transition name="el-fade-in-linear">
         <div class="mb20 mt20 tc"
              v-if="logLoading">

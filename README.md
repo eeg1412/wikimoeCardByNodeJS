@@ -45,31 +45,7 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 3. 在[releases](https://github.com/eeg1412/wikimoeCardByNodeJS/releases)下载最新的版本。
 4. 除非特殊说明，请不要覆盖【server/config】下的文件以及【server/bin/nodejs.wikimoe.com-chain.pem】和【server/bin/nodejs.wikimoe.com-key.pem】两个文件。
 5. 如果遇到无法启动的情况请尝试删除【node_modules】文件夹重新执行【使用方法】中的2-3步。
-
-注意：v1.2.1~v2.2.1 的猜卡有一个无法兑换的BUG，请及时更新至最新版本！
-
-### v1.2.1更新至v2.0.0的方法
-
-1. 更新前请务必备份原先的文件和数据库！！！！
-2. 在[releases](https://github.com/eeg1412/wikimoeCardByNodeJS/releases)下载更新包。
-3. 解压更新包覆盖项目文件。
-4. 如果当前路径不在服务端则`cd server`切换至服务端。
-5. `npm install`更新依赖。
-6. `npm run update1to2`对1.x版本的数据库更新。
-7. 将原先填入default.js的默认服务器配置重新写入新的server\config\default.js里。
-8. 关闭窗口，执行`npm start`启动服务器。
-9. 浏览器进入/cardinstall，对网站进行配置。
-
-注意：必须是v1.2.1版本才能使用上面的升级方法！如果低于v1.2.1的话请先更新至该版本！
-
-### 修复卡牌2055的名称问题
-
- 0. 本手顺仅针对2.3.1版本之前，默认卡牌编号2055信息有误的处理，如果直接是2.3.1版本的话无需作此处理。
- 1. 更新前请务必备份原先的文件和数据库！！！！
- 2. 确保当前版本是2.3.1。
- 3. 如果当前路径不在服务端则`cd server`切换至服务端。
- 4. `npm install`更新依赖。
- 5. `npm run fixcard2055`对卡牌2055进行更改。
+6. 特殊更新步骤会在版本更新说明中说明，请仔细阅读版本更新说明。
 
 ### 使用方法
 
