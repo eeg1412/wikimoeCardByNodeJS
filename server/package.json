@@ -1,11 +1,10 @@
 {
   "name": "wikimoecard",
-  "version": "2.9.8",
+  "version": "2.9.9",
   "private": true,
   "scripts": {
     "start": "nodemon --delay 60 -e pem,key --watch bin ./bin/www",
-    "update1to2": "node ./update/update1to2.js",
-    "fixcard2055": "node ./update/fixCard2055.js"
+    "update": "node ./update/update298to299.js"
   },
   "dependencies": {
     "base64-img": "^1.0.4",

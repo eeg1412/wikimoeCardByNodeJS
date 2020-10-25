@@ -2,42 +2,42 @@ var utils = require('../utils/utils');
 var cardData = require('../utils/database/cardData');
 var userData = require('../utils/database/user');
 var chalk = require('chalk');
-module.exports = async function(req, res, next){
+module.exports = async function (req, res, next) {
     console.info(
-        chalk.green('查询'+req.body.md5+'的卡牌。')
+        chalk.green('查询' + req.body.md5 + '的卡牌。')
     );
     let userMD5 = req.body.md5;
     let packageId = req.body.packageId || 0;
-    if(!utils.md5Check(userMD5)){
+    if (!utils.md5Check(userMD5)) {
         res.send({
-            code:0,
-            msg:'参数有误！'
+            code: 0,
+            msg: '参数有误！'
         });
         return false;
     }
-    let params = { md5: userMD5 };
-    let result = await userData.findUser(params).catch ((err)=>{
+    let params = { md5: userMD5, ban: 0 };
+    let result = await userData.findUser(params).catch((err) => {
         res.send({
-            code:0,
-            msg:'内部错误请联系管理员！'
+            code: 0,
+            msg: '内部错误请联系管理员！'
         });
         console.error(
             chalk.red('数据库查询错误！')
         );
         throw err;
     })
-    if(result){
+    if (result) {
         let myCard = result.card || {};
         let card = myCard[packageId];
-        if(card){
+        if (card) {
             let haveCardId = Object.keys(card).map(Number);
             let params = {
-                cardId:{$in:haveCardId}
+                cardId: { $in: haveCardId }
             }
-            let myCardData = await cardData.findCardDataMany(params,'-__v -_id').catch ((err)=>{
+            let myCardData = await cardData.findCardDataMany(params, '-__v -_id').catch((err) => {
                 res.send({
-                    code:0,
-                    msg:'内部错误请联系管理员！'
+                    code: 0,
+                    msg: '内部错误请联系管理员！'
                 });
                 console.error(
                     chalk.red('数据库查询错误！')
@@ -48,19 +48,19 @@ module.exports = async function(req, res, next){
         }
         card = card || [];
         res.send({
-            code:1,
-            card:card,
-            cardCount:myCard[packageId] || {},
-            md5:result.md5,
-            nickName:result.nickName,
-            score:result.score,
-            level:result.level,
-            cardIndexCount:result.cardIndexCount
+            code: 1,
+            card: card,
+            cardCount: myCard[packageId] || {},
+            md5: result.md5,
+            nickName: result.nickName,
+            score: result.score,
+            level: result.level,
+            cardIndexCount: result.cardIndexCount
         });
-    }else{
+    } else {
         res.send({
-            code:0,
-            msg:'无该用户信息！'
+            code: 0,
+            msg: '无该用户信息！'
         });
     }
 }

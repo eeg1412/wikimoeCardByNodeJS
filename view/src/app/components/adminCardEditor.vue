@@ -341,41 +341,43 @@ export default {
       }
 
       if (this.editPic) {
-        // 检测立绘位置是否合格
-        const minWH = {
-          width: 396,
-          height: 556
-        };
-        const w = this.sprite.CGSprite.width;
-        const h = this.sprite.CGSprite.height;
-        const x = this.sprite.CGSprite.x;
-        const y = this.sprite.CGSprite.y;
-        if (w < minWH.width || h < minWH.height) {
-          this.$message.error('立绘过小或者缩放过度，请检查！');
-          return false;
-        }
-        const centerPoint = { x: 198, y: 278 }
-        const w2 = w / 2 - centerPoint.x;
-        const h2 = h / 2 - centerPoint.y;
-        const pointLimt = {
-          maxX: centerPoint.x + w2,
-          minX: centerPoint.x - w2,
-          maxY: centerPoint.y + h2,
-          minY: centerPoint.y - h2,
-        }
-        if (x > pointLimt.maxX || x < pointLimt.minX || y > pointLimt.maxY || y < pointLimt.minY) {
-          this.$message.error('立绘与卡牌之间有留白，请检查！');
-          return false;
-        }
-        //   检测出自简称字数有没有过多
-        if (this.sprite.titleSprite.width > 128) {
-          this.$message.error('作品简称字数过多，请检查！');
-          return false;
-        }
-        //   
-        if (this.sprite.nameSprite.width > 318) {
-          this.$message.error('角色简称字数过多，请检查！');
-          return false;
+        if (!this.rawPicMode) {
+          // 检测立绘位置是否合格
+          const minWH = {
+            width: 396,
+            height: 556
+          };
+          const w = this.sprite.CGSprite.width;
+          const h = this.sprite.CGSprite.height;
+          const x = this.sprite.CGSprite.x;
+          const y = this.sprite.CGSprite.y;
+          if (w < minWH.width || h < minWH.height) {
+            this.$message.error('立绘过小或者缩放过度，请检查！');
+            return false;
+          }
+          const centerPoint = { x: 198, y: 278 }
+          const w2 = w / 2 - centerPoint.x;
+          const h2 = h / 2 - centerPoint.y;
+          const pointLimt = {
+            maxX: centerPoint.x + w2,
+            minX: centerPoint.x - w2,
+            maxY: centerPoint.y + h2,
+            minY: centerPoint.y - h2,
+          }
+          if (x > pointLimt.maxX || x < pointLimt.minX || y > pointLimt.maxY || y < pointLimt.minY) {
+            this.$message.error('立绘与卡牌之间有留白，请检查！');
+            return false;
+          }
+          //   检测出自简称字数有没有过多
+          if (this.sprite.titleSprite.width > 128) {
+            this.$message.error('作品简称字数过多，请检查！');
+            return false;
+          }
+          //   
+          if (this.sprite.nameSprite.width > 318) {
+            this.$message.error('角色简称字数过多，请检查！');
+            return false;
+          }
         }
         this.uploadCardUrl = this.app.view.toDataURL('image/jpeg', 0.9);
       }

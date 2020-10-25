@@ -60,7 +60,7 @@ exports.checkScoreRank = async () => {
             email: item.email
         }
         // 写入道具到邮件
-        if (getCoin > 0 && item.battled) {
+        if (getCoin > 0 && item.battled && item.ban === 0) {
             const time = Math.round(new Date().getTime() / 1000);
             const canGetItem = getCoin + (coinAdd < 0 ? 0 : coinAdd);
             const saveParams = {
@@ -238,7 +238,7 @@ exports.creatRankFile = async () => {
     let newRankData = {};
     newRankData['time'] = timeNow;
     // 查询掘星
-    let parmas = {};
+    let parmas = { ban: 0 }; //结算非封禁账号排行榜
     let pageSize_ = 5;
     let page_ = 1;
     let getParams = '-_id deminingStarCount md5 nickName';
