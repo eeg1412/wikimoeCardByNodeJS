@@ -459,10 +459,19 @@ export default {
         this.pageChangeing = true;
       }
       this.userCard = [];
-      setTimeout(() => {
-        this.pageChangeing = false;
-        this.userCard = userCard_;
-      }, 300)
+      if (val !== 1 && userCard_.length === 0) {
+        let newPage = val - 1;
+        if (newPage < 1) {
+          newPage = 1;
+        }
+        this.cardPage = val - 1;
+        this.cardPageChange(this.cardPage);
+      } else {
+        setTimeout(() => {
+          this.pageChangeing = false;
+          this.userCard = userCard_;
+        }, 300);
+      }
     },
     searchChanged () {
       this.cardPage = 1;
