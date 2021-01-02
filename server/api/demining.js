@@ -9,11 +9,11 @@ const validator = require('validator');
 
 var mineSweepingMap = function (returnData) {
     //20,30
-    let randomRowsCols = utils.randomNum(20,25);
+    let randomRowsCols = utils.randomNum(20, 25);
     let r = randomRowsCols;
     let c = randomRowsCols;
     //40,80
-    let num = utils.randomNum(40,80);
+    let num = utils.randomNum(40, 80);
     var map = []
     // 给行数，生成一个 1 维数组
     var row = function (r) {
@@ -81,28 +81,28 @@ var mineSweepingMap = function (returnData) {
     blankMap(r, c)
     writeInMine(num)
     writeInHint()
-    let time = Math.round(new Date().getTime()/1000);
-    let randomMapType  = utils.randomNum(1,17)
+    let time = Math.round(new Date().getTime() / 1000);
+    let randomMapType = utils.randomNum(1, 17)
     let data = {
-        map:map,
-        creatTime:time,
-        mapType:randomMapType,
-        boomNum:num,
-        boomedNum:0,
-        rows:r,
-        cols:c,
-        player:null,
-        close:0
+        map: map,
+        creatTime: time,
+        mapType: randomMapType,
+        boomNum: num,
+        boomedNum: 0,
+        rows: r,
+        cols: c,
+        player: null,
+        close: 0
     }
     // document作成
     var demining = new deminingModel(data);
 
     // document保存
-    demining.save(function(err) {
+    demining.save(function (err) {
         if (err) throw err;
-        
+
     });
-    if(returnData){
+    if (returnData) {
         delete data.boomedNum;
         delete data.boomNum;
         delete data.map;
@@ -111,56 +111,56 @@ var mineSweepingMap = function (returnData) {
     }
 }
 
-var getMineMap = function(socket,cast){
-    deminingModel.findOne({ close: 0 },'-_id creatTime mapType rows cols player close', (err, result)=> {
+var getMineMap = function (socket, cast) {
+    deminingModel.findOne({ close: 0 }, '-_id creatTime mapType rows cols player close', (err, result) => {
         if (err) {
-            socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
+            socket.emit('demining', { code: 1, msg: '内部错误请联系管理员！' });
             throw err;
-        }else{
+        } else {
             //判断是否有数据
-            if(result){
+            if (result) {
                 let resData = {
-                    data:result,
-                    code:0
+                    data: result,
+                    code: 0
                 };
-                socket.emit('demining',resData);
+                socket.emit('demining', resData);
                 // if(cast){
                 //     socket.broadcast.emit('demining',resData);
                 // }
-            }else{
+            } else {
                 let mineData = mineSweepingMap(true);
                 let resData = {
-                    data:mineData,
-                    code:0
+                    data: mineData,
+                    code: 0
                 };
-                socket.emit('demining',resData);
-                if(cast){
-                    socket.broadcast.emit('demining',resData);
+                socket.emit('demining', resData);
+                if (cast) {
+                    socket.broadcast.emit('demining', resData);
                 }
             }
         }
     });
 }
-const openNode = async (socket,data,result_)=>{
-    await deminingModel.findOne({ close: 0 }, async (err, result)=> {
+const openNode = async (socket, data, result_) => {
+    await deminingModel.findOne({ close: 0 }, async (err, result) => {
         if (err) {
-            socket.emit('demining',{code:1,msg:'内部错误请联系管理员！'});
+            socket.emit('demining', { code: 1, msg: '内部错误请联系管理员！' });
             throw err;
-        }else{
+        } else {
             //判断是否有数据
-            if(result){
+            if (result) {
                 let x = Math.round(data.x) || 0;
                 let y = Math.round(data.y) || 0;
-                if(result.player){
+                if (result.player) {
                     // 判断是否被人挖
-                    if(result.player[y+'_'+x]){
-                        socket.emit('demining',{code:1,msg:'此处已经被人抢先！',time:data.time});
+                    if (result.player[y + '_' + x]) {
+                        socket.emit('demining', { code: 1, msg: '此处已经被人抢先！', time: data.time });
                         return false;
                     }
                 }
                 // 判断矿场时间戳是否对的上
-                if(result.creatTime!=data.creatTime){
-                    socket.emit('demining',{code:1,msg:'矿场不正确，请刷新查看！',time:data.time});
+                if (result.creatTime != data.creatTime) {
+                    socket.emit('demining', { code: 1, msg: '矿场不正确，请刷新查看！', time: data.time });
                     console.info(chalk.yellow('错误的矿场时间戳'))
                     return false;
                 }
@@ -168,8 +168,8 @@ const openNode = async (socket,data,result_)=>{
                 let demNum = null;
                 try {
                     demNum = result.map[y][x];
-                }catch(err) {
-                    socket.emit('demining',{code:1,msg:'矿场不正确，请刷新查看！',time:data.time});
+                } catch (err) {
+                    socket.emit('demining', { code: 1, msg: '矿场不正确，请刷新查看！', time: data.time });
                     console.info(chalk.yellow('矿场x,y有误！'))
                     return false;
                 }
@@ -181,23 +181,23 @@ const openNode = async (socket,data,result_)=>{
                 let getItem = null;
                 let getItemNum = 0;
                 let playData = null;
-                if(demNum===undefined||demNum===null){
-                    socket.emit('demining',{code:1,msg:'矿场不正确，请刷新查看！',time:data.time});
+                if (demNum === undefined || demNum === null) {
+                    socket.emit('demining', { code: 1, msg: '矿场不正确，请刷新查看！', time: data.time });
                     console.info(chalk.yellow('错误的矿场坐标'))
                     return false;
                 }
-                if(playData===null){
+                if (playData === null) {
                     playData = {};
                 }
                 const centerInfo = {
-                    demNum:demNum,
-                    x:x,
-                    y:y
+                    demNum: demNum,
+                    x: x,
+                    y: y
                 }
-                const doDemRes = await this.doDemining(result,useTool,centerInfo,result_,data,socket);
+                const doDemRes = await this.doDemining(result, useTool, centerInfo, result_, data, socket);
 
-                if(!doDemRes.status){
-                    socket.emit('demining',{code:1,msg:'矿场请求出错，请联系管理员！',time:data.time});
+                if (!doDemRes.status) {
+                    socket.emit('demining', { code: 1, msg: '矿场请求出错，请联系管理员！', time: data.time });
                     return false;
                 }
 
@@ -205,21 +205,21 @@ const openNode = async (socket,data,result_)=>{
                 const levelUpStar = doDemRes.levelUpStar;
                 const getExp = doDemRes.getExp;
                 boomedNum = doDemRes.boomedNum;
-                starAdd= doDemRes.starAdd;
+                starAdd = doDemRes.starAdd;
                 getItem = doDemRes.getItem;
                 getItemNum = doDemRes.getItemNum;
                 playData = doDemRes.playData;
                 openInfoList = doDemRes.openInfoList;
                 let md5Email = md5(data.email);
 
-                if(doDemRes.userParams){
+                if (doDemRes.userParams) {
                     // 如果有用户数据
                     let filters = {
-                        email:data.email
+                        email: data.email
                     }
-    
-                    await userData.updataUser(filters,doDemRes.userParams).catch ((err)=>{
-                        socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
+
+                    await userData.updataUser(filters, doDemRes.userParams).catch((err) => {
+                        socket.emit('demining', { code: 1, msg: '内部错误请联系管理员！', time: data.time });
                         console.error(
                             chalk.red('数据库更新错误！')
                         );
@@ -227,13 +227,13 @@ const openNode = async (socket,data,result_)=>{
                     })
                 }
 
-                if(doDemRes.itemUpdate){
+                if (doDemRes.itemUpdate) {
                     //如果有挖到道具数据
                     let conditions = {
-                        email:data.email
+                        email: data.email
                     }
-                    await itemDatabase.findOneAndUpdate(conditions,doDemRes.itemUpdate).catch ((err)=>{
-                        socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
+                    await itemDatabase.findOneAndUpdate(conditions, doDemRes.itemUpdate).catch((err) => {
+                        socket.emit('demining', { code: 1, msg: '内部错误请联系管理员！', time: data.time });
                         console.error(
                             chalk.red('数据库更新错误！')
                         );
@@ -243,47 +243,50 @@ const openNode = async (socket,data,result_)=>{
 
 
                 console.info(
-                    chalk.green(data.email+'用工具'+useTool+'挖掘了['+x+','+y+']，其结果为：'+demNum+'，共获得星星'+starAdd+'颗，'+'IP为：'+data.IP)
+                    chalk.green(data.email + '用工具' + useTool + '挖掘了[' + x + ',' + y + ']，其结果为：' + demNum + '，共获得星星' + starAdd + '颗，' + 'IP为：' + data.IP)
                 )
-                
 
 
-                deminingModel.updateOne({close: 0}, {player:playData,boomedNum:boomedNum,close:close}, (err, docs)=>{
-                    if(err) {
-                        socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
+
+                deminingModel.updateOne({ close: 0, __v: result["__v"] }, { player: playData, boomedNum: boomedNum, close: close, $inc: { __v: 1 } }, (err, docs) => {
+                    // console.log(docs);
+                    if (err) {
+                        socket.emit('demining', { code: 1, msg: '内部错误请联系管理员！', time: data.time });
                         throw err;
-                    }else{
-                        if(starAdd>0){
-                            socket.emit('demining',{code:2,star:starAdd,demNum:demNum,time:data.time,x:x,y:y,md5:md5Email,close:close,levelUpStar:levelUpStar});
-                            const timeNow = Math.round(new Date().getTime()/1000);
+                    } else if (docs.nModified === 0) {
+                        socket.emit('demining', { code: 1, msg: '哎呀，挖掘失败了！', time: data.time });
+                    } else {
+                        if (starAdd > 0) {
+                            socket.emit('demining', { code: 2, star: starAdd, demNum: demNum, time: data.time, x: x, y: y, md5: md5Email, close: close, levelUpStar: levelUpStar });
+                            const timeNow = Math.round(new Date().getTime() / 1000);
                             let logObject = {
-                                email:data.email,
-                                md5:md5Email,
-                                nickName:result_.nickName,
-                                type:'demining',
-                                time:timeNow,
-                                data:{
-                                    star:starAdd,
-                                    pickaxe:useTool,
-                                    exp:getExp,
-                                    x:x,
-                                    y:y
+                                email: data.email,
+                                md5: md5Email,
+                                nickName: result_.nickName,
+                                type: 'demining',
+                                time: timeNow,
+                                data: {
+                                    star: starAdd,
+                                    pickaxe: useTool,
+                                    exp: getExp,
+                                    x: x,
+                                    y: y
                                 },
-                                ip:data.IP
+                                ip: data.IP
                             }
                             utils.writeLog(logObject);
-                        }else{
-                            if(useTool<5){
-                                socket.emit('demining',{code:201,demNum:demNum,time:data.time,x:x,y:y,md5:md5Email,levelUpStar:levelUpStar,getItem:getItem,getItemNum:getItemNum});
-                            }else{
-                                socket.emit('demining',{code:205,openInfoList:openInfoList,time:data.time,levelUpStar:levelUpStar,boomItemList:doDemRes.boomItemList});
+                        } else {
+                            if (useTool < 5) {
+                                socket.emit('demining', { code: 201, demNum: demNum, time: data.time, x: x, y: y, md5: md5Email, levelUpStar: levelUpStar, getItem: getItem, getItemNum: getItemNum });
+                            } else {
+                                socket.emit('demining', { code: 205, openInfoList: openInfoList, time: data.time, levelUpStar: levelUpStar, boomItemList: doDemRes.boomItemList });
                             }
                         };
                         // 广播挖矿信息
-                        if(close){
-                            deminingModel.deleteMany({close:1}, (err)=> {
-                                if(err){
-                                    socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
+                        if (close) {
+                            deminingModel.deleteMany({ close: 1 }, (err) => {
+                                if (err) {
+                                    socket.emit('demining', { code: 1, msg: '内部错误请联系管理员！', time: data.time });
                                     console.error(
                                         chalk.red('数据库更新错误！')
                                     );
@@ -295,43 +298,43 @@ const openNode = async (socket,data,result_)=>{
                                     chalk.green('删除已关闭矿场')
                                 )
                             });
-                            getMineMap(socket,true);
-                        }else{
-                            if(useTool<5){
-                                socket.broadcast.emit('demining',{code:5,demNum:demNum,x:x,y:y,md5:md5Email});
-                            }else{
-                                for(let i=0;i<openInfoList.length;i++){
-                                    socket.broadcast.emit('demining',{code:5,demNum:openInfoList[i].num,x:openInfoList[i].x,y:openInfoList[i].y,md5:openInfoList[i].md5});
+                            getMineMap(socket, true);
+                        } else {
+                            if (useTool < 5) {
+                                socket.broadcast.emit('demining', { code: 5, demNum: demNum, x: x, y: y, md5: md5Email });
+                            } else {
+                                for (let i = 0; i < openInfoList.length; i++) {
+                                    socket.broadcast.emit('demining', { code: 5, demNum: openInfoList[i].num, x: openInfoList[i].x, y: openInfoList[i].y, md5: openInfoList[i].md5 });
                                 }
-                                socket.broadcast.emit('demining',{code:6});
+                                socket.broadcast.emit('demining', { code: 6 });
                             }
-                            
+
                         }
                     }
                 });
-            }else{
-                socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
+            } else {
+                socket.emit('demining', { code: 1, msg: '内部错误请联系管理员！', time: data.time });
             }
         }
     });
 }
-var sendUserData = function(socket,userData){
-    socket.emit('demining',{
-        code:3,
-        msg:'ok',
-        userData:userData
+var sendUserData = function (socket, userData) {
+    socket.emit('demining', {
+        code: 3,
+        msg: 'ok',
+        userData: userData
     });
 }
-exports.doDemining = async (demInfo,useTool,centerInfo,userInfo,socketData,socket)=>{
+exports.doDemining = async (demInfo, useTool, centerInfo, userInfo, socketData, socket) => {
     let sendData = {
-        status:false,
-        userParams:null,
-        itemUpdate:null,
-        openInfoList:[],
+        status: false,
+        userParams: null,
+        itemUpdate: null,
+        openInfoList: [],
     };
     const result = demInfo;//矿场数据
     const result_ = userInfo;//用户数据
-    const demNum =  centerInfo.demNum;//挖到的数字
+    const demNum = centerInfo.demNum;//挖到的数字
     const data = socketData;//socket数据
     let boomedNum = result.boomedNum;//已挖开的星星矿
     let boomNum = result.boomNum;//一共有多少星星矿
@@ -344,520 +347,520 @@ exports.doDemining = async (demInfo,useTool,centerInfo,userInfo,socketData,socke
     let userItemTools = data.userItemTools;//3-5号稿子数量
     let getExp = 0;//获得经验
     let levelUpStar = 0;
-    let timeNow = Math.round(new Date().getTime()/1000);
-    if(useTool<3){
+    let timeNow = Math.round(new Date().getTime() / 1000);
+    if (useTool < 3) {
         // 普通镐
-        if(playData===null){
+        if (playData === null) {
             playData = {};
         }
-        playData[centerInfo.y+'_'+centerInfo.x] = {
-            md5:md5(data.email),
-            num:demNum
+        playData[centerInfo.y + '_' + centerInfo.x] = {
+            md5: md5(data.email),
+            num: demNum
         };
         sendData.openInfoList.push({
-            md5:md5(data.email),
-            num:demNum
+            md5: md5(data.email),
+            num: demNum
         });
-        if(demNum==9){
+        if (demNum == 9) {
             // 挖到矿了！
-            boomedNum = boomedNum +1;
-            if(useTool==0){
-                starAdd = utils.randomNum(1,4);
-            }else if(useTool==1){
-                starAdd = utils.randomNum(5,15);
-            }else if(useTool==2){
-                starAdd = utils.randomNum(20,30);
+            boomedNum = boomedNum + 1;
+            if (useTool == 0) {
+                starAdd = utils.randomNum(1, 4);
+            } else if (useTool == 1) {
+                starAdd = utils.randomNum(5, 15);
+            } else if (useTool == 2) {
+                starAdd = utils.randomNum(20, 30);
             }
             // 乘以后台设定的星星系数
-            starAdd = starAdd*global.myAppConfig.deminingStarRatio;
-        }else{
-            let itemRare = utils.randomNum(1,100);//随机一个随机道具因子
+            starAdd = starAdd * global.myAppConfig.deminingStarRatio;
+        } else {
+            let itemRare = utils.randomNum(1, 100);//随机一个随机道具因子
             let mapType = result.mapType;
-            if(itemRare>=80){//20%概率地图稀有道具
+            if (itemRare >= 80) {//20%概率地图稀有道具
                 let itemList = mapData[mapType].low;
-                getItem = itemList[utils.randomNum(0,itemList.length-1)];
-            }else{//80%概率地图常见道具
+                getItem = itemList[utils.randomNum(0, itemList.length - 1)];
+            } else {//80%概率地图常见道具
                 let itemList = mapData[mapType].high;
-                getItem = itemList[utils.randomNum(0,itemList.length-1)];
+                getItem = itemList[utils.randomNum(0, itemList.length - 1)];
             }
-            getItemNum = demNum+1;//获得道具数量
+            getItemNum = demNum + 1;//获得道具数量
             //根据不同的镐 增加获取数量
-            if(useTool==1){
-                getItemNum = getItemNum*3;
-            }else if(useTool==2){
-                getItemNum = getItemNum*6;
+            if (useTool == 1) {
+                getItemNum = getItemNum * 3;
+            } else if (useTool == 2) {
+                getItemNum = getItemNum * 6;
             }
             // 乘以后台的系数
-            getItemNum = getItemNum*global.myAppConfig.deminingItemRatio;
+            getItemNum = getItemNum * global.myAppConfig.deminingItemRatio;
         }
-        if(boomedNum>=boomNum){
+        if (boomedNum >= boomNum) {
             close = 1;
         }
-        if(demNum==9&&close===1){//如果是最后一矿且挖到矿了*3的矿
-            starAdd = starAdd*3;
-            console.info(chalk.green('当前为最后一片矿，三倍出矿，总出矿：'+starAdd))
+        if (demNum == 9 && close === 1) {//如果是最后一矿且挖到矿了*3的矿
+            starAdd = starAdd * 3;
+            console.info(chalk.green('当前为最后一片矿，三倍出矿，总出矿：' + starAdd))
         }
         let addToolTime = 0;
-        if(useTool==0){
-            addToolTime = 60*10;
-        }else if(useTool==1){
-            addToolTime = 60*30;
-        }else if(useTool==2){
-            addToolTime = 60*60;
-        }else{
+        if (useTool == 0) {
+            addToolTime = 60 * 10;
+        } else if (useTool == 1) {
+            addToolTime = 60 * 30;
+        } else if (useTool == 2) {
+            addToolTime = 60 * 60;
+        } else {
             console.info(chalk.yellow('使用错误的稿子参数'))
             return sendData;
         }
         // 生成用户数据
-        deminingTool[useTool] =  timeNow + addToolTime;
+        deminingTool[useTool] = timeNow + addToolTime;
         let levle = result_.level;
-        getExp = 10+demNum+starAdd;
-        let exp = result_.exp+getExp;
-        let levelExp = utils.levelCheck(levle,exp);
-        levelUpStar = levelExp[2]*30;
+        getExp = 10 + demNum + starAdd;
+        let exp = result_.exp + getExp;
+        let levelExp = utils.levelCheck(levle, exp);
+        levelUpStar = levelExp[2] * 30;
         let params = {
-            $inc:{
-                star:starAdd + levelUpStar,
-                deminingStarCount:starAdd
+            $inc: {
+                star: starAdd + levelUpStar,
+                deminingStarCount: starAdd
             },
-            deminingStamp:deminingTool,
-            level:levelExp[0],
-            exp:levelExp[1],
-            captchaLock:false,
-            ip:data.IP
+            deminingStamp: deminingTool,
+            level: levelExp[0],
+            exp: levelExp[1],
+            captchaLock: false,
+            ip: data.IP
         };
         sendData["userParams"] = params;
-        sendData["levelUpStar"]=levelUpStar;
-        sendData["getExp"]=getExp;
-        if(demNum<9){
+        sendData["levelUpStar"] = levelUpStar;
+        sendData["getExp"] = getExp;
+        if (demNum < 9) {
             // 生成道具数据
             let getItemObj = {};
-            getItemObj['item.'+getItem] = getItemNum;
+            getItemObj['item.' + getItem] = getItemNum;
             let update_ = {
-                $inc:getItemObj
+                $inc: getItemObj
             }
             sendData["itemUpdate"] = update_;
-            sendData["getItem"]= getItem;
-            sendData["getItemNum"]= getItemNum;
+            sendData["getItem"] = getItem;
+            sendData["getItemNum"] = getItemNum;
         }
 
-    }else if(useTool===3){
+    } else if (useTool === 3) {
         // 星星镐
-        if(playData===null){
+        if (playData === null) {
             playData = {};
         }
-        playData[centerInfo.y+'_'+centerInfo.x] = {
-            md5:md5(data.email),
-            num:demNum
+        playData[centerInfo.y + '_' + centerInfo.x] = {
+            md5: md5(data.email),
+            num: demNum
         };
         sendData.openInfoList.push({
-            md5:md5(data.email),
-            num:demNum
+            md5: md5(data.email),
+            num: demNum
         });
-        if(demNum==9){
+        if (demNum == 9) {
             // 挖到矿了！
-            boomedNum = boomedNum +1;
-            starAdd = utils.randomNum(31,40);
+            boomedNum = boomedNum + 1;
+            starAdd = utils.randomNum(31, 40);
             // 乘以后台设定的星星系数
-            starAdd = starAdd*global.myAppConfig.deminingStarRatio;
+            starAdd = starAdd * global.myAppConfig.deminingStarRatio;
         }
-        if(boomedNum>=boomNum){
+        if (boomedNum >= boomNum) {
             close = 1;
         }
-        if(demNum==9&&close===1){//如果是最后一矿且挖到矿了*3的矿
-            starAdd = starAdd*3;
-            console.info(chalk.green('当前为最后一片矿，三倍出矿，总出矿：'+starAdd))
+        if (demNum == 9 && close === 1) {//如果是最后一矿且挖到矿了*3的矿
+            starAdd = starAdd * 3;
+            console.info(chalk.green('当前为最后一片矿，三倍出矿，总出矿：' + starAdd))
         }
         // 生成用户数据
         let levle = result_.level;
-        getExp = 10+demNum+starAdd;
-        let exp = result_.exp+getExp;
-        let levelExp = utils.levelCheck(levle,exp);
-        levelUpStar = levelExp[2]*30;
+        getExp = 10 + demNum + starAdd;
+        let exp = result_.exp + getExp;
+        let levelExp = utils.levelCheck(levle, exp);
+        levelUpStar = levelExp[2] * 30;
         let params = {
-            $inc:{
-                star:starAdd + levelUpStar,
-                deminingStarCount:starAdd
+            $inc: {
+                star: starAdd + levelUpStar,
+                deminingStarCount: starAdd
             },
-            level:levelExp[0],
-            exp:levelExp[1],
-            captchaLock:false,
-            ip:data.IP
+            level: levelExp[0],
+            exp: levelExp[1],
+            captchaLock: false,
+            ip: data.IP
         };
         sendData["userParams"] = params;
-        sendData["levelUpStar"]=levelUpStar;
-        sendData["getExp"]=getExp;
+        sendData["levelUpStar"] = levelUpStar;
+        sendData["getExp"] = getExp;
 
         // 生成道具数据
-        userItemTools[0] = userItemTools[0]-1;
+        userItemTools[0] = userItemTools[0] - 1;
         let getItemObj = {};
         let update_ = {
-            $inc:getItemObj,
-            'item.400':userItemTools[0]
+            $inc: getItemObj,
+            'item.400': userItemTools[0]
         }
         sendData["itemUpdate"] = update_;
-    }else if(useTool===4){
+    } else if (useTool === 4) {
         // 宝石镐
-        if(playData===null){
+        if (playData === null) {
             playData = {};
         }
-        playData[centerInfo.y+'_'+centerInfo.x] = {
-            md5:md5(data.email),
-            num:demNum
+        playData[centerInfo.y + '_' + centerInfo.x] = {
+            md5: md5(data.email),
+            num: demNum
         };
         sendData.openInfoList.push({
-            md5:md5(data.email),
-            num:demNum
+            md5: md5(data.email),
+            num: demNum
         });
-        if(demNum==9){
+        if (demNum == 9) {
             // 挖到矿了！
-            boomedNum = boomedNum +1;
-        }else{
-            let itemRare = utils.randomNum(1,100);//随机一个随机道具因子
+            boomedNum = boomedNum + 1;
+        } else {
+            let itemRare = utils.randomNum(1, 100);//随机一个随机道具因子
             let mapType = result.mapType;
-            if(itemRare>=80){//20%概率地图稀有道具
+            if (itemRare >= 80) {//20%概率地图稀有道具
                 let itemList = mapData[mapType].low;
-                getItem = itemList[utils.randomNum(0,itemList.length-1)];
-            }else{//80%概率地图常见道具
+                getItem = itemList[utils.randomNum(0, itemList.length - 1)];
+            } else {//80%概率地图常见道具
                 let itemList = mapData[mapType].high;
-                getItem = itemList[utils.randomNum(0,itemList.length-1)];
+                getItem = itemList[utils.randomNum(0, itemList.length - 1)];
             }
-            getItemNum = demNum+1;//获得道具数量
-            getItemNum = getItemNum*7;
+            getItemNum = demNum + 1;//获得道具数量
+            getItemNum = getItemNum * 7;
             // 乘以后台的系数
-            getItemNum = getItemNum*global.myAppConfig.deminingItemRatio;
+            getItemNum = getItemNum * global.myAppConfig.deminingItemRatio;
         }
-        if(boomedNum>=boomNum){
+        if (boomedNum >= boomNum) {
             close = 1;
         }
         // 生成用户信息
         let levle = result_.level;
-        getExp = 10+demNum+starAdd;
-        let exp = result_.exp+getExp;
-        let levelExp = utils.levelCheck(levle,exp);
-        levelUpStar = levelExp[2]*30;
+        getExp = 10 + demNum + starAdd;
+        let exp = result_.exp + getExp;
+        let levelExp = utils.levelCheck(levle, exp);
+        levelUpStar = levelExp[2] * 30;
         let params = {
-            $inc:{
-                star:starAdd + levelUpStar,
-                deminingStarCount:starAdd
+            $inc: {
+                star: starAdd + levelUpStar,
+                deminingStarCount: starAdd
             },
-            level:levelExp[0],
-            exp:levelExp[1],
-            captchaLock:false,
-            ip:data.IP
+            level: levelExp[0],
+            exp: levelExp[1],
+            captchaLock: false,
+            ip: data.IP
         };
         sendData["userParams"] = params;
-        sendData["levelUpStar"]=levelUpStar;
-        sendData["getExp"]=getExp;
+        sendData["levelUpStar"] = levelUpStar;
+        sendData["getExp"] = getExp;
         sendData["userParams"] = params;
         // 生成道具数据
-        userItemTools[1] = userItemTools[1]-1
+        userItemTools[1] = userItemTools[1] - 1
         let getItemObj = {};
         // 如果没有挖到星星矿
-        if(getItem){
-            getItemObj['item.'+getItem] = getItemNum;
+        if (getItem) {
+            getItemObj['item.' + getItem] = getItemNum;
         }
         let update_ = {
-            $inc:getItemObj,
+            $inc: getItemObj,
             'item.401': userItemTools[1]
         }
         sendData["itemUpdate"] = update_;
-        sendData["getItem"]= getItem;
-        sendData["getItemNum"]= getItemNum;
-    }else if(useTool===5){
+        sendData["getItem"] = getItem;
+        sendData["getItemNum"] = getItemNum;
+    } else if (useTool === 5) {
         // 炸弹
-        if(playData===null){
+        if (playData === null) {
             playData = {};
         }
         // 添加周围一圈的坐标
         const x = centerInfo.x;
         const y = centerInfo.y;
-        const maxRow = demInfo.rows-1;
-        const maxCol = demInfo.cols-1;
+        const maxRow = demInfo.rows - 1;
+        const maxCol = demInfo.cols - 1;
         const boomList = [
-            (y-1>=0?y-1:maxCol) +'_'+ (centerInfo.x-1>=0?x-1:maxRow),
-            (y-1>=0?y-1:maxCol) +'_'+ x,
-            (y-1>=0?y-1:maxCol )+'_'+ (x+1<=maxRow?x+1:0),
-            y +'_'+ (x-1>=0?x-1:maxRow),
-            y+'_'+x,
-            y+'_'+(x+1<=maxRow?x+1:0),
-            (y+1<=maxCol?y+1:0)+'_'+(x-1>=0?x-1:maxRow),
-            (y+1<=maxCol?y+1:0)+'_'+x,
-            (y+1<=maxCol?y+1:0)+'_'+(x+1<=maxRow?x+1:0)
+            (y - 1 >= 0 ? y - 1 : maxCol) + '_' + (centerInfo.x - 1 >= 0 ? x - 1 : maxRow),
+            (y - 1 >= 0 ? y - 1 : maxCol) + '_' + x,
+            (y - 1 >= 0 ? y - 1 : maxCol) + '_' + (x + 1 <= maxRow ? x + 1 : 0),
+            y + '_' + (x - 1 >= 0 ? x - 1 : maxRow),
+            y + '_' + x,
+            y + '_' + (x + 1 <= maxRow ? x + 1 : 0),
+            (y + 1 <= maxCol ? y + 1 : 0) + '_' + (x - 1 >= 0 ? x - 1 : maxRow),
+            (y + 1 <= maxCol ? y + 1 : 0) + '_' + x,
+            (y + 1 <= maxCol ? y + 1 : 0) + '_' + (x + 1 <= maxRow ? x + 1 : 0)
         ]
         let getItemObj = {};
         let demNumAll = 0;
         let boomItemList = {};
-        for(let i=0;i<boomList.length;i++){
+        for (let i = 0; i < boomList.length; i++) {
             const yx = boomList[i];
             const yxArr = yx.split("_");
             const playerMap = demInfo.player || {};
-            if(!playerMap[yx]){
+            if (!playerMap[yx]) {
                 const thisDemNum = demInfo.map[yxArr[0]][yxArr[1]]
                 demNumAll = demNumAll + thisDemNum;
                 playData[yx] = {
-                    md5:md5(data.email),
-                    num:thisDemNum
+                    md5: md5(data.email),
+                    num: thisDemNum
                 };
                 sendData.openInfoList.push({
-                    md5:md5(data.email),
-                    num:thisDemNum,
-                    x:yxArr[1],
-                    y:yxArr[0]
+                    md5: md5(data.email),
+                    num: thisDemNum,
+                    x: yxArr[1],
+                    y: yxArr[0]
                 });
-                if(thisDemNum==9){
+                if (thisDemNum == 9) {
                     // 挖到矿了！
-                    boomedNum = boomedNum +1;
-                }else{
-                    let itemRare = utils.randomNum(1,100);//随机一个随机道具因子
+                    boomedNum = boomedNum + 1;
+                } else {
+                    let itemRare = utils.randomNum(1, 100);//随机一个随机道具因子
                     let mapType = result.mapType;
-                    if(itemRare>=80){//20%概率地图稀有道具
+                    if (itemRare >= 80) {//20%概率地图稀有道具
                         let itemList = mapData[mapType].low;
-                        getItem = itemList[utils.randomNum(0,itemList.length-1)];
-                    }else{//80%概率地图常见道具
+                        getItem = itemList[utils.randomNum(0, itemList.length - 1)];
+                    } else {//80%概率地图常见道具
                         let itemList = mapData[mapType].high;
-                        getItem = itemList[utils.randomNum(0,itemList.length-1)];
+                        getItem = itemList[utils.randomNum(0, itemList.length - 1)];
                     }
-                    getItemNum = thisDemNum+2;//获得道具数量
+                    getItemNum = thisDemNum + 2;//获得道具数量
                     // 乘以后台的系数
-                    getItemNum = getItemNum*global.myAppConfig.deminingItemRatio;
-                    if(getItemObj['item.'+getItem]){
-                        getItemObj['item.'+getItem] = getItemObj['item.'+getItem]+getItemNum;
+                    getItemNum = getItemNum * global.myAppConfig.deminingItemRatio;
+                    if (getItemObj['item.' + getItem]) {
+                        getItemObj['item.' + getItem] = getItemObj['item.' + getItem] + getItemNum;
                         boomItemList[getItem] = boomItemList[getItem] + getItemNum;
-                    }else{
-                        getItemObj['item.'+getItem] = getItemNum;
+                    } else {
+                        getItemObj['item.' + getItem] = getItemNum;
                         boomItemList[getItem] = getItemNum;
                     }
                 }
             }
         }
-        sendData["boomItemList"]=boomItemList; 
-        if(boomedNum>=boomNum){
+        sendData["boomItemList"] = boomItemList;
+        if (boomedNum >= boomNum) {
             close = 1;
         }
         // 生成用户数据
         let levle = result_.level;
-        getExp = 10+demNumAll+starAdd;
-        let exp = result_.exp+getExp;
-        let levelExp = utils.levelCheck(levle,exp);
-        levelUpStar = levelExp[2]*30;
+        getExp = 10 + demNumAll + starAdd;
+        let exp = result_.exp + getExp;
+        let levelExp = utils.levelCheck(levle, exp);
+        levelUpStar = levelExp[2] * 30;
         let params = {
-            $inc:{
-                star:starAdd + levelUpStar,
-                deminingStarCount:starAdd
+            $inc: {
+                star: starAdd + levelUpStar,
+                deminingStarCount: starAdd
             },
-            level:levelExp[0],
-            exp:levelExp[1],
-            captchaLock:false,
-            ip:data.IP
+            level: levelExp[0],
+            exp: levelExp[1],
+            captchaLock: false,
+            ip: data.IP
         };
         sendData["userParams"] = params;
-        sendData["levelUpStar"]=levelUpStar;
-        sendData["getExp"]=getExp;
+        sendData["levelUpStar"] = levelUpStar;
+        sendData["getExp"] = getExp;
         // 生成道具数据
-        userItemTools[2] = userItemTools[2]-1;
+        userItemTools[2] = userItemTools[2] - 1;
         let update_ = {
-            $inc:getItemObj,
+            $inc: getItemObj,
             'item.402': userItemTools[2]
         }
         sendData["itemUpdate"] = update_;
     }
-    sendData["status"]= true;
-    sendData["close"]= close;
-    sendData["starAdd"]= starAdd;
-    sendData["boomedNum"]= boomedNum;
-    sendData["playData"]= playData;
-    
+    sendData["status"] = true;
+    sendData["close"] = close;
+    sendData["starAdd"] = starAdd;
+    sendData["boomedNum"] = boomedNum;
+    sendData["playData"] = playData;
+
     let userData = {
-        star:result_.star+starAdd,
-        md5:result_.md5,
-        nickName:result_.nickName,
-        deminingStamp:deminingTool,
-        userItemTools:userItemTools,
-        timeNow:timeNow
+        star: result_.star + starAdd,
+        md5: result_.md5,
+        nickName: result_.nickName,
+        deminingStamp: deminingTool,
+        userItemTools: userItemTools,
+        timeNow: timeNow
     };
-    sendUserData(socket,userData);
+    sendUserData(socket, userData);
     return sendData;
 }
-exports.searchUser = async (socket,data)=>{
+exports.searchUser = async (socket, data) => {
     // 查找在线用户
     let page = data.page;
-    if(!validator.isInt(page+'',{ min: 1 })){
+    if (!validator.isInt(page + '', { min: 1 })) {
         page = 1;
     }
-    const pagination = function(pageSize, currentPage, arr) {
+    const pagination = function (pageSize, currentPage, arr) {
         var skipNum = (currentPage - 1) * pageSize;
         var newArr = (skipNum + pageSize >= arr.length) ? arr.slice(skipNum, arr.length) : arr.slice(skipNum, skipNum + pageSize);
         return newArr;
     }
-    let pageUser = pagination(5,page,global.demining.onlinePlayer);
-    pageUser = pageUser.map((item)=>{
+    let pageUser = pagination(5, page, global.demining.onlinePlayer);
+    pageUser = pageUser.map((item) => {
         return {
-            md5:item.md5,
-            nickName:item.nickName,
-            loginTime:item.loginTime
+            md5: item.md5,
+            nickName: item.nickName,
+            loginTime: item.loginTime
         }
     });
-    socket.emit('demining',{code:900,pageUser:pageUser,time:data.time,userTotal:global.demining.onlinePlayer.length});
+    socket.emit('demining', { code: 900, pageUser: pageUser, time: data.time, userTotal: global.demining.onlinePlayer.length });
 }
-exports.login = async function(token,socket){
+exports.login = async function (token, socket) {
     let IP = '';
-    if(socket.handshake.headers['x-forwarded-for'] != null){
+    if (socket.handshake.headers['x-forwarded-for'] != null) {
         IP = socket.handshake.headers['x-forwarded-for'];
-    }else{
+    } else {
         IP = socket.handshake.address;
     }
     IP = IP.match(/\d+.\d+.\d+.\d+/);
     IP = IP ? IP.join('.') : 'No IP';
     let backData = {
-        status:false,
-        IP:IP
+        status: false,
+        IP: IP
     }
-    if(token){
+    if (token) {
         // 验证用户信息
-        let result = await utils.tokenCheckAndEmail(token).catch ((err)=>{
+        let result = await utils.tokenCheckAndEmail(token).catch((err) => {
             throw err;
         });
         // 如果验证成功
-        if(result){
+        if (result) {
             backData = {
-                status:true,
-                userInfo:result,
-                IP:IP
+                status: true,
+                userInfo: result,
+                IP: IP
             }
         }
     }
     return backData;
 }
-exports.mine = async function(socket,data){
+exports.mine = async function (socket, data) {
     let IP = '';
-    let timeNow = Math.round(new Date().getTime()/1000);
-    if(socket.handshake.headers['x-forwarded-for'] != null){
+    let timeNow = Math.round(new Date().getTime() / 1000);
+    if (socket.handshake.headers['x-forwarded-for'] != null) {
         IP = socket.handshake.headers['x-forwarded-for'];
-    }else{
+    } else {
         IP = socket.handshake.address;
     }
     IP = IP.match(/\d+.\d+.\d+.\d+/);
     IP = IP ? IP.join('.') : 'No IP';
     data.IP = IP;
     console.info(
-        chalk.green(IP+'连接挖矿服务器。')
+        chalk.green(IP + '连接挖矿服务器。')
     )
     let token = data.token;
-    if(token){
-        let result = await utils.tokenCheckAndEmail(token).catch ((err)=>{
+    if (token) {
+        let result = await utils.tokenCheckAndEmail(token).catch((err) => {
             throw err;
         });
-        if(!result){
-            socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！',time:data.time});
+        if (!result) {
+            socket.emit('demining', { code: 403, msg: '账户信息已失效，请重新登录！', time: data.time });
             socket.disconnect();
             console.info(
-                chalk.yellow('查询结果无该用户,IP为：'+IP)
+                chalk.yellow('查询结果无该用户,IP为：' + IP)
             );
             return false;
         }
         // 查询道具数据库
-        const userItem = await itemDatabase.findOne({email:result.email}).catch ((err)=>{
-            socket.emit('demining',{code:1,msg:'内部错误请联系管理员！',time:data.time});
+        const userItem = await itemDatabase.findOne({ email: result.email }).catch((err) => {
+            socket.emit('demining', { code: 1, msg: '内部错误请联系管理员！', time: data.time });
             console.error(
                 chalk.red('数据库更新错误！')
             );
             throw err;
         });
-        let userItemTools = [0,0,0];
-        if(userItem){
-            userItemTools = [userItem.item["400"]|| 0,userItem.item["401"]|| 0,userItem.item["402"]|| 0];
+        let userItemTools = [0, 0, 0];
+        if (userItem) {
+            userItemTools = [userItem.item["400"] || 0, userItem.item["401"] || 0, userItem.item["402"] || 0];
         }
         data.userItemTools = userItemTools;
         data.email = result.email;
         console.info(
-            chalk.green(IP+'的邮箱解析结果为'+data.email)
+            chalk.green(IP + '的邮箱解析结果为' + data.email)
         )
         //开始处理挖矿逻辑
-        if(data.type=='get'){
+        if (data.type == 'get') {
             console.info(
-                chalk.green(data.email+'获取挖矿地图')
+                chalk.green(data.email + '获取挖矿地图')
             );
-            getMineMap(socket,false);
+            getMineMap(socket, false);
             let userData = {
-                star:result.star,
-                md5:result.md5,
-                nickName:result.nickName,
-                deminingStamp:result.deminingStamp,
-                userItemTools:data.userItemTools,
-                timeNow:timeNow
+                star: result.star,
+                md5: result.md5,
+                nickName: result.nickName,
+                deminingStamp: result.deminingStamp,
+                userItemTools: data.userItemTools,
+                timeNow: timeNow
             };
-            sendUserData(socket,userData);
-        }else if(data.type=='open'){
-            if(!validator.isInt(data.tool+'',{ min: 0, max: 5 })){
-                socket.emit('demining',{code:4,msg:'挖矿工具参数有误！',time:data.time});
+            sendUserData(socket, userData);
+        } else if (data.type == 'open') {
+            if (!validator.isInt(data.tool + '', { min: 0, max: 5 })) {
+                socket.emit('demining', { code: 4, msg: '挖矿工具参数有误！', time: data.time });
                 console.info(
-                    chalk.yellow(data.email+'的工具参数有误，传了'+data.tool+'。'+'IP为：'+data.IP)
+                    chalk.yellow(data.email + '的工具参数有误，传了' + data.tool + '。' + 'IP为：' + data.IP)
                 )
                 return false;
             }
             data.tool = Math.floor(data.tool);
-            data.tool = (data.tool&&data.tool<=5)?data.tool:0;
+            data.tool = (data.tool && data.tool <= 5) ? data.tool : 0;
             let useTool = data.tool;
-            if(timeNow<Number(result.deminingStamp[useTool])&&useTool<3){
+            if (timeNow < Number(result.deminingStamp[useTool]) && useTool < 3) {
                 console.info(
-                    chalk.yellow(data.email+'的工具'+useTool+'还在冷却。'+'IP为：'+data.IP)
+                    chalk.yellow(data.email + '的工具' + useTool + '还在冷却。' + 'IP为：' + data.IP)
                 )
-                socket.emit('demining',{code:4,msg:'您选择的工具还在制作中！',time:data.time});
+                socket.emit('demining', { code: 4, msg: '您选择的工具还在制作中！', time: data.time });
                 let userData = {
-                    star:result.star,
-                    md5:result.md5,
-                    nickName:result.nickName,
-                    deminingStamp:result.deminingStamp,
-                    userItemTools:data.userItemTools,
-                    timeNow:timeNow
+                    star: result.star,
+                    md5: result.md5,
+                    nickName: result.nickName,
+                    deminingStamp: result.deminingStamp,
+                    userItemTools: data.userItemTools,
+                    timeNow: timeNow
                 };
-                sendUserData(socket,userData);
+                sendUserData(socket, userData);
                 return false;
-            }else if(useTool>=3){
-                const itemNum = data.userItemTools[useTool-3];
-                if(itemNum<1){
+            } else if (useTool >= 3) {
+                const itemNum = data.userItemTools[useTool - 3];
+                if (itemNum < 1) {
                     console.info(
-                        chalk.yellow(data.email+'的工具'+useTool+'储量不足。'+'IP为：'+data.IP)
+                        chalk.yellow(data.email + '的工具' + useTool + '储量不足。' + 'IP为：' + data.IP)
                     )
-                    socket.emit('demining',{code:4,msg:'您所选的工具储量不足！',time:data.time});
+                    socket.emit('demining', { code: 4, msg: '您所选的工具储量不足！', time: data.time });
                     let userData = {
-                        star:result.star,
-                        md5:result.md5,
-                        nickName:result.nickName,
-                        deminingStamp:result.deminingStamp,
-                        userItemTools:data.userItemTools,
-                        timeNow:timeNow
+                        star: result.star,
+                        md5: result.md5,
+                        nickName: result.nickName,
+                        deminingStamp: result.deminingStamp,
+                        userItemTools: data.userItemTools,
+                        timeNow: timeNow
                     };
-                    sendUserData(socket,userData);
+                    sendUserData(socket, userData);
                     return false;
                 }
-                
+
             }
             // 机器人可疑度检测
             const robotCheck = result.robotCheck;
             const captchaLock = result.captchaLock;
-            if(!(robotCheck===false&&captchaLock===true)){
+            if (!(robotCheck === false && captchaLock === true)) {
                 const robotCheckRes = await utils.RobotCheck(result);
-                if(robotCheckRes){
+                if (robotCheckRes) {
                     // 判断验证码是否能通过
-                    socket.emit('demining',{
-                        code:301,
-                        msg:'ok',
-                        time:data.time
+                    socket.emit('demining', {
+                        code: 301,
+                        msg: 'ok',
+                        time: data.time
                     });
                     return false;
                 }
             }
-            await openNode(socket,data,result);
-        }else if(data.type=='searchPlayer'){
-            this.searchUser(socket,data);
+            await openNode(socket, data, result);
+        } else if (data.type == 'searchPlayer') {
+            this.searchUser(socket, data);
         }
-    }else{
+    } else {
         console.info(
-            chalk.yellow(data.email+'参数有误！')
+            chalk.yellow(data.email + '参数有误！')
         );
-        socket.emit('demining',{code:403,msg:'账户信息已失效，请重新登录！'});
+        socket.emit('demining', { code: 403, msg: '账户信息已失效，请重新登录！' });
         return false;
     }
 }
