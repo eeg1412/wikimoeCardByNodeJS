@@ -1,6 +1,6 @@
 {
   "name": "wikimoe-card",
-  "version": "2.9.10",
+  "version": "2.10.1",
   "description": "维基萌抽卡vue版",
   "author": "hiroki <eeg1412@gmail.com>",
   "private": true,
@@ -16,14 +16,14 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "echarts": "^4.2.1",
     "element-ui": "^2.13.2",
     "hooper": "^0.3.4",
     "js-md5": "^0.7.3",
     "lodash": "^4.17.19",
     "pixi.js": "^5.0.3",
-    "socket.io-client": "^2.2.0",
+    "socket.io-client": "^2.3.1",
     "v-charts": "^1.19.0",
     "vue": "^2.6.10",
     "vue-clipboard2": "^0.3.0",

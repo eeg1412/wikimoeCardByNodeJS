@@ -382,6 +382,8 @@
           <el-switch v-model="form.remPass"></el-switch>
           <router-link class="wm_find_ps_link"
                        to="/find">找回密码</router-link>
+          <router-link class="wm_find_ps_link mr5"
+                       to="/reg">注册</router-link>
         </el-form-item>
       </el-form>
       <span slot="footer"
