@@ -27,6 +27,16 @@ module.exports = async function (req, res, next) {
     return false
   }
   let email = result.email
+  if (!result.robotCheck) {
+    res.send({
+      code: 0,
+      msg: '当前无需验证！',
+    })
+    console.info(
+      chalk.yellow('无需进行机器人验证,IP为：' + IP + '，邮箱为：' + email)
+    )
+    return false
+  }
   console.info(chalk.green(IP + '的邮箱解析结果为' + email))
   // 验证码验证
   if (req.session.captcha != captcha || !captcha) {
