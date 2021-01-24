@@ -30,7 +30,7 @@
     "nodemailer": "^5.1.1",
     "nodemon": "^2.0.4",
     "request": "^2.88.0",
-    "socket.io": "^2.2.0",
+    "socket.io": "^2.3.0",
     "svg-captcha": "^1.4.0",
     "validator": "^12.1.0"
   }

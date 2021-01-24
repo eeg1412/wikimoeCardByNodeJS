@@ -23,7 +23,7 @@
     "js-md5": "^0.7.3",
     "lodash": "^4.17.19",
     "pixi.js": "^5.0.3",
-    "socket.io-client": "^2.2.0",
+    "socket.io-client": "^2.3.1",
     "v-charts": "^1.19.0",
     "vue": "^2.6.10",
     "vue-clipboard2": "^0.3.0",

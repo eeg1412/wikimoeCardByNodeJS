@@ -1,178 +1,181 @@
-export default function (api) {
+export default function(api) {
   return {
-    login (data) {
-      return api.post('login', data)
+    login(data) {
+      return api.post("login", data);
     },
-    dailycard (data) {
-      return api.post('dailycard', data)
+    dailycard(data) {
+      return api.post("dailycard", data);
     },
-    reg (data) {
-      return api.post('reg', data)
+    reg(data) {
+      return api.post("reg", data);
     },
-    find (data) {
-      return api.post('find', data)
+    find(data) {
+      return api.post("find", data);
     },
-    searchcard (data) {
-      return api.post('searchcard', data)
+    searchcard(data) {
+      return api.post("searchcard", data);
     },
-    searchcardbytoken (data) {
-      return api.post('searchcardbytoken', data)
+    searchcardbytoken(data) {
+      return api.post("searchcardbytoken", data);
     },
-    sendmail (data) {
-      return api.post('sendmail', data)
+    sendmail(data) {
+      return api.post("sendmail", data);
     },
-    searchlog (data) {
-      return api.post('searchlog', data)
+    searchlog(data) {
+      return api.post("searchlog", data);
     },
-    login (data) {
-      return api.post('login', data)
+    login(data) {
+      return api.post("login", data);
     },
-    userinfo (data) {
-      return api.post('userinfo', data)
+    userinfo(data) {
+      return api.post("userinfo", data);
     },
-    shop (data) {
-      return api.post('shop', data)
+    shop(data) {
+      return api.post("shop", data);
     },
-    logout (data) {
-      return api.post('logout', data)
+    logout(data) {
+      return api.post("logout", data);
     },
-    news (data) {
-      return api.post('news', data)
+    news(data) {
+      return api.post("news", data);
     },
-    marketchart (data) {
-      return api.post('marketchart', data)
+    marketchart(data) {
+      return api.post("marketchart", data);
     },
-    marketsell (data) {
-      return api.post('marketsell', data)
+    marketsell(data) {
+      return api.post("marketsell", data);
     },
-    marketbuy (data) {
-      return api.post('marketbuy', data)
+    marketbuy(data) {
+      return api.post("marketbuy", data);
     },
-    battle (data) {
-      return api.post('battle', data)
+    battle(data) {
+      return api.post("battle", data);
     },
-    battlecard (data) {
-      return api.post('battlecard', data)
+    battlecard(data) {
+      return api.post("battlecard", data);
     },
-    decompose (data) {
-      return api.post('decompose', data)
+    decompose(data) {
+      return api.post("decompose", data);
     },
-    decomposeitem (data) {
-      return api.post('decomposeitem', data)
+    decomposeitem(data) {
+      return api.post("decomposeitem", data);
     },
-    wantcard (data) {
-      return api.post('wantcard', data)
+    wantcard(data) {
+      return api.post("wantcard", data);
     },
-    searchwantcard (data) {
-      return api.post('searchwantcard', data)
+    searchwantcard(data) {
+      return api.post("searchwantcard", data);
     },
-    searchbattleinfo (data) {
-      return api.post('searchbattleinfo', data)
+    searchbattleinfo(data) {
+      return api.post("searchbattleinfo", data);
     },
-    searchcardlevel (data) {
-      return api.post('searchcardlevel', data)
+    searchcardlevel(data) {
+      return api.post("searchcardlevel", data);
     },
-    searchuseritem (data) {
-      return api.post('searchuseritem', data)
+    searchuseritem(data) {
+      return api.post("searchuseritem", data);
     },
-    rank () {
-      return api.get('rank')
+    rank() {
+      return api.get("rank");
     },
-    upgradecard (data) {
-      return api.post('upgradecard', data)
+    upgradecard(data) {
+      return api.post("upgradecard", data);
     },
-    dailygetitem (data) {
-      return api.post('dailygetitem', data)
+    dailygetitem(data) {
+      return api.post("dailygetitem", data);
     },
-    dailygetitemmenu (data) {
-      return api.post('dailygetitemmenu', data)
+    dailygetitemmenu(data) {
+      return api.post("dailygetitemmenu", data);
     },
-    cardlevelchange (data) {
-      return api.post('cardlevelchange', data)
+    cardlevelchange(data) {
+      return api.post("cardlevelchange", data);
     },
-    searchbattlelogs (data) {
-      return api.post('searchbattlelogs', data)
+    searchbattlelogs(data) {
+      return api.post("searchbattlelogs", data);
     },
-    uploadcard (data) {
-      return api.post('uploadcard', data)
+    uploadcard(data) {
+      return api.post("uploadcard", data);
     },
-    handbook (data) {
-      return api.post('handbook', data)
+    handbook(data) {
+      return api.post("handbook", data);
     },
-    searchcrearchcard (data) {
-      return api.post('searchcrearchcard', data)
+    searchcrearchcard(data) {
+      return api.post("searchcrearchcard", data);
     },
-    searchcardpackage (data) {
-      return api.post('searchcardpackage', data)
+    searchcardpackage(data) {
+      return api.post("searchcardpackage", data);
     },
-    searchguesscard (data) {
-      return api.post('searchguesscard', data)
+    searchguesscard(data) {
+      return api.post("searchguesscard", data);
     },
-    userguesscard (data) {
-      return api.post('userguesscard', data)
+    userguesscard(data) {
+      return api.post("userguesscard", data);
     },
-    userpost (data) {
-      return api.post('userpost', data)
+    userpost(data) {
+      return api.post("userpost", data);
     },
-    robotcheck (data) {
-      return api.post('robotcheck', data)
+    robotcheck(data) {
+      return api.post("robotcheck", data);
     },
-    quest (data) {
-      return api.post('quest', data)
+    quest(data) {
+      return api.post("quest", data);
     },
-    uploadtx (data) {
-      return api.post('uploadtx', data)
+    uploadtx(data) {
+      return api.post("uploadtx", data);
     },
-    admincheckinstall () {
-      return api.get('admin/checkinstall')
+    mysteriousFragmentShop(data) {
+      return api.post("mysteriousFragmentShop", data);
     },
-    admininstall (data) {
-      return api.post('admin/install', data)
+    admincheckinstall() {
+      return api.get("admin/checkinstall");
     },
-    adminLogin (data) {
-      return api.post('admin/login', data)
+    admininstall(data) {
+      return api.post("admin/install", data);
     },
-    adminsetting (data) {
-      return api.post('admin/setting', data)
+    adminLogin(data) {
+      return api.post("admin/login", data);
     },
-    admingivestar (data) {
-      return api.post('admin/givestar', data)
+    adminsetting(data) {
+      return api.post("admin/setting", data);
     },
-    adminsearchuser (data) {
-      return api.post('admin/searchuser', data)
+    admingivestar(data) {
+      return api.post("admin/givestar", data);
     },
-    adminban (data) {
-      return api.post('admin/ban', data)
+    adminsearchuser(data) {
+      return api.post("admin/searchuser", data);
     },
-    adminpasswordchange (data) {
-      return api.post('admin/passwordchange', data)
+    adminban(data) {
+      return api.post("admin/ban", data);
     },
-    adminlogout (data) {
-      return api.post('admin/logout', data)
+    adminpasswordchange(data) {
+      return api.post("admin/passwordchange", data);
     },
-    adminsecretkey (data) {
-      return api.post('admin/secretkey', data)
+    adminlogout(data) {
+      return api.post("admin/logout", data);
     },
-    adminSearchlog (data) {
-      return api.post('admin/searchlog', data)
+    adminsecretkey(data) {
+      return api.post("admin/secretkey", data);
     },
-    adminNews (data) {
-      return api.post('admin/news', data)
+    adminSearchlog(data) {
+      return api.post("admin/searchlog", data);
     },
-    renamecardpackage (data) {
-      return api.post('admin/renamecardpackage', data)
+    adminNews(data) {
+      return api.post("admin/news", data);
     },
-    adminCreatcard (data) {
-      return api.post('admin/creatcard', data)
+    renamecardpackage(data) {
+      return api.post("admin/renamecardpackage", data);
     },
-    adminSearchcard (data) {
-      return api.post('admin/searchcard', data)
+    adminCreatcard(data) {
+      return api.post("admin/creatcard", data);
     },
-    adminEditcard (data) {
-      return api.post('admin/editcard', data)
+    adminSearchcard(data) {
+      return api.post("admin/searchcard", data);
     },
-    adminSetRobotRate (data) {
-      return api.post('admin/setrobotrate', data)
+    adminEditcard(data) {
+      return api.post("admin/editcard", data);
     },
-  }
+    adminSetRobotRate(data) {
+      return api.post("admin/setrobotrate", data);
+    }
+  };
 }
