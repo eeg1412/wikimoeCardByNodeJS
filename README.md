@@ -37,6 +37,7 @@ by 广树 [维基萌](https://www.wikimoe.com/)
 - [x] 卡牌图鉴鉴赏
 - [x] 玩家DIY自制卡牌
 - [x] Live2D游戏向导
+- [x] 矿场神秘碎片商店
 
 ### 关于更新
 
@@ -71,8 +72,8 @@ let baseConfig = {
 		user: '',//用户名
 		pass: ''//密码
 	},
-	robotCheckStar:25,//机器人验证通过后送的星星
-	robotCheckCanGetStar:25,//机器人可疑度低于这个值送星星
+	robotCheckStar:25,//机器人验证通过后送的神秘碎片
+	robotCheckCanGetStar:25,//机器人可疑度低于这个值送神秘碎片
 	deminingStarRatio:1,//挖矿获得星星的倍率
 	deminingItemRatio:1,//挖矿获得宝石的倍率
 	creatCardStar:100,//制卡审核通过后获得的星星
