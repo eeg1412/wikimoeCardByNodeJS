@@ -8,6 +8,7 @@ let debug = require('debug')('wikimoecard:server')
 let http = require('http')
 let https = require('https')
 let demining = require('../api/demining')
+let wssystem = require('../api/wssystem')
 let fs = require('fs')
 const chalk = require('chalk')
 const cheerio = require('cheerio')
@@ -153,11 +154,72 @@ io.of('/wsdemining').on('connection', async (socket) => {
     socket.disconnect()
   }
 })
+// 系统websocket
+io.of('/wssystem').on('connection', async (socket) => {
+  let token = socket.handshake.query.dt
+  // console.log("dt",token);
+  const userData = await wssystem.login(token, socket).catch((err) => {
+    throw err
+  })
+  if (userData.status) {
+    // 用户验证通过
+
+    const socketId = socket.id
+    const userEmail = userData.userInfo.email
+
+    const UA = socket.request.headers['user-agent']
+    const newPlayer = {
+      email: userEmail,
+      md5: userData.userInfo.md5,
+      nickName: userData.userInfo.nickName,
+      loginTime: Math.round(new Date().getTime() / 1000),
+      device: UA,
+      socketId: socketId,
+    }
+    global.onlinePlayer.push(newPlayer)
+    console.info(chalk.green(userEmail + '登陆抽卡系统!IP为:' + userData.IP))
+    // 发送在线人数
+    const newUserDataCount = _.groupBy(
+      global.onlinePlayer,
+      (value) => {
+        return value.email
+      }
+    )
+    io.of('/wssystem').emit('userCount', {
+      userCount: Object.keys(newUserDataCount).length,
+    })
+    socket.on('searchUser', (data) => {
+      wssystem.searchUser(socket, data)
+    })
+    socket.on('checkTime', () => {
+      socket.emit('getTime', new Date().getTime())
+    })
+    socket.on('disconnect', function () {
+      console.info(chalk.green(userEmail + '下线抽卡系统！'))
+      global.onlinePlayer = global.onlinePlayer.filter(
+        (item) => item.socketId !== socketId
+      )
+      const newUserDataCount = _.groupBy(
+        global.onlinePlayer,
+        (value) => {
+          return value.email
+        }
+      )
+      io.of('/wssystem').emit('userCount', {
+        userCount: Object.keys(newUserDataCount).length,
+      })
+    })
+  } else {
+    // 用户验证失败
+    console.info(chalk.yellow(userData.IP + '登陆抽卡服务器失败,Token有误!'))
+    socket.disconnect()
+  }
+})
 /**
  * Normalize a port into a number, string, or false.
  */
 
-function normalizePort(val) {
+function normalizePort (val) {
   var port = parseInt(val, 10)
 
   if (isNaN(port)) {
@@ -177,7 +239,7 @@ function normalizePort(val) {
  * Event listener for HTTP server "error" event.
  */
 
-function onError(error) {
+function onError (error) {
   if (error.syscall !== 'listen') {
     throw error
   }
@@ -203,7 +265,7 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+function onListening () {
   var addr = server.address()
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
   debug('Listening on ' + bind)
