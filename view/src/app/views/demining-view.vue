@@ -145,7 +145,7 @@
              v-if="captchaShow"
              ref="captch"></captcha>
     <!-- 在线用户开始 -->
-    <el-dialog title="在线用户"
+    <el-dialog title="挖矿玩家"
                :visible.sync="userDialog"
                :lock-scroll="false"
                :append-to-body="true"
@@ -153,7 +153,7 @@
                width="100%">
       <div class="wm_menu_news_body">
         <div v-if="userList.length <= 0"
-             class="pt15 pb15 tc">暂无在线用户</div>
+             class="pt15 pb15 tc">暂无挖矿玩家</div>
         <div v-else>
           <div v-for="(item, index) in userList"
                :key="index"
