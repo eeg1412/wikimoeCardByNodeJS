@@ -3,7 +3,8 @@
     <userTop ref="userTop" />
     <div class="common_body">
       <h5 class="common_title type_demining">
-        <el-tooltip placement="bottom" :enterable="false">
+        <el-tooltip placement="bottom"
+                    :enterable="false">
           <div slot="content">
             <div v-if="!mineInfo">
               <div class="wm_demining_hight_item_list_body tc">
@@ -13,14 +14,12 @@
             <div v-else>
               <div class="f14 tc">本矿场高产出宝石</div>
               <div class="mt10 tc wm_demining_hight_item_list_body">
-                <img
-                  v-for="(item, index) in mapData_[mineInfo.data.mapType].high"
-                  v-bind:key="index"
-                  :src="'/static/otherImg/item/' + item + '.png'"
-                  width="24px"
-                  height="24px"
-                  class="wm_demining_hight_item_list_img"
-                />
+                <img v-for="(item, index) in mapData_[mineInfo.data.mapType].high"
+                     v-bind:key="index"
+                     :src="'/static/otherImg/item/' + item + '.png'"
+                     width="24px"
+                     height="24px"
+                     class="wm_demining_hight_item_list_img" />
               </div>
             </div>
           </div>
@@ -28,133 +27,108 @@
         </el-tooltip>
       </h5>
       <h6 class="common_title_tips type_dec type_demining">
-        <span
-          >当前在线:{{ onlineUser }}人
-          <el-tooltip
-            class="item"
-            effect="dark"
-            content="查看在线玩家"
-            :enterable="false"
-            placement="top"
-            ><i
-              class="el-icon-notebook-2 wm_set_pointer"
-              @click="openUserInfo"
-            ></i
-          ></el-tooltip>
+        <span>{{ onlineUser }}名玩家在挖矿
+          <el-tooltip class="item"
+                      effect="dark"
+                      content="查看挖矿玩家"
+                      :enterable="false"
+                      placement="top"><i class="el-icon-notebook-2 wm_set_pointer"
+               @click="openUserInfo"></i></el-tooltip>
         </span>
         |
-        <el-button
-          type="text"
-          class="wm_open_coin_dialog_btn"
-          @click="openMysteriousFragmentShopDialog"
-          >神秘碎片商店</el-button
-        >
+        <el-button type="text"
+                   class="wm_open_coin_dialog_btn"
+                   @click="openMysteriousFragmentShopDialog">神秘碎片商店</el-button>
       </h6>
-      <div class="wm_card_demining_tool_body" v-if="userData">
+      <div class="wm_card_demining_tool_body"
+           v-if="userData">
         <hooper class="wm_demin_tool_hooper">
           <slide>
             <div class="wm_demin_tool_hooper_item_body clearfix">
               <div @click="selPickChange(0)">
-                <pickaxe
-                  :type="0"
-                  :sel="selPick"
-                  :timeNow="userData.timeNow"
-                  :timeEnd="Number(userData.deminingStamp[0])"
-                  ref="pick0"
-                ></pickaxe>
+                <pickaxe :type="0"
+                         :sel="selPick"
+                         :timeNow="userData.timeNow"
+                         :timeEnd="Number(userData.deminingStamp[0])"
+                         ref="pick0"></pickaxe>
               </div>
               <div @click="selPickChange(1)">
-                <pickaxe
-                  :type="1"
-                  :sel="selPick"
-                  :timeNow="userData.timeNow"
-                  :timeEnd="Number(userData.deminingStamp[1])"
-                  ref="pick1"
-                ></pickaxe>
+                <pickaxe :type="1"
+                         :sel="selPick"
+                         :timeNow="userData.timeNow"
+                         :timeEnd="Number(userData.deminingStamp[1])"
+                         ref="pick1"></pickaxe>
               </div>
               <div @click="selPickChange(2)">
-                <pickaxe
-                  :type="2"
-                  :sel="selPick"
-                  :timeNow="userData.timeNow"
-                  :timeEnd="Number(userData.deminingStamp[2])"
-                  ref="pick2"
-                ></pickaxe>
+                <pickaxe :type="2"
+                         :sel="selPick"
+                         :timeNow="userData.timeNow"
+                         :timeEnd="Number(userData.deminingStamp[2])"
+                         ref="pick2"></pickaxe>
               </div>
             </div>
           </slide>
           <slide>
             <div class="wm_demin_tool_hooper_item_body clearfix">
               <div @click="selPickChange(3)">
-                <pickaxe
-                  :type="3"
-                  :sel="selPick"
-                  ref="pick3"
-                  :itemCount="userData.userItemTools[0]"
-                ></pickaxe>
+                <pickaxe :type="3"
+                         :sel="selPick"
+                         ref="pick3"
+                         :itemCount="userData.userItemTools[0]"></pickaxe>
               </div>
               <div @click="selPickChange(4)">
-                <pickaxe
-                  :type="4"
-                  :sel="selPick"
-                  ref="pick4"
-                  :itemCount="userData.userItemTools[1]"
-                ></pickaxe>
+                <pickaxe :type="4"
+                         :sel="selPick"
+                         ref="pick4"
+                         :itemCount="userData.userItemTools[1]"></pickaxe>
               </div>
               <div @click="selPickChange(5)">
-                <pickaxe
-                  :type="5"
-                  :sel="selPick"
-                  ref="pick5"
-                  :itemCount="userData.userItemTools[2]"
-                ></pickaxe>
+                <pickaxe :type="5"
+                         :sel="selPick"
+                         ref="pick5"
+                         :itemCount="userData.userItemTools[2]"></pickaxe>
               </div>
             </div>
           </slide>
           <hooper-navigation slot="hooper-addons"></hooper-navigation>
         </hooper>
       </div>
-      <div
-        class="wm_card_demining_table_box"
-        :class="{ 'shake-hard': shakeCss }"
-      >
-        <div v-if="!mineInfo" class="wm_card_demining_table_loading">
+      <div class="wm_card_demining_table_box"
+           :class="{ 'shake-hard': shakeCss }">
+        <div v-if="!mineInfo"
+             class="wm_card_demining_table_loading">
           矿场数据加载中...如果长时间无反应请刷新。
         </div>
         <table class="wm_card_demining_table">
           <tbody>
-            <tr v-for="(item, index) in mineMap" v-bind:key="index">
-              <td v-for="(items, indexs) in item" v-bind:key="indexs">
-                <div
-                  class="wm_demining_item"
-                  :class="deminingItemClass(items.num, indexs, index)"
-                  @click="openNode(indexs, index, items.num)"
-                  :style="
+            <tr v-for="(item, index) in mineMap"
+                v-bind:key="index">
+              <td v-for="(items, indexs) in item"
+                  v-bind:key="indexs">
+                <div class="wm_demining_item"
+                     :class="deminingItemClass(items.num, indexs, index)"
+                     @click="openNode(indexs, index, items.num)"
+                     :style="
                     'background-image:url(/static/otherImg/demining/bg' +
                       mineInfo.data.mapType +
                       '.png)'
-                  "
-                >
-                  <el-tooltip
-                    class="item"
-                    effect="dark"
-                    :content="
+                  ">
+                  <el-tooltip class="item"
+                              effect="dark"
+                              :content="
                       items.num == 9
                         ? '这里是一片星星矿'
                         : '探测器显示周围有' + items.num + '片星星矿！'
                     "
-                    placement="top"
-                    v-if="items.num >= 0"
-                    :enterable="false"
-                  >
+                              placement="top"
+                              v-if="items.num >= 0"
+                              :enterable="false">
                     <div>
                       <span>{{ items.num == 9 ? "★" : items.num }}</span>
-                      <img
-                        class="wm_demining_img"
-                        :src="'/api/gravatar.png?md5=' + items.md5"
-                        width="50"
-                        height="50"
-                      />
+                      <img class="wm_demining_img"
+                           :src="'/api/gravatar.png?md5=' + items.md5"
+                           width="50"
+                           height="50" />
                     </div>
                   </el-tooltip>
                 </div>
@@ -165,37 +139,30 @@
       </div>
       <menuView></menuView>
     </div>
-    <captcha
-      @captchaShow="captchaDigShow"
-      @send="sendCaptcha"
-      :codeDigShow="captchaShow"
-      v-if="captchaShow"
-      ref="captch"
-    ></captcha>
+    <captcha @captchaShow="captchaDigShow"
+             @send="sendCaptcha"
+             :codeDigShow="captchaShow"
+             v-if="captchaShow"
+             ref="captch"></captcha>
     <!-- 在线用户开始 -->
-    <el-dialog
-      title="在线用户"
-      :visible.sync="userDialog"
-      :lock-scroll="false"
-      :append-to-body="true"
-      class="reg_code_dialog"
-      width="100%"
-    >
+    <el-dialog title="在线用户"
+               :visible.sync="userDialog"
+               :lock-scroll="false"
+               :append-to-body="true"
+               class="reg_code_dialog"
+               width="100%">
       <div class="wm_menu_news_body">
-        <div v-if="userList.length <= 0" class="pt15 pb15 tc">暂无在线用户</div>
+        <div v-if="userList.length <= 0"
+             class="pt15 pb15 tc">暂无在线用户</div>
         <div v-else>
-          <div
-            v-for="(item, index) in userList"
-            :key="index"
-            class="wm_dem_ueser_item"
-          >
+          <div v-for="(item, index) in userList"
+               :key="index"
+               class="wm_dem_ueser_item">
             <div class="wm_dem_ueser_img">
-              <img
-                class="wm_card_get_list_avatar_pic"
-                :src="'/api/gravatar.png?md5=' + item.md5"
-                width="45"
-                height="45"
-              />
+              <img class="wm_card_get_list_avatar_pic"
+                   :src="'/api/gravatar.png?md5=' + item.md5"
+                   width="45"
+                   height="45" />
             </div>
 
             <div>
@@ -205,72 +172,60 @@
             </div>
           </div>
         </div>
-        <el-pagination
-          small
-          layout="prev, pager, next"
-          :total="userTotal"
-          @current-change="userPageChange"
-          :current-page.sync="userPage"
-          :page-size="5"
-          class="wm_menu_news_page"
-        >
+        <el-pagination small
+                       layout="prev, pager, next"
+                       :total="userTotal"
+                       @current-change="userPageChange"
+                       :current-page.sync="userPage"
+                       :page-size="5"
+                       class="wm_menu_news_page">
         </el-pagination>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer"
+            class="dialog-footer">
         <el-button @click="userDialog = false">关闭</el-button>
       </span>
     </el-dialog>
     <!-- 在线用户结束 -->
     <!-- 神秘碎片商店开始 -->
-    <el-dialog
-      title="神秘碎片商店"
-      :visible.sync="mysteriousFragmentShopDialog"
-      :lock-scroll="false"
-      :append-to-body="true"
-      class="reg_code_dialog"
-      width="100%"
-    >
+    <el-dialog title="神秘碎片商店"
+               :visible.sync="mysteriousFragmentShopDialog"
+               :lock-scroll="false"
+               :append-to-body="true"
+               class="reg_code_dialog"
+               width="100%">
       <div class="tc wm_demining_mf_count">
         神秘碎片×{{ myItem["501"] || 0 }}
       </div>
       <div class="wm_menu_news_body">
         <ul>
-          <li
-            class="wm_demining_mf_list"
-            v-for="(item, index) in mysteriousFragmentShopItem"
-            :key="index"
-          >
+          <li class="wm_demining_mf_list"
+              v-for="(item, index) in mysteriousFragmentShopItem"
+              :key="index">
             <div class="wm_demining_mf_icon">
-              <img
-                :src="'/static/otherImg/item/' + item.id + '.png'"
-                width="32px"
-                height="32x"
-              />
+              <img :src="'/static/otherImg/item/' + item.id + '.png'"
+                   width="32px"
+                   height="32x" />
             </div>
             <div>
               <div>{{ itemData_[item.id].name }}×{{ item.get }}</div>
               <div>当前持有:{{ myItem[item.id] || 0 }}</div>
               <div>
-                需要<span class="cRed">{{ item.price }}</span
-                >个神秘碎片
+                需要<span class="cRed">{{ item.price }}</span>个神秘碎片
               </div>
             </div>
             <div class="wm_demining_mf_btn">
-              <el-button
-                type="primary"
-                @keydown.enter.native.prevent
-                size="mini"
-                @click="mysteriousFragmentShopBuy(item.id)"
-                >兑换</el-button
-              >
+              <el-button type="primary"
+                         @keydown.enter.native.prevent
+                         size="mini"
+                         @click="mysteriousFragmentShopBuy(item.id)">兑换</el-button>
             </div>
           </li>
         </ul>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="mysteriousFragmentShopDialog = false"
-          >关闭</el-button
-        >
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="mysteriousFragmentShopDialog = false">关闭</el-button>
       </span>
     </el-dialog>
     <!-- 神秘碎片商店结束 -->
@@ -292,7 +247,7 @@ import "hooper/dist/hooper.css";
 import mysteriousFragmentShopJson from "../../../../server/data/mysteriousFragmentShop.json";
 
 export default {
-  data() {
+  data () {
     return {
       myItem: {},
       mysteriousFragmentShopDialog: false,
@@ -338,7 +293,7 @@ export default {
     Slide,
     HooperNavigation
   },
-  mounted() {
+  mounted () {
     this.$emit(
       "l2dMassage",
       "这里挖到游戏的通货【星星】和升级卡牌所需要的材料。显示的数字暗示周围的星星数量。请注意每种镐的产出不一样哦！"
@@ -545,7 +500,7 @@ export default {
     });
   },
   filters: {
-    capitalize(value) {
+    capitalize (value) {
       var date = new Date(parseInt(value * 1000));
       var tt =
         [
@@ -565,7 +520,7 @@ export default {
     }
   },
   methods: {
-    mysteriousFragmentShopBuy(itemId) {
+    mysteriousFragmentShopBuy (itemId) {
       this.$confirm("真的要兑换吗？", "确认", {
         lockScroll: false,
         confirmButtonText: "确定",
@@ -589,9 +544,9 @@ export default {
             }
           });
         })
-        .catch(() => {});
+        .catch(() => { });
     },
-    searchuseritem() {
+    searchuseritem () {
       let params = {
         token: this.token
       };
@@ -607,11 +562,11 @@ export default {
         }
       });
     },
-    openMysteriousFragmentShopDialog() {
+    openMysteriousFragmentShopDialog () {
       this.searchuseritem();
       this.mysteriousFragmentShopDialog = true;
     },
-    shake() {
+    shake () {
       if (!this.shakeCss) {
         this.shakeCss = true;
         this.shakeTimer = setTimeout(() => {
@@ -619,15 +574,15 @@ export default {
         }, 400);
       }
     },
-    userPageChange(p) {
+    userPageChange (p) {
       this.page = p;
       this.searchUser();
     },
-    openUserInfo() {
+    openUserInfo () {
       this.searchUser();
       this.userDialog = true;
     },
-    searchUser() {
+    searchUser () {
       this.openTime = new Date().getTime();
       let parmas = {
         type: "searchPlayer",
@@ -639,10 +594,10 @@ export default {
       this.loading = true;
       this.socket.emit("demining", parmas);
     },
-    captchaDigShow(v) {
+    captchaDigShow (v) {
       this.captchaShow = v;
     },
-    sendCaptcha(captcha) {
+    sendCaptcha (captcha) {
       const params = {
         token: this.token,
         captcha: captcha
@@ -679,7 +634,7 @@ export default {
         }
       });
     },
-    upDateMapData(x, y, md5, num) {
+    upDateMapData (x, y, md5, num) {
       console.log("更新");
       this.mineMap[y][x] = {
         md5: md5,
@@ -687,10 +642,10 @@ export default {
       };
       this.$forceUpdate();
     },
-    selPickChange(n) {
+    selPickChange (n) {
       this.selPick = n;
     },
-    deminingItemClass(num, indexs, index) {
+    deminingItemClass (num, indexs, index) {
       var c = "";
       var x_y = indexs + "_" + index;
       if (num >= 0) {
@@ -705,7 +660,7 @@ export default {
       }
       return c;
     },
-    openNode(x, y, num, openNow) {
+    openNode (x, y, num, openNow) {
       if (this.loading) {
         return false;
       }
@@ -761,13 +716,13 @@ export default {
         }
       }
     },
-    creatMapInitData(i, j) {
+    creatMapInitData (i, j) {
       this.mineMap[i][j] = {
         md5: null,
         num: -1
       };
     },
-    creatMap(data) {
+    creatMap (data) {
       this.mineMap = [];
       for (let i = 0; i < data.rows; i++) {
         this.mineMap[i] = [];
@@ -788,7 +743,7 @@ export default {
       console.log(this.mineMap);
     }
   },
-  beforeDestroy() {
+  beforeDestroy () {
     this.backFlag = true;
     this.socket.close();
     clearTimeout(this.shakeTimer);
