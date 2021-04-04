@@ -175,7 +175,8 @@
            v-if="token"
            @mouseenter="$wikimoecard.l2dMassage('快来看看有没有新的邮件吧！说不定会有意外收获哦！')"
            @mouseleave="$wikimoecard.l2dMassageClose">
-        <el-badge :is-dot="postTotle?true:false">
+        <el-badge :hidden="!postTotle"
+                  :value="postTotle">
           <div class="wm_card_menu_ico">
             <img src="../../assets/images/menu/post.png"
                  width="100%"
@@ -195,6 +196,21 @@
                height="100%" />
         </div>
         <div class="wm_card_menu_text">图鉴</div>
+      </div>
+      <div class="wm_card_menu_box"
+           v-if="token"
+           @click="openOnlineUser"
+           @mouseenter="$wikimoecard.l2dMassage('可以查看当前在线玩家！')"
+           @mouseleave="$wikimoecard.l2dMassageClose">
+        <el-badge :value="gameOnlineUser"
+                  :max="99">
+          <div class="wm_card_menu_ico">
+            <img src="../../assets/images/menu/onlineUser.png"
+                 width="100%"
+                 height="100%" />
+          </div>
+        </el-badge>
+        <div class="wm_card_menu_text">玩家</div>
       </div>
       <div class="wm_card_menu_box"
            @click="watchMyCard()"
@@ -446,7 +462,7 @@ export default {
   computed: {
     ...mapState(
       "app",
-      ["dailygeted", "postList", "postTotle", "postPage"]
+      ["dailygeted", "postList", "postTotle", "postPage", "gameOnlineUser"]
     ),
   },
   filters: {
@@ -466,6 +482,9 @@ export default {
         setPostPage: "setPostPage"
       }
     ),
+    openOnlineUser () {
+      this.$store.dispatch('app/setShowOnlieUserDialog', true)
+    },
     resetToken () {
       this.token = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token");
     },
@@ -647,6 +666,7 @@ export default {
           }
           this.loginShow = false;
           this.token = resData.token;
+          this.$store.dispatch('app/setToken', resData.token)
           this.form.password = "";
           this.form.captcha = "";
           this.$emit('addToken');

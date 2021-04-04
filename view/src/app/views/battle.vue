@@ -345,6 +345,9 @@ export default {
     //       this.battle(false)
     //   }
   },
+  computed: {
+    serverDelay () { return this.$store.getters["app/serverDelay"] },
+  },
   methods: {
     SumTimeMinSec (battleCD, timeNow) {
       const count = battleCD - timeNow;
@@ -472,7 +475,7 @@ export default {
     },
     countdown () {
       this.counter = setInterval(() => {
-        this.timeNow = Math.round(new Date().getTime() / 1000);
+        this.timeNow = Math.round((new Date().getTime() + this.serverDelay) / 1000);
         if (this.timeNow >= this.battleCD) {
           if (this.myBattleTimes >= this.battleOverTimes) {
             clearInterval(this.counter);
@@ -496,7 +499,7 @@ export default {
           this.battleOverTimes = res.data.battleOverTimes;
           this.myScore = res.data.score;
           this.battleCD = res.data.dailyBattleTime + 3600;
-          this.timeNow = Math.round(new Date().getTime() / 1000);
+          this.timeNow = Math.round((new Date().getTime() + this.serverDelay) / 1000);
           clearInterval(this.counter);
           // 开始倒计时
           if (this.myBattleTimes < this.battleOverTimes) {

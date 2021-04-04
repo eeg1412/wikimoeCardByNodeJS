@@ -2,57 +2,81 @@
   <div class="wm_card_top_userinfo_body clearfix">
     <div class="fl">
       <img class="wm_top_info_avatar_pic"
-           :src="'/api/gravatar.png?md5='+userData.md5"
-           @click="openMore()">
+           :src="'/api/gravatar.png?md5=' + userData.md5"
+           @click="openMore()" />
     </div>
     <div class="fl">
       <div>
-        <span>{{userData.nickName||'获取中'}}</span>
-        <span><span class="wm_top_info_star">★</span>{{userData.star||'0'}}</span>
+        <span>{{ userData.nickName || "获取中" }}</span>
+        <span><span class="wm_top_info_star">★</span>{{ userData.star || "0" }}</span>
       </div>
     </div>
     <div class="fr wm_topuserinfo_logout"
-         @click="openMenu=true">导航</div>
-    <el-dialog :title="userData.nickName+'的信息'"
+         @click="openMenu = true">导航</div>
+    <div class="fr"><i class="el-icon-warning-outline"
+         v-if="serverTimeCheckStatus === 0"
+         key="0"></i><i class="el-icon-loading"
+         v-else-if="serverTimeCheckStatus === 2"
+         key="2"></i> {{serverTime}}<span class="pl5 pr5">|</span></div>
+    <el-dialog :title="userData.nickName + '的信息'"
                :visible.sync="dialogVisible"
                class="reg_code_dialog"
                :append-to-body="true"
                top="8vh"
                width="95%">
       <div class="wm_top_info_more_body"
-           v-if="userData.level!==undefined">
+           v-if="userData.level !== undefined">
         <!-- <i class="el-icon-edit wm_avatar_edit_icon cRed"></i> -->
         <div @click="txDialogVisible = true"
-             class="wm_top_moreinfo_avatar_pic_body wm_set_pointer"><img class="wm_top_moreinfo_avatar_pic"
-               :src="'/api/gravatar.png?md5='+userData.md5"></div>
-        <div class="wm_top_moreinfo_name">{{userData.nickName}}</div>
+             class="wm_top_moreinfo_avatar_pic_body wm_set_pointer">
+          <img class="wm_top_moreinfo_avatar_pic"
+               :src="'/api/gravatar.png?md5=' + userData.md5" />
+        </div>
+
+        <div class="wm_top_moreinfo_name">{{ userData.nickName }}</div>
         <div class="wm_top_moreinfo_body clearfix">
           <div class="wm_top_moreinfo_box">
-            <div class="wm_top_moreinfo_label">星星：{{userData.star}}</div>
+            <div class="wm_top_moreinfo_label">星星：{{ userData.star }}</div>
           </div>
           <div class="wm_top_moreinfo_box">
-            <div class="wm_top_moreinfo_label">等级：{{userData.level}}</div>
+            <div class="wm_top_moreinfo_label">等级：{{ userData.level }}</div>
           </div>
           <div class="wm_top_moreinfo_box">
-            <div class="wm_top_moreinfo_label">经验：{{userData.exp}}/{{cardData.level[userData.level>5?5:userData.level]}}</div>
+            <div class="wm_top_moreinfo_label">
+              经验：{{ userData.exp }}/{{
+                cardData.level[userData.level > 5 ? 5 : userData.level]
+              }}
+            </div>
           </div>
           <div class="wm_top_moreinfo_box">
-            <div class="wm_top_moreinfo_label">竞技点：{{userData.score}}</div>
+            <div class="wm_top_moreinfo_label">
+              竞技点：{{ userData.score }}
+            </div>
           </div>
           <div class="wm_top_moreinfo_box">
-            <div class="wm_top_moreinfo_label">累计挖矿：{{userData.deminingStarCount}}</div>
+            <div class="wm_top_moreinfo_label">
+              累计挖矿：{{ userData.deminingStarCount }}
+            </div>
           </div>
           <div class="wm_top_moreinfo_box">
-            <div class="wm_top_moreinfo_label">卡种量：{{userData.cardIndexCount}}</div>
+            <div class="wm_top_moreinfo_label">
+              卡种量：{{ userData.cardIndexCount }}
+            </div>
           </div>
           <div class="wm_top_moreinfo_box">
-            <div class="wm_top_moreinfo_label">猜中卡牌：{{userData.guessCardCount}}</div>
+            <div class="wm_top_moreinfo_label">
+              猜中卡牌：{{ userData.guessCardCount }}
+            </div>
           </div>
           <div class="wm_top_moreinfo_box">
-            <div class="wm_top_moreinfo_label">完成任务：{{userData.questCount}}</div>
+            <div class="wm_top_moreinfo_label">
+              完成任务：{{ userData.questCount }}
+            </div>
           </div>
           <div class="wm_top_moreinfo_box">
-            <div class="wm_top_moreinfo_label">成功制卡：{{userData.UCC}}</div>
+            <div class="wm_top_moreinfo_label">
+              成功制卡：{{ userData.UCC }}
+            </div>
           </div>
         </div>
       </div>
@@ -92,7 +116,9 @@
                      accept="image/*"
                      :on-change="handleAvatarSuccess">
             <el-button size="small"
-                       type="primary">{{txImageLoaded?'重新导入':'点击导入'}}</el-button>
+                       type="primary">{{
+              txImageLoaded ? "重新导入" : "点击导入"
+            }}</el-button>
           </el-upload>
           <h6 class="mt10">如遇无法导入头像，请检查浏览器是否支持WebGL!</h6>
         </div>
@@ -112,8 +138,10 @@
     <el-collapse-transition>
       <div class="wm_top_moreinfo_menu_box"
            v-show="openMenu">
-        <div class="wm_top_moreinfo_menu_close"><i class="el-icon-close"
-             @click="openMenu = false"></i></div>
+        <div class="wm_top_moreinfo_menu_close">
+          <i class="el-icon-close"
+             @click="openMenu = false"></i>
+        </div>
         <menuView :getInfoMode="false"></menuView>
       </div>
     </el-collapse-transition>
@@ -123,8 +151,9 @@
 <script>
 import { authApi } from "../api";
 import cardData from "../../utils/cardData";
-import menuView from './menu.vue';
-import * as PIXI from 'pixi.js'
+import menuView from "./menu.vue";
+import * as PIXI from "pixi.js";
+import moment from "moment"
 
 export default {
   data () {
@@ -138,50 +167,75 @@ export default {
       txDialogVisible: false,
       txDays: new Date().getDate(),
       userData: {},
-      token: sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token"),
+      token: sessionStorage.getItem("token")
+        ? sessionStorage.getItem("token")
+        : localStorage.getItem("token"),
       dialogVisible: false,
       cardData: cardData,
       openMenu: false,
-    }
+      serverTime: '',
+      serverTimeTimer: null,
+    };
   },
   components: {
-    menuView,
+    menuView
   },
   mounted () {
     this.getUserInfo();
+    this.setTime();
+  },
+  computed: {
+    serverDelay () { return this.$store.getters["app/serverDelay"] },
+    serverTimeCheckStatus () { return this.$store.getters["app/serverTimeCheckStatus"] }
   },
   methods: {
+    setTime () {
+      const nowDate = new Date().getTime() + this.serverDelay;
+      this.serverTime = moment(nowDate).format('HH:mm:ss')
+      this.serverTimeTimer = setInterval(() => {
+        const nowDateTimer = new Date().getTime() + this.serverDelay;
+        this.serverTime = moment(nowDateTimer).format('HH:mm:ss')
+      }, 1000)
+    },
     shareUrl (md5) {
-      this.$copyText(window.location.origin + '?md5=' + md5).then((e) => {
-        this.$message({
-          message: '复制分享地址成功！',
-          type: 'success'
-        });
-      }, function (e) {
-        this.$message.error('复制分享链接失败！');
-        console.log(e)
-      })
+      this.$copyText(window.location.origin + "?md5=" + md5).then(
+        e => {
+          this.$message({
+            message: "复制分享地址成功！",
+            type: "success"
+          });
+        },
+        function (e) {
+          this.$message.error("复制分享链接失败！");
+          console.log(e);
+        }
+      );
     },
     saveTx () {
-      const uploadBase64 = this.app.view.toDataURL('image/jpeg', 0.9);
+      const uploadBase64 = this.app.view.toDataURL("image/jpeg", 0.9);
       console.log(uploadBase64);
-      authApi.uploadtx({ token: this.token, imgBase64: uploadBase64 }).then(res => {
-        console.log(res);
-        if (res.data.code == 0) {
-          this.$message.error(res.data.msg);
-        } else if (res.data.code == 1) {
-          this.$alert(res.data.msg, '提示', {
-            confirmButtonText: '确定',
-            callback: action => {
-              this.txDialogVisible = false;
-              location.reload();
-            }
-          });
-        }
-      });
+      authApi
+        .uploadtx({ token: this.token, imgBase64: uploadBase64 })
+        .then(res => {
+          console.log(res);
+          if (res.data.code == 0) {
+            this.$message.error(res.data.msg);
+          } else if (res.data.code == 1) {
+            this.$alert(res.data.msg, "提示", {
+              confirmButtonText: "确定",
+              callback: action => {
+                this.txDialogVisible = false;
+                location.reload();
+              }
+            });
+          }
+        });
     },
     zoomChange () {
-      this.txSprite.scale = new PIXI.Point(this.txZoom / 100, this.txZoom / 100);
+      this.txSprite.scale = new PIXI.Point(
+        this.txZoom / 100,
+        this.txZoom / 100
+      );
       const x = this.txSprite.x;
       const y = this.txSprite.y;
       const width = this.txSprite.width;
@@ -217,15 +271,15 @@ export default {
         const w = imageObj.width;
         const h = imageObj.height;
         if (w < 100 || h < 100) {
-          this.$message.error('头像宽高必须大于100px，请重新选择！');
+          this.$message.error("头像宽高必须大于100px，请重新选择！");
         } else {
           this.txZoom = 100;
           this.txSprite.texture = PIXI.Texture.from(this.imageUrl);
           this.txSprite.position.set(0, 0);
           this.txSprite.scale = new PIXI.Point(1, 1);
           this.txSprite.rotation = 0;
-          const minW = 100 / w * 100;
-          const minH = 100 / h * 100;
+          const minW = (100 / w) * 100;
+          const minH = (100 / h) * 100;
           this.txMin = Math.ceil(Math.max(minW, minH));
           this.txImageLoaded = true;
         }
@@ -235,7 +289,11 @@ export default {
       let that = this;
       const loader = new PIXI.Loader();
       const app = new PIXI.Application({
-        width: 100, height: 100, backgroundColor: 0xffffff, resolution: 1, preserveDrawingBuffer: true,
+        width: 100,
+        height: 100,
+        backgroundColor: 0xffffff,
+        resolution: 1,
+        preserveDrawingBuffer: true
       });
       this.app = app;
       const moveIco = "url('/static/cur/move.cur'),move";
@@ -251,13 +309,13 @@ export default {
       this.txSprite.zIndex = 1;
       this.txSprite.interactive = true;
       this.txSprite.buttonMode = true;
-      this.txSprite.cursor = 'move';
+      this.txSprite.cursor = "move";
       this.txSprite.anchor.set(0);
       this.txSprite
-        .on('pointerdown', onDragStart)
-        .on('pointerup', onDragEnd)
-        .on('pointerupoutside', onDragEnd)
-        .on('pointermove', onDragMove);
+        .on("pointerdown", onDragStart)
+        .on("pointerup", onDragEnd)
+        .on("pointerupoutside", onDragEnd)
+        .on("pointermove", onDragMove);
       function onDragStart (event) {
         // store a reference to the data
         // the reason for this is because of multitouch
@@ -297,11 +355,9 @@ export default {
 
       container.addChild(this.txSprite);
       app.ticker.maxFPS = 30;
-      document.getElementById('wmCreatTx').appendChild(this.app.view);
+      document.getElementById("wmCreatTx").appendChild(this.app.view);
 
-      app.ticker.add((delta) => {
-
-      });
+      app.ticker.add(delta => { });
     },
     logout () {
       authApi.logout({ token: this.token }).then(res => {
@@ -310,15 +366,16 @@ export default {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
           this.$message({
-            message: '成功登出！',
-            type: 'success'
+            message: "成功登出！",
+            type: "success"
           });
+          this.$store.dispatch('app/setToken', undefined)
           sessionStorage.removeItem("token");
           localStorage.removeItem("token");
-          this.$emit('removeToken');
-          this.$router.replace('/');
+          this.$emit("removeToken");
+          this.$router.replace("/");
         } else if (res.data.code == 403) {
-          this.$emit('removeToken');
+          this.$emit("removeToken");
         }
       });
     },
@@ -335,12 +392,15 @@ export default {
         } else if (res.data.code == 1) {
           this.userData = res.data.data;
         } else if (res.data.code == 403) {
-          this.$emit('removeToken');
+          this.$emit("removeToken");
         }
       });
     }
+  },
+  beforeDestroy () {
+    clearInterval(this.serverTimeTimer)
   }
-}
+};
 </script>
 
 <style scoped>

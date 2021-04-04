@@ -55,7 +55,11 @@ module.exports = async function (req, res, next) {
             nickName: result.nickName,
             score: result.score,
             level: result.level,
-            cardIndexCount: result.cardIndexCount
+            cardIndexCount: result.cardIndexCount,
+            deminingStarCount: result.deminingStarCount,
+            UCC: result.UCC,
+            guessCardCount: result.guessCardCount,
+            questCount: result.questCount,
         });
     } else {
         res.send({

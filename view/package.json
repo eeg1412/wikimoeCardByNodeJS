@@ -1,6 +1,6 @@
 {
   "name": "wikimoe-card",
-  "version": "2.10.1",
+  "version": "2.11.0",
   "description": "维基萌抽卡vue版",
   "author": "hiroki <eeg1412@gmail.com>",
   "private": true,
@@ -22,6 +22,7 @@
     "hooper": "^0.3.4",
     "js-md5": "^0.7.3",
     "lodash": "^4.17.19",
+    "moment": "^2.29.1",
     "pixi.js": "^5.0.3",
     "socket.io-client": "^2.3.1",
     "v-charts": "^1.19.0",

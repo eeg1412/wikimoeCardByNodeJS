@@ -4,6 +4,7 @@ global.demining = {
     onlinePlayer: [],
     loaing: true
 };
+global.onlinePlayer = []
 //全局矿场信息
 global.MAX_INT32 = 2147483647;
 global.MAX_INTJS = 9007199254740991;
