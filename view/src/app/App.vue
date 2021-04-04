@@ -23,7 +23,8 @@
         <div v-else>
           <div v-for="(item, index) in userList"
                :key="index"
-               class="wm_sys_ueser_item">
+               class="wm_sys_ueser_item wm_set_pointer"
+               @click="openInfo(item.md5)">
             <div class="wm_sys_ueser_img">
               <img class="wm_card_get_list_avatar_pic"
                    :src="'/api/gravatar.png?md5=' + item.md5"
@@ -53,16 +54,22 @@
       </span>
     </el-dialog>
     <!-- 在线用户结束 -->
+    <userInfoDialog :md5="userMd5"
+                    :userDialogOpen="userInfoDialogOpen"
+                    @updateVisible="updateVisible"></userInfoDialog>
   </div>
 </template>
 
 <script>
 import live2d from "./components/live2d.vue";
 import io from "socket.io-client";
+import userInfoDialog from "./components/userInfoDialog.vue"
 
 export default {
   data () {
     return {
+      userMd5: "",
+      userInfoDialogOpen: false,
       userTotal: 0,
       userPage: 1,
       userList: [],
@@ -122,6 +129,13 @@ export default {
     }
   },
   methods: {
+    openInfo (md5) {
+      this.userMd5 = md5
+      this.userInfoDialogOpen = true
+    },
+    updateVisible (open) {
+      this.userInfoDialogOpen = open
+    },
     getOnlieUser () {
       this.socket.emit("searchUser", { page: this.userPage });
     },
@@ -228,7 +242,8 @@ export default {
     this.userDialog = this.showOnlieUserDialog
   },
   components: {
-    live2d
+    live2d,
+    userInfoDialog
   }
 };
 </script>
