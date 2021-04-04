@@ -128,9 +128,16 @@ io.of('/wsdemining').on('connection', async (socket) => {
     socket.on('demining', (data) => {
       // console.log('deminging');
       // console.log(data);
-
-      // 处理挖矿逻辑
-      demining.mine(socket, data)
+      if (!_.isObject(data)) {
+        socket.emit('demining', {
+          code: 1,
+          msg: '内部错误请联系管理员！',
+          time: data.time,
+        })
+      } else {
+        // 处理挖矿逻辑
+        demining.mine(socket, data)
+      }
     })
     socket.on('disconnect', function () {
       console.info(chalk.green(userEmail + '下线！'))

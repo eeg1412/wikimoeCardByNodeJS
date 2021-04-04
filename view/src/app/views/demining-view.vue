@@ -157,7 +157,8 @@
         <div v-else>
           <div v-for="(item, index) in userList"
                :key="index"
-               class="wm_dem_ueser_item">
+               class="wm_dem_ueser_item wm_set_pointer"
+               @click="openInfo(item.md5)">
             <div class="wm_dem_ueser_img">
               <img class="wm_card_get_list_avatar_pic"
                    :src="'/api/gravatar.png?md5=' + item.md5"
@@ -229,6 +230,9 @@
       </span>
     </el-dialog>
     <!-- 神秘碎片商店结束 -->
+    <userInfoDialog :md5="userMd5"
+                    :userDialogOpen="userInfoDialogOpen"
+                    @updateVisible="updateVisible"></userInfoDialog>
   </div>
 </template>
 
@@ -245,10 +249,13 @@ import { authApi } from "../api";
 import { Hooper, Slide, Navigation as HooperNavigation } from "hooper";
 import "hooper/dist/hooper.css";
 import mysteriousFragmentShopJson from "../../../../server/data/mysteriousFragmentShop.json";
+import userInfoDialog from "../components/userInfoDialog.vue"
 
 export default {
   data () {
     return {
+      userMd5: "",
+      userInfoDialogOpen: false,
       myItem: {},
       mysteriousFragmentShopDialog: false,
       mysteriousFragmentShopItem: mysteriousFragmentShopJson,
@@ -291,7 +298,8 @@ export default {
     captcha,
     Hooper,
     Slide,
-    HooperNavigation
+    HooperNavigation,
+    userInfoDialog
   },
   mounted () {
     this.$emit(
@@ -520,6 +528,13 @@ export default {
     }
   },
   methods: {
+    openInfo (md5) {
+      this.userMd5 = md5
+      this.userInfoDialogOpen = true
+    },
+    updateVisible (open) {
+      this.userInfoDialogOpen = open
+    },
     mysteriousFragmentShopBuy (itemId) {
       this.$confirm("真的要兑换吗？", "确认", {
         lockScroll: false,

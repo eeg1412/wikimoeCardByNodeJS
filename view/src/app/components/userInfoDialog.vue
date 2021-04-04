@@ -25,6 +25,18 @@
             <div class="wm_top_moreinfo_box">
               <div class="wm_top_moreinfo_label">竞技点：{{nowUserInfo.score}}</div>
             </div>
+            <div class="wm_top_moreinfo_box">
+              <div class="wm_top_moreinfo_label">累计挖矿：{{nowUserInfo.deminingStarCount}}</div>
+            </div>
+            <div class="wm_top_moreinfo_box">
+              <div class="wm_top_moreinfo_label">成功制卡：{{nowUserInfo.UCC}}</div>
+            </div>
+            <div class="wm_top_moreinfo_box">
+              <div class="wm_top_moreinfo_label">完成任务：{{nowUserInfo.questCount}}</div>
+            </div>
+            <div class="wm_top_moreinfo_box">
+              <div class="wm_top_moreinfo_label">猜中卡牌：{{nowUserInfo.guessCardCount}}</div>
+            </div>
           </div>
         </div>
         <div class="wm_top_info_more_body clearfix"
@@ -69,6 +81,10 @@
           </div>
 
         </div>
+      </div>
+      <div class="wm_market_card_datail_charts_empty"
+           v-else>
+        <span>信息加载中...</span>
       </div>
       <span slot="footer"
             class="dialog-footer">
@@ -162,6 +178,12 @@ export default {
               cardIndexCount: resData.cardIndexCount,//收集卡牌
               nickName: resData.nickName,
               cardCount: resData.cardCount,
+
+              deminingStarCount: resData.deminingStarCount,
+              UCC: resData.UCC,
+              questCount: resData.questCount,
+              guessCardCount: resData.guessCardCount,
+
               md5: resData.md5,
             };//当前用户信息
             this.cardPageChange(this.cardPage);
@@ -202,9 +224,10 @@ export default {
 <style>
 .wm_userinfo_dialog_user_card_item {
   width: 20%;
-  float: left;
+  display: inline-block;
   padding: 5px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 .wm_userinfo_dialog_user_card_item img {
   width: 100%;
