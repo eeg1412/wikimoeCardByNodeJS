@@ -83,7 +83,7 @@ export default {
       socket: null,
       scrollTop: 0,
       scrollChangeFlag: true,
-      version: "(Ver.2.11.0)",
+      version: "(Ver.2.11.1)",
       info: atob(
         "UG93ZXJlZCBieSA8YSBjbGFzcz0nd21fc2V0X3BvaW50ZXInIGhyZWY9J2h0dHBzOi8vd3d3Lndpa2ltb2UuY29tLycgdGFyZ2V0PSdfYmxhbmsnPndpa2ltb2U8L2E+"
       )
