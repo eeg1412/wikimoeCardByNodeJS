@@ -274,7 +274,7 @@ export default {
           this.$message.error("头像宽高必须大于100px，请重新选择！");
         } else {
           this.txZoom = 100;
-          this.txSprite.texture = PIXI.Texture.from(this.imageUrl);
+          this.txSprite.texture = PIXI.Texture.from(this.imageUrl, { mipmap: PIXI.MIPMAP_MODES.ON });
           this.txSprite.position.set(0, 0);
           this.txSprite.scale = new PIXI.Point(1, 1);
           this.txSprite.rotation = 0;

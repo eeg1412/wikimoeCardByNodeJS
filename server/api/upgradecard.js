@@ -369,7 +369,7 @@ module.exports = async function (req, res, next) {
         myCardLevel: myCardLevel,
         cardNum: myCardCount + cardDataBase['card.' + myCardData.packageId + '.' + cardId],
         itemNum: myItemNum - shouldItemNum,
-        myPieces: myPieces + itemDataBase['item.' + pieceId],
+        myPieces: myPieces + (itemDataBase['item.' + pieceId] || 0),
         pieceId: pieceId,
         itemId: shouldItemId,
         msg: 'ok'
