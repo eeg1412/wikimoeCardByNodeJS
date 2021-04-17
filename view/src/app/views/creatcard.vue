@@ -1,5 +1,5 @@
 <template>
-  <div class="common_body">
+  <div class="common_body disabled_select">
     <userTop ref="userTop" />
     <h5 class="common_title type_shop type_dec">卡牌工坊</h5>
     <h6 class="common_title_tips type_dec">Tip:当前字体库为延时加载，请先确认字体是否有异样后再生成投稿。</h6>
@@ -38,9 +38,14 @@
               <el-input-number v-model="cardSet.zoom"
                                :precision="2"
                                :step="1"
-                               :min="0.01"
+                               :min="minZoom"
                                :max="100"
                                @change="CGZoom"></el-input-number>
+            </el-form-item>
+            <el-form-item label="立绘柔化">
+              <el-switch v-model="cardSet.mipmap"
+                         @change="mipmapChange">
+              </el-switch>
             </el-form-item>
             <!-- <el-form-item label="立绘旋转">
               <el-input-number v-model="cardSet.rotation"
@@ -239,6 +244,7 @@ import { packageSort } from "../../utils/utils";
 export default {
   data () {
     return {
+      minZoom: 0,
       creatCardExplainUrl: window.$siteConfig.creatCardExplainUrl,
       logTotle: 0,
       logPage: 1,
@@ -257,6 +263,7 @@ export default {
         cry: '1',
         zoom: 100,
         rotation: 0,
+        mipmap: true
       },
       sprite: {
         starSprite: null,
@@ -291,6 +298,13 @@ export default {
     this.getLog();
   },
   methods: {
+    mipmapChange () {
+      if (this.sprite.CGSprite.texture.textureCacheIds.length > 0) {
+        this.sprite.CGSprite.texture.baseTexture.destroy()
+        this.sprite.CGSprite.texture = PIXI.Texture.from(this.imageUrl, { mipmap: this.cardSet.mipmap ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF });
+
+      }
+    },
     getCardPackage () {
       authApi.searchcardpackage({ sortType: "submitOpen" }).then(res => {
         console.log(res);
@@ -393,19 +407,19 @@ export default {
         this.$message.error('立绘缩放过度，请检查！');
         return false;
       }
-      const centerPoint = { x: 198, y: 278 }
-      const w2 = w / 2 - centerPoint.x;
-      const h2 = h / 2 - centerPoint.y;
-      const pointLimt = {
-        maxX: centerPoint.x + w2,
-        minX: centerPoint.x - w2,
-        maxY: centerPoint.y + h2,
-        minY: centerPoint.y - h2,
-      }
-      if (x > pointLimt.maxX || x < pointLimt.minX || y > pointLimt.maxY || y < pointLimt.minY) {
-        this.$message.error('立绘与卡牌之间有留白，请检查！');
-        return false;
-      }
+      // const centerPoint = { x: 198, y: 278 }
+      // const w2 = w / 2 - centerPoint.x;
+      // const h2 = h / 2 - centerPoint.y;
+      // const pointLimt = {
+      //   maxX: centerPoint.x + w2,
+      //   minX: centerPoint.x - w2,
+      //   maxY: centerPoint.y + h2,
+      //   minY: centerPoint.y - h2,
+      // }
+      // if (x > pointLimt.maxX || x < pointLimt.minX || y > pointLimt.maxY || y < pointLimt.minY) {
+      //   this.$message.error('立绘与卡牌之间有留白，请检查！');
+      //   return false;
+      // }
       //   检测出自简称字数有没有过多
       if (this.sprite.titleSprite.width > 128) {
         this.$message.error('作品简称字数过多，请检查！');
@@ -449,19 +463,32 @@ export default {
         this.imgLoading = false;
         const w = imageObj.width;
         const h = imageObj.height;
+        // if (w < 396 || h < 556) {
+        //   this.$message.error('选择的立绘尺寸过小，请重新选择！立绘宽度不能小于396px，高度不能小于556px！');
+        // } else if (w > (396 * 2) && h > (556 * 2)) {
+        //   this.$message.error('选择的立绘尺寸过大，请先使用制图软件进行缩放！立绘宽度不能超过792px，高度不能超过1112px！');
+        // } else {
+        //   this.sprite.CGSprite.texture = PIXI.Texture.from(this.imageUrl);
+        //   this.sprite.CGSprite.position.set(198, 278);
+        //   this.cardSet.zoom = 100;
+        //   this.sprite.CGSprite.scale = new PIXI.Point(1, 1);
+        //   this.cardSet.rotation = 0;
+        //   this.sprite.CGSprite.rotation = 0;
+        //   console.log(this.sprite.CGSprite);
+        // }
         if (w < 396 || h < 556) {
           this.$message.error('选择的立绘尺寸过小，请重新选择！立绘宽度不能小于396px，高度不能小于556px！');
-        } else if (w > (396 * 2) && h > (556 * 2)) {
-          this.$message.error('选择的立绘尺寸过大，请先使用制图软件进行缩放！立绘宽度不能超过792px，高度不能超过1112px！');
-        } else {
-          this.sprite.CGSprite.texture = PIXI.Texture.from(this.imageUrl);
-          this.sprite.CGSprite.position.set(198, 278);
-          this.cardSet.zoom = 100;
-          this.sprite.CGSprite.scale = new PIXI.Point(1, 1);
-          this.cardSet.rotation = 0;
-          this.sprite.CGSprite.rotation = 0;
-          console.log(this.sprite.CGSprite);
         }
+
+        const minWZoom = Math.ceil(396 / w * 100);
+        const minHZoom = Math.ceil(556 / h * 100);
+        this.minZoom = Math.max(minWZoom, minHZoom);
+        this.sprite.CGSprite.texture = PIXI.Texture.from(this.imageUrl, { mipmap: this.cardSet.mipmap ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF });
+        this.sprite.CGSprite.position.set(0, 0);
+        this.cardSet.zoom = this.minZoom;
+        this.sprite.CGSprite.scale = new PIXI.Point(this.minZoom / 100, this.minZoom / 100);
+        this.cardSet.rotation = 0;
+        this.sprite.CGSprite.rotation = 0;
       };
     },
     changeStar () {
@@ -500,7 +527,7 @@ export default {
       let that = this;
       const loader = new PIXI.Loader();
       const app = new PIXI.Application({
-        width: 396, height: 556, backgroundColor: 0xffffff, resolution: 1, preserveDrawingBuffer: true,
+        width: 396, height: 556, backgroundColor: 0xffffff, resolution: 1, preserveDrawingBuffer: true
       });
       this.app = app;
       document.getElementById('wmCreatCard').appendChild(app.view);
@@ -533,7 +560,7 @@ export default {
       this.sprite.CGSprite.interactive = true;
       this.sprite.CGSprite.buttonMode = true;
       this.sprite.CGSprite.cursor = 'move';
-      this.sprite.CGSprite.anchor.set(0.5);
+      this.sprite.CGSprite.anchor.set(0);
       this.sprite.CGSprite
         .on('pointerdown', onDragStart)
         .on('pointerup', onDragEnd)
@@ -562,6 +589,16 @@ export default {
           const newPosition = this.data.getLocalPosition(this.parent);
           this.x = this.oldX - (this.oldPosition.x - newPosition.x);
           this.y = this.oldY - (this.oldPosition.y - newPosition.y);
+          if (this.x > 0) {
+            this.x = 0;
+          } else if (this.x < -that.sprite.CGSprite.width + 396) {
+            this.x = -that.sprite.CGSprite.width + 396;
+          }
+          if (this.y > 0) {
+            this.y = 0;
+          } else if (this.y < -that.sprite.CGSprite.height + 556) {
+            this.y = -that.sprite.CGSprite.height + 556;
+          }
         }
       }
       // 水晶
@@ -631,6 +668,9 @@ export default {
 }
 .wm_crearcard_info_body {
   border-top: 1px dashed #ccc;
+}
+.disabled_select {
+  user-select: none;
 }
 </style>
 <style>
