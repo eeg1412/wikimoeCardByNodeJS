@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="disabled_select">
     <h6 class="common_title_tips type_dec">
       Tip:当前字体库为延时加载，请先确认字体是否有异样后再保存。
     </h6>
@@ -62,7 +62,7 @@
               <el-input-number v-model="cardSet.zoom"
                                :precision="2"
                                :step="1"
-                               :min="0.01"
+                               :min="minZoom"
                                :max="100"
                                @change="CGZoom"></el-input-number>
             </el-form-item>
@@ -528,6 +528,20 @@ export default {
         this.cardSet.zoom / 100,
         this.cardSet.zoom / 100
       );
+      const x = this.sprite.CGSprite.x;
+      const y = this.sprite.CGSprite.y;
+      const w = this.sprite.CGSprite.width;
+      const h = this.sprite.CGSprite.height;
+      const cW = 396;
+      const cH = 556;
+      const x2 = w + x - cW;
+      if (x2 < 0) {
+        this.sprite.CGSprite.x = x - x2
+      }
+      const y2 = h + y - cH;
+      if (y2 < 0) {
+        this.sprite.CGSprite.y = y - y2
+      }
     },
     CGRotation () {
       this.sprite.CGSprite.rotation = (Math.PI / 180) * this.cardSet.rotation;

@@ -737,6 +737,9 @@ h6 {
 .pr_5 {
   padding-right: 5%;
 }
+.disabled_select {
+  user-select: none;
+}
 /* html 5 Specific */
 article,
 aside,

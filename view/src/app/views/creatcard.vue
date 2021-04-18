@@ -519,10 +519,25 @@ export default {
     },
     CGZoom () {
       this.sprite.CGSprite.scale = new PIXI.Point(this.cardSet.zoom / 100, this.cardSet.zoom / 100);
+      const x = this.sprite.CGSprite.x;
+      const y = this.sprite.CGSprite.y;
+      const w = this.sprite.CGSprite.width;
+      const h = this.sprite.CGSprite.height;
+      const cW = 396;
+      const cH = 556;
+      const x2 = w + x - cW;
+      if (x2 < 0) {
+        this.sprite.CGSprite.x = x - x2
+      }
+      const y2 = h + y - cH;
+      if (y2 < 0) {
+        this.sprite.CGSprite.y = y - y2
+      }
     },
     CGRotation () {
       this.sprite.CGSprite.rotation = Math.PI / 180 * this.cardSet.rotation;
     },
+
     drawCard () {
       let that = this;
       const loader = new PIXI.Loader();
@@ -668,9 +683,6 @@ export default {
 }
 .wm_crearcard_info_body {
   border-top: 1px dashed #ccc;
-}
-.disabled_select {
-  user-select: none;
 }
 </style>
 <style>
