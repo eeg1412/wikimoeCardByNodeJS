@@ -1,180 +1,192 @@
-export default function(api) {
+export default function (api) {
   return {
-    login(data) {
+    login (data) {
       return api.post("login", data);
     },
-    dailycard(data) {
+    dailycard (data) {
       return api.post("dailycard", data);
     },
-    reg(data) {
+    reg (data) {
       return api.post("reg", data);
     },
-    find(data) {
+    find (data) {
       return api.post("find", data);
     },
-    searchcard(data) {
+    searchcard (data) {
       return api.post("searchcard", data);
     },
-    searchcardbytoken(data) {
+    searchcardbytoken (data) {
       return api.post("searchcardbytoken", data);
     },
-    sendmail(data) {
+    sendmail (data) {
       return api.post("sendmail", data);
     },
-    searchlog(data) {
+    searchlog (data) {
       return api.post("searchlog", data);
     },
-    login(data) {
+    login (data) {
       return api.post("login", data);
     },
-    userinfo(data) {
+    userinfo (data) {
       return api.post("userinfo", data);
     },
-    shop(data) {
+    shop (data) {
       return api.post("shop", data);
     },
-    logout(data) {
+    logout (data) {
       return api.post("logout", data);
     },
-    news(data) {
+    news (data) {
       return api.post("news", data);
     },
-    marketchart(data) {
+    marketchart (data) {
       return api.post("marketchart", data);
     },
-    marketsell(data) {
+    marketsell (data) {
       return api.post("marketsell", data);
     },
-    marketbuy(data) {
+    marketbuy (data) {
       return api.post("marketbuy", data);
     },
-    battle(data) {
+    battle (data) {
       return api.post("battle", data);
     },
-    battlecard(data) {
+    battlecard (data) {
       return api.post("battlecard", data);
     },
-    decompose(data) {
+    decompose (data) {
       return api.post("decompose", data);
     },
-    decomposeitem(data) {
+    decomposeitem (data) {
       return api.post("decomposeitem", data);
     },
-    wantcard(data) {
+    wantcard (data) {
       return api.post("wantcard", data);
     },
-    searchwantcard(data) {
+    searchwantcard (data) {
       return api.post("searchwantcard", data);
     },
-    searchbattleinfo(data) {
+    searchbattleinfo (data) {
       return api.post("searchbattleinfo", data);
     },
-    searchcardlevel(data) {
+    searchcardlevel (data) {
       return api.post("searchcardlevel", data);
     },
-    searchuseritem(data) {
+    searchuseritem (data) {
       return api.post("searchuseritem", data);
     },
-    rank() {
+    rank () {
       return api.get("rank");
     },
-    upgradecard(data) {
+    upgradecard (data) {
       return api.post("upgradecard", data);
     },
-    dailygetitem(data) {
+    dailygetitem (data) {
       return api.post("dailygetitem", data);
     },
-    dailygetitemmenu(data) {
+    dailygetitemmenu (data) {
       return api.post("dailygetitemmenu", data);
     },
-    cardlevelchange(data) {
+    cardlevelchange (data) {
       return api.post("cardlevelchange", data);
     },
-    searchbattlelogs(data) {
+    searchbattlelogs (data) {
       return api.post("searchbattlelogs", data);
     },
-    uploadcard(data) {
+    uploadcard (data) {
       return api.post("uploadcard", data);
     },
-    handbook(data) {
+    handbook (data) {
       return api.post("handbook", data);
     },
-    searchcrearchcard(data) {
+    searchcrearchcard (data) {
       return api.post("searchcrearchcard", data);
     },
-    searchcardpackage(data) {
+    searchcardpackage (data) {
       return api.post("searchcardpackage", data);
     },
-    searchguesscard(data) {
+    searchguesscard (data) {
       return api.post("searchguesscard", data);
     },
-    userguesscard(data) {
+    userguesscard (data) {
       return api.post("userguesscard", data);
     },
-    userpost(data) {
+    userpost (data) {
       return api.post("userpost", data);
     },
-    robotcheck(data) {
+    robotcheck (data) {
       return api.post("robotcheck", data);
     },
-    quest(data) {
+    quest (data) {
       return api.post("quest", data);
     },
-    uploadtx(data) {
+    uploadtx (data) {
       return api.post("uploadtx", data);
     },
-    mysteriousFragmentShop(data) {
+    mysteriousFragmentShop (data) {
       return api.post("mysteriousFragmentShop", data);
     },
-    admincheckinstall() {
+    searchCardCount (data) {
+      return api.post("searchCardCount", data);
+    },
+    searchDailyCardChance (data) {
+      return api.post("searchDailyCardChance", data);
+    },
+    searchMarketCount (data) {
+      return api.post("searchMarketCount", data);
+    },
+    searchWantCardPackageCount (data) {
+      return api.post("searchWantCardPackageCount", data);
+    },
+    admincheckinstall () {
       return api.get("admin/checkinstall");
     },
-    admininstall(data) {
+    admininstall (data) {
       return api.post("admin/install", data);
     },
-    adminLogin(data) {
+    adminLogin (data) {
       return api.post("admin/login", data);
     },
-    adminsetting(data) {
+    adminsetting (data) {
       return api.post("admin/setting", data);
     },
-    admingivestar(data) {
+    admingivestar (data) {
       return api.post("admin/givestar", data);
     },
-    adminsearchuser(data) {
+    adminsearchuser (data) {
       return api.post("admin/searchuser", data);
     },
-    adminban(data) {
+    adminban (data) {
       return api.post("admin/ban", data);
     },
-    adminpasswordchange(data) {
+    adminpasswordchange (data) {
       return api.post("admin/passwordchange", data);
     },
-    adminlogout(data) {
+    adminlogout (data) {
       return api.post("admin/logout", data);
     },
-    adminsecretkey(data) {
+    adminsecretkey (data) {
       return api.post("admin/secretkey", data);
     },
-    adminSearchlog(data) {
+    adminSearchlog (data) {
       return api.post("admin/searchlog", data);
     },
-    adminNews(data) {
+    adminNews (data) {
       return api.post("admin/news", data);
     },
-    renamecardpackage(data) {
+    renamecardpackage (data) {
       return api.post("admin/renamecardpackage", data);
     },
-    adminCreatcard(data) {
+    adminCreatcard (data) {
       return api.post("admin/creatcard", data);
     },
-    adminSearchcard(data) {
+    adminSearchcard (data) {
       return api.post("admin/searchcard", data);
     },
-    adminEditcard(data) {
+    adminEditcard (data) {
       return api.post("admin/editcard", data);
     },
-    adminSetRobotRate(data) {
+    adminSetRobotRate (data) {
       return api.post("admin/setrobotrate", data);
     }
   };

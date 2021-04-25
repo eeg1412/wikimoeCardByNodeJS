@@ -19,6 +19,7 @@
                            :key="item.packageId"
                            :label="item.name"
                            :value="item.packageId">
+                  <span>{{item.name}}({{cardCount[item.packageId] || 0}}/{{item.oneStar+item.twoStar+item.threeStar+item.fourStar+item.fiveStar+item.sixStar}})</span>
                 </el-option>
               </el-select>
             </el-form-item>
@@ -206,6 +207,7 @@ import itemData from '../../../../server/data/item';
 export default {
   data () {
     return {
+      cardCount: {},
       battlecardId: [],
       lockCard: localStorage.getItem("wikimoeLockCard") ? JSON.parse(localStorage.getItem("wikimoeLockCard")) : {},
       token: sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token"),
@@ -245,8 +247,17 @@ export default {
   },
   mounted () {
     this.$emit('l2dMassage', '这里可以分解多余的卡牌，但是感觉很不值得，推荐还是将卡牌寄售市场比较好！');
+    this.searchCardCount();
   },
   methods: {
+    searchCardCount () {
+      authApi.searchCardCount({ token: this.token }).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.cardCount = res.data.cardCount
+        }
+      });
+    },
     //   锁卡
     goLockCard (card, index) {
       const cardId = card.cardId;

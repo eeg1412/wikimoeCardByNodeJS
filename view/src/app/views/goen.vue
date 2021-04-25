@@ -11,6 +11,7 @@
                    :key="item.packageId"
                    :label="item.name"
                    :value="item.packageId">
+          <span>{{item.name}}({{cardCount[item.packageId] || 0}}/{{item.oneStar+item.twoStar+item.threeStar+item.fourStar+item.fiveStar+item.sixStar}})</span>
         </el-option>
       </el-select>
     </div>
@@ -88,6 +89,7 @@ import userTop from '../components/topUserInfo.vue';
 export default {
   data () {
     return {
+      cardCount: {},
       seledCardPackage: '加载中',
       cardPackage: [],
       openList: false,
@@ -107,10 +109,19 @@ export default {
   mounted () {
     this.$emit('l2dMassage', '这里可以使用结缘币来结缘，祝您结到一份好姻缘。');
     window.addEventListener('scroll', this.menuTop);
+    this.searchCardCount();
     this.getCardPackage();
     this.searchuseritem();
   },
   methods: {
+    searchCardCount () {
+      authApi.searchCardCount({ token: this.token }).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.cardCount = res.data.cardCount
+        }
+      });
+    },
     searchuseritem () {
       let params = {
         token: this.token
@@ -232,6 +243,7 @@ export default {
             this.cardList = cardData;
             this.$refs.userTop.getUserInfo();
             this.searchuseritem();
+            this.searchCardCount();
             setTimeout(() => {
               scrollToTop(0, 200);
               this.openList = true;

@@ -50,6 +50,7 @@
                          :key="item.packageId"
                          :label="item.name"
                          :value="item.packageId">
+                <span>{{item.name}}({{playerCardCount[item.packageId] || 0}}/{{item.oneStar+item.twoStar+item.threeStar+item.fourStar+item.fiveStar+item.sixStar}})</span>
               </el-option>
             </el-select>
           </div>
@@ -90,6 +91,8 @@
             class="dialog-footer">
         <el-button type="primary"
                    @click="cardMode=!cardMode">{{cardMode?'查看信息':'查看卡牌'}}</el-button>
+        <el-button @click="copyUrl"
+                   type="info">复制链接</el-button>
         <el-button @click="isOpen = false">关闭</el-button>
       </span>
     </el-dialog>
@@ -113,6 +116,7 @@ export default {
   },
   data () {
     return {
+      playerCardCount: {},
       cardPackage: [],
       seledCardPackage: "0",
       cardMode: false,
@@ -135,6 +139,31 @@ export default {
     }
   },
   methods: {
+    copyUrl () {
+      this.$copyText(window.location.origin + "?md5=" + this.md5).then(
+        e => {
+          this.$message({
+            message: "复制分享地址成功！",
+            type: "success"
+          });
+        },
+        function (e) {
+          this.$message.error("复制分享链接失败！");
+          console.log(e);
+        }
+      );
+    },
+    searchPlayerCardCount (md5) {
+      this.playerCardCount = {}
+      if (md5) {
+        authApi.searchCardCount({ md5: md5 }).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.playerCardCount = res.data.cardCount
+          }
+        });
+      }
+    },
     openImg (imgsrc) {
       this.$alert('<div class="watch_img"><img src="' + imgsrc + '" /></div>', '查看卡牌', {
         dangerouslyUseHTMLString: true,
@@ -193,6 +222,7 @@ export default {
       });
     },
     opened () {
+      this.searchPlayerCardCount(this.md5)
       authApi.searchcardpackage({ sortType: "open" }).then(res => {
         console.log(res);
         if (res.data.code == 0) {

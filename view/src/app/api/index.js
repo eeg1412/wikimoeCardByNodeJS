@@ -3,6 +3,7 @@ import auth from './module/auth'
 import { Message } from 'element-ui';
 import { showLoading, hideLoading } from '../../utils/utils';
 import router from '../router'
+import store from '../store'
 
 const api = createAPI({ baseURL: '/api' })
 let apiLoading = null;
@@ -29,6 +30,7 @@ api.interceptors.response.use(
       })
       sessionStorage.removeItem("token");
       localStorage.removeItem("token");
+      store.dispatch('app/setToken', undefined)
       router.replace('/');
     } else if (response.data.code == 402) {
       Message({

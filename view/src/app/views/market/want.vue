@@ -12,6 +12,7 @@
                        :key="item.packageId"
                        :label="item.name"
                        :value="item.packageId">
+              <span>{{item.name}}({{wantCount[item.packageId] || 0}})</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -113,6 +114,7 @@ import { authApi } from "../../api";
 export default {
   data () {
     return {
+      wantCount: {},
       txDays: new Date().getDate(),
       logListTotal: 0,
       logPage: Number(this.$route.query.page) || 1,
@@ -142,11 +144,31 @@ export default {
   created () {
     this.getWant();
     this.getCardPackage();
+    this.searchWantCardPackageCount();
   },
   mounted () {
     this.$emit('l2dMassage', '这里可以查看大家的求卡信息，请注意求卡时间，如果过去太长时间，可能对方已经获得了这张卡！');
   },
   methods: {
+    searchWantCardPackageCount () {
+      this.wantCount = {}
+      authApi.searchWantCardPackageCount({ token: this.token }).then(res => {
+        console.log(res);
+        if (res.data.code == 0) {
+          this.$message.error(res.data.msg);
+        } else if (res.data.code == 1) {
+          const data = res.data.data
+          const wantCount = {}
+          let allCount = 0;
+          data.forEach(item => {
+            wantCount[item._id] = item.count
+            allCount = allCount + item.count
+          });
+          wantCount["-1"] = allCount
+          this.wantCount = wantCount
+        }
+      });
+    },
     goSellCard (data) {
       this.$router.push({
         name: 'cardDetail',
@@ -217,6 +239,7 @@ export default {
     },
     search () {
       this.cardPage = 1;
+      this.searchWantCardPackageCount()
       this.getWant();
     },
     getWant () {
