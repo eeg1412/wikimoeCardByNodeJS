@@ -11,6 +11,7 @@
                    :key="item.packageId"
                    :label="item.name"
                    :value="item.packageId">
+          <span>{{item.name}}({{cardCount[item.packageId] || 0}}/{{item.oneStar+item.twoStar+item.threeStar+item.fourStar+item.fiveStar+item.sixStar}})</span>
         </el-option>
       </el-select>
     </div>
@@ -90,6 +91,7 @@ import userTop from '../components/topUserInfo.vue';
 export default {
   data () {
     return {
+      cardCount: {},
       seledCardPackage: '加载中',
       cardPackage: [],
       openList: false,
@@ -109,8 +111,17 @@ export default {
     this.$emit('l2dMassage', '这里可以购买额外的抽卡机会，希望你能抽到心仪的卡。');
     window.addEventListener('scroll', this.menuTop);
     this.getCardPackage();
+    this.searchCardCount();
   },
   methods: {
+    searchCardCount () {
+      authApi.searchCardCount({ token: this.token }).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.cardCount = res.data.cardCount
+        }
+      });
+    },
     rememberPackageId () {
       const packageId = this.seledCardPackage;
       localStorage.setItem("shopCardPackageId", packageId);
@@ -190,6 +201,7 @@ export default {
           if (res.data.code == 0) {
             this.$message.error(res.data.msg);
           } else if (res.data.code == 1) {
+            this.searchCardCount();
             this.packageId = res.data.packageId;
             let cardResData = res.data.data;
             let cardData = [];

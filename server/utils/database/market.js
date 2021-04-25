@@ -40,6 +40,22 @@ exports.deletMarketMany = async function (parmas) {
     // document查询
     return await marketModel.deleteMany(parmas);
 }
+exports.countByPackageId = async function (match) {
+    const parmas = [
+        {
+            $match: match
+        },
+        {
+            $group: {
+                _id: "$packageId",
+                count: { $sum: 1 }
+            }
+
+        }
+    ]
+    // document查询
+    return await marketModel.aggregate(parmas);
+}
 exports.saveMarketLog = async function (parmas) {
     // document作成
     var mrketLog = new marketLogsModel(parmas);

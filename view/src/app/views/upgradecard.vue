@@ -19,6 +19,7 @@
                        :key="item.packageId"
                        :label="item.name"
                        :value="item.packageId">
+              <span>{{item.name}}({{cardCount[item.packageId] || 0}}/{{item.oneStar+item.twoStar+item.threeStar+item.fourStar+item.fiveStar+item.sixStar}})</span>
             </el-option>
           </el-select>
         </el-form-item>
@@ -360,6 +361,7 @@ import md5_ from 'js-md5';
 export default {
   data () {
     return {
+      cardCount: {},
       tootipsDisabled: false,
       cardData: null,
       cardInfoShow: false,
@@ -441,8 +443,17 @@ export default {
   mounted () {
     this.$emit('l2dMassage', '这里可以升级自己的卡牌，所需材料可以在挖矿中获得，卡牌可以通过抽卡、猜卡、结缘或者市场购买获得。如果卡牌不足可以通过卡牌碎片来替代卡牌，卡牌碎片可以通过分解卡牌获得。');
     this.getCardPackage();
+    this.searchCardCount();
   },
   methods: {
+    searchCardCount () {
+      authApi.searchCardCount({ token: this.token }).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.cardCount = res.data.cardCount
+        }
+      });
+    },
     itemShould (leftType, level = 0) {
       let addCoe = 0;
       if (level > 19) { //假如等级大于20则需要的矿石数量会增加

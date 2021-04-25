@@ -409,6 +409,10 @@
                    type="primary">登录</el-button>
       </span>
     </el-dialog>
+    <userInfoDialog v-if="token"
+                    :md5="getCardMd5()"
+                    :userDialogOpen="userInfoDialogOpen"
+                    @updateVisible="updateVisible"></userInfoDialog>
   </div>
 </template>
 
@@ -418,6 +422,7 @@ import { mailCheck, passwordCheck } from "../../utils/utils";
 import md5_ from 'js-md5';
 import itemData from '../../../../server/data/item';
 import { mapState, mapActions, mapMutations } from "vuex"
+import userInfoDialog from "../components/userInfoDialog.vue"
 
 export default {
   props: {
@@ -428,13 +433,13 @@ export default {
   },
   data () {
     return {
+      userInfoDialogOpen: false,
       menuLink: {
         courseURL: window.$siteConfig.courseURL,
         QQunURL: window.$siteConfig.QQunURL,
         donateImgUrl: window.$siteConfig.donateImgUrl,
       },
       txDays: new Date().getDate(),
-      token: sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token"),
       captchaSrc: '/api/captcha?time=' + new Date().getTime(),
       routPath: null,
       loginShow: false,
@@ -459,10 +464,13 @@ export default {
       this.dailygetedSearch();
     }
   },
+  components: {
+    userInfoDialog
+  },
   computed: {
     ...mapState(
       "app",
-      ["dailygeted", "postList", "postTotle", "postPage", "gameOnlineUser"]
+      ["dailygeted", "postList", "postTotle", "postPage", "gameOnlineUser", "token"]
     ),
   },
   filters: {
@@ -482,11 +490,11 @@ export default {
         setPostPage: "setPostPage"
       }
     ),
+    updateVisible (open) {
+      this.userInfoDialogOpen = open
+    },
     openOnlineUser () {
       this.$store.dispatch('app/setShowOnlieUserDialog', true)
-    },
-    resetToken () {
-      this.token = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token");
     },
     dailygetedSearch () {
       // 是否由Token
@@ -611,12 +619,7 @@ export default {
       });
     },
     watchMyCard () {
-      let md5 = this.getCardMd5();
-      console.log(md5);
-      this.$router.push({
-        path: '/',
-        query: { md5: md5 }
-      });
+      this.userInfoDialogOpen = true
     },
     goHome () {
       this.$router.push({ path: '/' });
@@ -665,7 +668,7 @@ export default {
             sessionStorage.setItem("token", resData.token);
           }
           this.loginShow = false;
-          this.token = resData.token;
+          // this.token = resData.token;
           this.$store.dispatch('app/setToken', resData.token)
           this.form.password = "";
           this.form.captcha = "";
@@ -688,7 +691,7 @@ export default {
     },
     login (p) {
       this.routPath = p;
-      let token = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token");
+      let token = this.token;
       if (token) {
         this.goLink();
       } else {

@@ -1,27 +1,24 @@
 <template>
   <div class="common_body">
     <userTop ref="userTop"
-             v-if="token"
-             @removeToken="resetToken()" />
+             v-if="token" />
     <h5 class="wm_card_chiose_title">{{siteTitle}}</h5>
     <div class="wm_card_email_body">
       <transition name="el-fade-in-linear">
         <div class="wm_card_email_input_body"
              v-show="!seled">
-          <el-input v-model="email"
-                    placeholder="输入邮箱地址抽卡"
-                    class="wm_card_email">
-            <el-select v-model="seledCardPackage"
-                       placeholder="选择卡包"
-                       class="wm_card_package_sel"
-                       slot="prepend">
-              <el-option v-for="item in cardPackage.filter(item =>{return item.open})"
-                         :key="item.packageId"
-                         :label="item.name"
-                         :value="item.packageId">
-              </el-option>
-            </el-select>
-          </el-input>
+          <el-select v-model="seledCardPackage"
+                     placeholder="选择卡包"
+                     class="wm_card_package_sel"
+                     slot="prepend"
+                     :disabled="token?false:true">
+            <el-option v-for="item in cardPackage.filter(item =>{return item.open})"
+                       :key="item.packageId"
+                       :label="item.name"
+                       :value="item.packageId">
+              <span>{{item.name}}({{cardCount[item.packageId] || 0}}/{{item.oneStar+item.twoStar+item.threeStar+item.fourStar+item.fiveStar+item.sixStar}})</span>
+            </el-option>
+          </el-select>
         </div>
       </transition>
       <transition name="el-fade-in-linear">
@@ -29,13 +26,21 @@
              v-show="seled">
           <el-button type="primary"
                      @click="restart"
-                     :disabled="restartDisabled">重新抽卡</el-button>
+                     :disabled="restartDisabled"><span v-show="choiceChance>0">重新抽卡</span><span v-show="choiceChance===0">点击返回</span></el-button>
         </div>
       </transition>
     </div>
     <transition name="el-fade-in-linear">
       <div class="wm_card_remember_body">
-        <el-checkbox v-model="remEmail">抽卡并保存邮箱地址</el-checkbox>
+        <!-- <el-checkbox v-model="remEmail">抽卡并保存邮箱地址</el-checkbox> -->
+        <div v-if="token">
+          <div v-show="choiceChance>0"><span v-show="!seled">点击下方卡牌即可抽卡</span><span v-show="seled">以下是抽中的卡牌</span>，今日还可抽<span class="cRed">{{choiceChance}}</span>次！</div>
+          <div v-show="choiceChance===0">已经抽完今日份的卡牌，请明日再来吧！</div>
+          <div v-if="choiceChance===-1">正在获取今日抽卡次数...</div>
+        </div>
+        <div v-else><span class="wm_card_get_list_card_link"
+                @click="goMenu('/')">登录</span>/<router-link class="wm_card_get_list_card_link"
+                       to="/reg">注册</router-link>后即可抽卡</div>
       </div>
     </transition>
     <div class="cardList"
@@ -136,6 +141,7 @@
                          :key="item.packageId"
                          :label="item.name"
                          :value="item.packageId">
+                <span>{{item.name}}({{playerCardCount[item.packageId] || 0}}/{{item.oneStar+item.twoStar+item.threeStar+item.fourStar+item.fiveStar+item.sixStar}})</span>
               </el-option>
             </el-select>
           </div>
@@ -183,8 +189,7 @@
                    @click="copyUrl">复制</el-button>
       </span>
     </el-dialog>
-    <menuView ref="menu"
-              @addToken="resetToken()"></menuView>
+    <menuView ref="menu"></menuView>
     <rank @watchInfo="watchRank"></rank>
     <div class="wm_card_get_list_body"
          v-if="logList.length>0"
@@ -323,13 +328,15 @@ import md5 from 'js-md5';
 export default {
   data () {
     return {
+      cardCount: {},
+      playerCardCount: {},
+      choiceChance: -1,
       siteTitle: window.$siteConfig.siteTitle,
       userPackage: '0',
       userCardCountNow: {},
       seledCardPackage: '加载中',
       cardPackage: [],
       txDays: new Date().getDate(),
-      token: sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token"),
       shareDialog: false,
       shareUrl: '',
       logListTotal: 0,
@@ -366,6 +373,9 @@ export default {
     topNews,
     userTop,
     rank
+  },
+  computed: {
+    token () { return this.$store.getters["app/token"] },
   },
   filters: {
     pickaxeName (value) {
@@ -405,19 +415,58 @@ export default {
       if (to.query.md5) {
         this.urlUserInfo();
       }
+    },
+    token () {
+      if (this.seled) {
+        this.restart()
+      }
+      this.getCardPackage();
+      this.searchCardCount();
+      this.searchDailyCardChance()
     }
   },
   mounted () {
-    this.getRememberEmail();
+    // this.getRememberEmail();
     this.getLog(1);
     this.setCardScroll();
     this.urlUserInfo();
     this.getCardPackage();
+    this.searchCardCount();
+    this.searchDailyCardChance()
   },
   methods: {
-    resetToken () {
-      this.token = sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token");
-      this.$refs.menu.resetToken();
+    searchDailyCardChance () {
+      this.choiceChance = -1;
+      if (this.token) {
+        authApi.searchDailyCardChance({ token: this.token }).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.choiceChance = res.data.leftGetChance
+          }
+        });
+      }
+    },
+    searchCardCount () {
+      this.cardCount = {}
+      if (this.token) {
+        authApi.searchCardCount({ token: this.token }).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.cardCount = res.data.cardCount
+          }
+        });
+      }
+    },
+    searchPlayerCardCount (md5) {
+      this.playerCardCount = {}
+      if (md5) {
+        authApi.searchCardCount({ md5: md5 }).then(res => {
+          console.log(res);
+          if (res.data.code === 1) {
+            this.playerCardCount = res.data.cardCount
+          }
+        });
+      }
     },
     getCardPackage () {
       authApi.searchcardpackage({ sortType: "open" }).then(res => {
@@ -617,6 +666,7 @@ export default {
         this.$message.error('用户信息有误！');
         return false;
       }
+      this.searchPlayerCardCount(md5)
       authApi.searchcard({ md5: md5, packageId: this.userPackage }).then(res => {
         console.log(res);
         if (res.data.code == 0) {
@@ -698,22 +748,23 @@ export default {
       localStorage.setItem("dailyCardPackageId", packageId);
     },
     getDailyCard (Num) {
-      if (this.seled) {
-        return false;
+      if (!this.token) {
+        this.goMenu("/")
+        return false
       }
-      if (!mailCheck(this.email)) {
-        this.$message.error('邮箱格式不正确！');
+      if (this.seled) {
         return false;
       }
       this.rememberPackageId();
       console.log(Num);
-      authApi.dailycard({ email: this.email, sel: Num, packageId: this.seledCardPackage }).then(res => {
+      authApi.dailycard({ token: this.token, sel: Num, packageId: this.seledCardPackage }).then(res => {
         console.log(res);
         let emailMD5 = md5(this.email);
         if (res.data.code == 0) {
           this.$message.error(res.data.msg);
         } else if (res.data.code == 1) {
-          this.rememberEmail();
+          // this.rememberEmail();
+          this.searchCardCount();
           let resData = res.data;
           this.dailyCardIsNew[resData.choiseIndex] = resData.isNew;
           let getCardSrcArr = [this.$wikimoecard.url + resData.packageId + '/' + resData.cardChoiseList[0] + '.jpg', this.$wikimoecard.url + resData.packageId + '/' + resData.cardChoiseList[1] + '.jpg', this.$wikimoecard.url + resData.packageId + '/' + resData.cardChoiseList[2] + '.jpg'];
@@ -732,16 +783,17 @@ export default {
             this.$set(this.getCardList, 1, getCardSrcArr[1]);
             this.$set(this.getCardList, 2, getCardSrcArr[2]);
             this.$set(this.cardIsRotate, resData.choiseIndex, true);
-            let leftGetChanceText = '';
-            if (resData.leftGetChance > 0) {
-              leftGetChanceText = '抽卡成功，今天还剩余' + resData.leftGetChance + '次抽卡机会！';
-            } else {
-              leftGetChanceText = '抽卡成功，这已经是您今天最后一次抽卡机会了！';
-            }
-            this.$message({
-              message: leftGetChanceText,
-              type: 'success'
-            });
+            // let leftGetChanceText = '';
+            // if (resData.leftGetChance > 0) {
+            //   leftGetChanceText = '抽卡成功，今天还剩余' + resData.leftGetChance + '次抽卡机会！';
+            // } else {
+            //   leftGetChanceText = '抽卡成功，这已经是您今天最后一次抽卡机会了！';
+            // }
+            // this.$message({
+            //   message: leftGetChanceText,
+            //   type: 'success'
+            // });
+            this.choiceChance = resData.leftGetChance
             this.getLog(1);
             for (let i = 0; i < 3; i++) {
               if (i !== resData.choiseIndex) {
@@ -762,24 +814,9 @@ export default {
               this.$message.error('图片资源加载失败');
             }
           });
-        } else if (res.data.code == 2) {
-          this.$confirm('您尚未注册，是否进入注册页？', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.$router.push({
-              path: '/reg',
-              query: {
-                adr: btoa(this.email)
-              }
-            });
-          }).catch(() => {
-          });
         } else if (res.data.code == 3) {
           this.$message.error(res.data.msg);
-          this.rememberEmail();
-          this.getUserCard(emailMD5, true);
+          this.choiceChance = 0
         }
       })
     }

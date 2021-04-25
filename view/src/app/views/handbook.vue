@@ -19,6 +19,7 @@
                          :key="item.packageId"
                          :label="item.name"
                          :value="item.packageId">
+                <span>{{item.name}}({{myCardCount[item.packageId] || 0}}/{{item.oneStar+item.twoStar+item.threeStar+item.fourStar+item.fiveStar+item.sixStar}})</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -246,6 +247,7 @@ import _ from 'lodash';
 export default {
   data () {
     return {
+      myCardCount: {},
       wantCardList: [],
       wantCardManyMode: false,
       cardItemData: null,
@@ -287,11 +289,20 @@ export default {
   created () {
     console.log(this.searchForm.title);
     this.getCardPackage();
+    this.searchCardCount();
   },
   mounted () {
     this.$emit('l2dMassage', '这里可以查看自己已经收集到的卡牌。');
   },
   methods: {
+    searchCardCount () {
+      authApi.searchCardCount({ token: this.token }).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.myCardCount = res.data.cardCount
+        }
+      });
+    },
     wantCardSend (captcha) {
       if (this.wantCardList.length === 0) {
         this.$message.error("未选择卡牌！");

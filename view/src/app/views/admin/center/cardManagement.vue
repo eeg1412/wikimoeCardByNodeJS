@@ -223,6 +223,7 @@
                top="10px"
                :visible.sync="dialogVisible"
                width="90%"
+               :close-on-click-modal="false"
                :destroy-on-close="true"
                :before-close="handleClose">
       <div>

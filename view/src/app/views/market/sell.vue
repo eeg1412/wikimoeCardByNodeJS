@@ -59,6 +59,7 @@
                          :key="item.packageId"
                          :label="item.name"
                          :value="item.packageId">
+                <span>{{item.name}}({{cardCount[item.packageId] || 0}}/{{item.oneStar+item.twoStar+item.threeStar+item.fourStar+item.fiveStar+item.sixStar}})</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -219,6 +220,7 @@ import captcha from "../../components/captcha"
 export default {
   data () {
     return {
+      cardCount: {},
       oneKeyType: '',
       captchaShow: false,
       token: sessionStorage.getItem("token") ? sessionStorage.getItem("token") : localStorage.getItem("token"),
@@ -256,8 +258,17 @@ export default {
     this.$emit('l2dMassage', '这里可以寄售多余的卡牌来换取星星。');
     this.getUserMarket(this.sellCardPage);
     this.getCardPackage();
+    this.searchCardCount();
   },
   methods: {
+    searchCardCount () {
+      authApi.searchCardCount({ token: this.token }).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.cardCount = res.data.cardCount
+        }
+      });
+    },
     changepackageId () {
       this.searchForm = {
         star: '0',

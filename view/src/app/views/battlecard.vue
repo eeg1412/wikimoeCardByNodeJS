@@ -183,6 +183,7 @@
                          :key="item.packageId"
                          :label="item.name"
                          :value="item.packageId">
+                <span>{{item.name}}({{cardCount[item.packageId] || 0}}/{{item.oneStar+item.twoStar+item.threeStar+item.fourStar+item.fiveStar+item.sixStar}})</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -477,6 +478,7 @@ import 'hooper/dist/hooper.css';
 export default {
   data () {
     return {
+      cardCount: {},
       tipDialog: false,
       fixedTable: false,
       cardIndexCount: 0,
@@ -516,6 +518,7 @@ export default {
     HooperPagination
   },
   created () {
+    this.searchCardCount();
     this.getCardPackage();
   },
   mounted () {
@@ -523,6 +526,14 @@ export default {
     window.addEventListener('scroll', this.tableFixed);
   },
   methods: {
+    searchCardCount () {
+      authApi.searchCardCount({ token: this.token }).then(res => {
+        console.log(res);
+        if (res.data.code === 1) {
+          this.cardCount = res.data.cardCount
+        }
+      });
+    },
     getCardPackage () {
       authApi.searchcardpackage({ sortType: "default" }).then(res => {
         console.log(res);

@@ -31,6 +31,7 @@
                          :key="item.packageId"
                          :label="item.name"
                          :value="item.packageId">
+                <span>{{item.name}}({{marketCount[item.packageId] || 0}})</span>
               </el-option>
             </el-select>
           </el-form-item>
@@ -194,6 +195,7 @@ import { authApi } from "../../api";
 export default {
   data () {
     return {
+      marketCount: {},
       price: 0,
       minPrice: 0,
       captcha: '',
@@ -227,6 +229,7 @@ export default {
   },
   created () {
     this.getCardPackage();
+    this.searchMarketCount()
     if (this.want == '1') {
       this.calMinPrice();
     }
@@ -235,6 +238,22 @@ export default {
     this.$emit('l2dMassage', '这里可以购买由玩家贩卖的卡牌，不知道有没有你心仪的卡呀！');
   },
   methods: {
+    searchMarketCount () {
+      this.marketCount = {}
+      authApi.searchMarketCount({ token: this.token }).then(res => {
+        console.log(res);
+        if (res.data.code == 0) {
+          this.$message.error(res.data.msg);
+        } else if (res.data.code == 1) {
+          const data = res.data.data
+          const marketCountData = {}
+          data.forEach(item => {
+            marketCountData[item._id] = item.count
+          });
+          this.marketCount = marketCountData
+        }
+      });
+    },
     getCardPackage () {
       authApi.searchcardpackage({ sortType: "default" }).then(res => {
         console.log(res);
@@ -394,6 +413,7 @@ export default {
       });
     },
     search () {
+      this.searchMarketCount()
       this.cardPage = 1;
       this.$router.replace({
         name: 'buyCard',
