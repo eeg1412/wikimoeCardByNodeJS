@@ -1,0 +1,28 @@
+version: '3'
+
+services: 
+  server:
+    build: .
+    container_name: "server"
+    ports:
+      - 3000:3000
+    links: 
+      - mongo
+    depends_on: 
+      - mongo
+
+  mongo:
+    image: mongo
+    container_name: "mongo"
+    command: 
+      - mongod
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo-data:/data/db
+
+  mongo-data:
+    image: busybox
+
+volumes: 
+  mongo-data:

@@ -1,0 +1,138 @@
+/*CSS reset*/
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button,article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {margin:0;padding:0;}
+table {border-collapse:collapse;border-spacing:0;}
+fieldset,img {border:0;}
+address,caption,cite,code,dfn,em,strong,th,var,i{font-style:normal;font-weight:normal;}
+ol,ul,li{list-style:none;}
+caption{text-align:left;font-weight:normal;}
+h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}
+q:before,q:after{content:'';}
+abbr,acronym{border:0;font-variant:normal;}
+sub, sup {font-size:65%;line-height:0;position:relative;vertical-align:baseline;}
+sup {top:2.1em; right: 0.4em;}
+sub {bottom:0; padding-left: 5px; }
+ins,a {text-decoration:none;}
+a{cursor: pointer;}
+a,li,input{outline: none;}
+input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}
+legend{color:#000;}
+:focus{outline:0;}
+blockquote,q{quotes:"" "";}
+textarea{resize:none;overflow-y: auto;}
+img{border: 0;overflow: hidden;text-align: center;vertical-align: middle;}
+/*文字*/
+h1{font-size: 20px;}
+h2{font-size: 18px;}
+h3{font-size: 16px;}
+h4{font-size: 14px;}
+h5{font-size: 13px;}
+h6{font-size: 12px;}
+.f10{font-size: 10px;}.f12{font-size:12px;}.f13{font-size:13px;}.f14{font-size:14px;}.f15{font-size: 15px;}.f16{font-size:16px;}.f18{font-size:18px;}
+.f20{font-size:20px;}.f22{font-size:22px;}.f24{font-size:24px;}.f26{font-size:26px;}.f28{font-size:28px;}.f30{font-size:30px;}.f36{font-size:36px;}.f40{font-size:40px;}.f70{font-size:70px;}
+.fb{font-weight:bold;}.fn{font-weight:normal;}.fit{font-style: italic;}
+.t2{text-indent:2em}.ls{letter-spacing: 1px;}
+.unl{text-decoration:underline;}
+.unl:hover{text-decoration: underline;}
+.lh150{line-height:150%;}.lh180{line-height:180%;}.lh200{line-height:200%;}.lh250{line-height:250%;}.lh280{line-height:280%;}.lh300{line-height:300%;}
+.ellipsis{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}/*--省略--*/
+.word-break{word-wrap:break-word;overflow:hidden;word-break:break-all;}/*-- 强制英文单词断行 --*/
+.text-justify{text-align: justify;text-justify: distribute;}/*-- 文字右端对齐 --*/
+/*定位*/
+.tl{text-align:left;}.tr{text-align:right;}.tc{text-align:center;}
+.mc{margin-left:auto;margin-right:auto;}
+.fl{float:left;}.fr{float:right;}
+.cb{clear:both;}.cl{clear:left;}.cr{clear:right;}
+.clearfix:after{content:'.';display:block;height:0;clear:both;visibility:hidden;}
+.clearfix, .zoom{zoom: 1;}/*--清除浮动--*//*--针对IE--*/
+.vt{vertical-align: top;}
+.vm{vertical-align:middle; margin-top: -3px;}
+.pr{position:relative;}.pa{position:absolute;}.pf{position: fixed;}
+.abs-right{position:absolute;right:0}
+.hidden{visibility:hidden}
+.none{display:none}
+.oh{overflow:hidden;}
+.db{display: block;}.dib{display: inline-block;}.di{display: inline;}
+.boxSize{box-sizing:border-box;-moz-box-sizing:border-box; /* Firefox */-webkit-box-sizing:border-box; /* Safari */}/*长宽不受PADDING/MARGIN影响*/
+/*长度高度*/
+.w_01{width: 10%;}
+.w_02{width: 20%;}
+.w_25{width: 25%;}
+.w_03{width: 30%;}
+.w_33{width: 33.33%;}
+.w_04{width: 40%;}
+.w_05{width: 50%;}
+.w_06{width: 60%;}
+.w_07{width: 70%;}
+.w_08{width: 80%;}
+.w_09{width: 90%;}
+.w_10{width: 100%;}
+.full-height{height:100%;}
+/*边距*/
+.p5{padding:5px;}.p10{padding:10px;}.p15{padding:15px;}.p20{padding:20px;}.p25{padding: 25px;}.p30{padding: 30px;}.p35{padding: 35px;}.p40{padding: 40px;}.p50{padding: 50px;}
+.pt5{padding-top:5px;}.pt10{padding-top:10px;}.pt15{padding-top:15px;}.pt20{padding-top:20px;}.pt25{padding-top: 25px;}.pt30{padding-top: 30px;}.pt35{padding-top: 35px;}.pt40{padding-top: 40px;}.pt50{padding-top: 50px;}
+.pb5{padding-bottom:5px;}.pb10{padding-bottom:10px;}.pb15{padding-bottom:15px;}.pb20{padding-bottom:20px;}.pb25{padding-bottom:25px;}.pb30{padding-bottom:30px;}.pb35{padding-bottom:35px;}.pb40{padding-bottom:40px;}.pb50{padding-bottom:50px;}
+.pl5{padding-left:5px;}.pl10{padding-left:10px;}.pl15{padding-left:15px;}.pl20{padding-left:20px;}.pl25{padding-left:25px;}.pl30{padding-left:30px;}.pl35{padding-left:35px;}.pl40{padding-left:40px;}.pl50{padding-left:50px;}
+.pr5{padding-right:5px;}.pr10{padding-right:10px;}.pr15{padding-right:15px;}.pr20{padding-right:20px;}.pr25{padding-right:25px;}.pr30{padding-right:30px;}.pr35{padding-right:35px;}.pr40{padding-right:40px;}.pr50{padding-right:50px;}
+.m5{margin: 5px;}.m10{margin: 10px;}.m15{margin: 15px;}.m20{margin: 20px;}
+.mt5{margin-top: 5px;}.mt10{margin-top: 10px;}.mt15{margin-top: 15px;}.mt20{margin-top: 20px;}.mt25{margin-top:25px;}.mt30{margin-top:30px;}.mt35{margin-top:35px;}.mt{margin-top:px;}
+.mb5{margin-bottom: 5px;}.mb10{margin-bottom: 10px;}.mb15{margin-bottom: 15px;}.mb20{margin-bottom: 20px;}
+.ml5{margin-left: 5px;}.ml10{margin-left: 10px;}.ml15{margin-left: 15px;}.ml20{margin-left: 20px;}
+.mr5{margin-right: 5px;}.mr10{margin-right: 10px;}.mr15{margin-right: 15px;}.mr20{margin-right: 20px;}
+.pl_3{padding-left: 3%;}.pl_5{padding-left:5%;}
+.pr_3{padding-right: 3%;}.pr_5{padding-right:5%;}
+/* html 5 Specific */
+article,aside,canvas,details,div,figcaption,figure,footer,header,menu,nav,section,summary,
+time,mark,audio,video{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:middle;background:transparent;}
+article,aside,canvas,details,figcaption,figure,footer,header,menu,nav,section,summary{display:block;}
+/*--针对特定项目的页面的样式(可修改)--*/
+html,body {font-size:14px; font-family:-apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif; color: #14191e;}
+html {-webkit-text-size-adjust:none;}/* 当font-size<12px chrome */
+body {overflow-x:hidden;overflow-y:auto;}
+/*-- 按钮 --*/
+input{font-family:-apple-system,BlinkMacSystemFont,Helvetica Neue,PingFang SC,Microsoft YaHei,Source Han Sans SC,Noto Sans CJK SC,WenQuanYi Micro Hei,sans-serif;}
+input[type=button],input[type=submit]{ cursor: pointer; -webkit-appearance:none;-moz-appearance:none; }
+.inputType{display:block; box-sizing:border-box; border: none;}
+input[type=checkbox]{vertical-align: middle; margin-top: -3px; margin-right: 5px;}
+input[type=tel], input[type=text],input[type=number],input[type=password]{-webkit-appearance:none;-moz-appearance:none; }
+.cutDefault{-webkit-appearance:none;-moz-appearance:none; }
+/*-- 圆角(注意兼容)--*/
+.radius_5{border-radius: 50%;}
+.radius3{border-radius: 3px;}
+.radius5{border-radius: 5px;}
+.radiusLeft5{border-radius: 5px 0 0 5px; }
+.radiusRight5{border-radius:0 5px 5px 0; }
+.radiusTop5{border-radius: 5px 5px 0 0; }
+.radiusBottom5{border-radius:0 0 5px 5px; }
+.radius10{border-radius: 10px;}
+.radiusLeft10{border-radius: 10px 0 0 10px; }
+.radiusRight10{border-radius:0 10px 10px 0; }
+.radiusTop10{border-radius: 10px 10px 0 0; }
+.radiusBottom10{border-radius:0 0 10px 10px; }
+.radius15{border-radius: 15px;}
+.radiusTop15{border-radius: 15px 15px 0 0; }
+.radiusBottom15{border-radius:0 0 15px 15px; }
+.radius20{ border-radius: 20px;}
+.radius30{ border-radius: 30px;}
+.radius40{ border-radius: 40px;}
+.radius50{ border-radius: 50px;}
+/*颜色集(可根据具体项目需要进行删减和添加、这一块最好移到项目css的头部、以下是样例)*/
+/*字体*/
+.cBlack322{color:#332C2B;}
+.cWhite{color:#FFFFFF;}
+.cBlack{color:#000000;}
+.cGray80{color:#808080;}
+.cGray999{color:#999999;}
+.cGray666{color:#666666;}
+.cGray768{color:#756F8B;}
+.cGreen1A7{color:#14A774;}
+.cOrange{color:#FF9F18;}
+.cRed{color:#ff5364;}
+/*背景颜色*/
+.bcGrayE6{background-color: #E6E6E6;}
+.bcWhite{background-color: #FFFFFF;}
+.bcGrayF2{background-color: #F2F2F2;}
+.bcGrayF0{background-color: #F0F0F0;}
+.bcYellow_1{background-color: #FFB218;}
+/*边框*/
+.bdTopCCC{border-top:1px solid #CCCCCC;}
+.bdBottomC9{border-bottom:1px solid #C9C9C9;}
