@@ -19,6 +19,7 @@ DB_HOST=mongodb://mongo/mevntest
 JSON_LIMT=1mb
 URLENCODED_LIMT=1mb
 JWT_SECRET_KEY=test
+ACGN_SESSION_SECRET=wikimoecard
 ```
 
 安装依赖

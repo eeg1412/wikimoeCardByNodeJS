@@ -1,4 +1,11 @@
 {
+  "_moduleAliases": {
+    "@root": ".",
+    "@api":"api/user",
+    "@mongoMODs":"mongodb/models",
+    "@mongoUtils":"mongodb/utils",
+    "@utils":"utils/utils.js"
+  },
   "name": "mern",
   "version": "0.0.0",
   "private": true,
@@ -14,8 +21,11 @@
     "express": "~4.16.1",
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
+    "module-alias": "^2.2.2",
     "mongoose": "^5.13.2",
     "morgan": "~1.9.1",
-    "socket.io": "^2.4.1"
+    "socket.io": "^2.4.1",
+    "svg-captcha": "^1.4.0",
+    "express-session": "^1.17.1"
   }
 }
