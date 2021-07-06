@@ -1,9 +1,9 @@
 export default function (api) {
   return {
-    register (data) {
+    register(data) {
       return api.post('/register', data)
     },
-    login (data) {
+    login(data) {
       return api.post('/login', data)
     },
   }
