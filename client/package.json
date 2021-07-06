@@ -14,7 +14,12 @@
     "socket.io-client": "^2.3.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "primeflex": "^2.0.0",
+    "primeicons": "^4.1.0",
+    "primevue": "^3.3.5",
+    "vue-i18n": "^9.1.4",
+    "moment": "^2.29.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
