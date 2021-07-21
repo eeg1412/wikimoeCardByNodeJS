@@ -22,7 +22,7 @@ app.use(
 app.use(cookieParser())
 app.use(
   session({
-    secret: process.env.ACGN_SESSION_SECRET || 'wikimoeCard',
+    secret: process.env.WIKIMOE_SESSION_SECRET || 'wikimoeCard',
     name: 'wikimoeCard',
     cookie: { maxAge: 60000 },
     resave: false,
