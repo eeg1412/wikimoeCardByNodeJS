@@ -9,7 +9,7 @@ exports.save = async function (parmas) {
 
 exports.findOne = async function (parmas) {
   // document查询
-  return await usersModel.findOne(parmas)
+  return await usersModel.findOne(parmas).populate('battleInfo', 'deminingInfo', 'guessCardInfo', 'itemInfo', 'daliyGetItemInfo', 'statistics', 'userCard')
 }
 
 exports.updateOne = async function (filters, parmas) {

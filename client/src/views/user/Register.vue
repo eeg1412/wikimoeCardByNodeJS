@@ -50,7 +50,11 @@
     </div>
     <div class="tc">
       <Button label="注册" class="register-btn" @click="goRegister" />
-      <Button label="返回" class="p-button-secondary register-btn" />
+      <Button
+        label="返回"
+        class="p-button-secondary register-btn"
+        @click="back"
+      />
     </div>
   </div>
 </template>
@@ -157,6 +161,12 @@ export default {
       })
     }
 
+    const back = () => {
+      router.replace({
+        name: 'Home',
+      })
+    }
+
     return {
       account,
       nickName,
@@ -166,6 +176,7 @@ export default {
       captchaSrc,
       reflushCaptcha,
       goRegister,
+      back,
     }
   },
 }
