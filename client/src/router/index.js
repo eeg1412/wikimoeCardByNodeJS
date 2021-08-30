@@ -21,6 +21,20 @@ const routes = [
       },
     ],
   },
+  {
+    path: "/game",
+    component: () =>
+      import(
+        /* webpackChunkName: "GameIndex" */ "../views/game/Index.vue"
+      ),
+    children: [
+      {
+        path: 'creatcard',
+        name: 'CreatCard',
+        component: () => import(/* webpackChunkName: "CreatCard" */ '../views/game/CreatCard.vue')
+      },
+    ],
+  },
   { path: "/:pathMatch(.*)*", redirect: "/" },
 
 ]
