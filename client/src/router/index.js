@@ -4,24 +4,25 @@ import Home from '../views/Home.vue'
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'Home',
     component: Home
   },
   {
-    path: '/register',
-    name: 'register',
-    component: () => import(/* webpackChunkName: "register" */ '../views/Register.vue')
+    path: "/user",
+    component: () =>
+      import(
+        /* webpackChunkName: "UserIndex" */ "../views/user/Index.vue"
+      ),
+    children: [
+      {
+        path: 'register',
+        name: 'Register',
+        component: () => import(/* webpackChunkName: "Register" */ '../views/user/Register.vue')
+      },
+    ],
   },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue')
-  },
-  {
-    path: '/chat',
-    name: 'chat',
-    component: () => import(/* webpackChunkName: "chat" */ '../views/Chat.vue')
-  }
+  { path: "/:pathMatch(.*)*", redirect: "/" },
+
 ]
 
 const router = createRouter({

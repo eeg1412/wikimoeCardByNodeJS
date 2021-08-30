@@ -1,10 +1,10 @@
 {
   "_moduleAliases": {
     "@root": ".",
-    "@api":"api/user",
-    "@mongoMODs":"mongodb/models",
-    "@mongoUtils":"mongodb/utils",
-    "@utils":"utils/utils.js"
+    "@api": "api/user",
+    "@mongoMODs": "mongodb/models",
+    "@mongoUtils": "mongodb/utils",
+    "@utils": "utils/utils.js"
   },
   "name": "mern",
   "version": "0.0.0",

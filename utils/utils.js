@@ -69,7 +69,7 @@ exports.emailCheck = function (email) {
 }
 //检查密码格式
 exports.passwordCheck = function (password) {
-  return /^[\w_-]{4,16}$/.test(password) //4-16位英数字下划线减号
+  return /^[\w_!@#$%^&*-=+]{4,16}$/.test(password) //4-16位英数字下划线减号
 }
 //检查昵称格式
 exports.nickNameCheck = function (nickName) {

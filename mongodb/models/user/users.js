@@ -1,5 +1,4 @@
 var mongoose = require('mongoose')
-require('mongoose-long')(mongoose)
 var Schema = mongoose.Schema
 // Schema
 var users = new Schema({
@@ -13,7 +12,7 @@ var users = new Schema({
     default: Date.now,
   },
   star: { type: Number, default: 0 },
-  level: { type: Number, default: 0 },
+  level: { type: Number, default: 1 },
   exp: { type: Number, default: 0 },
   token: { type: String, default: '' },
   ip: String,
