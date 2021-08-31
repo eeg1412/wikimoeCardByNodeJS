@@ -21,3 +21,6 @@ export default {
 }
 </script>
 <style lang="stylus"></style>
+<style>
+@import url('https://fonts.loli.net/css?family=Noto+Sans+SC&display=swap');
+</style>

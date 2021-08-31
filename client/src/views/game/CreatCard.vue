@@ -1,53 +1,14 @@
 <template lang="">
   <div class="common_body">
-    <div class="pb20">
-      <h2 class="tc mb20">选择作品出处</h2>
-      <div class="tc">
-        <AutoComplete
-          forceSelection
-          v-model="title"
-          :suggestions="titleList"
-          @complete="searchTitle($event)"
-          field="title"
-        />
-      </div>
-    </div>
-    <div class="pb20">
-      <h2 class="tc mb20">选择角色名</h2>
-      <div class="tc">
-        <AutoComplete
-          forceSelection
-          v-model="name"
-          :suggestions="nameList"
-          @complete="searchName($event)"
-          field="name"
-        />
-      </div>
-    </div>
-    <div>
-      <div class="p-grid">
-        <div class="p-col-12 p-lg-8">A</div>
-        <div class="p-col-12 p-lg-4">
-          <div class="p-fluid">
-            <div class="p-field">
-              <h5 class="mb5">出自作品：{{ cardTitle }}</h5>
-            </div>
-          </div>
-          <div class="p-fluid">
-            <div class="p-field">
-              <h5 class="mb5">名字：{{ cardName }}</h5>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <CreatCard />
   </div>
 </template>
 <script>
-import AutoComplete from 'primevue/autocomplete'
 import { ref, computed } from 'vue'
+import CreatCard from '@/components/CreatCard.vue'
+
 export default {
-  components: { AutoComplete },
+  components: { CreatCard },
   setup() {
     // 作品名
     const title = ref()
@@ -108,6 +69,9 @@ export default {
       }
       return ''
     })
+
+    // 卡牌种类
+    const cardType = ref('0')
     return {
       title,
       titleList,
@@ -117,6 +81,7 @@ export default {
       searchName,
       cardTitle,
       cardName,
+      cardType,
     }
   },
 }

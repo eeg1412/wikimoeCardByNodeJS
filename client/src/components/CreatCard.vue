@@ -1,0 +1,578 @@
+<template>
+  <div class="pb20">
+    <h2 class="tc mb20">选择作品出处</h2>
+    <div class="tc">
+      <AutoComplete
+        forceSelection
+        v-model="titleObj"
+        :suggestions="titleList"
+        @complete="searchTitle($event)"
+        @item-select="autoCompleteSelect"
+        field="title"
+      />
+    </div>
+  </div>
+  <div class="pb20">
+    <h2 class="tc mb20">选择角色名</h2>
+    <div class="tc">
+      <AutoComplete
+        forceSelection
+        v-model="nameObj"
+        :suggestions="nameList"
+        @complete="searchName($event)"
+        @item-select="autoCompleteSelect"
+        field="name"
+      />
+    </div>
+  </div>
+  <div>
+    <h2 class="tc mb20">属性设置</h2>
+    <div class="p-grid">
+      <div class="p-col-12 p-lg-6">
+        <div class="tc">
+          <div class="creat-card-canvas">
+            <Card
+              :title="cardShortTitle"
+              :star="star"
+              :name="cardShortName"
+              :cry="cry"
+              :key="cardKey"
+            />
+          </div>
+
+          <div class="tc pt10 creat-card-star-input">
+            <InputNumber
+              v-model.number="star"
+              showButtons
+              buttonLayout="horizontal"
+              :step="1"
+              incrementButtonIcon="pi pi-plus"
+              decrementButtonIcon="pi pi-minus"
+              :min="1"
+              :max="6"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-lg-6 creat-card-input-form-body">
+        <div class="p-fluid">
+          <div class="p-field">
+            <div class="p-grid p-ai-center">
+              <div class="p-col-fixed creat-card-input-form-label">
+                出自作品：
+              </div>
+              <div class="p-col">{{ cardTitle }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="p-fluid">
+          <div class="p-field">
+            <div class="p-grid p-ai-center">
+              <div class="p-col-fixed creat-card-input-form-label">
+                作品简称：
+              </div>
+              <div class="p-col">
+                <InputText
+                  type="text"
+                  v-model="cardShortTitleInput"
+                  :disabled="cardTitleId !== '-1'"
+                  @input="cardShortTitleInputChange"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-fluid">
+          <div class="p-field">
+            <div class="p-grid p-ai-center">
+              <div class="p-col-fixed creat-card-input-form-label">
+                作品别名：
+              </div>
+              <div class="p-col">
+                <Tag
+                  class="p-mr-2"
+                  value="Primary"
+                  v-for="(item, index) in cardTitleOtherName"
+                  :key="index"
+                  >{{ item
+                  }}<i
+                    v-if="newTitleList.indexOf(item) !== -1"
+                    class="pi pi-times pl5 creat-card-input-tag-close"
+                    @click="deleteNewTitleList(item)"
+                  ></i></Tag
+                ><InputText
+                  type="text"
+                  v-model="newTitleInpt"
+                  class="creat-card-input-tag-input"
+                  placeholder="输入别名"
+                  @keypress.enter="addNewTitle"
+                /><Button
+                  icon="pi pi-pencil"
+                  class="creat-card-input-tag-input-btn"
+                  @click="addNewTitle"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-fluid">
+          <div class="p-field">
+            <div class="p-grid p-ai-center">
+              <div class="p-col-fixed creat-card-input-form-label">
+                角色名字：
+              </div>
+              <div class="p-col">{{ cardName }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="p-fluid">
+          <div class="p-field">
+            <div class="p-grid p-ai-center">
+              <div class="p-col-fixed creat-card-input-form-label">
+                名字简称：
+              </div>
+              <div class="p-col">
+                <InputText
+                  type="text"
+                  v-model="cardShortNameInput"
+                  :disabled="cardNameId !== '-1'"
+                  @input="cardShortNameInputChange"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-fluid">
+          <div class="p-field">
+            <div class="p-grid p-ai-center">
+              <div class="p-col-fixed creat-card-input-form-label">
+                角色别名：
+              </div>
+              <div class="p-col">
+                <Tag
+                  class="p-mr-2"
+                  value="Primary"
+                  v-for="(item, index) in cardNameOtherName"
+                  :key="index"
+                  >{{ item
+                  }}<i
+                    v-if="newNameList.indexOf(item) !== -1"
+                    class="pi pi-times pl5 creat-card-input-tag-close"
+                    @click="deleteNewNameList(item)"
+                  ></i></Tag
+                ><InputText
+                  type="text"
+                  v-model="newNameInpt"
+                  class="creat-card-input-tag-input"
+                  placeholder="输入别名"
+                  @keypress.enter="addNewName"
+                /><Button
+                  icon="pi pi-pencil"
+                  class="creat-card-input-tag-input-btn"
+                  @click="addNewName"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-fluid">
+          <div class="p-field">
+            <div class="p-grid p-ai-center">
+              <div class="p-col-fixed creat-card-input-form-label">
+                水晶属性：
+              </div>
+              <div class="p-col">
+                <Dropdown
+                  v-model="cry"
+                  :options="cryList"
+                  optionLabel="label"
+                  optionValue="value"
+                  :filter="false"
+                  :showClear="false"
+                  @change="addKey"
+                >
+                  <template #option="slotProps">
+                    <div class="p-grid p-ai-center">
+                      <div class="p-col">
+                        <img
+                          :src="
+                            `/img/creatcard/cry/${slotProps.option.value}.png`
+                          "
+                          class="creat-card-input-drop-img"
+                        />
+                      </div>
+                      <div class="p-col">
+                        <div>{{ slotProps.option.label }}</div>
+                      </div>
+                    </div>
+                  </template>
+                </Dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pb20">
+      <h2 class="tc mb20">选择卡牌种类</h2>
+      <div class="tc">
+        <div class="dib mr10">
+          <RadioButton
+            id="1card"
+            name="cardType"
+            value="0"
+            v-model="cardType"
+          />
+          <label for="1card">单立绘卡</label>
+        </div>
+        <div class="dib">
+          <RadioButton
+            id="6card"
+            name="cardType"
+            value="1"
+            v-model="cardType"
+          />
+          <label for="6card">多立绘卡</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+import AutoComplete from 'primevue/autocomplete'
+import { ref, computed, watch } from 'vue'
+import RadioButton from 'primevue/radiobutton'
+import InputNumber from 'primevue/inputnumber'
+import InputText from 'primevue/inputtext'
+import Tag from 'primevue/tag'
+import Button from 'primevue/button'
+import Dropdown from 'primevue/dropdown'
+import Card from '@/components/Card.vue'
+import { useToast } from 'primevue/usetoast'
+
+export default {
+  components: {
+    AutoComplete,
+    RadioButton,
+    Card,
+    InputNumber,
+    InputText,
+    Tag,
+    Button,
+    Dropdown,
+  },
+  setup() {
+    const toast = useToast()
+    const star = ref(1)
+    watch(star, (val) => {
+      if (val >= 1 && val <= 6) {
+        cardKey.value++
+      }
+    })
+    const cardKey = ref(0)
+    // 作品名
+    const titleObj = ref()
+    const titleList = ref()
+    const searchTitle = (event) => {
+      titleList.value = [
+        {
+          title: '东方Project',
+          short: '东方',
+          otherName: ['车万', '东方别名'],
+          _id: '1',
+        },
+      ]
+      const creatTitleContent = {
+        title: `创建"${event.query}"`,
+        query: event.query,
+        short: event.query,
+        otherName: [],
+        _id: '-1',
+      }
+      titleList.value.push(creatTitleContent)
+    }
+    // 角色名
+    const nameObj = ref()
+    const nameList = ref()
+    const searchName = (event) => {
+      nameList.value = [
+        {
+          name: '蕾米莉亚·斯卡蕾特',
+          short: '蕾米莉亚',
+          otherName: ['蕾咪', '斯卡蕾特'],
+          _id: '1',
+        },
+      ]
+      const creatNameContent = {
+        name: `创建"${event.query}"`,
+        query: event.query,
+        short: event.query,
+        otherName: [],
+        _id: '-1',
+      }
+      nameList.value.push(creatNameContent)
+    }
+
+    const cardTitle = computed(() => {
+      const titleType = typeof titleObj.value
+      if (titleType === 'object' && titleObj.value) {
+        const id = titleObj.value._id
+        if (id === '-1') {
+          return titleObj.value.query
+        } else {
+          return titleObj.value.title
+        }
+      }
+      return ''
+    })
+    const cardTitleOtherName = computed(() => {
+      const titleType = typeof titleObj.value
+      if (titleType === 'object' && titleObj.value) {
+        return titleObj.value.otherName
+      }
+      return []
+    })
+    const cardTitleId = computed(() => {
+      const titleType = typeof titleObj.value
+      if (titleType === 'object' && titleObj.value) {
+        const id = titleObj.value._id
+        return id
+      }
+      return ''
+    })
+    const cardShortTitle = computed(() => {
+      const titleType = typeof titleObj.value
+      if (titleType === 'object' && titleObj.value) {
+        return titleObj.value.short
+      }
+      return ''
+    })
+    const cardName = computed(() => {
+      const nameType = typeof nameObj.value
+      if (nameType === 'object' && nameObj.value) {
+        const id = nameObj.value._id
+        if (id === '-1') {
+          return nameObj.value.query
+        } else {
+          return nameObj.value.name
+        }
+      }
+      return ''
+    })
+    const cardNameOtherName = computed(() => {
+      const nameType = typeof nameObj.value
+      if (nameType === 'object' && nameObj.value) {
+        return nameObj.value.otherName
+      }
+      return []
+    })
+    const cardNameId = computed(() => {
+      const nameType = typeof nameObj.value
+      if (nameType === 'object' && nameObj.value) {
+        const id = nameObj.value._id
+        return id
+      }
+      return ''
+    })
+    const cardShortName = computed(() => {
+      const nameType = typeof nameObj.value
+      if (nameType === 'object' && nameObj.value) {
+        return nameObj.value.short
+      }
+      return ''
+    })
+
+    const autoCompleteSelect = () => {
+      cardShortTitleInput.value = cardShortTitle.value
+      cardShortNameInput.value = cardShortName.value
+      newTitleList.value = []
+      cardKey.value++
+    }
+
+    // 简称
+    const cardShortTitleInput = ref('')
+    const cardShortNameInput = ref('')
+    let cardShortTitleInputChangeTimer = null
+    const cardShortTitleInputChange = () => {
+      clearTimeout(cardShortTitleInputChangeTimer)
+      cardShortTitleInputChangeTimer = setTimeout(() => {
+        titleObj.value.short = cardShortTitleInput.value
+        cardKey.value++
+      }, 300)
+    }
+    let cardShortNameInputChangeTimer = null
+    const cardShortNameInputChange = () => {
+      clearTimeout(cardShortNameInputChangeTimer)
+      cardShortNameInputChangeTimer = setTimeout(() => {
+        nameObj.value.short = cardShortNameInput.value
+        cardKey.value++
+      }, 300)
+    }
+
+    // 标签
+    const newTitleInpt = ref('')
+    const newTitleList = ref([])
+    const addNewTitle = () => {
+      if (newTitleInpt.value) {
+        if (titleObj.value.otherName.indexOf(newTitleInpt.value) !== -1) {
+          toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: '别名不能重复',
+            life: 3000,
+          })
+          return false
+        }
+        newTitleList.value.push(newTitleInpt.value)
+        titleObj.value.otherName.push(newTitleInpt.value)
+        newTitleInpt.value = ''
+      }
+    }
+    const deleteNewTitleList = (item) => {
+      newTitleList.value = newTitleList.value.filter((el) => {
+        return el !== item
+      })
+      titleObj.value.otherName = titleObj.value.otherName.filter((el) => {
+        return el !== item
+      })
+    }
+
+    const newNameInpt = ref('')
+    const newNameList = ref([])
+    const addNewName = () => {
+      if (newNameInpt.value) {
+        if (nameObj.value.otherName.indexOf(newNameInpt.value) !== -1) {
+          toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail: '别名不能重复',
+            life: 3000,
+          })
+          return false
+        }
+        newNameList.value.push(newNameInpt.value)
+        nameObj.value.otherName.push(newNameInpt.value)
+        newNameInpt.value = ''
+      }
+    }
+    const deleteNewNameList = (item) => {
+      newNameList.value = newNameList.value.filter((el) => {
+        return el !== item
+      })
+      nameObj.value.otherName = nameObj.value.otherName.filter((el) => {
+        return el !== item
+      })
+    }
+    // 水晶属性
+    const cry = ref('1')
+    const cryList = [
+      {
+        label: '火红',
+        value: '1',
+      },
+      {
+        label: '蓝水',
+        value: '2',
+      },
+      {
+        label: '绿叶',
+        value: '3',
+      },
+      {
+        label: '光明',
+        value: '4',
+      },
+      {
+        label: '暗黑',
+        value: '5',
+      },
+    ]
+
+    const addKey = () => {
+      console.log(cry)
+      cardKey.value++
+    }
+
+    // 卡牌种类
+    const cardType = ref('0')
+    return {
+      titleObj,
+      titleList,
+      searchTitle,
+      nameObj,
+      nameList,
+      searchName,
+      cardTitle,
+      cardName,
+      cardType,
+      cardKey,
+      autoCompleteSelect,
+      cardShortTitle,
+      cardShortName,
+      star,
+      cardTitleId,
+      cardNameId,
+      cardShortTitleInput,
+      cardShortNameInput,
+      cardShortTitleInputChange,
+      cardShortNameInputChange,
+      cardTitleOtherName,
+      cardNameOtherName,
+      newTitleInpt,
+      addNewTitle,
+      newTitleList,
+      deleteNewTitleList,
+      newNameInpt,
+      newNameList,
+      addNewName,
+      deleteNewNameList,
+      cry,
+      cryList,
+      addKey,
+    }
+  },
+}
+</script>
+<style scoped>
+.creat-card-canvas {
+  width: 100%;
+  max-width: 396px;
+  height: auto;
+  margin: 0 auto;
+}
+.creat-card-input-form-body {
+  font-size: 16px;
+}
+.creat-card-input-form-label {
+  width: 100px;
+}
+.creat-card-input-form-body .p-grid {
+  min-height: 49px;
+}
+.creat-card-input-tag-input {
+  width: 80px;
+  height: 23px;
+  padding: 0 26px 0 2px;
+  font-size: 12px;
+  line-height: 23px;
+}
+.creat-card-input-tag-input-btn {
+  width: 23px;
+  height: 23px;
+  padding: 0 2px;
+  margin-left: -24px;
+}
+.creat-card-input-tag-close {
+  cursor: pointer;
+  font-size: 12px;
+}
+.creat-card-input-drop-img {
+  width: 25px;
+  height: 25px;
+}
+</style>
+<style>
+.creat-card-star-input .p-inputtext {
+  text-align: center;
+}
+</style>
