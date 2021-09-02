@@ -332,9 +332,9 @@
           v-if="cardType === '0'"
         />
       </div>
-      <div class="clearfix">
+      <div class="tc">
         <div
-          class="dib card-creat-preview-item fl"
+          class="dib card-creat-preview-item"
           v-for="(item, index) in CGList"
           :key="index"
         >
@@ -770,6 +770,7 @@ export default {
   box-sizing: border-box;
   padding: 15px;
   max-width: 396px;
+  min-width: 200px;
 }
 .creat-card-canvas {
   width: 100%;
@@ -814,6 +815,11 @@ export default {
 @media screen and (max-width: 991px) {
   .creat-card-status-body {
     flex-direction: column-reverse;
+  }
+}
+@media screen and (max-width: 642px) {
+  .card-creat-preview-item {
+    width: 100%;
   }
 }
 </style>
