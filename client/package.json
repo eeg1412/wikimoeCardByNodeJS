@@ -19,6 +19,7 @@
     "primeicons": "^4.1.0",
     "primevue": "^3.3.5",
     "vue-i18n": "^9.1.4",
+    "pixi.js": "^5.0.3",
     "moment": "^2.29.1"
   },
   "devDependencies": {

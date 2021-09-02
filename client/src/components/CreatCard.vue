@@ -224,7 +224,7 @@
           <div class="p-field">
             <div class="p-grid p-ai-center">
               <div class="p-col-fixed creat-card-input-form-label">
-                卡牌定位：
+                卡牌类型：
               </div>
               <div class="p-col">
                 <Dropdown
@@ -317,6 +317,54 @@
         </div>
       </div>
     </div>
+    <div class="pb20">
+      <h2 class="tc mb20">编辑立绘</h2>
+      <div class="tc">
+        <FileUpload
+          :customUpload="true"
+          :multiple="false"
+          accept="image/*"
+          mode="basic"
+          :auto="true"
+          ref="cardSingleUploder"
+          chooseLabel="选择文件"
+          @uploader="(event) => uploadCG(event, -1)"
+          v-if="cardType === '0'"
+        />
+      </div>
+      <div class="clearfix">
+        <div
+          class="dib card-creat-preview-item fl"
+          v-for="(item, index) in CGList"
+          :key="index"
+        >
+          <Card
+            :title="cardShortTitle"
+            :star="index + 1"
+            :name="cardShortName"
+            :cry="cry"
+            :leftType="leftType"
+            :rightType="rightType"
+            :CG="item"
+            :key="cardKey"
+          />
+          <div class="mt10 mb10 tc">
+            <FileUpload
+              :customUpload="true"
+              :multiple="false"
+              accept="image/*"
+              mode="basic"
+              :auto="true"
+              chooseLabel="选择文件"
+              :ref="cardUploaderRef"
+              @uploader="(event) => uploadCG(event, index)"
+              v-show="cardType === '1'"
+            />
+          </div>
+        </div>
+      </div>
+      <CardCGEditor ref="CardCGEditorCOM" />
+    </div>
   </div>
 </template>
 <script>
@@ -329,6 +377,8 @@ import Tag from 'primevue/tag'
 import Button from 'primevue/button'
 import Dropdown from 'primevue/dropdown'
 import Card from '@/components/Card.vue'
+import FileUpload from 'primevue/fileupload'
+import CardCGEditor from '@/components/CardCGEditor.vue'
 import { useToast } from 'primevue/usetoast'
 
 export default {
@@ -341,6 +391,8 @@ export default {
     Tag,
     Button,
     Dropdown,
+    FileUpload,
+    CardCGEditor,
   },
   setup() {
     const toast = useToast()
@@ -364,7 +416,7 @@ export default {
         },
       ]
       const creatTitleContent = {
-        title: `创建"${event.query}"`,
+        title: `创建标题"${event.query}"`,
         query: event.query,
         short: event.query,
         otherName: [],
@@ -385,7 +437,7 @@ export default {
         },
       ]
       const creatNameContent = {
-        name: `创建"${event.query}"`,
+        name: `创建角色"${event.query}"`,
         query: event.query,
         short: event.query,
         otherName: [],
@@ -608,6 +660,23 @@ export default {
 
     // 卡牌种类
     const cardType = ref('0')
+    // 编辑立绘
+    const cardSingleUploder = ref(null)
+    const cardUploader = ref([])
+    const cardUploaderRef = (el) => {
+      cardUploader.value.push(el)
+    }
+    const CGList = ref(['', '', '', '', '', ''])
+    const uploadCG = (event, index) => {
+      console.log(event, index)
+      CardCGEditorCOM.value.openDialog()
+      if (index >= 0) {
+        cardUploader.value[index].clear()
+      } else {
+        cardSingleUploder.value.clear()
+      }
+    }
+    const CardCGEditorCOM = ref(null)
     return {
       titleObj,
       titleList,
@@ -646,11 +715,22 @@ export default {
       leftTypeList,
       rightType,
       rightTypeList,
+      CGList,
+      uploadCG,
+      CardCGEditorCOM,
+      cardUploaderRef,
+      cardSingleUploder,
     }
   },
 }
 </script>
 <style scoped>
+.card-creat-preview-item {
+  width: 33.3333%;
+  box-sizing: border-box;
+  padding: 15px;
+  max-width: 396px;
+}
 .creat-card-canvas {
   width: 100%;
   max-width: 396px;
