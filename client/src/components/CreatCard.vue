@@ -363,7 +363,17 @@
           </div>
         </div>
       </div>
-      <CardCGEditor ref="CardCGEditorCOM" />
+      <CardCGEditor
+        :imageObj="imageObj"
+        :imageUrl="imageUrl"
+        :titleS="cardShortTitle"
+        :star="selStar"
+        :nameS="cardShortName"
+        :cry="cry"
+        :leftType="leftType"
+        :rightType="rightType"
+        ref="CardCGEditorCOM"
+      />
     </div>
   </div>
 </template>
@@ -667,9 +677,36 @@ export default {
       cardUploader.value.push(el)
     }
     const CGList = ref(['', '', '', '', '', ''])
+    const imageUrl = ref(null)
+    const imageObj = ref(null)
+    const selStar = ref(1)
+
     const uploadCG = (event, index) => {
       console.log(event, index)
-      CardCGEditorCOM.value.openDialog()
+      const file = event.files[0]
+      imageUrl.value = URL.createObjectURL(file)
+      imageObj.value = new Image()
+      imageObj.value.src = imageUrl.value
+      if (index >= 0) {
+        selStar.value = index + 1
+      } else {
+        selStar.value = 1
+      }
+      imageObj.value.onload = () => {
+        const w = imageObj.value.width
+        const h = imageObj.value.height
+        if (w < 396 || h < 556) {
+          toast.add({
+            severity: 'error',
+            summary: '错误',
+            detail:
+              '选择的立绘尺寸过小，请重新选择！立绘宽度不能小于396px，高度不能小于556px！',
+            life: 3000,
+          })
+        } else {
+          CardCGEditorCOM.value.openDialog()
+        }
+      }
       if (index >= 0) {
         cardUploader.value[index].clear()
       } else {
@@ -720,6 +757,9 @@ export default {
       CardCGEditorCOM,
       cardUploaderRef,
       cardSingleUploder,
+      imageObj,
+      imageUrl,
+      selStar,
     }
   },
 }

@@ -19,17 +19,62 @@ import { ref } from '@vue/reactivity'
 import { nextTick, onBeforeUnmount } from '@vue/runtime-core'
 export default {
   components: { Dialog },
-  setup() {
+  props: {
+    imageObj: {
+      required: true,
+    },
+    imageUrl: {
+      required: true,
+    },
+    titleS: {
+      type: String,
+      default: '',
+    },
+    nameS: {
+      type: String,
+      default: '',
+    },
+    star: {
+      default: 1,
+    },
+    cry: {
+      type: String,
+      required: true,
+    },
+    leftType: {
+      type: String,
+      required: true,
+    },
+    rightType: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
     const display = ref(false)
     const wmCreatCard = ref(null)
     const openDialog = () => {
+      cardSet['titleS'] = props.titleS
+      cardSet['nameS'] = props.nameS
+      cardSet['star'] = props.star
+      cardSet['cry'] = props.cry
+      cardSet['leftType'] = props.leftType
+      cardSet['rightType'] = props.rightType
+
       display.value = true
+      destroyApp()
       nextTick(() => {
         drawCard()
       })
     }
+    const destroyApp = () => {
+      if (app) {
+        app.destroy(true)
+        app = null
+      }
+    }
     const onHide = () => {
-      app.destroy(true)
+      //   app.destroy(true)
     }
 
     let app = null
@@ -40,7 +85,7 @@ export default {
       nameS: '',
       leftType: '1',
       rightType: '1',
-      star: '3',
+      star: '1',
       cry: '1',
       zoom: 100,
       rotation: 0,
@@ -54,6 +99,28 @@ export default {
       crySprite: null,
       leftTypeSprite: null,
       rightTypeSprite: null,
+    }
+
+    let minZoom = 0
+    const handleAvatarSuccess = () => {
+      const imageUrl = props.imageUrl
+      const imageObj = props.imageObj
+
+      //TEST IMAGE SIZE
+      // 记得设置一个读取图片的loading flag
+      const w = imageObj.width
+      const h = imageObj.height
+      const minWZoom = Math.ceil((396 / w) * 100)
+      const minHZoom = Math.ceil((556 / h) * 100)
+      minZoom = Math.max(minWZoom, minHZoom)
+      sprite.CGSprite.texture = PIXI.Texture.from(imageUrl, {
+        mipmap: cardSet.mipmap ? PIXI.MIPMAP_MODES.ON : PIXI.MIPMAP_MODES.OFF,
+      })
+      sprite.CGSprite.position.set(0, 0)
+      cardSet.zoom = minZoom
+      sprite.CGSprite.scale = new PIXI.Point(minZoom / 100, minZoom / 100)
+      cardSet.rotation = 0
+      sprite.CGSprite.rotation = 0
     }
 
     const drawCard = () => {
@@ -115,6 +182,7 @@ export default {
         .on('pointerup', onDragEnd)
         .on('pointerupoutside', onDragEnd)
         .on('pointermove', onDragMove)
+      handleAvatarSuccess()
       function onDragStart(event) {
         // store a reference to the data
         // the reason for this is because of multitouch
@@ -195,7 +263,7 @@ export default {
     }
 
     onBeforeUnmount(() => {
-      app.destroy(true)
+      destroyApp()
     })
 
     return { display, wmCreatCard, openDialog, onHide }
