@@ -16,12 +16,19 @@ export default {
       default: '',
     },
     star: {
-      type: Number,
       default: 1,
     },
     cry: {
       type: String,
-      default: '1',
+      required: true,
+    },
+    leftType: {
+      type: String,
+      required: true,
+    },
+    rightType: {
+      type: String,
+      required: true,
     },
   },
   setup(props) {
@@ -29,6 +36,8 @@ export default {
     const img = {
       star: null,
       cry: null,
+      leftType: null,
+      rightType: null,
     }
     const creatImg = (url) => {
       const img = new Image()
@@ -51,7 +60,16 @@ export default {
 
       img.cry = creatImg(`/img/creatcard/cry/${props.cry}.png`)
       const cryPromise = readImg(img.cry)
-      Promise.all([starPromise, cryPromise])
+
+      img.leftType = creatImg(`/img/creatcard/leftType/${props.leftType}.png`)
+      const leftTypePromise = readImg(img.leftType)
+
+      img.rightType = creatImg(
+        `/img/creatcard/rightType/${props.rightType}.png`
+      )
+      const rightTypePromise = readImg(img.rightType)
+
+      Promise.all([starPromise, cryPromise, leftTypePromise, rightTypePromise])
         .then(() => {
           if (cardCanvas.value) {
             creatCard()
@@ -97,6 +115,9 @@ export default {
       const context = canvas.getContext('2d')
       context.drawImage(img.star, 0, 0)
       context.drawImage(img.cry, 9, 10)
+      context.drawImage(img.leftType, 16, 17)
+      context.drawImage(img.rightType, 342, 12)
+
       await loadTextFont(fontList.title.fontSize, props.title)
       const titleRes = writeText(
         props.title,

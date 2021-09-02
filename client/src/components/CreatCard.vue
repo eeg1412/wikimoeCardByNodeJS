@@ -27,7 +27,7 @@
   </div>
   <div>
     <h2 class="tc mb20">属性设置</h2>
-    <div class="p-grid">
+    <div class="p-grid creat-card-status-body">
       <div class="p-col-12 p-lg-6">
         <div class="tc">
           <div class="creat-card-canvas">
@@ -36,21 +36,30 @@
               :star="star"
               :name="cardShortName"
               :cry="cry"
+              :leftType="leftType"
+              :rightType="rightType"
               :key="cardKey"
             />
           </div>
 
-          <div class="tc pt10 creat-card-star-input">
-            <InputNumber
-              v-model.number="star"
-              showButtons
-              buttonLayout="horizontal"
-              :step="1"
-              incrementButtonIcon="pi pi-plus"
-              decrementButtonIcon="pi pi-minus"
-              :min="1"
-              :max="6"
-            />
+          <div class="tc pt10 creat-card-star-input auto-number-input">
+            <div class="p-grid p-ai-center">
+              <div class="p-col-fixed creat-card-input-form-label">
+                星级调整：
+              </div>
+              <div class="p-col">
+                <InputNumber
+                  v-model.number="star"
+                  showButtons
+                  buttonLayout="horizontal"
+                  :step="1"
+                  incrementButtonIcon="pi pi-plus"
+                  decrementButtonIcon="pi pi-minus"
+                  :min="1"
+                  :max="6"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -69,7 +78,7 @@
           <div class="p-field">
             <div class="p-grid p-ai-center">
               <div class="p-col-fixed creat-card-input-form-label">
-                作品简称：
+                显示作品：
               </div>
               <div class="p-col">
                 <InputText
@@ -129,7 +138,7 @@
           <div class="p-field">
             <div class="p-grid p-ai-center">
               <div class="p-col-fixed creat-card-input-form-label">
-                名字简称：
+                显示名字：
               </div>
               <div class="p-col">
                 <InputText
@@ -197,6 +206,78 @@
                         <img
                           :src="
                             `/img/creatcard/cry/${slotProps.option.value}.png`
+                          "
+                          class="creat-card-input-drop-img"
+                        />
+                      </div>
+                      <div class="p-col">
+                        <div>{{ slotProps.option.label }}</div>
+                      </div>
+                    </div>
+                  </template>
+                </Dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-fluid">
+          <div class="p-field">
+            <div class="p-grid p-ai-center">
+              <div class="p-col-fixed creat-card-input-form-label">
+                卡牌定位：
+              </div>
+              <div class="p-col">
+                <Dropdown
+                  v-model="leftType"
+                  :options="leftTypeList"
+                  optionLabel="label"
+                  optionValue="value"
+                  :filter="false"
+                  :showClear="false"
+                  @change="addKey"
+                >
+                  <template #option="slotProps">
+                    <div class="p-grid p-ai-center">
+                      <div class="p-col">
+                        <img
+                          :src="
+                            `/img/creatcard/leftType/${slotProps.option.value}.png`
+                          "
+                          class="creat-card-input-drop-img"
+                        />
+                      </div>
+                      <div class="p-col">
+                        <div>{{ slotProps.option.label }}</div>
+                      </div>
+                    </div>
+                  </template>
+                </Dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-fluid">
+          <div class="p-field">
+            <div class="p-grid p-ai-center">
+              <div class="p-col-fixed creat-card-input-form-label">
+                终极技能：
+              </div>
+              <div class="p-col">
+                <Dropdown
+                  v-model="rightType"
+                  :options="rightTypeList"
+                  optionLabel="label"
+                  optionValue="value"
+                  :filter="false"
+                  :showClear="false"
+                  @change="addKey"
+                >
+                  <template #option="slotProps">
+                    <div class="p-grid p-ai-center">
+                      <div class="p-col">
+                        <img
+                          :src="
+                            `/img/creatcard/rightType/${slotProps.option.value}.png`
                           "
                           class="creat-card-input-drop-img"
                         />
@@ -488,8 +569,40 @@ export default {
       },
     ]
 
+    // 角色定位
+    const leftType = ref('1')
+    const leftTypeList = [
+      {
+        label: '输出',
+        value: '1',
+      },
+      {
+        label: '防御',
+        value: '2',
+      },
+      {
+        label: '敏捷',
+        value: '3',
+      },
+    ]
+    // 终极技能
+    const rightType = ref('1')
+    const rightTypeList = [
+      {
+        label: '攻',
+        value: '1',
+      },
+      {
+        label: '硕',
+        value: '2',
+      },
+      {
+        label: '支',
+        value: '3',
+      },
+    ]
+
     const addKey = () => {
-      console.log(cry)
       cardKey.value++
     }
 
@@ -529,6 +642,10 @@ export default {
       cry,
       cryList,
       addKey,
+      leftType,
+      leftTypeList,
+      rightType,
+      rightTypeList,
     }
   },
 }
@@ -569,6 +686,15 @@ export default {
 .creat-card-input-drop-img {
   width: 25px;
   height: 25px;
+}
+.creat-card-star-input {
+  width: 230px;
+  margin: 0 auto;
+}
+@media screen and (max-width: 991px) {
+  .creat-card-status-body {
+    flex-direction: column-reverse;
+  }
 }
 </style>
 <style>

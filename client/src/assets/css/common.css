@@ -2480,3 +2480,10 @@ img.wm_demining_img {
 .powerdby a {
   color: inherit;
 }
+
+.auto-number-input .p-inputnumber {
+  width: 100%;
+}
+.auto-number-input .p-inputtext {
+  width: 1%;
+}
