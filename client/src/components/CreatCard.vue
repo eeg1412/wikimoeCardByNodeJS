@@ -372,6 +372,7 @@
         :cry="cry"
         :leftType="leftType"
         :rightType="rightType"
+        @image="onGetImage"
         ref="CardCGEditorCOM"
       />
     </div>
@@ -714,6 +715,18 @@ export default {
       }
     }
     const CardCGEditorCOM = ref(null)
+
+    const onGetImage = (uploadCardUrl, star) => {
+      console.log(uploadCardUrl, star)
+      if (cardType.value === '0') {
+        for (let i = 0; i < CGList.value.length; i++) {
+          CGList.value[i] = uploadCardUrl
+        }
+      } else {
+        CGList.value[star - 1] = uploadCardUrl
+      }
+      addKey()
+    }
     return {
       titleObj,
       titleList,
@@ -760,6 +773,7 @@ export default {
       imageObj,
       imageUrl,
       selStar,
+      onGetImage,
     }
   },
 }

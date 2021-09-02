@@ -1,6 +1,7 @@
 <template>
   <div class="card-canvas-body">
     <canvas ref="cardCanvas" class="card-canvas"></canvas>
+    <img :src="imageUrl" v-if="imageUrl" class="card-image" />
   </div>
 </template>
 <script>
@@ -30,6 +31,10 @@ export default {
       type: String,
       required: true,
     },
+    CG: {
+      type: String,
+      default: '',
+    },
   },
   setup(props) {
     const cardCanvas = ref(null)
@@ -38,6 +43,7 @@ export default {
       cry: null,
       leftType: null,
       rightType: null,
+      CG: null,
     }
     const creatImg = (url) => {
       const img = new Image()
@@ -69,7 +75,23 @@ export default {
       )
       const rightTypePromise = readImg(img.rightType)
 
-      Promise.all([starPromise, cryPromise, leftTypePromise, rightTypePromise])
+      let CGPromise = null
+      if (props.CG) {
+        img.CG = creatImg(props.CG)
+        CGPromise = readImg(img.CG)
+      }
+
+      const promiseArr = [
+        starPromise,
+        cryPromise,
+        leftTypePromise,
+        rightTypePromise,
+      ]
+      if (CGPromise) {
+        promiseArr.push(CGPromise)
+      }
+
+      Promise.all(promiseArr)
         .then(() => {
           if (cardCanvas.value) {
             creatCard()
@@ -108,11 +130,17 @@ export default {
       context.fillText(text, x, y)
       return res
     }
+
+    const imageUrl = ref('')
     const creatCard = async () => {
       const canvas = cardCanvas.value
       canvas.width = 396
       canvas.height = 556
       const context = canvas.getContext('2d')
+
+      if (img.CG) {
+        context.drawImage(img.CG, 0, 0)
+      }
       context.drawImage(img.star, 0, 0)
       context.drawImage(img.cry, 9, 10)
       context.drawImage(img.leftType, 16, 17)
@@ -141,11 +169,12 @@ export default {
         context
       )
       console.log(titleRes, nameRes)
+      imageUrl.value = canvas.toDataURL()
     }
     onMounted(() => {
       init()
     })
-    return { cardCanvas }
+    return { cardCanvas, imageUrl }
   },
 }
 </script>
@@ -157,6 +186,17 @@ export default {
   z-index: 1;
 }
 .card-canvas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: none;
+}
+.card-image {
   position: absolute;
   left: 0;
   right: 0;
