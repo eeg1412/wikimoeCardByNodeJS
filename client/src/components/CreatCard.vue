@@ -1,300 +1,308 @@
 <template>
-  <div class="pb20">
-    <h2 class="tc mb20">选择作品出处</h2>
-    <div class="tc">
-      <AutoComplete
-        forceSelection
-        v-model="titleObj"
-        :suggestions="titleList"
-        @complete="searchTitle($event)"
-        @item-select="autoCompleteSelect"
-        field="title"
-      />
-    </div>
-  </div>
-  <div class="pb20">
-    <h2 class="tc mb20">选择角色名</h2>
-    <div class="tc">
-      <AutoComplete
-        forceSelection
-        v-model="nameObj"
-        :suggestions="nameList"
-        @complete="searchName($event)"
-        @item-select="autoCompleteSelect"
-        field="name"
-      />
-    </div>
-  </div>
   <div>
-    <h2 class="tc mb20">属性设置</h2>
-    <div class="p-grid creat-card-status-body">
-      <div class="p-col-12 p-lg-6">
-        <div class="tc">
-          <div class="creat-card-canvas">
-            <Card
-              :title="cardShortTitle"
-              :star="star"
-              :name="cardShortName"
-              :cry="cry"
-              :leftType="leftType"
-              :rightType="rightType"
-              :key="cardKey"
-            />
-          </div>
-
-          <div class="tc pt10 creat-card-star-input auto-number-input">
-            <div class="p-grid p-ai-center">
-              <div class="p-col-fixed creat-card-input-form-label">
-                星级调整：
-              </div>
-              <div class="p-col">
-                <InputNumber
-                  v-model.number="star"
-                  showButtons
-                  buttonLayout="horizontal"
-                  :step="1"
-                  incrementButtonIcon="pi pi-plus"
-                  decrementButtonIcon="pi pi-minus"
-                  :min="1"
-                  :max="6"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
+    <div class="pb20" v-show="step === 1">
+      <h2 class="tc mb20">选择作品出处</h2>
+      <div class="tc">
+        <AutoComplete
+          forceSelection
+          v-model="titleObj"
+          :suggestions="titleList"
+          @complete="searchTitle($event)"
+          @item-select="autoCompleteSelect"
+          placeholder="输入关键词"
+          field="title"
+        />
       </div>
-      <div class="p-col-12 p-lg-6 creat-card-input-form-body">
-        <div class="p-fluid">
-          <div class="p-field">
-            <div class="p-grid p-ai-center">
-              <div class="p-col-fixed creat-card-input-form-label">
-                出自作品：
-              </div>
-              <div class="p-col">{{ cardTitle }}</div>
+    </div>
+    <div class="pb20" v-show="step === 2">
+      <h2 class="tc mb20">选择角色名</h2>
+      <div class="tc">
+        <AutoComplete
+          forceSelection
+          v-model="nameObj"
+          :suggestions="nameList"
+          @complete="searchName($event)"
+          @item-select="autoCompleteSelect"
+          placeholder="输入关键词"
+          field="name"
+        />
+      </div>
+    </div>
+    <div class="mb20" v-show="step === 3">
+      <h2 class="tc mb20">属性设置</h2>
+      <div class="p-grid creat-card-status-body">
+        <div class="p-col-12 p-lg-6">
+          <div class="tc">
+            <div class="creat-card-canvas">
+              <Card
+                :title="cardShortTitle"
+                :star="star"
+                :name="cardShortName"
+                :cry="cry"
+                :leftType="leftType"
+                :rightType="rightType"
+                @title-change="onTitleChange"
+                @name-change="onNameChange"
+                :key="cardKey"
+              />
             </div>
-          </div>
-        </div>
-        <div class="p-fluid">
-          <div class="p-field">
-            <div class="p-grid p-ai-center">
-              <div class="p-col-fixed creat-card-input-form-label">
-                显示作品：
-              </div>
-              <div class="p-col">
-                <InputText
-                  type="text"
-                  v-model="cardShortTitleInput"
-                  :disabled="cardTitleId !== '-1'"
-                  @input="cardShortTitleInputChange"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="p-fluid">
-          <div class="p-field">
-            <div class="p-grid p-ai-center">
-              <div class="p-col-fixed creat-card-input-form-label">
-                作品别名：
-              </div>
-              <div class="p-col">
-                <Tag
-                  class="p-mr-2"
-                  value="Primary"
-                  v-for="(item, index) in cardTitleOtherName"
-                  :key="index"
-                  >{{ item
-                  }}<i
-                    v-if="newTitleList.indexOf(item) !== -1"
-                    class="pi pi-times pl5 creat-card-input-tag-close"
-                    @click="deleteNewTitleList(item)"
-                  ></i></Tag
-                ><InputText
-                  type="text"
-                  v-model="newTitleInpt"
-                  class="creat-card-input-tag-input"
-                  placeholder="输入别名"
-                  @keypress.enter="addNewTitle"
-                /><Button
-                  icon="pi pi-pencil"
-                  class="creat-card-input-tag-input-btn"
-                  @click="addNewTitle"
-                />
+
+            <div class="tc pt10 creat-card-star-input auto-number-input">
+              <div class="p-grid p-ai-center">
+                <div class="p-col-fixed creat-card-input-form-label">
+                  星级调整：
+                </div>
+                <div class="p-col">
+                  <InputNumber
+                    v-model.number="star"
+                    showButtons
+                    buttonLayout="horizontal"
+                    :step="1"
+                    incrementButtonIcon="pi pi-plus"
+                    decrementButtonIcon="pi pi-minus"
+                    :min="1"
+                    :max="6"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="p-fluid">
-          <div class="p-field">
-            <div class="p-grid p-ai-center">
-              <div class="p-col-fixed creat-card-input-form-label">
-                角色名字：
-              </div>
-              <div class="p-col">{{ cardName }}</div>
-            </div>
-          </div>
-        </div>
-        <div class="p-fluid">
-          <div class="p-field">
-            <div class="p-grid p-ai-center">
-              <div class="p-col-fixed creat-card-input-form-label">
-                显示名字：
-              </div>
-              <div class="p-col">
-                <InputText
-                  type="text"
-                  v-model="cardShortNameInput"
-                  :disabled="cardNameId !== '-1'"
-                  @input="cardShortNameInputChange"
-                />
+        <div class="p-col-12 p-lg-6 creat-card-input-form-body">
+          <div class="p-fluid">
+            <div class="p-field">
+              <div class="p-grid p-ai-center">
+                <div class="p-col-fixed creat-card-input-form-label">
+                  出自作品：
+                </div>
+                <div class="p-col">{{ cardTitle }}</div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="p-fluid">
-          <div class="p-field">
-            <div class="p-grid p-ai-center">
-              <div class="p-col-fixed creat-card-input-form-label">
-                角色别名：
-              </div>
-              <div class="p-col">
-                <Tag
-                  class="p-mr-2"
-                  value="Primary"
-                  v-for="(item, index) in cardNameOtherName"
-                  :key="index"
-                  >{{ item
-                  }}<i
-                    v-if="newNameList.indexOf(item) !== -1"
-                    class="pi pi-times pl5 creat-card-input-tag-close"
-                    @click="deleteNewNameList(item)"
-                  ></i></Tag
-                ><InputText
-                  type="text"
-                  v-model="newNameInpt"
-                  class="creat-card-input-tag-input"
-                  placeholder="输入别名"
-                  @keypress.enter="addNewName"
-                /><Button
-                  icon="pi pi-pencil"
-                  class="creat-card-input-tag-input-btn"
-                  @click="addNewName"
-                />
+          <div class="p-fluid">
+            <div class="p-field">
+              <div class="p-grid p-ai-center">
+                <div class="p-col-fixed creat-card-input-form-label">
+                  显示作品：
+                </div>
+                <div class="p-col">
+                  <InputText
+                    type="text"
+                    v-model="cardShortTitleInput"
+                    :disabled="cardTitleId !== '-1'"
+                    placeholder="会显示在卡牌中"
+                    @input="cardShortTitleInputChange"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="p-fluid">
-          <div class="p-field">
-            <div class="p-grid p-ai-center">
-              <div class="p-col-fixed creat-card-input-form-label">
-                水晶属性：
+          <div class="p-fluid">
+            <div class="p-field">
+              <div class="p-grid p-ai-center">
+                <div class="p-col-fixed creat-card-input-form-label">
+                  作品别名：
+                </div>
+                <div class="p-col">
+                  <Tag
+                    class="p-mr-2"
+                    value="Primary"
+                    v-for="(item, index) in cardTitleOtherName"
+                    :key="index"
+                    >{{ item
+                    }}<i
+                      v-if="newTitleList.indexOf(item) !== -1"
+                      class="pi pi-times pl5 creat-card-input-tag-close"
+                      @click="deleteNewTitleList(item)"
+                    ></i></Tag
+                  ><InputText
+                    type="text"
+                    v-model="newTitleInpt"
+                    class="creat-card-input-tag-input"
+                    placeholder="输入别名"
+                    @keypress.enter="addNewTitle"
+                  /><Button
+                    icon="pi pi-pencil"
+                    class="creat-card-input-tag-input-btn"
+                    @click="addNewTitle"
+                  />
+                </div>
               </div>
-              <div class="p-col">
-                <Dropdown
-                  v-model="cry"
-                  :options="cryList"
-                  optionLabel="label"
-                  optionValue="value"
-                  :filter="false"
-                  :showClear="false"
-                  @change="addKey"
-                >
-                  <template #option="slotProps">
-                    <div class="p-grid p-ai-center">
-                      <div class="p-col">
-                        <img
-                          :src="
-                            `/img/creatcard/cry/${slotProps.option.value}.png`
-                          "
-                          class="creat-card-input-drop-img"
-                        />
+            </div>
+          </div>
+          <div class="p-fluid">
+            <div class="p-field">
+              <div class="p-grid p-ai-center">
+                <div class="p-col-fixed creat-card-input-form-label">
+                  角色名字：
+                </div>
+                <div class="p-col">{{ cardName }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="p-fluid">
+            <div class="p-field">
+              <div class="p-grid p-ai-center">
+                <div class="p-col-fixed creat-card-input-form-label">
+                  显示名字：
+                </div>
+                <div class="p-col">
+                  <InputText
+                    type="text"
+                    v-model="cardShortNameInput"
+                    :disabled="cardNameId !== '-1'"
+                    @input="cardShortNameInputChange"
+                    placeholder="会显示在卡牌中"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-fluid">
+            <div class="p-field">
+              <div class="p-grid p-ai-center">
+                <div class="p-col-fixed creat-card-input-form-label">
+                  角色别名：
+                </div>
+                <div class="p-col">
+                  <Tag
+                    class="p-mr-2"
+                    value="Primary"
+                    v-for="(item, index) in cardNameOtherName"
+                    :key="index"
+                    >{{ item
+                    }}<i
+                      v-if="newNameList.indexOf(item) !== -1"
+                      class="pi pi-times pl5 creat-card-input-tag-close"
+                      @click="deleteNewNameList(item)"
+                    ></i></Tag
+                  ><InputText
+                    type="text"
+                    v-model="newNameInpt"
+                    class="creat-card-input-tag-input"
+                    placeholder="输入别名"
+                    @keypress.enter="addNewName"
+                  /><Button
+                    icon="pi pi-pencil"
+                    class="creat-card-input-tag-input-btn"
+                    @click="addNewName"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-fluid">
+            <div class="p-field">
+              <div class="p-grid p-ai-center">
+                <div class="p-col-fixed creat-card-input-form-label">
+                  水晶属性：
+                </div>
+                <div class="p-col">
+                  <Dropdown
+                    v-model="cry"
+                    :options="cryList"
+                    optionLabel="label"
+                    optionValue="value"
+                    :filter="false"
+                    :showClear="false"
+                    @change="addKey"
+                  >
+                    <template #option="slotProps">
+                      <div class="p-grid p-ai-center">
+                        <div class="p-col">
+                          <img
+                            :src="
+                              `/img/creatcard/cry/${slotProps.option.value}.png`
+                            "
+                            class="creat-card-input-drop-img"
+                          />
+                        </div>
+                        <div class="p-col">
+                          <div>{{ slotProps.option.label }}</div>
+                        </div>
                       </div>
-                      <div class="p-col">
-                        <div>{{ slotProps.option.label }}</div>
-                      </div>
-                    </div>
-                  </template>
-                </Dropdown>
+                    </template>
+                  </Dropdown>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="p-fluid">
-          <div class="p-field">
-            <div class="p-grid p-ai-center">
-              <div class="p-col-fixed creat-card-input-form-label">
-                卡牌类型：
-              </div>
-              <div class="p-col">
-                <Dropdown
-                  v-model="leftType"
-                  :options="leftTypeList"
-                  optionLabel="label"
-                  optionValue="value"
-                  :filter="false"
-                  :showClear="false"
-                  @change="addKey"
-                >
-                  <template #option="slotProps">
-                    <div class="p-grid p-ai-center">
-                      <div class="p-col">
-                        <img
-                          :src="
-                            `/img/creatcard/leftType/${slotProps.option.value}.png`
-                          "
-                          class="creat-card-input-drop-img"
-                        />
+          <div class="p-fluid">
+            <div class="p-field">
+              <div class="p-grid p-ai-center">
+                <div class="p-col-fixed creat-card-input-form-label">
+                  卡牌类型：
+                </div>
+                <div class="p-col">
+                  <Dropdown
+                    v-model="leftType"
+                    :options="leftTypeList"
+                    optionLabel="label"
+                    optionValue="value"
+                    :filter="false"
+                    :showClear="false"
+                    @change="addKey"
+                  >
+                    <template #option="slotProps">
+                      <div class="p-grid p-ai-center">
+                        <div class="p-col">
+                          <img
+                            :src="
+                              `/img/creatcard/leftType/${slotProps.option.value}.png`
+                            "
+                            class="creat-card-input-drop-img"
+                          />
+                        </div>
+                        <div class="p-col">
+                          <div>{{ slotProps.option.label }}</div>
+                        </div>
                       </div>
-                      <div class="p-col">
-                        <div>{{ slotProps.option.label }}</div>
-                      </div>
-                    </div>
-                  </template>
-                </Dropdown>
+                    </template>
+                  </Dropdown>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="p-fluid">
-          <div class="p-field">
-            <div class="p-grid p-ai-center">
-              <div class="p-col-fixed creat-card-input-form-label">
-                终极技能：
-              </div>
-              <div class="p-col">
-                <Dropdown
-                  v-model="rightType"
-                  :options="rightTypeList"
-                  optionLabel="label"
-                  optionValue="value"
-                  :filter="false"
-                  :showClear="false"
-                  @change="addKey"
-                >
-                  <template #option="slotProps">
-                    <div class="p-grid p-ai-center">
-                      <div class="p-col">
-                        <img
-                          :src="
-                            `/img/creatcard/rightType/${slotProps.option.value}.png`
-                          "
-                          class="creat-card-input-drop-img"
-                        />
+          <div class="p-fluid">
+            <div class="p-field">
+              <div class="p-grid p-ai-center">
+                <div class="p-col-fixed creat-card-input-form-label">
+                  主动技能：
+                </div>
+                <div class="p-col">
+                  <Dropdown
+                    v-model="rightType"
+                    :options="rightTypeList"
+                    optionLabel="label"
+                    optionValue="value"
+                    :filter="false"
+                    :showClear="false"
+                    @change="addKey"
+                  >
+                    <template #option="slotProps">
+                      <div class="p-grid p-ai-center">
+                        <div class="p-col">
+                          <img
+                            :src="
+                              `/img/creatcard/rightType/${slotProps.option.value}.png`
+                            "
+                            class="creat-card-input-drop-img"
+                          />
+                        </div>
+                        <div class="p-col">
+                          <div>{{ slotProps.option.label }}</div>
+                        </div>
                       </div>
-                      <div class="p-col">
-                        <div>{{ slotProps.option.label }}</div>
-                      </div>
-                    </div>
-                  </template>
-                </Dropdown>
+                    </template>
+                  </Dropdown>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="pb20">
+    <div class="pb20" v-show="step === 4">
       <h2 class="tc mb20">选择卡牌种类</h2>
       <div class="tc">
         <div class="dib mr10">
@@ -317,7 +325,7 @@
         </div>
       </div>
     </div>
-    <div class="pb20">
+    <div class="pb20" v-show="step === 6 || step === 5">
       <h2 class="tc mb20">编辑立绘</h2>
       <div class="tc">
         <FileUpload
@@ -376,11 +384,31 @@
         ref="CardCGEditorCOM"
       />
     </div>
+    <div class="pb20" v-show="step === 6">
+      <h2 class="tc mb20">是否与以下立绘有重复</h2>
+    </div>
+    <div class="pb20" v-show="step === 7">
+      <h2 class="tc mb20">选择卡包</h2>
+      <div class="tc">
+        <MultiSelect
+          v-model="selCardPackage"
+          :options="packageList"
+          optionLabel="name"
+          optionValue="_id"
+          placeholder="选择卡包"
+        />
+      </div>
+    </div>
+    <div class="tc pb20">
+      <Button class="p-button-secondary" @click="preStep" v-show="step !== 1"
+        >上一步</Button
+      ><span class="pr10"></span><Button @click="nextStep">下一步</Button>
+    </div>
   </div>
 </template>
 <script>
 import AutoComplete from 'primevue/autocomplete'
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import RadioButton from 'primevue/radiobutton'
 import InputNumber from 'primevue/inputnumber'
 import InputText from 'primevue/inputtext'
@@ -389,6 +417,7 @@ import Button from 'primevue/button'
 import Dropdown from 'primevue/dropdown'
 import Card from '@/components/Card.vue'
 import FileUpload from 'primevue/fileupload'
+import MultiSelect from 'primevue/multiselect'
 import CardCGEditor from '@/components/CardCGEditor.vue'
 import { useToast } from 'primevue/usetoast'
 
@@ -404,6 +433,7 @@ export default {
     Dropdown,
     FileUpload,
     CardCGEditor,
+    MultiSelect,
   },
   setup() {
     const toast = useToast()
@@ -665,6 +695,15 @@ export default {
       },
     ]
 
+    let titleDrawInfo = {}
+    let nameDrawInfo = {}
+    const onTitleChange = (res) => {
+      titleDrawInfo = res
+    }
+    const onNameChange = (res) => {
+      nameDrawInfo = res
+    }
+
     const addKey = () => {
       cardKey.value++
     }
@@ -727,7 +766,135 @@ export default {
       }
       addKey()
     }
+
+    const selCardPackage = ref([])
+    const packageList = ref([
+      {
+        _id: '1',
+        name: '东方卡包',
+      },
+      {
+        _id: '2',
+        name: '萝莉卡包',
+      },
+    ])
+    const step = ref(1)
+    const checkNextStep = () => {
+      let checkRes = true
+      switch (step.value) {
+        case 1:
+          if (!cardTitle.value) {
+            toast.add({
+              severity: 'error',
+              summary: '错误',
+              detail: '请设置作品出处',
+              life: 3000,
+            })
+            checkRes = false
+          }
+          break
+
+        case 2:
+          if (!cardName.value) {
+            toast.add({
+              severity: 'error',
+              summary: '错误',
+              detail: '请设置角色名',
+              life: 3000,
+            })
+            checkRes = false
+          }
+          break
+
+        case 3:
+          if (!cardShortTitleInput.value) {
+            toast.add({
+              severity: 'error',
+              summary: '错误',
+              detail: '请设置显示作品',
+              life: 3000,
+            })
+            checkRes = false
+          }
+          if (!cardShortNameInput.value) {
+            toast.add({
+              severity: 'error',
+              summary: '错误',
+              detail: '请设置显示名字',
+              life: 3000,
+            })
+            checkRes = false
+          }
+          if (titleDrawInfo.width > 126) {
+            toast.add({
+              severity: 'error',
+              summary: '错误',
+              detail: '显示作品长度过大',
+              life: 3000,
+            })
+            checkRes = false
+          }
+          if (nameDrawInfo.width > 328) {
+            toast.add({
+              severity: 'error',
+              summary: '错误',
+              detail: '显示名字长度过大',
+              life: 3000,
+            })
+            checkRes = false
+          }
+          break
+
+        case 5:
+          for (let i = 0; i < CGList.value.length; i++) {
+            const CGURL = CGList.value[i]
+            if (!CGURL) {
+              toast.add({
+                severity: 'error',
+                summary: '错误',
+                detail: '请设置立绘',
+                life: 3000,
+              })
+              checkRes = false
+              break
+            }
+          }
+          break
+
+        case 7:
+          if (selCardPackage.value.length === 0) {
+            toast.add({
+              severity: 'error',
+              summary: '错误',
+              detail: '请设置卡包',
+              life: 3000,
+            })
+            checkRes = false
+          }
+          break
+
+        default:
+          break
+      }
+      return checkRes
+    }
+    const preStep = () => {
+      step.value--
+    }
+    const nextStep = () => {
+      nextTick(() => {
+        const res = checkNextStep()
+        if (res) {
+          step.value++
+        }
+      })
+    }
     return {
+      nextStep,
+      preStep,
+      step,
+      selCardPackage,
+      packageList,
       titleObj,
       titleList,
       searchTitle,
@@ -774,6 +941,8 @@ export default {
       imageUrl,
       selStar,
       onGetImage,
+      onTitleChange,
+      onNameChange,
     }
   },
 }

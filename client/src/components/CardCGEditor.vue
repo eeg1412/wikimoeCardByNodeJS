@@ -428,8 +428,8 @@ export default {
 }
 .wmCreatCard-loading {
   position: absolute;
-  left: 0;
-  right: 0;
+  left: -1.2em;
+  right: -1.2em;
   top: 0;
   bottom: 0;
   background: #ffffff;

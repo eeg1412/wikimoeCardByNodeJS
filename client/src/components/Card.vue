@@ -36,7 +36,7 @@ export default {
       default: '',
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const cardCanvas = ref(null)
     const img = {
       star: null,
@@ -169,6 +169,9 @@ export default {
         context
       )
       console.log(titleRes, nameRes)
+      emit('title-change', titleRes)
+      emit('name-change', nameRes)
+
       imageUrl.value = canvas.toDataURL()
     }
     onMounted(() => {
