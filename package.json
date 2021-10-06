@@ -22,7 +22,7 @@
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
     "module-alias": "^2.2.2",
-    "mongoose": "^5.13.2",
+    "mongoose": "^5.13.10",
     "morgan": "~1.9.1",
     "socket.io": "^2.4.1",
     "svg-captcha": "^1.4.0",
