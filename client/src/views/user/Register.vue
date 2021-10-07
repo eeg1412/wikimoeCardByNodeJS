@@ -60,16 +60,12 @@
 </template>
 <script>
 import { ref } from 'vue'
-import InputText from 'primevue/inputtext'
-import Password from 'primevue/password'
-import Button from 'primevue/button'
 import { authApi } from '@/api'
 import { useToast } from 'primevue/usetoast'
 import store from '@/store'
 import { useRouter } from 'vue-router'
 
 export default {
-  components: { InputText, Password, Button },
   setup() {
     const toast = useToast()
 

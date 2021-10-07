@@ -60,16 +60,10 @@
   </div>
 </template>
 <script>
-import Dialog from 'primevue/dialog'
 import * as PIXI from 'pixi.js'
 import { reactive, ref } from '@vue/reactivity'
-import Button from 'primevue/button'
-import Slider from 'primevue/slider'
-import InputNumber from 'primevue/inputnumber'
-import InputSwitch from 'primevue/inputswitch'
 import { nextTick, onBeforeUnmount } from '@vue/runtime-core'
 export default {
-  components: { Dialog, Button, Slider, InputNumber, InputSwitch },
   props: {
     imageObj: {
       required: true,

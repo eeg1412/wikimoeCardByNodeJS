@@ -407,33 +407,15 @@
   </div>
 </template>
 <script>
-import AutoComplete from 'primevue/autocomplete'
 import { ref, computed, watch, nextTick } from 'vue'
-import RadioButton from 'primevue/radiobutton'
-import InputNumber from 'primevue/inputnumber'
-import InputText from 'primevue/inputtext'
-import Tag from 'primevue/tag'
-import Button from 'primevue/button'
-import Dropdown from 'primevue/dropdown'
 import Card from '@/components/Card.vue'
-import FileUpload from 'primevue/fileupload'
-import MultiSelect from 'primevue/multiselect'
 import CardCGEditor from '@/components/CardCGEditor.vue'
 import { useToast } from 'primevue/usetoast'
 
 export default {
   components: {
-    AutoComplete,
-    RadioButton,
     Card,
-    InputNumber,
-    InputText,
-    Tag,
-    Button,
-    Dropdown,
-    FileUpload,
     CardCGEditor,
-    MultiSelect,
   },
   setup() {
     const toast = useToast()
