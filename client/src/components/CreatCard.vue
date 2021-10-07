@@ -11,7 +11,14 @@
           @item-select="autoCompleteSelect"
           placeholder="输入关键词"
           field="title"
-        />
+        >
+          <template #item="slotProps">
+            <div v-if="slotProps.item._id === '-1'">
+              {{ `点击创建"${slotProps.item.title}"` }}
+            </div>
+            <div v-else>{{ `${slotProps.item.title}` }}</div>
+          </template>
+        </AutoComplete>
       </div>
     </div>
     <div class="pb20" v-show="step === 2">
@@ -25,7 +32,14 @@
           @item-select="autoCompleteSelect"
           placeholder="输入关键词"
           field="name"
-        />
+        >
+          <template #item="slotProps">
+            <div v-if="slotProps.item._id === '-1'">
+              {{ `点击创建"${slotProps.item.name}"` }}
+            </div>
+            <div v-else>{{ `${slotProps.item.name}` }}</div>
+          </template>
+        </AutoComplete>
       </div>
     </div>
     <div class="mb20" v-show="step === 3">
@@ -439,7 +453,7 @@ export default {
         },
       ]
       const creatTitleContent = {
-        title: `创建标题"${event.query}"`,
+        title: `${event.query}`,
         query: event.query,
         short: event.query,
         otherName: [],
@@ -460,7 +474,7 @@ export default {
         },
       ]
       const creatNameContent = {
-        name: `创建角色"${event.query}"`,
+        name: `${event.query}`,
         query: event.query,
         short: event.query,
         otherName: [],
