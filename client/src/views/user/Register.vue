@@ -76,9 +76,9 @@ export default {
     const captcha = ref('')
 
     // captcha
-    const captchaSrc = ref('/api/captcha?time=' + new Date().getTime())
+    const captchaSrc = ref('/api/public/captcha?time=' + new Date().getTime())
     const reflushCaptcha = () => {
-      captchaSrc.value = '/api/captcha?time=' + new Date().getTime()
+      captchaSrc.value = '/api/public/captcha?time=' + new Date().getTime()
     }
 
     const router = useRouter()

@@ -1,3 +1,4 @@
+var chalk = require('chalk')
 console.log('启动中...')
 require('dotenv').config()
 const configData = require('./config/myAppConfig')
@@ -14,7 +15,7 @@ var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 var history = require('connect-history-api-fallback')
 DBStart()
-var apiRouter = require('./routes/api')
+var apiPublicRouter = require('./routes/public/api')
 
 var app = express()
 
@@ -36,8 +37,16 @@ app.use(
     saveUninitialized: true,
   })
 )
+app.use('/', function (req, res, next) {
+  if (global.DBIsStart) {
+    next()
+  } else {
+    console.info(chalk.red('DB启动中，访问被拦截！'))
+    res.status(403).send('系统重启中...')
+  }
+})
 
-app.use('/api', apiRouter)
+app.use('/api/public', apiPublicRouter)
 app.use(history())
 app.use('/', express.static(path.join(__dirname, 'client/dist')))
 
