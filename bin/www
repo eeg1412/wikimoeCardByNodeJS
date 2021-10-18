@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+var chalk = require('chalk')
 
 /**
  * Module dependencies.
@@ -86,3 +87,4 @@ function onListening() {
   var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
   debug('Listening on ' + bind)
 }
+console.info(chalk.green('主程序启动成功'))

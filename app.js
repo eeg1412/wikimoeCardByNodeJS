@@ -1,16 +1,19 @@
+console.log('启动中...')
 require('dotenv').config()
 const configData = require('./config/myAppConfig')
 global.DBIsStart = false
 // 应用设置
 global.myAppConfig = configData()
-require('./mongodb/db')
+console.log('已加载配置：')
+console.table(global.myAppConfig)
+const DBStart = require('./mongodb/db')
 var express = require('express')
 var session = require('express-session')
 var path = require('path')
 var cookieParser = require('cookie-parser')
 var logger = require('morgan')
 var history = require('connect-history-api-fallback')
-
+DBStart()
 var apiRouter = require('./routes/api')
 
 var app = express()
