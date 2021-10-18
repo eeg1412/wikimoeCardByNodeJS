@@ -1,4 +1,9 @@
 require('dotenv').config()
+const configData = require('./config/myAppConfig')
+global.DBIsStart = false
+// 应用设置
+global.myAppConfig = configData()
+console.log(global)
 require('./mongodb/db')
 var express = require('express')
 var session = require('express-session')
