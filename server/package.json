@@ -32,6 +32,6 @@
     "request": "^2.88.0",
     "socket.io": "^2.3.0",
     "svg-captcha": "^1.4.0",
-    "validator": "^12.1.0"
+    "validator": "^13.7.0"
   }
 }
