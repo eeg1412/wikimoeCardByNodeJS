@@ -79,6 +79,16 @@ module.exports = async function (req, res, next) {
         });
         return false;
     }
+    if (typeof imgBase64 != 'string') {
+        console.info(
+            chalk.yellow(IP + '参数有误！')
+        )
+        res.send({
+            code: 0,
+            msg: '参数有误！'
+        });
+        return false;
+    }
     let jpgReg = new RegExp("data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/");
     let isJpg = jpgReg.test(imgBase64);
     if (!isJpg) {

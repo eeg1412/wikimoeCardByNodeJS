@@ -22,13 +22,17 @@ var compression = require('compression')
 var app = express();
 console.info = (function (oriLogFunc) {
     return function (str) {
-        logger.info('app', str.replace(/\\[[0-9][0-9]m/g, ""));
+        if (typeof str === 'string') {
+            logger.info('app', str.replace(/\\[[0-9][0-9]m/g, ""));
+        }
         oriLogFunc.call(console, str);
     }
 })(console.info);
 console.error = (function (oriLogFunc) {
     return function (str) {
-        logger.error('app', str.replace(/\\[[0-9][0-9]m/g, ""));
+        if (typeof str === 'string') {
+            logger.error('app', str.replace(/\\[[0-9][0-9]m/g, ""));
+        }
         oriLogFunc.call(console, str);
     }
 })(console.error);

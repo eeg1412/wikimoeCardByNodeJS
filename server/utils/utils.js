@@ -253,19 +253,26 @@ exports.writeLog = function (logObject) {
 exports.tokenCheck = async function (token) {
     let secretOrPrivateKey = global.myAppConfig.JWTSecret; // 这是加密的key（密钥）
     return await new Promise((resolve, reject) => {
-        jwt.verify(token, secretOrPrivateKey, function (err, decode) {
-            if (err) {  //  时间失效的时候/ 伪造的token 
-                console.info(
-                    chalk.yellow('token有误！')
-                );
-                reject(err);
-            } else {
-                console.info(
-                    chalk.green('token解密成功！')
-                );
-                resolve(decode);
-            }
-        });
+        try {
+            jwt.verify(token, secretOrPrivateKey, function (err, decode) {
+                if (err) {  //  时间失效的时候/ 伪造的token 
+                    console.info(
+                        chalk.yellow('token有误！')
+                    );
+                    reject(err);
+                } else {
+                    console.info(
+                        chalk.green('token解密成功！')
+                    );
+                    resolve(decode);
+                }
+            });
+        } catch (err) {
+            console.info(
+                chalk.green('token解密成功！')
+            );
+            resolve(decode);
+        }
     });
 };
 exports.tokenCheckAndEmail = async function (token) {
