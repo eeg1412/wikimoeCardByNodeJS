@@ -22,7 +22,7 @@
     "hooper": "^0.3.4",
     "js-md5": "^0.7.3",
     "lodash": "^4.17.19",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "pixi.js": "^5.0.3",
     "socket.io-client": "^2.3.1",
     "v-charts": "^1.19.0",
