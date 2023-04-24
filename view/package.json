@@ -75,7 +75,7 @@
     "rimraf": "^2.6.3",
     "selenium-server": "^3.11.0",
     "semver": "^5.7.0",
-    "shelljs": "^0.7.6",
+    "shelljs": "^0.8.5",
     "shx": "^0.2.2",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
